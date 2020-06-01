@@ -1,5 +1,5 @@
 /*
-* Configuration File for the Ordering Service API Server
+* Sample Configuration File for the OppenShop Server
 */
 
 let environment = {};

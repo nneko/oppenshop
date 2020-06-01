@@ -1,0 +1,39 @@
+.main-center-section {
+    margin-top: 20rem;
+    width: 80%;
+}
+
+.error-msg h1, .header-banner h1 {
+    font-size: 6rem;
+    text-align: center;
+}
+
+.error-msg b {
+    color: #BE4E3B;
+}
+
+.error-msg p {
+    text-align: center;
+}
+
+.signup-section, .signin-section {
+    display: flex;
+    margin: 4rem auto;
+    position: relative;
+    width: 80%;
+}
+
+.signup-form {
+    margin: auto;
+}
+
+.signin-form {
+    margin: auto;
+}
+
+.header-banner {
+    display: block;
+    margin: 4rem auto;
+    position: relative;
+    width: 80%;
+}

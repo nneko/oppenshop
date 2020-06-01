@@ -1,0 +1,39 @@
+{
+  "name": "oppenshop",
+  "version": "1.0.0",
+  "description": "Online marketplace app and api service to support commerce in goods and services across multiple vendors, payment and logistics providers",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nneko/oppenshop.git"
+  },
+  "keywords": [
+    "order",
+    "trade",
+    "app",
+    "commerce"
+  ],
+  "author": "Nneko Branche",
+  "license": "SEE LICENSE IN https://github.com/nneko/oppenshop#license",
+  "bugs": {
+    "url": "https://github.com/nneko/oppenshop/issues"
+  },
+  "homepage": "https://github.com/nneko/oppenshop#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "ejs": "^3.1.3",
+    "express": "^4.17.1",
+    "express-ejs-layouts": "^2.5.0",
+    "express-flash": "0.0.2",
+    "express-session": "^1.17.1",
+    "method-override": "^3.0.0",
+    "mongodb": "^3.5.8",
+    "node-pre-gyp": "^0.15.0",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "uuid": "^8.1.0"
+  }
+}

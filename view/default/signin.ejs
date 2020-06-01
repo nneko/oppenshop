@@ -1,0 +1,39 @@
+<main class="container">
+    <section class="header-banner">
+        <h1>OppenShop</h1>
+    </section>
+    <section class="signin-section">
+        <form id="signin-form" class="signin-form" autocomplete="off" action="/signin" method="POST" oninput="" novalidate><div class="form-group">
+            <% if(messages.error){ %>
+                <p class="error-msg"><b><%= messages.error %></b></p>
+            <% } %>
+            <p>Enter your credentials to signin.</p>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="email-basic-addon">Email</span>
+                </div>
+                <input id="email" class="form-control" type="text" name="email" placeholder="Email Address" value=""
+                    aria-label="email" aria-describedby="email-basic-addon" size="25" required>
+                <div id="invalid-username" class="invalid-feedback">
+                    Please enter a valid email address.
+                </div>
+            </div>
+            <small id="validationEmail" class="form-text text-muted  validation-msg hidden"></small>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="passowrd-basic-addon">Password</span>
+                </div>
+                <input id="password" class="form-control" type="password" name="password" value="" aria-label="Password"
+                    aria-describedby="password-basic-addon" size="25" required>
+                <div id="invalid-password" class="invalid-feedback">
+                    Please enter a password.
+                </div>
+            </div>
+            <small id="passwordHint" class="form-text text-muted hidden"></small>
+            <div id="signin-buttons-container">
+                <button id="signin-button" type="submit" class="btn btn-danger" onclick="">Signin</button>
+                <button id="cancel-button" type="button" class="btn btn-secondary" onclick="location.href = '/';">Cancel</button>
+            </div>
+        </form>
+    </section>
+</main>

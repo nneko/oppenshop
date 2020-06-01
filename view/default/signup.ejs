@@ -1,0 +1,137 @@
+<main class="container">
+    <section class="header-banner">
+        <h1>OppenShop</h1>
+    </section>
+    <section class="signup-section">
+        <form id="signup-form" class="signup-form" autocomplete="off" action="/signup" method="POST"
+            oninput="" novalidate>
+            <div class="form-group">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="email-basic-addon">Email</span>
+                    </div>
+                <input id="email" class="form-control <% if(typeof(email) !== 'undefined') { %><%= email.class %><% } %>" type="text" name="email"
+                        placeholder="Email Address" value="<% if(typeof(email) !== 'undefined' && email.class == 'is-valid') { %><%= email.value %><% } %>" aria-label="email" aria-describedby="email-basic-addon"
+                        size="25" required>
+                    <div id="invalid-email" class="invalid-feedback">
+                    <% if(typeof(email) !== 'undefined' && email.class == 'is-invalid') { %><%= email.message %><% } else { %>Please enter a valid email address. <% } %>
+                    </div>
+                </div>
+                <small id="validationEmail" class="form-text text-muted  validation-msg hidden"></small>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="passowrd-basic-addon">Password</span>
+                    </div>
+                    <input id="password" class="form-control <% if(typeof(password) !== 'undefined') { %><%= password.class %><% } %>" type="password" name="password" value=""
+                        aria-label="Password" aria-describedby="password-basic-addon" size="25" required>
+                    <div id="invalid-password" class="invalid-feedback">
+                    <% if(typeof(password) !== 'undefined' && password.class == 'is-invalid') { %><%= password.message %><% } else { %>Please enter a password. <% } %>
+                    </div>
+                </div>
+                <small id="passwordHint" class="form-text text-muted hidden"></small>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="firstname-basic-addon">First Name</span>
+                    </div>
+                    <input id="firstname" class="form-control <% if(typeof(firstname) !== 'undefined') { %><%= firstname.class %><% } %>" type="text" name="firstname" value="<% if(typeof(firstname) !== 'undefined' && firstname.class == 'is-valid') { %><%= firstname.value %><% } %>"
+                        aria-label="First Name" aria-describedby="firstname-basic-addon" size="25" required>
+                    <div id="invalid-firstname" class="invalid-feedback">
+                    <% if(typeof(firstname) !== 'undefined' && firstname.class == 'is-invalid') { %><%= firstname.message %><% } else { %>You must provide your First Name.<% } %>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="lastname-basic-addon">Last Name</span>
+                    </div>
+                    <input id="lastname" class="form-control <% if(typeof(lastname) !== 'undefined') { %><%= lastname.class %><% } %>" type="text" name="lastname" value="<% if(typeof(lastname) !== 'undefined' && lastname.class == 'is-valid') { %><%= lastname.value %><% } %>"
+                        aria-label="Last Name" aria-describedby="lastname-basic-addon" size="25" required>
+                    <div id="invalid-lastname" class="invalid-feedback">
+                    <% if(typeof(lastname) !== 'undefined' && lastname.class == 'is-invalid') { %><%= lastname.message %><% } else { %>You must provide your Last Name.<% } %>
+                    </div>
+                </div>
+                <label class="form-label" for="addressStreet">Address</label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="addressStreet-basic-addon">No. & Street</span>
+                    </div>
+                    <input id="addressStreet" class="form-control <% if(typeof(locals.addressStreet) !== 'undefined') { %><%= addressStreet.class %>><% } %>" type="text" name="addressStreet" value="<% if(typeof(addressStreet) !== 'undefined' && addressStreet.class == 'is-valid') { %><%= addressStreet.value %><% } %>"
+                        aria-label="Street Address" aria-describedby="addressStreet-basic-addon" size="25" required>
+                    <div id="invalid-street" class="invalid-feedback">
+                    <% if(typeof(addressStreet) !== 'undefined' && addressStreet.class == 'is-invalid') { %><%= addressStreet.message %><% } else { %>You must provide an address.<% } %>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="stateLabel" class="form-label" for="addressState">Parish / State</label>
+                    <select id="addressState" class="form-control <% if(typeof(addressState) !== 'undefined') { %><%= addressState.class %><% } %>" type="text" name="addressState" value=""
+                        aria-label="State Address" aria-describedby="addressState-basic-addon">
+                        <option selected="selected">Kingston & St. Andrew</option>
+                        <option>St. Catherine</option>
+                        <option>Clarendon</option>
+                        <option>Manchester</option>
+                        <option>St. Elizabeth</option>
+                        <option>Westmoreland</option>
+                        <option>Hanover</option>
+                        <option>St. James</option>
+                        <option>Trelawny</option>
+                        <option>St. Ann</option>
+                        <option>St. Mary</option>
+                        <option>Portland</option>
+                        <option>St. Thomas</option>
+                    </select>
+                    <div id="invalid-state" class="invalid-feedback">
+                    <% if(typeof(addressState) !== 'undefined' && addressState.class == 'is-invalid') { %><%= addressState.message %><% } else { %>You must select a valid Parish / State. <% } %>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="postcodeLabel" class="form-label" for="addressPostcode">Postcode</label>
+                    <input id="addressPostcode" class="form-control <% if(typeof(locals.addressPostcode) !== 'undefined') { %><%= addressPostcode.class %><% } %>" type="text" name="addressPostcode" value="<% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.class == 'is-valid') { %><%= addressPostcode.value %><% } %>"
+                        aria-label="Postal Code" aria-describedby="addressPostcode-basic-addon" size="5" required>
+                    <div id="invalid-postcode" class="invalid-feedback">
+                    <% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.class == 'is-invalid') { %><%= addressPostcode.message %><% } else { %>Please enter a valid postal code.<% } %>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="countryLabel" class="form-label" for="addressCountry">Country</label>
+                    <select id="addressCountry" class="form-control <% if(typeof(addressCountry) !== 'undefined') { %><%= addressCountry.value %><% } %>" type="text" name="addressCountry"
+                        value="" aria-label="Country" aria-describedby="addressCountry-basic-addon">
+                        <option>Jamaica</option>
+                    </select>
+                    <div id="invalid-country" class="invalid-feedback">
+                    <% if(typeof(addressCountry) !== 'undefined' && addressCountry.class == 'is-invalid') { %><%= addressCountry.message %><% } else { %>You must select a country.<% } %>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="phoneNumber-basic-addon">Phone Number</span>
+                    </div>
+                    <input id="phoneNumber" class="form-control <% if(typeof(phoneNumber) !== 'undefined') { %><%= phoneNumber.class %><% } %>" type="text" name="phoneNumber" value="<% if(typeof(phoneNumber) !== 'undefined' && phoneNumber.class == 'is-valid') { %><%= phoneNumber.value %><% } %>"
+                        aria-label="Phone Number" aria-describedby="phoneNumber-basic-addon" size="25" required>
+                    <div id="invalid-phonenumber" class="invalid-feedback">
+                    <% if(typeof(phoneNumber) !== 'undefined' && phoneNumber.class == 'is-invalid') { %><%= phoneNumber.message %><% } else { %>Please enter a valid phone number.<% } %>
+                    </div>
+                </div>
+                <small id="validationPhone" class="form-text text-muted  validation-msg hidden"></small>
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input <% if(typeof(tac) !== 'undefined') { %><%= tac.class %><% } %>" type="checkbox" id="tac" name="tac" value="true" required>
+                        <label class="form-check-label" for="tac">
+                            Agree to Terms and Conditions
+                        </label>
+                        <div class="invalid-feedback">
+                        <% if(typeof(tac) !== 'undefined' && tac.class == 'is-invalid') { %><%= tac.message %><% } else { %>You must agree before submitting.<% } %>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember" value="true" >
+                    <label class="form-check-label" for="remember">Remember Me</label>
+                </div>
+                <div id="signup-buttons-container">
+                    <button id="signup-button" type="submit" class="btn btn-danger" onclick="">Signup</button>
+                    <button id="cancel-button" type="button" class="btn btn-secondary"
+                        onclick="location.href = '/';">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </section>
+</main>

@@ -37,6 +37,6 @@ app.use(require('./controller'))
 //Start the server if there is no parent module
 if(!module.parent){
     app.listen(app.locals.port, () => {
-        console.log('\x1b[32m%s\x1b[0m', `oppenshop app started on port: ${app.locals.port}`)
+        console.log('\x1b[32m%s\x1b[0m', `OppenShop app started on port: ${app.locals.port}`)
     })
 }

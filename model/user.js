@@ -5,18 +5,18 @@ const dbHost = cfg.dbHost
 const dbPort = cfg.dbPort
 const dbName = cfg.database
 const dbURL = dbType+'://'+dbHost+':'+dbPort.toString()+'/'
-const dbClient = dbType !== 'mongodb' ? false : dbDriver.MongoClient(dbURL, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-})
 const assert = require('assert')
 const validator = require('../utility/validator')
-
-if(!validator.isNotNull(dbClient)){
-    throw(new Error('Could not create database client with driver: '+dbDriver))
-}
+const debug = cfg.env == 'development' ? true : false
 
 let user = {}
+
+user.getDbClient = () => {
+    return dbClient = dbType !== 'mongodb' ? false : dbDriver.MongoClient(dbURL, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true
+    })
+}
 
 user.isValid = (u) => {
     if(validator.isNotNull(u.email) && validator.isNotNull(u.firstname) && validator.isNotNull(u.lastname)){
@@ -26,97 +26,98 @@ user.isValid = (u) => {
     }
 }
 
-user.exists = (u) => {
+user.exists = async (u) => {
     try {
-
+        const result = await user.read(u,{limit: 1})
+        return result ? true : false
     } catch (e) {
-
+        if(debug) console.log(e)
+        throw new Error('Unable to query database')
     }
-    
-    return false 
 }
 
-user.create = (u, callback) => {
-    let result = false
-    if(dbClient){
+user.create = (u) => {
+    return new Promise(async (resolve,reject) => {
         try {
+            const dbClient = user.getDbClient()
             if(!user.isValid(u)){
-                throw new Error('Invalid user object')
+                reject(new Error('Invalid user object'))
             }
-            dbClient.connect((er) =>{
-                if(er) throw er
-                const db = dbClient.db(dbName)
-                const users = db.collection('user')
-                users.insertOne(u,(err, r) => {
-                    if(err) {
-                        throw err
-                    } else {
-                        result = r
-                        dbClient.close()
-                        if(callback) callback(result)
+            if(!dbClient) reject(new Error('No database client'))
+            await dbClient.connect()
+            const result = await dbClient.db(dbName).collection('user').insertOne(u)
+            resolve(result)
+        } catch (e) {
+            reject(e)
+        } finally {
+            await dbClient.close()
+        }
+    })
+}
+
+user.read = (properties, options) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const dbClient = user.getDbClient()
+            if (!dbClient) reject(new Error('No database client'))
+            await dbClient.connect()
+            const userCollection = dbClient.db(dbName).collection('user')
+            if(validator.isNotNull(options)) {
+                if(options.limit){
+                    switch (options.limit) {
+                        case 1:
+                            const result = await userCollection.findOne(properties)
+                            resolve(result)
+                            break;
+                        default:
+                            const cursor = await userCollection.find(properties).limit(options.limit)
+                            resolve(cursor.toArray())
                     }
-                })
-            })
+                }
+            } else {
+                const cursor = await userCollection.find(properties)
+                resolve(cursor.toArray())
+            }
         } catch (e) {
-            throw e
+            reject(e)
+        } finally {
+            await dbClient.close()
         }
-    } else {
-        throw new Error('No database client')
-    } 
+    })
 }
 
-user.read = () => {
-    if (dbClient) {
+user.update = (filters, values, options) => {
+    return new Promise(async (resolve, reject) => {
         try {
-
-            dbClient.connect((err) => {
-                assert.equal(null, err)
-                const db = dbClient.db(dbName)
-            })
+            const dbClient = user.getDbClient()
+            if (!dbClient) reject(new Error('No database client'))
+            await dbClient.connect()
+            const userCollection = dbClient.db(dbName).collection('user')
+            const result = await userCollection.updateMany(filters,{$set: values},options)
+            resolve(result)
         } catch (e) {
-
+            reject(e)
         } finally {
-            dbClient.close()
+            await dbClient.close()
         }
-    } else {
-        throw new Error('No database client')
-    } 
+    })
 }
 
-user.update = () => {
-    if (dbClient) {
+user.delete = (filters) => {
+    return new Promise(async (resolve, reject) => {
         try {
-
-            dbClient.connect((err) => {
-                assert.equal(null, err)
-                const db = dbClient.db(dbName)
-            })
+            const dbClient = user.getDbClient()
+            if (!dbClient) reject(new Error('No database client'))
+            await dbClient.connect()
+            const userCollection = dbClient.db(dbName).collection('user')
+            const result = await userCollection.deleteMany(filters)
+            resolve(result)
         } catch (e) {
-
+            reject(e)
         } finally {
-            dbClient.close()
+            await dbClient.close()
         }
-    } else {
-        throw new Error('No database client')
-    } 
-}
-
-user.delete = () => {
-    if (dbClient) {
-        try {
-
-            dbClient.connect((err) => {
-                assert.equal(null, err)
-                const db = dbClient.db(dbName)
-            })
-        } catch (e) {
-
-        } finally {
-            dbClient.close()
-        }
-    } else {
-        throw new Error('No database client')
-    } 
+    })
 }
 
 module.exports = user

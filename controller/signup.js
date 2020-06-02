@@ -132,14 +132,16 @@ signup.post('/', async (req,res) => {
         })
     } else {
         try {
-            user.create(u, (result) => {
-                if(debug) console.log('User account created for '+u.email)
-                res.redirect('/signin')
-            })
+            const result = await user.create(u)
+            if(debug)console.log('User account created for '+u.email)
+            res.redirect('/signin')
         } catch (e) {
-            if(debug) console.log('Error during user account creation')
+            if(debug) console.log('Unable to create user account due to error: ')
             if(debug) console.log(e)
-            res.redirect('/')
+            formFields.error = 'An error occured during signup. Please try again later.'
+            res.render('signup',formFields,(err, html) => {
+                res.status(500).send(html)
+            })
         }
     }
 })

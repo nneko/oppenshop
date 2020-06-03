@@ -1,22 +1,9 @@
 const cfg = require('../configure')
-const dbType = cfg.dbType
-const dbDriver = require(String(dbType))
-const dbHost = cfg.dbHost
-const dbPort = cfg.dbPort
-const dbName = cfg.database
-const dbURL = dbType+'://'+dbHost+':'+dbPort.toString()+'/'
-const assert = require('assert')
+const db = require('./orm')
 const validator = require('../utility/validator')
 const debug = cfg.env == 'development' ? true : false
 
 let user = {}
-
-user.getDbClient = () => {
-    return dbClient = dbType !== 'mongodb' ? false : dbDriver.MongoClient(dbURL, {
-        useUnifiedTopology: true,
-        useNewUrlParser: true
-    })
-}
 
 user.isValid = (u) => {
     if(validator.isNotNull(u.email) && validator.isNotNull(u.firstname) && validator.isNotNull(u.lastname)){
@@ -39,18 +26,13 @@ user.exists = async (u) => {
 user.create = (u) => {
     return new Promise(async (resolve,reject) => {
         try {
-            const dbClient = user.getDbClient()
             if(!user.isValid(u)){
                 reject(new Error('Invalid user object'))
             }
-            if(!dbClient) reject(new Error('No database client'))
-            await dbClient.connect()
-            const result = await dbClient.db(dbName).collection('user').insertOne(u)
+            const result = await db.get().collection('user').insertOne(u)
             resolve(result)
         } catch (e) {
             reject(e)
-        } finally {
-            await dbClient.close()
         }
     })
 }
@@ -58,10 +40,7 @@ user.create = (u) => {
 user.read = (properties, options) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const dbClient = user.getDbClient()
-            if (!dbClient) reject(new Error('No database client'))
-            await dbClient.connect()
-            const userCollection = dbClient.db(dbName).collection('user')
+            const userCollection = db.get().collection('user')
             if(validator.isNotNull(options)) {
                 if(options.limit){
                     switch (options.limit) {
@@ -80,8 +59,6 @@ user.read = (properties, options) => {
             }
         } catch (e) {
             reject(e)
-        } finally {
-            await dbClient.close()
         }
     })
 }
@@ -89,16 +66,11 @@ user.read = (properties, options) => {
 user.update = (filters, values, options) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const dbClient = user.getDbClient()
-            if (!dbClient) reject(new Error('No database client'))
-            await dbClient.connect()
-            const userCollection = dbClient.db(dbName).collection('user')
+            const userCollection = db.get().collection('user')
             const result = await userCollection.updateMany(filters,{$set: values},options)
             resolve(result)
         } catch (e) {
             reject(e)
-        } finally {
-            await dbClient.close()
         }
     })
 }
@@ -106,17 +78,12 @@ user.update = (filters, values, options) => {
 user.delete = (filters) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const dbClient = user.getDbClient()
-            if (!dbClient) reject(new Error('No database client'))
-            await dbClient.connect()
-            const userCollection = dbClient.db(dbName).collection('user')
+            const userCollection = db.get().collection('user')
             const result = await userCollection.deleteMany(filters)
             resolve(result)
         } catch (e) {
             reject(e)
-        } finally {
-            await dbClient.close()
-        }
+        } 
     })
 }
 

@@ -1,5 +1,5 @@
 const cfg = require('../configure')
-const db = require('./orm')
+const db = require('../adapter/datastore')
 const validator = require('../utility/validator')
 const debug = cfg.env == 'development' ? true : false
 

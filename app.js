@@ -6,7 +6,7 @@ const ejsLayouts = require('express-ejs-layouts')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
-const db = require('./model/database')
+const db = require('./adapter/datastore')
 const debug = cfg.env == 'development' ? true : false
 
 module.exports = app

@@ -4,9 +4,11 @@ const app = express()
 const path = require('path')
 const ejsLayouts = require('express-ejs-layouts')
 const passport = require('passport')
+const authLocal = require('./adapter/authentication/local')
 const flash = require('express-flash')
 const session = require('express-session')
-const db = require('./adapter/datastore')
+const secretKey = cfg.secret
+const db = require('./adapter/storage/'+cfg.dbAdapter)
 const debug = cfg.env == 'development' ? true : false
 
 module.exports = app
@@ -26,14 +28,18 @@ app.set('layout', path.join(__dirname, '/view/' + app.locals.template+ '/layout'
 app.use(ejsLayouts)
 app.use(flash())
 app.use(session({
-    secret: cfg.secret,
+    cookie: {
+        httpOnly: true
+    },
+    secret: secretKey,
     resave: false,
     saveUninitialized: false
 }))
+authLocal.init(passport, require('./model/user'))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 app.use(require('./controller'))
 
 //Start the server if there is no parent module

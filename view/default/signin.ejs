@@ -4,9 +4,13 @@
     </section>
     <section class="signin-section">
         <form id="signin-form" class="signin-form" autocomplete="off" action="/signin" method="POST" oninput="" novalidate><div class="form-group">
-            <% if(messages.error){ %>
-                <p class="error-msg"><b><%= messages.error %></b></p>
-            <% } %>
+            <% if(typeof(messages.error) !== 'undefined') { %>
+            <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= messages.error %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <% } %> 
             <p>Enter your credentials to signin.</p>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">

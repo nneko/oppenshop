@@ -1,9 +1,12 @@
-const cfg = require('../configure')
+const cfg = require('../../configure')
 const dbType = cfg.dbType
 const dbDriver = require(String(dbType))
 const dbHost = cfg.dbHost
 const dbPort = cfg.dbPort
 const dbName = cfg.database
+const dbUser = cfg.dbUser
+const dbPwd = cfg.dbPwd
+const dbAuthSource = cfg.dbAuthSource
 const dbURI = dbType + '://' + dbHost + ':' + dbPort.toString() + '/'
 const debug = cfg.env == 'development' ? true : false
 
@@ -11,10 +14,19 @@ let database = {}
 
 let dbClient = dbType !== 'mongodb' ? false : dbDriver.MongoClient(dbURI, {
     useUnifiedTopology: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    authSource: dbAuthSource,
+    auth: {
+        user: dbUser,
+        password: dbPwd 
+    }
 })
 
 let dbo = false
+
+database.getObjectId = (id) => {
+    return dbDriver.ObjectID(id)
+}
 
 database.connect = () => {
     return new Promise(async (resolve, reject) => {

@@ -1,6 +1,7 @@
 const cfg = require('../configure.js')
 const express = require('express')
 const path = require('path')
+const debug = cfg.env == 'development' ? true : false
 
 let router = express.Router()
 
@@ -16,7 +17,8 @@ router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 
 router.get('/', (req, res) => {
-    res.render('index', props)
+    if(debug) console.log(req.user)
+    res.render('index', {title: props.title, theme: props.theme, name: typeof(req.user) !== 'undefined' && typeof(req.user.givenName) !== 'undefined' ? req.user.givenName : undefined})
 })
 
 module.exports = router

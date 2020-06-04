@@ -30,14 +30,14 @@ signup.post('/', async (req,res) => {
      }
 
     if (validator.isNotNull(req.body.firstname)) { 
-        u.firstname = String(req.body.firstname)
+        u.givenName = String(req.body.firstname)
         formFields.firstname = { class: 'is-valid', value: u.firstname }
      } else {
         formFields.firstname = {class: 'is-invalid', message: 'You must provide your First Name.'}
      }
     
     if (validator.isNotNull(req.body.lastname)) {
-        u.lastname = String(req.body.lastname)
+        u.familyName = String(req.body.lastname)
         formFields.lastname = {class: 'is-valid', value: u.lastname}
     } else {
         formFields.lastname = {

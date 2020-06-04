@@ -1,5 +1,6 @@
 const cfg = require('../configure.js')
 const express = require('express')
+const passport = require('passport')
 
 let signin = express.Router()
 
@@ -12,8 +13,10 @@ signin.get('/', (req, res) => {
     res.render('signin', props)
 })
 
-signin.post('/', (req,res) => {
-    res.redirect('/')
-})
+signin.post('/', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/signin',
+    failureFlash: true
+}))
 
 module.exports = signin

@@ -1,12 +1,12 @@
 const cfg = require('../configure')
-const db = require('../adapter/datastore')
+const db = require('../adapter/storage/'+cfg.dbAdapter)
 const validator = require('../utility/validator')
 const debug = cfg.env == 'development' ? true : false
 
 let user = {}
 
 user.isValid = (u) => {
-    if(validator.isNotNull(u.email) && validator.isNotNull(u.firstname) && validator.isNotNull(u.lastname)){
+    if(validator.isNotNull(u.email) && validator.isNotNull(u.givenName) && validator.isNotNull(u.familyName)){
         return true
     } else {
         return false
@@ -42,15 +42,28 @@ user.read = (properties, options) => {
         try {
             const userCollection = db.get().collection('user')
             if(validator.isNotNull(options)) {
-                if(options.limit){
-                    switch (options.limit) {
+                if(typeof(options.limit) !== 'undefined') {
+                    switch(options.limit) {
                         case 1:
                             const result = await userCollection.findOne(properties)
                             resolve(result)
-                            break;
+                            break
                         default:
                             const cursor = await userCollection.find(properties).limit(options.limit)
                             resolve(cursor.toArray())
+                            break
+                    }
+                }
+                if(typeof(options.findBy) !== 'undefined') {
+                    switch(options.findBy){
+                        case 'id':
+                            const result = await userCollection.findOne({'_id': db.getObjectId(properties)})
+                            resolve(result)
+                            break
+                        default:
+                            const cursor = await userCollection.find(properties).limit(1)
+                            resolve(cursor.toArray())
+                            break
                     }
                 }
             } else {

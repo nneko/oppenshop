@@ -38,7 +38,7 @@
                 <small id="passwordHint" class="form-text text-muted hidden"></small>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="firstname-basic-addon">First Name</span>
+                        <span class="input-group-text" id="firstname-basic-addon">Given Name</span>
                     </div>
                     <input id="firstname" class="form-control <% if(typeof(firstname) !== 'undefined') { %><%= firstname.class %><% } %>" type="text" name="firstname" value="<% if(typeof(firstname) !== 'undefined' && firstname.class == 'is-valid') { %><%= firstname.value %><% } %>"
                         aria-label="First Name" aria-describedby="firstname-basic-addon" size="25" required>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="lastname-basic-addon">Last Name</span>
+                        <span class="input-group-text" id="lastname-basic-addon">Family Name</span>
                     </div>
                     <input id="lastname" class="form-control <% if(typeof(lastname) !== 'undefined') { %><%= lastname.class %><% } %>" type="text" name="lastname" value="<% if(typeof(lastname) !== 'undefined' && lastname.class == 'is-valid') { %><%= lastname.value %><% } %>"
                         aria-label="Last Name" aria-describedby="lastname-basic-addon" size="25" required>

@@ -17,8 +17,7 @@ router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 
 router.get('/', (req, res) => {
-    if(debug) console.log(req.user)
-    res.render('index', {title: props.title, theme: props.theme, name: typeof(req.user) !== 'undefined' && typeof(req.user.givenName) !== 'undefined' ? req.user.givenName : undefined})
+    res.render('index', {title: props.title, theme: props.theme, name: typeof(req.user) !== 'undefined' && typeof(req.user.name) !== 'undefined' ? req.user.name.givenName : undefined})
 })
 
 module.exports = router

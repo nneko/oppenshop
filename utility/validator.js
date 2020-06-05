@@ -12,4 +12,14 @@ validator.isEmailAddress = (email) => {
     return emailRE.test(email)
 }
 
+validator.isAuthProvider = (provider) => {
+    let isProvider = false
+    switch(provider){
+        case 'oppenshop.com':
+            isProvider = true
+            break        
+    }
+    return isProvider
+}
+
 module.exports = validator

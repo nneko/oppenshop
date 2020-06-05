@@ -10,7 +10,7 @@ let local = {}
 local.init = (passport,userModel) => {
     if(!validator.isNotNull(userModel)) throw new Error('Invalid user model')
     model = userModel
-    passport.use(new authStrategy({usernameField: 'email'},local.authenticate))
+    passport.use(new authStrategy({usernameField: 'username'},local.authenticate))
     passport.serializeUser(local.serialize)
     passport.deserializeUser(local.deserialize)
 }
@@ -18,7 +18,7 @@ local.init = (passport,userModel) => {
 local.authenticate = async (uid, pwd, done) => {
     try {
         if(!model) throw new Error('Unable complete authentication. Cannot access local user database.')
-        const user = await model.read({email: uid},{limit: 1})
+        const user = await model.read({preferredUsername: uid},{limit: 1})
         if(validator.isNotNull(user)) {
             if(await  bcrypt.compare(pwd,user.password)){
                 return done(null,user)
@@ -36,7 +36,7 @@ local.authenticate = async (uid, pwd, done) => {
 local.serialize = (user,done) => {
     /*
     return done(null, JSON.stringify({provider: 'oppenshop', id: user._id, name: {givenName: user.firstname, familyName: user.lastname},emails: [{value: user.email, type: 'primary'}]}))*/
-    if(debug) console.log(user._id)
+    //if(debug) console.log(user._id)
     return done(null,user._id)
 }
 

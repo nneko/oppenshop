@@ -38,24 +38,25 @@
                 <small id="passwordHint" class="form-text text-muted hidden"></small>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="firstname-basic-addon">Given Name</span>
+                        <span class="input-group-text" id="givenName-basic-addon">Given Name</span>
                     </div>
-                    <input id="firstname" class="form-control <% if(typeof(firstname) !== 'undefined') { %><%= firstname.class %><% } %>" type="text" name="firstname" value="<% if(typeof(firstname) !== 'undefined' && firstname.class == 'is-valid') { %><%= firstname.value %><% } %>"
-                        aria-label="First Name" aria-describedby="firstname-basic-addon" size="25" required>
-                    <div id="invalid-firstname" class="invalid-feedback">
-                    <% if(typeof(firstname) !== 'undefined' && firstname.class == 'is-invalid') { %><%= firstname.message %><% } else { %>You must provide your First Name.<% } %>
+                    <input id="givenName" class="form-control <% if(typeof(givenName) !== 'undefined') { %><%= givenName.class %><% } %>" type="text" name="givenName" value="<% if(typeof(givenName) !== 'undefined' && givenName.class == 'is-valid') { %><%= givenName.value %><% } %>"
+                        aria-label="Given Name" aria-describedby="givenName-basic-addon" size="25" required>
+                    <div id="invalid-givenName" class="invalid-feedback">
+                    <% if(typeof(givenName) !== 'undefined' && givenName.class == 'is-invalid') { %><%= givenName.message %><% } else { %>You must provide your Given Name.<% } %>
                     </div>
                 </div>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="lastname-basic-addon">Family Name</span>
+                        <span class="input-group-text" id="familyName-basic-addon">Family Name</span>
                     </div>
-                    <input id="lastname" class="form-control <% if(typeof(lastname) !== 'undefined') { %><%= lastname.class %><% } %>" type="text" name="lastname" value="<% if(typeof(lastname) !== 'undefined' && lastname.class == 'is-valid') { %><%= lastname.value %><% } %>"
-                        aria-label="Last Name" aria-describedby="lastname-basic-addon" size="25" required>
-                    <div id="invalid-lastname" class="invalid-feedback">
-                    <% if(typeof(lastname) !== 'undefined' && lastname.class == 'is-invalid') { %><%= lastname.message %><% } else { %>You must provide your Last Name.<% } %>
+                    <input id="familyName" class="form-control <% if(typeof(familyName) !== 'undefined') { %><%= familyName.class %><% } %>" type="text" name="familyName" value="<% if(typeof(familyName) !== 'undefined' && familyName.class == 'is-valid') { %><%= familyName.value %><% } %>"
+                        aria-label="Family Name" aria-describedby="familyName-basic-addon" size="25" required>
+                    <div id="invalid-familyName" class="invalid-feedback">
+                    <% if(typeof(familyName) !== 'undefined' && familyName.class == 'is-invalid') { %><%= familyName.message %><% } else { %>You must provide your Family Name.<% } %>
                     </div>
                 </div>
+                <!--
                 <label class="form-label" for="addressStreet">Address</label>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -118,6 +119,7 @@
                     </div>
                 </div>
                 <small id="validationPhone" class="form-text text-muted  validation-msg hidden"></small>
+            -->
                 <div class="form-group">
                     <div class="form-check">
                         <input class="form-check-input <% if(typeof(tac) !== 'undefined') { %><%= tac.class %><% } %>" type="checkbox" id="tac" name="tac" value="true" required>

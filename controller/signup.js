@@ -22,30 +22,40 @@ signup.post('/', async (req,res) => {
     let formValidated = false
     let formFields = {}
 
+    //Preferred Username and Emails
     if(validator.isNotNull(req.body.email) && validator.isEmailAddress(req.body.email)) {
-        u.email = String(req.body.email)
-        formFields.email = {class: 'is-valid', value: u.email}
-     } else {
+        u.preferredUsername = String(req.body.email)
+        u.emails = [{value: u.preferredUsername, primary: true}]
+        formFields.email = {class: 'is-valid', value: u.preferredUsername}
+    } else {
          formFields.email = {class: 'is-invalid', message: 'Please enter a valid email address.'}
-     }
+    }
 
-    if (validator.isNotNull(req.body.firstname)) { 
-        u.givenName = String(req.body.firstname)
-        formFields.firstname = { class: 'is-valid', value: u.firstname }
+    //Authentication Provider
+    validator.isAuthProvider(req.body.provider) ? u.provider = req.body.provider : u.provider = 'oppenshop.com'
+
+    //Name
+    let name = {}
+    if (validator.isNotNull(req.body.givenName)) { 
+        name.givenName = String(req.body.givenName)
+        formFields.givenName = { class: 'is-valid', value: name.givenName }
      } else {
-        formFields.firstname = {class: 'is-invalid', message: 'You must provide your First Name.'}
+        formFields.givenName = {class: 'is-invalid', message: 'You must provide your Given Name.'}
      }
     
-    if (validator.isNotNull(req.body.lastname)) {
-        u.familyName = String(req.body.lastname)
-        formFields.lastname = {class: 'is-valid', value: u.lastname}
+    if (validator.isNotNull(req.body.familyName)) {
+        name.familyName = String(req.body.familyName)
+        formFields.familyName = {class: 'is-valid', value: name.familyName}
     } else {
-        formFields.lastname = {
+        formFields.familyName = {
             class: 'is-invalid',
-            message: 'You must provide your Last Name.'
+            message: 'You must provide your Family Name.'
         }
     }
+    u.name = name
+    u.displayName = name.givenName + ' ' + name.familyName
     
+    //Password
     if(validator.isNotNull(req.body.password)) {
         const pwHash = await bcrypt.hash(String(req.body.password), 10)
         u.password = pwHash
@@ -56,18 +66,31 @@ signup.post('/', async (req,res) => {
         }
     }
     
+    //Addresses
+    let addresses = []
+    /*
+    let primaryAddress = {}
     if (validator.isNotNull(req.body.addressStreet)) {
-        u.addressStreet = String(req.body.addressStreet)
-        formFields.addressStreet = {class: 'is-valid', value: u.addressStreet}
+        primaryAddress.streetAddress = String(req.body.addressStreet)
+        formFields.addressStreet = {class: 'is-valid', value: primaryAddress.streetAddress}
      } else {
         formFields.addressStreet = {
             class: 'is-invalid',
             message: 'Please provide a street address.'
         }
     }
+
+    if (validator.isNotNull(req.body.addressCity)) {
+        primaryAddress.locality = String(req.body.addressCity)
+    } else {
+        formFields.addressCity = {
+            class: 'is-invalid',
+            message: 'You must select a valid locality/city.'
+        }
+    }
     
     if (validator.isNotNull(req.body.addressState)) {
-        u.addressState = String(req.body.addressState)
+        primaryAddress.region = String(req.body.addressState)
     } else {
         formFields.addressState = {
             class: 'is-invalid',
@@ -76,8 +99,8 @@ signup.post('/', async (req,res) => {
     }
     
     if (validator.isNotNull(req.body.addressPostcode)) {
-        u.addressPostcode = String(req.body.addressPostcode)
-        formFields.addressPostcode = { class: 'is-valid', value: u.addressPostcode}
+        primaryAddress.postalCode = String(req.body.addressPostcode)
+        formFields.addressPostcode = { class: 'is-valid', value: primaryAddress.postalCode}
      } else {
         formFields.addressPostcode = {
             class: 'is-invalid',
@@ -86,23 +109,32 @@ signup.post('/', async (req,res) => {
     }
     
     if (validator.isNotNull(req.body.addressCountry)) {
-        u.addressCountry = String(req.body.addressCountry)
+        primaryAddress.country = String(req.body.addressCountry)
     } else {
         formFields.addressCountry = {
             class: 'is-invalid',
             message: 'You must select a country.'
         }
     }
+    primaryAddress.primary = true
+    addresses.push(primaryAddress)    
+    */
+    u.addresses = addresses
 
+    //PhoneNumbers
+    let phoneNumbers = []
+    /*
     if (validator.isNotNull(req.body.phoneNumber)) {
-        u.phoneNumber = String(req.body.phoneNumber)
-        formFields.phoneNumber = { class: 'is-valid', value: u.phoneNumber }
+        phoneNumbers = [{value: String(req.body.phoneNumber), primary: true}]
+        formFields.phoneNumber = { class: 'is-valid', value: u.phoneNumbers[0] }
     } else {
         formFields.phoneNumber = {
             class: 'is-invalid',
             message: 'Please provide a valid phone number.'
         }
     }
+    */
+    u.phoneNumbers = phoneNumbers
 
     if (!validator.isNotNull(req.body.tac)) {
         formFields.tac = {
@@ -133,7 +165,7 @@ signup.post('/', async (req,res) => {
     } else {
         try {
             const result = await user.create(u)
-            if(debug)console.log('User account created for '+u.email)
+            if(debug)console.log('User account created for '+u.preferredUsername)
             res.redirect('/signin')
         } catch (e) {
             if(debug) console.log('Unable to create user account due to error: ')

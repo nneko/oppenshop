@@ -3,10 +3,12 @@ const db = require('../adapter/storage/'+cfg.dbAdapter)
 const validator = require('../utility/validator')
 const debug = cfg.env == 'development' ? true : false
 
+//Model format based on:
+//https://tools.ietf.org/html/draft-smarr-vcarddav-portable-contacts-00
 let user = {}
 
 user.isValid = (u) => {
-    if(validator.isNotNull(u.email) && validator.isNotNull(u.givenName) && validator.isNotNull(u.familyName)){
+    if (validator.isNotNull(u.preferredUsername) && validator.isNotNull(u.name) && validator.isNotNull(u.name.givenName) && validator.isNotNull(u.name.familyName)){
         return true
     } else {
         return false

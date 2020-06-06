@@ -1,0 +1,52 @@
+
+                <label class="form-label" for="addressStreet">Address</label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="addressStreet-basic-addon">No. & Street</span>
+                    </div>
+                    <input id="addressStreet" class="form-control <% if(typeof(locals.addressStreet) !== 'undefined') { %><%= addressStreet.class %>><% } %>" type="text" name="addressStreet" value="<% if(typeof(addressStreet) !== 'undefined' && addressStreet.class == 'is-valid') { %><%= addressStreet.value %><% } %>"
+                        aria-label="Street Address" aria-describedby="addressStreet-basic-addon" size="25" required>
+                    <div id="invalid-street" class="invalid-feedback">
+                    <% if(typeof(addressStreet) !== 'undefined' && addressStreet.class == 'is-invalid') { %><%= addressStreet.message %><% } else { %>You must provide an address.<% } %>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="stateLabel" class="form-label" for="addressState">Parish / State</label>
+                    <select id="addressState" class="form-control <% if(typeof(addressState) !== 'undefined') { %><%= addressState.class %><% } %>" type="text" name="addressState" value=""
+                        aria-label="State Address" aria-describedby="addressState-basic-addon">
+                        <option selected="selected">Kingston & St. Andrew</option>
+                        <option>St. Catherine</option>
+                        <option>Clarendon</option>
+                        <option>Manchester</option>
+                        <option>St. Elizabeth</option>
+                        <option>Westmoreland</option>
+                        <option>Hanover</option>
+                        <option>St. James</option>
+                        <option>Trelawny</option>
+                        <option>St. Ann</option>
+                        <option>St. Mary</option>
+                        <option>Portland</option>
+                        <option>St. Thomas</option>
+                    </select>
+                    <div id="invalid-state" class="invalid-feedback">
+                    <% if(typeof(addressState) !== 'undefined' && addressState.class == 'is-invalid') { %><%= addressState.message %><% } else { %>You must select a valid Parish / State. <% } %>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="postcodeLabel" class="form-label" for="addressPostcode">Postcode</label>
+                    <input id="addressPostcode" class="form-control <% if(typeof(locals.addressPostcode) !== 'undefined') { %><%= addressPostcode.class %><% } %>" type="text" name="addressPostcode" value="<% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.class == 'is-valid') { %><%= addressPostcode.value %><% } %>"
+                        aria-label="Postal Code" aria-describedby="addressPostcode-basic-addon" size="5" required>
+                    <div id="invalid-postcode" class="invalid-feedback">
+                    <% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.class == 'is-invalid') { %><%= addressPostcode.message %><% } else { %>Please enter a valid postal code.<% } %>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label id="countryLabel" class="form-label" for="addressCountry">Country</label>
+                    <select id="addressCountry" class="form-control <% if(typeof(addressCountry) !== 'undefined') { %><%= addressCountry.value %><% } %>" type="text" name="addressCountry"
+                        value="" aria-label="Country" aria-describedby="addressCountry-basic-addon">
+                        <option>Jamaica</option>
+                    </select>
+                    <div id="invalid-country" class="invalid-feedback">
+                    <% if(typeof(addressCountry) !== 'undefined' && addressCountry.class == 'is-invalid') { %><%= addressCountry.message %><% } else { %>You must select a country.<% } %>
+                    </div>
+                </div>

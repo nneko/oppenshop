@@ -1,0 +1,8 @@
+<main class="container main-center-section">
+    <section class="error-msg">
+        <h1>OppenShop</h1>
+        <p><% if(typeof(error) !== 'undefined') {%><%= error.message %><% } %></p>
+        <p><b><% if(typeof(error) !== 'undefined') {%><%= error.status %><% } %></b></p>
+        <p>Go back to Homepage <a href="/">&larr;</a></p>
+    </section>
+</main>

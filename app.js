@@ -42,6 +42,48 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(require('./controller'))
 
+//Catch-all error handler
+app.use((err, req, res, next) => {
+    console.log('Error encountered: ')
+    console.log(err.stack)
+    let statusCode = err.status ? err.status : err.statusCode ? err.statusCode : 500
+    let message = 'Error'
+    switch (statusCode) {
+        case 400:
+            message = 'Bad Request'
+            break
+        case 401:
+            message = 'Unauthorized'
+            break
+        case 403:
+            message = 'Forbidden'
+            break
+        case 404:
+            message = 'Not Found'
+            break
+        case 405:
+            message = 'Method Not Allowed'
+            break
+        case 500:
+            message = 'Internal Server Error'
+            break
+    }
+    res.status(statusCode)
+
+    if(req.accepts('html')) {
+        res.render('error', { error: { status: statusCode, message: message } })
+        return
+    }
+
+    if(req.accepts('json')) {
+        res.json({ error: { status: statusCode, message: message } })
+        return
+    }
+
+    // default to plain-text. send()
+    res.type('txt').send(message)
+})
+
 //Start the server if there is no parent module
 if(!module.parent){
     db.connect().then((result) => {

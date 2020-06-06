@@ -20,4 +20,27 @@ router.get('/', (req, res) => {
     res.render('index', {title: props.title, theme: props.theme, name: typeof(req.user) !== 'undefined' && typeof(req.user.name) !== 'undefined' ? req.user.name.givenName : undefined})
 })
 
+//Default to 404 handler
+router.use((req, res, next) => {
+    res.status(404)
+    
+    let status = 404
+    let message = 'Not Found'
+
+    // respond with html page
+    if (req.accepts('html')) {
+        res.render('error', { error: { status: status, message: message } })
+        return
+    }
+
+    // respond with json
+    if (req.accepts('json')) {
+        res.json({ error: { status: status, message: message } })
+        return
+    }
+
+    // default to plain-text. send()
+    res.type('txt').send(message)
+})
+
 module.exports = router

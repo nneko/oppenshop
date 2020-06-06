@@ -8,7 +8,7 @@ const debug = cfg.env == 'development' ? true : false
 let user = {}
 
 user.isValid = (u) => {
-    if (validator.isNotNull(u.preferredUsername) && validator.isNotNull(u.name) && validator.isNotNull(u.name.givenName) && validator.isNotNull(u.name.familyName)){
+    if (validator.isNotNull(u.preferredUsername) && validator.isNotNull(u.name) && validator.isNotNull(u.name.givenName) && validator.isNotNull(u.name.familyName) && validator.isNotNull(u.displayName) && validator.isNotNull(u.provider)){
         return true
     } else {
         return false
@@ -17,8 +17,13 @@ user.isValid = (u) => {
 
 user.exists = async (u) => {
     try {
-        const result = await user.read(u,{limit: 1})
-        return result ? true : false
+        const result = validator.isNotNull(await user.read(u,{limit: 1}))
+        if(debug) {
+            console.log('Checking user exits: ')
+            console.log(u)
+            console.log('User exists ' + result)
+        }
+        return result
     } catch (e) {
         if(debug) console.log(e)
         throw new Error('Unable to query database')
@@ -29,8 +34,19 @@ user.create = (u) => {
     return new Promise(async (resolve,reject) => {
         try {
             if(!user.isValid(u)){
-                reject(new Error('Invalid user object'))
+                let e = new Error('Invalid user object')
+                e.name = 'UserError'
+                e.type = 'Invalid'
+                throw e
+            } 
+            
+            if (await user.exists({ preferredUsername: u.preferredUsername })) {
+                let e = new Error('User already exists')
+                e.name = 'UserError'
+                e.type = 'Duplicate'
+                throw e
             }
+
             const result = await db.get().collection('user').insertOne(u)
             resolve(result)
         } catch (e) {

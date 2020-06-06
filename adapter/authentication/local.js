@@ -21,7 +21,31 @@ local.authenticate = async (uid, pwd, done) => {
         const user = await model.read({preferredUsername: uid},{limit: 1})
         if(validator.isNotNull(user)) {
             if(await  bcrypt.compare(pwd,user.password)){
-                return done(null,user)
+                //Extract only relevant user details
+                let u = {}
+                u.id = user._id
+                u.provider = user.provider
+                u.displayName = user.displayName
+                u.name = user.name
+                if (validator.isNotNull(user.emails)) {
+                    u.emails = {}
+                    for (const k of Object.keys(user.emails)) {
+                        if (user.emails[k].primary) {
+                            u.emails[k] = user.emails[k]
+                            break
+                        }
+                    }
+                }
+                if (validator.isNotNull(user.photos)) {
+                    u.photos = {}
+                    for(const k of Object.keys(user.photos)) {
+                        if(user.photos[k].primary) {
+                            u.photos[k] = user.photos[k]
+                            break
+                        }
+                    }
+                }
+                return done(null,u)
             } else {
                 return done(null,false,{message: 'Incorrect password.'})                
             }
@@ -34,20 +58,40 @@ local.authenticate = async (uid, pwd, done) => {
 }
 
 local.serialize = (user,done) => {
-    /*
-    return done(null, JSON.stringify({provider: 'oppenshop', id: user._id, name: {givenName: user.firstname, familyName: user.lastname},emails: [{value: user.email, type: 'primary'}]}))*/
-    //if(debug) console.log(user._id)
-    return done(null,user._id)
+    return done(null,user.id)
 }
 
 local.deserialize = async (uid,done) => {
-    /*
-    const u = JSON.parse(serializedUser,{limit: 1})
-    const usr = await model.read({_id: u.id, firstname: u.givenName, lastname: u.familyName, email: u.emails[0].value})
-    return done(null, usr)
-    */
-   const u = await model.read(uid,{findBy: 'id'})
-   return done(null, u)
+    try {
+        const user = await model.read(uid, { findBy: 'id' })
+        //Extract only relevant user details
+        let u = {}
+        u.id = user._id
+        u.provider = user.provider
+        u.displayName = user.displayName
+        u.name = user.name
+        if (validator.isNotNull(user.emails)) {
+            u.emails = {}
+            for (const k of Object.keys(user.emails)) {
+                if (user.emails[k].primary) {
+                    u.emails[k] = user.emails[k]
+                    break
+                }
+            }
+        }
+        if (validator.isNotNull(user.photos)) {
+            u.photos = {}
+            for (const k of Object.keys(user.photos)) {
+                if (user.photos[k].primary) {
+                    u.photos[k] = user.photos[k]
+                    break
+                }
+            }
+        }
+    return done(null, u)
+    } catch(e) {
+        return done(e)
+    }
 }
 
 module.exports = local

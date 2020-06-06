@@ -23,12 +23,12 @@ signup.post('/', async (req,res) => {
     let formFields = {}
 
     //Preferred Username and Emails
-    if(validator.isNotNull(req.body.email) && validator.isEmailAddress(req.body.email)) {
-        u.preferredUsername = String(req.body.email)
-        u.emails = [{value: u.preferredUsername, primary: true}]
-        formFields.email = {class: 'is-valid', value: u.preferredUsername}
+    if(validator.isNotNull(req.body.username) && validator.isEmailAddress(req.body.username)) {
+        u.preferredUsername = String(req.body.username)
+        if(validator.isEmailAddress(req.body.username)) u.emails = [{value: u.preferredUsername, primary: true}]
+        formFields.username = {class: 'is-valid', value: u.preferredUsername}
     } else {
-         formFields.email = {class: 'is-invalid', message: 'Please enter a valid email address.'}
+         formFields.username = {class: 'is-invalid', message: 'Please enter a valid email address.'}
     }
 
     //Authentication Provider
@@ -170,9 +170,23 @@ signup.post('/', async (req,res) => {
         } catch (e) {
             if(debug) console.log('Unable to create user account due to error: ')
             if(debug) console.log(e)
+
+            let status = 500
+
             formFields.error = 'An error occured during signup. Please try again later.'
+
+            if(e.name == 'UserError') {
+                if(e.type == 'Duplicate') {
+                    formFields.username = {
+                        class: 'is-invalid',
+                        message: 'Please try a different email address.'
+                    }
+                    formFields.error = e.message
+                    status = 403
+                } 
+            }
             res.render('signup',formFields,(err, html) => {
-                res.status(500).send(html)
+                res.status(status).send(html)
             })
         }
     }

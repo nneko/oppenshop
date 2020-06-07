@@ -15,7 +15,7 @@ validator.isEmailAddress = (email) => {
 validator.isAuthProvider = (provider) => {
     let isProvider = false
     switch(provider){
-        case 'oppenshop.com':
+        case 'native':
             isProvider = true
             break        
     }

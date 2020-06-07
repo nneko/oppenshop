@@ -5,6 +5,7 @@ const path = require('path')
 const ejsLayouts = require('express-ejs-layouts')
 const passport = require('passport')
 const authLocal = require('./adapter/authentication/local')
+const authToken = require('./adapter/authorization/jwt')
 const flash = require('express-flash')
 const session = require('express-session')
 const secretKey = cfg.secret
@@ -29,13 +30,14 @@ app.use(ejsLayouts)
 app.use(flash())
 app.use(session({
     cookie: {
-        httpOnly: true
+        httpOnly: false
     },
     secret: secretKey,
     resave: false,
     saveUninitialized: false
 }))
 authLocal.init(passport, require('./model/user'))
+authToken.init()
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.json())
@@ -44,13 +46,12 @@ app.use(require('./controller'))
 
 //Catch-all error handler
 app.use((err, req, res, next) => {
-    console.log('Error encountered: ')
-    console.log(err.stack)
     let statusCode = err.status ? err.status : err.statusCode ? err.statusCode : 500
     let message = 'Error'
     switch (statusCode) {
         case 400:
             message = 'Bad Request'
+            console.log(err.stack)
             break
         case 401:
             message = 'Unauthorized'
@@ -66,6 +67,10 @@ app.use((err, req, res, next) => {
             break
         case 500:
             message = 'Internal Server Error'
+            console.log(err.stack)
+            break
+        default: 
+            console.log(err.stack)
             break
     }
     res.status(statusCode)

@@ -1,7 +1,8 @@
 const cfg = require('../configure.js')
 const express = require('express')
 const path = require('path')
-const debug = cfg.env == 'development' ? true : false
+const api = require('../api')
+const validator = require('../utility/validator')
 
 let router = express.Router()
 
@@ -10,6 +11,7 @@ let props = {
     theme: cfg.template
 }
 
+router.use('/api', api)
 router.use('/public', express.static(path.join(__dirname, '../view/public')))
 router.use('/view/asset', express.static(path.join(__dirname, '../view/' + cfg.template + '/asset')))
 
@@ -17,7 +19,13 @@ router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 
 router.get('/', (req, res) => {
-    res.render('index', {title: props.title, theme: props.theme, name: typeof(req.user) !== 'undefined' && typeof(req.user.name) !== 'undefined' ? req.user.name.givenName : undefined})
+    let name = undefined
+    if(validator.isNotNull(req.user)) {
+        if(validator.isNotNull(req.user.name)) {
+            name = req.user.name.givenName
+        }
+    }
+    res.render('index', {title: props.title, theme: props.theme, name: name})
 })
 
 //Default to 404 handler

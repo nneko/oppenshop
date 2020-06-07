@@ -32,7 +32,7 @@ signup.post('/', async (req,res) => {
     }
 
     //Authentication Provider
-    validator.isAuthProvider(req.body.provider) ? u.provider = req.body.provider : u.provider = 'oppenshop.com'
+    validator.isAuthProvider(req.body.provider) ? u.provider = req.body.provider : u.provider = 'native'
 
     //Name
     let name = {}

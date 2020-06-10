@@ -16,6 +16,11 @@
     text-align: center;
 }
 
+.error-msg a {
+    color: black;
+    font-size: 1.25rem;
+}
+
 .signup-section, .signin-section {
     display: flex;
     margin: 4rem auto;
@@ -44,10 +49,22 @@
     justify-content: space-around;
     margin: 0;
     width: 60%;
+    z-index: 0;
 }
 
 .applogo {
     display: flex;
+    z-index: 1;
+}
+
+.applogo a {
+    color: black;
+    font-size: 1.25rem;
+    font-weight: normal;
+}
+
+.applogo a:hover {
+    color: #444;
 }
 
 .menu-button div {
@@ -61,6 +78,7 @@
 .menu-button {
     cursor: pointer;
     display: none;
+    z-index: 1;
 }
 
 nav h4  {
@@ -97,7 +115,7 @@ nav {
     background-color: white;
     display: flex;
     justify-content: space-around;
-    min-height: 3rem;
+    min-height: 4rem;
 }
 
 li a {
@@ -106,6 +124,7 @@ li a {
 }
 
 body {
+    background-color: #f4f4f4;
     overflow: hidden;
 }
 
@@ -138,14 +157,16 @@ body {
         transform: translateY(calc(-100% - 3rem));
         transition: transform 0.5s ease-in;
         top: 3rem;
+        width: 100%;
     }
 
     .nav-links li {
-        opacity: 0;
+        /*opacity: 0;*/
     }
 
     .nav-show-links {
         transform: translateY(0%);
+        opacity: 1;
     }
 }
 

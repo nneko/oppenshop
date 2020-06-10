@@ -1,5 +1,5 @@
 .main-center-section {
-    margin-top: 20rem;
+    margin-top: 15rem;
     width: 80%;
 }
 
@@ -36,4 +36,133 @@
     margin: 4rem auto;
     position: relative;
     width: 80%;
+}
+
+.nav-links {
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    width: 60%;
+}
+
+.applogo {
+    display: flex;
+}
+
+.menu-button div {
+    background-color: #444;
+    height: 2px;
+    margin: 5px;
+    width: 20px;
+    transition: all 0.3s ease;
+}
+
+.menu-button {
+    cursor: pointer;
+    display: none;
+}
+
+nav h4  {
+    /*letter-spacing: 0.1rem;*/
+    font-size: 1.5rem;
+}
+
+nav h4 a {
+    color: #444;
+}
+
+nav h4 a:hover {
+    border: none;
+    color: black;
+}
+
+nav a:hover {
+    border-bottom: black 3px solid;
+    color: black;
+    text-decoration: none;
+}
+
+nav a {
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+nav li {
+    list-style: none;
+}
+
+nav {
+    align-items: center;
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    min-height: 3rem;
+}
+
+li a {
+    color: #444;
+    /*color: #979898;*/
+}
+
+body {
+    overflow: hidden;
+}
+
+* {
+    box-sizing: border-box ;
+    margin: 0px;
+    padding: 0px;
+}
+
+@media screen and (max-width: 1024px) {
+    .nav-links {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        overflow: hidden;
+    }
+
+    .menu-button {
+        display: block;
+    }
+
+    .nav-links {
+        align-items: center;
+        position: absolute;
+        flex-direction: column;
+        height: calc(100vh - 3rem);
+        transform: translateY(calc(-100% - 3rem));
+        transition: transform 0.5s ease-in;
+        top: 3rem;
+    }
+
+    .nav-links li {
+        opacity: 0;
+    }
+
+    .nav-show-links {
+        transform: translateY(0%);
+    }
+}
+
+@keyframes navLinkFade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.toggle .menu-line1 {
+    transform: rotate(-45deg) translate(-3px,2px);
+}
+
+.toggle .menu-line2 {
+    transform: rotate(45deg) translate(-3px,-2px);
 }

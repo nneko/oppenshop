@@ -1,3 +1,4 @@
 <%- include('./_header.ejs') %>
+<% if(typeof(template_errorpage) === 'undefined') { %><%- include('./_nav.ejs') %><% } %>
 <%- body %>
 <%- include('./_footer.ejs') %>

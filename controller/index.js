@@ -37,7 +37,7 @@ router.use((req, res, next) => {
 
     // respond with html page
     if (req.accepts('html')) {
-        res.render('error', { error: { status: status, message: message } })
+        res.render('error', { error: { status: status, message: message }, template_errorpage: 'error' })
         return
     }
 

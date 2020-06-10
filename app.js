@@ -81,7 +81,7 @@ app.use((err, req, res, next) => {
     }
 
     if(req.accepts('json')) {
-        res.json({ error: { status: statusCode, message: message } })
+        res.json({ error: { status: statusCode, message: message }, template_errorpage: 'error' })
         return
     }
 

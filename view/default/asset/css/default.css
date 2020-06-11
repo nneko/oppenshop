@@ -1,6 +1,42 @@
-.main-center-section {
-    margin-top: 15rem;
-    width: 80%;
+
+#main-search-form {
+    z-index: 10;
+}
+
+#signin-fb, #signin-google, #signin-apple, #signin-ms {
+    background-color: transparent;
+    border-color: #ced4da;
+    color: #444;
+    width: 100%;
+}
+
+#signin-fb:hover, #signin-google:hover, #signin-apple:hover, #signin-ms:hover {
+    background-color: #f9f9f7;
+}
+
+.container {
+    overflow-y: scroll;
+    z-index: 1;
+}
+
+.menu-main {
+    align-items: center;
+    display: flex;
+    justify-content: space-around;
+    width: 40%;
+    z-index: 10;
+}
+
+.form-group {
+    margin: 0;
+}
+
+.error-message {
+    font-size: 4rem !important;
+}
+
+.error-code {
+    font-size: 2rem;
 }
 
 .error-msg h1, .header-banner h1 {
@@ -19,6 +55,27 @@
 .error-msg a {
     color: black;
     font-size: 1.25rem;
+}
+
+#signin-button, #signup-button {
+    width: 100%;
+}
+
+.authenticate-with {
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.refer-to-signup {
+    text-align: left;
+}
+
+.signup-link {
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
 .signup-section, .signin-section {
@@ -49,12 +106,12 @@
     justify-content: space-around;
     margin: 0;
     width: 60%;
-    z-index: 0;
+    z-index: 1;
 }
 
 .applogo {
     display: flex;
-    z-index: 1;
+    z-index: 10;
 }
 
 .applogo a {
@@ -76,9 +133,21 @@
 }
 
 .menu-button {
-    cursor: pointer;
     display: none;
     z-index: 1;
+}
+
+.menu-button:hover {
+    cursor: pointer;
+}
+
+.menu nav {
+    z-index: 10;
+}
+
+.main-center-section {
+    margin-top: 15rem;
+    width: 80%;
 }
 
 nav h4  {
@@ -123,9 +192,17 @@ li a {
     /*color: #979898;*/
 }
 
+a {
+    color: #444;
+}
+
+a:hover {
+    border: none;
+    color: black;
+}
+
 body {
     background-color: #f4f4f4;
-    overflow: hidden;
 }
 
 * {
@@ -134,16 +211,7 @@ body {
     padding: 0px;
 }
 
-@media screen and (max-width: 1024px) {
-    .nav-links {
-        width: 80%;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    body {
-        overflow: hidden;
-    }
+@media screen and (max-width: 1028px) {
 
     .menu-button {
         display: block;
@@ -159,24 +227,50 @@ body {
         top: 3rem;
         width: 100%;
     }
-
+    /*
     .nav-links li {
-        /*opacity: 0;*/
+        opacity: 0;
     }
-
+    */    
     .nav-show-links {
         transform: translateY(0%);
         opacity: 1;
+    }
+
+    .menu-item {
+        text-align: center;
+        width: 100%;
+    }
+
+    .menu-item:hover {
+        background-color: #f4f4f4;
+        cursor: pointer;
+    }
+
+    .menu nav {
+        z-index: 10;
+    }
+
+    .menu-main {
+        align-items: center;
+        background-color: white;
+        display: flex;
+        justify-content: space-around;
+        min-height: 4rem;
+        width: 100%;
+        z-index: 10;
     }
 }
 
 @keyframes navLinkFade {
     from {
         opacity: 0;
+        transform: translateY(-50px);
     }
 
     to {
         opacity: 1;
+        transform: translateY(0px);
     }
 }
 

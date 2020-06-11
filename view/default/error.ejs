@@ -1,7 +1,7 @@
 <main class="container main-center-section">
     <section class="error-msg">
-        <h1><b><% if(typeof(error) !== 'undefined') {%><%= error.status %><% } %></b></h1>
-        <p><% if(typeof(error) !== 'undefined') {%><%= error.message %><% } %></p>
+        <h1 class="error-message"><b><% if(typeof(error) !== 'undefined') {%><%= error.message %><% } %></b></h1>
+        <p class="error-code"><% if(typeof(error) !== 'undefined') {%><%= error.status %><% } %></p>
         <a href="/"><p>Back to Start &larr;</p></a>
     </section>
 </main>

@@ -1,19 +1,36 @@
-<nav>
-    <div class="applogo">
-        <h4><a href="/">OppenShop</a></h4>
+<nav class="menu">
+    <div class="menu-main">
+        <div class="applogo">
+            <h4><a href="/">OppenShop</a></h4>
+        </div>
+        <form id="main-search-form" class="search-form" autocomplete="on" action="/find" method="POST" oninput="" novalidate>
+            <div class="form-group">
+                <div class="input-group">
+                    <input id="find" class="form-control" type="text" name="find" placeholder="Find in Shops or Marketplace" value=""
+                        aria-label="find" aria-describedby="find-basic-addon" size="25" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="find-basic-addon">Find</span>
+                    </div>
+                    <div id="invalid-find" class="invalid-feedback">
+                        Invalid search query.
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="menu-button">
+            <div class="menu-line1"></div>
+            <div class="menu-line2"></div>
+        </div>
     </div>
     <ul class="nav-account-links nav-links">
-        <li><a href="/shops">Shops</a></li>
-        <li><a href="/promotions">Promotions</a></li>
-        <li><a href="/marketplace">Marketplace</a></li>
-        <li><a href="/sell">Sell</a></li>
-        <li><a href="/bag">Bag</a></li>
-        <li><a href="/account">Account</a></li>
-        <li><a href="/signin">Sign in</a></li>
-        <li><a href="/support">Support</a></li>
+        <li class="menu-item"><a href="/shops">Shops</a></li>
+        <li class="menu-item"><a href="/promotions">Promotions</a></li>
+        <li class="menu-item"><a href="/marketplace">Marketplace</a></li>
+        <li class="menu-item"><a href="/sell">Sell</a></li>
+        <li class="menu-item"><a href="/buy">Buy</a></li>
+        <li class="menu-item"><a href="/signin">Sign in</a></li>
+        <!-- <li class="menu-item"><a href="/signout">Sign Out</a></li> -->
+        <!-- <li class="menu-item"><a href="/account">Account</a></li> -->
+        <li class="menu-item"><a href="/support">Support</a></li>
     </ul>
-    <div class="menu-button">
-        <div class="menu-line1"></div>
-        <div class="menu-line2"></div>
-    </div>
 </nav>

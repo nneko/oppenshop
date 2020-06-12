@@ -5,13 +5,26 @@
 
 #signin-fb, #signin-google, #signin-apple, #signin-ms {
     background-color: transparent;
-    border-color: #ced4da;
+    border-color: #c4cdd5;
+    /*box-shadow: 0 0 0 1px rgba(63,63,68,0.05),0 1px 3px 0 rgba(63,63,68,0.15);*/
     color: #444;
+    /*
+    background-color: #495d66;
+    border-color: #ced4da;
+    color: #f7f7f7;
+    */
     width: 100%;
 }
 
 #signin-fb:hover, #signin-google:hover, #signin-apple:hover, #signin-ms:hover {
+    /*
+    background-color: #263237;
     background-color: #f9f9f7;
+    color: #f7f7f7;
+    */
+    background-color: #f9fafb;
+    /*border-color: #263237;*/
+    color: #263237;
 }
 
 .container {
@@ -105,18 +118,22 @@
     display: flex;
     justify-content: space-around;
     margin: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
     width: 60%;
     z-index: 1;
 }
 
 .applogo {
     display: flex;
+    margin-left: 1rem;
+    margin-right: 1rem;
     z-index: 10;
 }
 
 .applogo a {
     color: black;
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: normal;
 }
 
@@ -134,6 +151,8 @@
 
 .menu-button {
     display: none;
+    margin-left: 1rem;
+    margin-right: 1rem;
     z-index: 1;
 }
 
@@ -213,6 +232,10 @@ body {
 
 @media screen and (max-width: 1028px) {
 
+    .applogo a {
+        font-size: 1rem;
+    }
+
     .menu-button {
         display: block;
     }
@@ -237,13 +260,16 @@ body {
         opacity: 1;
     }
 
-    .menu-item {
+    .nav-link-item {
         text-align: center;
         width: 100%;
     }
 
-    .menu-item:hover {
+    .nav-link-item:hover {
         background-color: #f4f4f4;
+    }
+
+    .nav-link-item a:hover {
         cursor: pointer;
     }
 

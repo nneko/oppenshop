@@ -28,9 +28,11 @@
         <li class="nav-link-item"><a href="/marketplace">Marketplace</a></li>
         <li class="nav-link-item"><a href="/sell">Sell</a></li>
         <li class="nav-link-item"><a href="/buy">Buy</a></li>
-        <li class="nav-link-item"><a href="/signin">Sign in</a></li>
-        <!-- <li class="menu-item"><a href="/signout">Sign Out</a></li> -->
-        <!-- <li class="menu-item"><a href="/account">Account</a></li> -->
+        <% if(typeof(user) !== 'undefined') {%> 
+	<li class="menu-item"><a href="/signout">Sign Out</a></li>
+	<li class="menu-item"><a href="/account">Account</a></li>
+	<% } else { %>
+	<li class="nav-link-item"><a href="/signin">Sign in</a></li><% } %>
         <li class="nav-link-item"><a href="/support">Support</a></li>
     </ul>
 </nav>

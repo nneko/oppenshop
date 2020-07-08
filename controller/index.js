@@ -17,15 +17,19 @@ router.use('/view/asset', express.static(path.join(__dirname, '../view/' + cfg.t
 
 router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
+router.use('/signout', require('./signout'))
+router.use('/account', require('./account'))
 
 router.get('/', (req, res) => {
     let name = undefined
+    let user = undefined
     if(validator.isNotNull(req.user)) {
+	user = req.user
         if(validator.isNotNull(req.user.name)) {
             name = req.user.name.givenName
         }
     }
-    res.render('index', {title: props.title, theme: props.theme, name: name})
+    res.render('index', {title: props.title, theme: props.theme, name: name, user: user})
 })
 
 //Default to 404 handler

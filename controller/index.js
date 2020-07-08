@@ -38,10 +38,18 @@ router.use((req, res, next) => {
     
     let status = 404
     let message = 'Not Found'
-
+    
     // respond with html page
     if (req.accepts('html')) {
-        res.render('error', { error: { status: status, message: message }, template_errorpage: 'error' })
+    	let name = undefined
+    	let user = undefined
+    	if(validator.isNotNull(req.user)) {
+            user = req.user
+            if(validator.isNotNull(req.user.name)) {
+                name = req.user.name.givenName
+            }
+    	}
+        res.render('error', { error: { status: status, message: message }, template_errorpage: 'error', name: name, user: user })
         return
     }
 

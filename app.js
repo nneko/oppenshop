@@ -76,7 +76,15 @@ app.use((err, req, res, next) => {
     res.status(statusCode)
 
     if(req.accepts('html')) {
-        res.render('error', { error: { status: statusCode, message: message } })
+        let name = undefined
+    	let user = undefined
+    	if(validator.isNotNull(req.user)) {
+            user = req.user
+            if(validator.isNotNull(req.user.name)) {
+                name = req.user.name.givenName
+            }
+    	}
+	res.render('error', { error: { status: statusCode, message: message }, name: name, user: user })
         return
     }
 

@@ -1,0 +1,63 @@
+<main class="container">
+    <section class="signin-section">
+        <form id="signin-form" class="signin-form" autocomplete="off" action="/signin" method="POST" oninput="" novalidate>
+            <div class="form-group">
+                <% if(typeof(messages.error) !== 'undefined') { %>
+                <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= messages.error %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <% } %> 
+                <p class="refer-to-signup">You don't have an account? <a class="signup-link" href="/signup">Signup</a>.</p>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="username-basic-addon">Username</span>
+                    </div>
+                    <input id="username" class="form-control" type="text" name="username" placeholder="Email" value=""
+                        aria-label="username" aria-describedby="username-basic-addon" size="25" required>
+                    <div id="invalid-username" class="invalid-feedback">
+                        Please enter a valid email address or username.
+                    </div>
+                </div>
+                <small id="validationUsername" class="form-text text-muted  validation-msg hidden"></small>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="passowrd-basic-addon">Password</span>
+                    </div>
+                    <input id="password" class="form-control" type="password" name="password" value="" aria-label="Password"
+                        aria-describedby="password-basic-addon" size="25" required>
+                    <div id="invalid-password" class="invalid-feedback">
+                        Please enter a password.
+                    </div>
+                </div>
+                <small id="passwordHint" class="form-text text-muted hidden"></small>
+                <div id="signin-buttons-container">
+                    <button id="signin-button" type="submit" class="btn btn-danger" onclick="">Signin</button>
+                </div>
+                <hr>
+                <div class="authenticate-with mb-3">
+                    <div>Or</div>
+                </div>
+                <div class="signin-auth-providers form-group">
+                    <div class="signin-google-container mb-3">
+                        <button id="signin-google" type="button" class="btn btn-large btn-secondary width-full" onclick="">Continue with
+                            Google</button>
+                    </div>
+                    <div class="signin-fb-container mb-3">
+                        <button id="signin-fb" type="button" class="btn btn-large btn-secondary width-full" onclick="">Continue with
+                            Facebook</button>
+                    </div>
+                    <div class="signin-apple-container mb-3">
+                        <button id="signin-apple" type="button" class="btn btn-large btn-secondary width-full" onclick="">Continue with
+                            Apple</button>
+                    </div>
+                    <div class="signin-ms-container mb-3">
+                        <button id="signin-ms" type="button" class="btn btn-large btn-secondary width-full" onclick="">Continue with
+                            Microsoft</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</main>

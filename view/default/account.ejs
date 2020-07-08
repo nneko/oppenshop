@@ -1,0 +1,110 @@
+<main class="container">
+    <section class="signup-section">
+        <form id="signup-form" class="signup-form" autocomplete="off" action="/account" method="POST"
+            oninput="" novalidate>
+            <% if(typeof(error) !== 'undefined') { %>
+            <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= error %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <% } %>
+            <div class="form-group">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="username-basic-addon">Email</span>
+                    </div>
+                <input id="username" class="form-control <% if(typeof(username) !== 'undefined') { %><%= username.class %><% } %>" type="text" name="username"
+                        placeholder="Email Address" value="<% if(typeof(user.emails["0"].value) !== 'undefined') { %><%= user.emails["0"].value %><% } %>" aria-label="email" aria-describedby="username-basic-addon"
+                        size="25" readonly>
+                    <div id="invalid-username" class="invalid-feedback">
+                    <% if(typeof(username) !== 'undefined' && username.class == 'is-invalid') { %><%= username.message %><% } else { %>Please enter a valid email address. <% } %>
+                    </div>
+                </div>
+                <small id="validationUsername" class="form-text text-muted  validation-msg hidden"></small>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="passowrd-basic-addon">Password</span>
+                    </div>
+                    <input id="password" class="form-control <% if(typeof(password) !== 'undefined') { %><%= password.class %><% } %>" type="password" name="password" value=""
+                        aria-label="Password" aria-describedby="password-basic-addon" size="25" required>
+                    <div id="invalid-password" class="invalid-feedback">
+                    <% if(typeof(password) !== 'undefined' && password.class == 'is-invalid') { %><%= password.message %><% } else { %>Please enter a password. <% } %>
+                    </div>
+                </div>
+                <small id="passwordHint" class="form-text text-muted hidden"></small>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="passowrd-basic-addon">Re-enter Password</span>
+                    </div>
+                    <input id="repassword" class="form-control <% if(typeof(password) !== 'undefined') { %><%= password.class %><% } %>" type="password" name="password" value=""
+                        aria-label="Password" aria-describedby="password-basic-addon" size="25" required>
+                    <div id="invalid-password" class="invalid-feedback">
+                    <% if(typeof(password) !== 'undefined' && password.class == 'is-invalid') { %><%= password.message %><% } else { %>Please enter a password. <% } %>
+                    </div>
+                </div>
+                <small id="repasswordHint" class="form-text text-muted hidden"></small>
+		<div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="givenName-basic-addon">Given Name</span>
+                    </div>
+                    <input id="givenName" class="form-control <% if(typeof(givenName) !== 'undefined') { %><%= givenName.class %><% } %>" type="text" name="givenName" value="<% if(typeof(user.name.givenName) !== 'undefined') { %><%= user.name.givenName %><% } %>"
+                        aria-label="Given Name" aria-describedby="givenName-basic-addon" size="25" required>
+                    <div id="invalid-givenName" class="invalid-feedback">
+                    <% if(typeof(givenName) !== 'undefined' && givenName.class == 'is-invalid') { %><%= givenName.message %><% } else { %>You must provide your Given Name.<% } %>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="familyName-basic-addon">Family Name</span>
+                    </div>
+                    <input id="familyName" class="form-control <% if(typeof(familyName) !== 'undefined') { %><%= familyName.class %><% } %>" type="text" name="familyName" value="<% if(typeof(user.name.familyName) !== 'undefined') { %><%= user.name.familyName %><% } %>"
+                        aria-label="Family Name" aria-describedby="familyName-basic-addon" size="25" required>
+                    <div id="invalid-familyName" class="invalid-feedback">
+                    <% if(typeof(familyName) !== 'undefined' && familyName.class == 'is-invalid') { %><%= familyName.message %><% } else { %>You must provide your Family Name.<% } %>
+                    </div>
+                </div>
+		<!--
+                <div class="form-group mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input <% if(typeof(tac) !== 'undefined') { %><%= tac.class %><% } %>" type="checkbox" id="tac" name="tac" value="true" required>
+                        <label class="form-check-label" for="tac">
+                            Agree to <a href="/support/terms">Terms and Conditions</a>
+                        </label>
+                        <div class="invalid-feedback">
+                        <% if(typeof(tac) !== 'undefined' && tac.class == 'is-invalid') { %><%= tac.message %><% } else { %>You must agree before submitting.<% } %>
+                        </div>
+                    </div>
+                </div>
+		-->
+                <div id="signup-buttons-container">
+                    <button id="signup-button" type="submit" class="btn btn-danger" onclick="">Update</button>
+                </div>
+                <hr>
+		<!--
+                <div class="authenticate-with mb-3">
+                    <div>Or</div>
+                </div>
+                <div class="signin-auth-providers form-group">
+                    <div class="signin-google-container mb-3">
+                        <button id="signin-google" type="button" class="btn btn-large btn-secondary width-full" onclick="">Continue with
+                            Google</button>
+                    </div>
+                    <div class="signin-fb-container mb-3">
+                        <button id="signin-fb" type="button" class="btn btn-large btn-secondary width-full" onclick="">Continue with
+                            Facebook</button>
+                    </div>
+                    <div class="signin-apple-container mb-3">
+                        <button id="signin-apple" type="button" class="btn btn-large btn-secondary width-full" onclick="">Continue with
+                            Apple</button>
+                    </div>
+                    <div class="signin-ms-container mb-3">
+                        <button id="signin-ms" type="button" class="btn btn-large btn-secondary width-full" onclick="">Continue with
+                            Microsoft</button>
+                    </div>
+                </div>
+		-->
+            </div>
+        </form>
+    </section>
+</main>

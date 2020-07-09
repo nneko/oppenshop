@@ -43,6 +43,10 @@ database.connect = () => {
 
 database.get = () => dbo
 
+database.getDriverClient = () => dbClient
+
+database.getName = () => dbName
+
 database.close = () => {
     return new Promise(async (resolve, reject) => {
         try {

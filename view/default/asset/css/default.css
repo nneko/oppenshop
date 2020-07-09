@@ -3,6 +3,10 @@
     z-index: 10;
 }
 
+#find {
+    text-align: center;
+}
+
 #signin-fb, #signin-google, #signin-apple, #signin-ms {
     background-color: transparent;
     border-color: #c4cdd5;

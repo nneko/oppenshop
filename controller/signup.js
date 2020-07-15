@@ -4,6 +4,7 @@ const user = require('../model/user')
 const bcrypt = require('bcryptjs')
 const express = require('express')
 const debug = cfg.env == 'development' ? true : false
+const email_sender = require('./email')
 
 let signup = express.Router()
 
@@ -166,6 +167,10 @@ signup.post('/', async (req,res) => {
         try {
             const result = await user.create(u)
             if(debug)console.log('User account created for '+u.preferredUsername)
+            // Add welcome email call
+            email_sender.welcome({name: req.body.givenName, email: u.preferredUsername})
+            // Add verify email call
+            email_sender.verify({name: req.body.givenName, email: u.preferredUsername})
             res.redirect('/signin')
         } catch (e) {
             if(debug) console.log('Unable to create user account due to error: ')

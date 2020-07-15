@@ -3,7 +3,7 @@ const express = require('express')
 const path = require('path')
 const api = require('../api')
 const validator = require('../utility/validator')
-
+const email_sender = require('./email')
 let router = express.Router()
 
 let props = {
@@ -19,6 +19,35 @@ router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 router.use('/signout', require('./signout'))
 router.use('/account', require('./account'))
+router.get('/verify', (req, res) => {
+    let name = undefined
+    let user = undefined
+    let email = undefined
+    if(validator.isNotNull(req.user)) {
+        user = req.user
+        if(validator.isNotNull(req.user.name)) {
+            name = req.user.name.givenName
+            email = req.user.emails["0"].value
+                if (email !== undefined){
+                        console.log('Calling Email Sender')
+                        email_sender.verify({name: name, email: email})
+                        console.log('Finished call Email Sender')
+                }
+        }
+    }
+    res.render('index', {title: props.title, theme: props.theme, name: name, user: user})
+})
+
+router.get('/email-verify', (req, res) => {
+    //console.log(req.query)
+    //console.log(req.query.t)
+    if (email_sender.verify_email(req.query)) {
+        console.log('Email Verify: True')
+    } else {
+        console.log('Email Verify: False')
+    }
+    res.render('index', {title: props.title, theme: props.theme})
+})
 
 router.get('/', (req, res) => {
     let name = undefined

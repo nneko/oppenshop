@@ -1,6 +1,5 @@
 const cfg = require('../configure.js')
 const express = require('express')
-const passport = require('passport')
 
 let signout = express.Router()
 

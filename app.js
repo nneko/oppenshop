@@ -13,6 +13,7 @@ const validator = require('./utility/validator.js')
 const secretKey = cfg.secret
 const db = require('./adapter/storage/'+cfg.dbAdapter)
 const debug = cfg.env == 'development' ? true : false
+const createError = require('http-errors');
 
 module.exports = app
 
@@ -32,7 +33,6 @@ if(!module.parent){
         app.set('views', path.join(__dirname, '/view/' + app.locals.template))
         app.set('layout', path.join(__dirname, '/view/' + app.locals.template + '/layout'))
         app.use(ejsLayouts)
-        app.use(flash())
         app.use(session({
             cookie: {
                 httpOnly: true,
@@ -52,17 +52,23 @@ if(!module.parent){
             resave: false,
             saveUninitialized: false
         }))
+        app.use(flash())
         authLocal.init(passport, require('./model/user'))
         authToken.init()
         app.use(passport.initialize())
         app.use(passport.session())
         app.use(express.json())
         app.use(express.urlencoded({ extended: true }))
+        
+        //app routes
         app.use(require('./controller'))
 
         //Catch-all error handler
         app.use((err, req, res, next) => {
-            let statusCode = err.status ? err.status : err.statusCode ? err.statusCode : 500
+            // set locals, only providing error in development
+            res.locals.message = err.message;
+            res.locals.error = req.app.get('env') === 'development' ? err : {};
+            let statusCode = err.status || 500
             let message = 'Error'
             switch (statusCode) {
                 case 400:

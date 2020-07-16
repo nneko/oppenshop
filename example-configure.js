@@ -5,18 +5,25 @@
 let environment = {};
 
 environment.development = {
-  'env': 'development',
-  'title': 'OppenShop',
-  'port': 3000,
-  'template': 'default',
-  'database': 'oppenshop',
-  'dbHost': 'localhost',
-  'dbPort': 27017,
-  'dbType': 'mongodb',
-  'httpPort': 3000,
-  'httpsPort': 3001,
-  'httpsKey': 'configuration/key.pem',
-  'httpsCert': 'configuration/cert.pem'
+   env: 'development',
+   title: 'OppenShop',
+   port: 3000,
+   template: 'default',
+   database: 'oppenshop',
+   dbHost: 'localhost',
+   dbPort: 27017,
+   dbType: 'mongodb',
+   httpPort: 3000,
+   httpsPort: 3001,
+   httpsKey: 'configuration/key.pem',
+   httpsCert: 'configuration/cert.pem',
+   secret: 'xxxxxxx',
+   accessTokenSecret: 'xxxxxxxxxx',
+   refreshTokenSecret: 'xxxxxxxxxxx',
+   tokenTTL: 3600000,
+   endpoint: 'http://localhost:3000/',
+   mailgunDomain: 'xxxxxxxxx',
+   mailgunPassword: 'xxxxxxxx'
 };
 
 // Determine which environment was passed as a command-line argument

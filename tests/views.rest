@@ -1,0 +1,18 @@
+### Index Page
+GET http://localhost:3000/
+
+### Sign-up Page
+GET http://localhost:3000/signup
+
+### Sign-in Page
+GET http://localhost:3000/signin
+
+### Sign-in Request
+
+POST http://localhost:3000/signin
+Content-Type: application/x-www-form-urlencoded
+
+username=nneko%40branche.online&password=testing%21
+
+### 404 Error handling test
+GET http://localhost:3000/404

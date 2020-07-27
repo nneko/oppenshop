@@ -1,4 +1,4 @@
-const cfg = require('../configure.js')
+const cfg = require('../configuration/index.js')
 const express = require('express')
 const passport = require('passport')
 

@@ -1,23 +1,30 @@
-const cfg = require('../configure.js')
-const validator = require('../utility/validator')
-const user = require('../model/user')
+const cfg = require('../configuration/index.js')
+const validator = require('../utilities/validator')
+const user = require('../models/user')
 const bcrypt = require('bcryptjs')
 const express = require('express')
 const debug = cfg.env == 'development' ? true : false
-const email_sender = require('./email')
+//const passport = require('passport')
 
-let signup = express.Router()
+let account = express.Router()
 
 let props = {
     title: cfg.title,
     theme: cfg.template
 }
 
-signup.get('/', (req, res) => {
-    res.render('signup', props)
+account.get('/', 
+	//passport.authenticate('local'),function(req, res) {
+	 (req, res) => {
+    //res.render('account', props)
+    //console.log(req.user)
+    //console.log(req.user.emails)
+    //console.log(req.user.emails["0"])
+    //console.log(req.user.emails["0"].value)
+    res.render('account', {title: props.title, theme: props.theme, user: req.user})
 })
 
-signup.post('/', async (req,res) => {
+account.post('/', async (req,res) => {
     let u = {}
     
     let formValidated = false
@@ -69,7 +76,7 @@ signup.post('/', async (req,res) => {
     
     //Addresses
     let addresses = []
-    /*
+    
     let primaryAddress = {}
     if (validator.isNotNull(req.body.addressStreet)) {
         primaryAddress.streetAddress = String(req.body.addressStreet)
@@ -119,12 +126,12 @@ signup.post('/', async (req,res) => {
     }
     primaryAddress.primary = true
     addresses.push(primaryAddress)    
-    */
+    
     u.addresses = addresses
 
     //PhoneNumbers
     let phoneNumbers = []
-    /*
+    
     if (validator.isNotNull(req.body.phoneNumber)) {
         phoneNumbers = [{value: String(req.body.phoneNumber), primary: true}]
         formFields.phoneNumber = { class: 'is-valid', value: u.phoneNumbers[0] }
@@ -134,7 +141,7 @@ signup.post('/', async (req,res) => {
             message: 'Please provide a valid phone number.'
         }
     }
-    */
+    
     u.phoneNumbers = phoneNumbers
 
     if (!validator.isNotNull(req.body.tac)) {
@@ -157,7 +164,7 @@ signup.post('/', async (req,res) => {
 
     if(!formValidated) {
         if(debug){
-            console.log('Invalid signup request received. Missing fields: ')
+            console.log('Invalid update account request received. Missing fields: ')
             console.log(formFields)
         }
         res.render('signup',formFields, (err, html) => {
@@ -166,19 +173,15 @@ signup.post('/', async (req,res) => {
     } else {
         try {
             const result = await user.create(u)
-            if(debug)console.log('User account created for '+u.preferredUsername)
-            // Add welcome email call
-            email_sender.welcome({name: req.body.givenName, email: u.preferredUsername})
-            // Add verify email call
-            email_sender.verify({name: req.body.givenName, email: u.preferredUsername})
-            res.redirect('/signin')
+            if(debug)console.log('User account updated for '+u.preferredUsername)
+            res.redirect('/account')
         } catch (e) {
-            if(debug) console.log('Unable to create user account due to error: ')
+            if(debug) console.log('Unable to update user account due to error: ')
             if(debug) console.log(e)
 
             let status = 500
 
-            formFields.error = 'An error occured during signup. Please try again later.'
+            formFields.error = 'An error occured during account update. Please try again later.'
 
             if(e.name == 'UserError') {
                 if(e.type == 'Duplicate') {
@@ -197,4 +200,4 @@ signup.post('/', async (req,res) => {
     }
 })
 
-module.exports = signup
+module.exports = account

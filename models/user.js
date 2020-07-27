@@ -1,6 +1,6 @@
-const cfg = require('../configure')
-const db = require('../adapter/storage/'+cfg.dbAdapter)
-const validator = require('../utility/validator')
+const cfg = require('../configuration')
+const db = require('../adapters/storage/'+cfg.dbAdapter)
+const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
 
 //Model format based on:

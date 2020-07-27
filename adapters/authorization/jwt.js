@@ -1,9 +1,9 @@
-const cfg = require('../../configure')
+const cfg = require('../../configuration')
 const passport = require('passport')
 const passportJWT = require('passport-jwt')
 const JWTStrategy = passportJWT.Strategy
 const JWTExtract = passportJWT.ExtractJwt
-const validator = require('../../utility/validator')
+const validator = require('../../utilities/validator')
 const JWT = require('jsonwebtoken')
 const debug = cfg.env == 'development' ? true : false
 

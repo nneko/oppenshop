@@ -1,4 +1,4 @@
-const cfg = require('../../configure')
+const cfg = require('../../configuration')
 const dbType = cfg.dbType
 const dbDriver = require(String(dbType))
 const dbHost = cfg.dbHost

@@ -1,8 +1,8 @@
-const cfg = require('../../configure')
+const cfg = require('../../configuration')
 const authStrategy = require('passport-local').Strategy
 const debug = cfg.env == 'development' ? true : false
 const bcrypt = require('bcryptjs')
-const validator = require('../../utility/validator')
+const validator = require('../../utilities/validator')
 
 let model = false
 let local = {}

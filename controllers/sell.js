@@ -1,7 +1,7 @@
-const cfg = require('../configure.js')
+const cfg = require('../configuration/index.js')
 const express = require('express')
-const validator = require('../utility/validator')
-const user = require('../model/user')
+const validator = require('../utilities/validator')
+const user = require('../models/user')
 
 let sell = express.Router()
 

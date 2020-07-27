@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Online marketplace app and api service to support commerce in goods and services across multiple vendors, payment and logistics providers",
   "main": "app.js",
+  "private": true,
   "scripts": {
-    "test": "test"
+    "test": "node ./tests",
+    "start": "node ./bin/app"
   },
   "repository": {
     "type": "git",
@@ -13,8 +15,10 @@
   "keywords": [
     "order",
     "trade",
+    "shop",
     "app",
-    "commerce"
+    "commerce",
+    "e-commerce"
   ],
   "author": "Nneko Branche",
   "license": "SEE LICENSE IN https://github.com/nneko/oppenshop#license",
@@ -35,6 +39,7 @@
     "mailgun-js": "^0.22.0",
     "method-override": "^3.0.0",
     "mongodb": "^3.5.8",
+    "morgan": "^1.10.0",
     "node-pre-gyp": "^0.15.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",

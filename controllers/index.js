@@ -1,9 +1,9 @@
-const cfg = require('../configure.js')
+const cfg = require('../configuration/index.js')
 const express = require('express')
 const path = require('path')
 const api = require('../api')
-const validator = require('../utility/validator')
-const email_sender = require('./email')
+const validator = require('../utilities/validator')
+const email_sender = require('../adapters/messaging/mailer.js')
 let router = express.Router()
 
 let props = {
@@ -12,16 +12,14 @@ let props = {
 }
 
 router.use('/api', api)
-router.use('/public', express.static(path.join(__dirname, '../view/public')))
-router.use('/view/asset', express.static(path.join(__dirname, '../view/' + cfg.template + '/asset')))
+router.use('/public', express.static(path.join(__dirname, '../views/public')))
+router.use('/view/assets', express.static(path.join(__dirname, '../views/' + cfg.template + '/assets')))
 
 router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 router.use('/signout', require('./signout'))
 router.use('/account', require('./account'))
-<<<<<<< HEAD
 router.use('/sell', require('./sell'));
-=======
 router.get('/verify', (req, res) => {
     let name = undefined
     let user = undefined
@@ -51,7 +49,6 @@ router.get('/email-verify', (req, res) => {
     }
     res.render('index', {title: props.title, theme: props.theme})
 })
->>>>>>> 4c65163cf5d2b07913870a16f625238001a58a7d
 
 router.get('/', (req, res) => {
     let name = undefined

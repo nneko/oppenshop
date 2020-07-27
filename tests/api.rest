@@ -1,0 +1,13 @@
+### Get Access Token
+POST http://localhost:3000/api/token
+Content-Type: application/json
+
+{
+    "username": "nneko@branche.online",
+    "password": "testing!",
+    "provider": "native"
+}
+
+### API error handling
+
+GET http://localhost:3000/api/token

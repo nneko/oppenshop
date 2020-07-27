@@ -1,21 +1,100 @@
-const cfg = require('./configure.js')
-const express = require('express')
-const app = express()
 const path = require('path')
+const logger = require('morgan')
+const http = require('http')
+
+const express = require('express')
 const ejsLayouts = require('express-ejs-layouts')
 const passport = require('passport')
-const authLocal = require('./adapter/authentication/local')
-const authToken = require('./adapter/authorization/jwt')
+const authLocal = require('../adapters/authentication/local')
+const authToken = require('../adapters/authorization/jwt')
 const flash = require('express-flash')
 const session = require('express-session')
 const sessionStore = require('connect-mongo')(session)
-const validator = require('./utility/validator.js')
+
+const cfg = require('../configuration')
 const secretKey = cfg.secret
-const db = require('./adapter/storage/'+cfg.dbAdapter)
-const debug = cfg.env == 'development' ? true : false
-const createError = require('http-errors');
+
+const db = require('../adapters/storage/' + cfg.dbAdapter)
+
+//const debug = cfg.env == 'development' ? true : false
+const debug = require('debug')('oppenshop:app')
+
+const validator = require('../utilities/validator.js')
+
+const app = express()
 
 module.exports = app
+
+/**
+ * Get port from environment and store in Express.
+ */
+const port = normalizePort(cfg.port || process.env.PORT || '3000')
+app.set('port', port)
+
+/**
+ * Create HTTP server.
+ */
+let server = http.createServer(app)
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+function normalizePort(val) {
+    let port = parseInt(val, 10)
+
+    if (isNaN(port)) {
+        // named pipe
+        return val
+    }
+
+    if (port >= 0) {
+        // port number
+        return port
+    }
+
+    return false
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error
+    }
+
+    let bind = typeof port === 'string'
+        ? 'Pipe ' + port
+        : 'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges')
+            process.exit(1)
+            break
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use')
+            process.exit(1)
+            break
+        default:
+            throw error
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+function onListening() {
+    let addr = server.address()
+    let bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    if (debug) {
+        console.log('\x1b[32m%s\x1b[0m', 'Listening on ' + bind)
+    }
+    debug('\x1b[32m%s\x1b[0m', 'Listening on ' + bind)
+}
 
 //Start the server if there is no parent module
 if(!module.parent){
@@ -30,8 +109,9 @@ if(!module.parent){
         app.set('x-powered-by', false)
         app.set('env', app.locals.env)
         app.set('view engine', 'ejs')
-        app.set('views', path.join(__dirname, '/view/' + app.locals.template))
-        app.set('layout', path.join(__dirname, '/view/' + app.locals.template + '/layout'))
+        app.set('views', path.join(__dirname, '../views/' + app.locals.template))
+        app.set('layout', path.join(__dirname, '../views/' + app.locals.template + '/layout'))
+        app.use(logger('dev'))
         app.use(ejsLayouts)
         app.use(session({
             cookie: {
@@ -53,7 +133,7 @@ if(!module.parent){
             saveUninitialized: false
         }))
         app.use(flash())
-        authLocal.init(passport, require('./model/user'))
+        authLocal.init(passport, require('../models/user'))
         authToken.init()
         app.use(passport.initialize())
         app.use(passport.session())
@@ -61,7 +141,7 @@ if(!module.parent){
         app.use(express.urlencoded({ extended: true }))
         
         //app routes
-        app.use(require('./controller'))
+        app.use(require('../controllers'))
 
         //Catch-all error handler
         app.use((err, req, res, next) => {
@@ -118,20 +198,26 @@ if(!module.parent){
             // default to plain-text. send()
             res.type('txt').send(message)
         })
-        const server = app.listen(app.locals.port, () => {
-            console.log('\x1b[32m%s\x1b[0m', `OppenShop app started on port: ${app.locals.port}`)
+
+        /**
+         * Listen on provided port, on all network interfaces.
+         */
+        server.listen(port, () => {
+            console.log('\x1b[32m%s\x1b[0m', `Oppenshop app starting...`)
         })
+        server.on('error', onError)
+        server.on('listening', onListening)
         const exit = () => {
             if (debug) {
-                console.log('Shutting down...')
+                console.log('\x1b[32m%s\x1b[0m', 'Shutting down...')
             }
             server.close(async () => {
                 if (debug) {
-                    console.log('Stopped accepting incoming requests.')
-                    console.log('Closing database connections.')
+                    console.log('\x1b[32m%s\x1b[0m', 'Stopped accepting incoming requests.')
+                    console.log('\x1b[32m%s\x1b[0m', 'Closing database connections.')
                 }
                 await db.close()
-                if(debug) console.log('Exiting.')
+                if (debug) console.log('\x1b[32m%s\x1b[0m', 'Exiting.')
                 process.exit(0)
             })
         }

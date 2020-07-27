@@ -102,8 +102,10 @@
     width: 80%;
 }
 
-.signup-form {
+.signup-form, .signin-form {
     margin: auto;
+    max-width: 38%;
+    width: 38%;
 }
 
 .signin-form {

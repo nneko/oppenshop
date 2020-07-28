@@ -18,7 +18,7 @@ router.use('/view/assets', express.static(path.join(__dirname, '../views/' + cfg
 router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 router.use('/signout', require('./signout'))
-router.get('/verify', require('./verify'))
+router.use('/verify', require('./verify'))
 router.use('/sell', require('./sell'));
 router.use('/user/account', require('./user/account'))
 router.use('/user/resetpassword', require('./user/resetpassword'))

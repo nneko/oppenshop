@@ -193,7 +193,8 @@ signup.post('/', async (req,res) => {
             //signupEmailer.sendWelcome({name: req.body.givenName, email: u.preferredUsername})
             // Add verify email call
             signupEmailer.sendEmailVerification({name: req.body.givenName, email: u.preferredUsername, token: u.verificationToken})
-            res.redirect('/signin')
+            //res.redirect('/signin')
+            res.render('verify', { title: cfg.title, theme: cfg.template, messages: { check: 'Verification link sent to email.' } })
         } catch (e) {
             if(debug) console.log('Unable to create user account due to error: ')
             if(debug) console.log(e)

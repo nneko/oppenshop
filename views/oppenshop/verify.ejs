@@ -1,0 +1,51 @@
+<main class="container">
+    <% if(typeof(messages.success) !== 'undefined') { %>
+    <section class="error-msg">
+        <div id="main-alert" class="alert alert-success alert-dismissible fade show" role="alert">
+            <%= messages.success %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+        </div>
+        <p>You may now <a href="/signin">sigin in</a>.</p>
+    </section>
+    <% } else if(typeof(messages.check) !== 'undefined') { %>
+    <section class="error-msg">
+        <div id="main-alert" class="alert alert-primary alert-dismissible fade show" role="alert">
+            <%= messages.check %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+        </div>
+        <p>Click the link in the email to complete verification. To continue unverified <a href="/">click here</a>.</p>
+    </section>
+    <% } else { %>
+    <section class="signin-section">
+        <form id="signin-form" class="signin-form" autocomplete="off" action="/verify" method="POST" oninput="" novalidate>
+            <div class="form-group">
+                <% if(typeof(messages.error) !== 'undefined') { %>
+                <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= messages.error %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <% } %>
+                <p class="resend-verification">Enter user details below.</p>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="username-basic-addon">Username</span>
+                    </div>
+                    <input id="username" class="form-control" type="text" name="username" placeholder="Email" value=""
+                        aria-label="username" aria-describedby="username-basic-addon" size="25" required>
+                    <div id="invalid-username" class="invalid-feedback">
+                        Please enter a valid email address or username.
+                    </div>
+                </div>
+                <small id="validationUsername" class="form-text text-muted  validation-msg hidden"></small>
+                <hr>
+                <div id="signin-buttons-container">
+                    <button id="signin-button" type="submit" class="btn btn-danger" onclick="">Resend Verification</button>
+                </div>
+            </div>
+        </form>
+    </section>
+    <% } %>
+</main>

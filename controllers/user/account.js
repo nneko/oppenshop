@@ -13,15 +13,13 @@ let props = {
     theme: cfg.template
 }
 
-account.get('/', 
-	//passport.authenticate('local'),function(req, res) {
-	 (req, res) => {
-    //res.render('account', props)
-    //console.log(req.user)
-    //console.log(req.user.emails)
-    //console.log(req.user.emails["0"])
-    //console.log(req.user.emails["0"].value)
-    res.render('account', {title: props.title, theme: props.theme, user: req.user})
+account.get('/', (req, res) => {
+    if (validator.isNotNull(req.user)) {
+        res.render('account', { title: props.title, theme: props.theme, user: req.user })
+    } else {
+        props.messages = {error: "You need to be signed in."}
+        res.render('signin',props)
+    }
 })
 
 account.post('/', async (req,res) => {

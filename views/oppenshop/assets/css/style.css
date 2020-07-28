@@ -308,6 +308,20 @@ body {
         width: 100%;
         z-index: 10;
     }
+
+    .signup-form, .signin-form {
+        margin: auto;
+        max-width: 50%;
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .signup-form, .signin-form {
+        margin: auto;
+        max-width: 98%;
+        width: 98%;
+    }
 }
 
 @keyframes anim-fade-up {

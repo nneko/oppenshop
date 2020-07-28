@@ -20,15 +20,15 @@ local.authenticate = async (uid, pwd, done) => {
         if(!model) throw new Error('Unable complete authentication. Cannot access local user database.')
         const user = await model.read({preferredUsername: uid},{limit: 1})
         
-        let isVerified = validator.isNotNull(user.verified) ? user.verified : false;
-
-        let verificationRequired = validator.isNotNull(cfg.verifyUsers) ? cfg.verifyUsers : false;
-
-        if (verificationRequired && (!isVerified)) {
-            return done(null, false, { message: 'Account verification required.' })
-        } 
-        
         if(validator.isNotNull(user)) {
+            let isVerified = validator.isNotNull(user.verified) && (user.verified != false) ? true : false;
+
+            let verificationRequired = validator.isNotNull(cfg.verifyUsers) ? cfg.verifyUsers : false;
+
+            if (verificationRequired && (!isVerified)) {
+                return done(null, false, { message: 'Account verification required.' })
+            } 
+
             if(await  bcrypt.compare(pwd,user.password)){
                 //Extract only relevant user details
                 let u = {}

@@ -1,21 +1,30 @@
 <main class="container">
     <% if(typeof(messages.success) !== 'undefined') { %>
-    <section class="error-msg">
-        <div id="main-alert" class="alert alert-success alert-dismissible fade show" role="alert">
-            <%= messages.success %>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
+    <section class="signin-section">
+        <div class="signin-form">
+            <div class="form-group">
+                <div id="main-alert" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <%= messages.success %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <p>You may now <b><a href="/signin">sigin in</a></b> to continue.</p>
+            </div>
         </div>
-        <p>You may now <a href="/signin">sigin in</a>.</p>
     </section>
     <% } else if(typeof(messages.check) !== 'undefined') { %>
-    <section class="error-msg">
-        <div id="main-alert" class="alert alert-primary alert-dismissible fade show" role="alert">
-            <%= messages.check %>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
+    <section class="signin-section">
+        <div class="signin-form">
+            <div class="form-group">
+                <div id="main-alert" class="alert alert-primary alert-dismissible fade show" role="alert">
+                <%= messages.check %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                </div>
+                <p>Follow the instructions in the email to complete verification. Otherwise to continue unverified <a href="/">click here</a>.
+                </p>
+            </div>
         </div>
-        <p>Click the link in the email to complete verification. To continue unverified <a href="/">click here</a>.</p>
     </section>
     <% } else { %>
     <section class="signin-section">
@@ -28,7 +37,7 @@
                             aria-hidden="true">&times;</span></button>
                 </div>
                 <% } %>
-                <p class="resend-verification">Enter user details below.</p>
+                <p class="resend-verification">You didn't get verification the link? Try again.</p>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="username-basic-addon">Username</span>

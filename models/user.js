@@ -94,11 +94,31 @@ user.read = (properties, options) => {
     })
 }
 
-user.update = (filters, values, options) => {
+user.update = (filters, values, options, operator) => {
     return new Promise(async (resolve, reject) => {
         try {
+            let opr = '$set'
+            switch(operator){
+                case 'unset':
+                    opr = '$unset'
+                    break
+                case 'rename':
+                    opr = '$rename'
+                    break
+                case 'set':
+                    break
+                default:
+                    if (validator.isNotNull(operator)) {
+                        let e = new Error('Invalid user operation')
+                        e.name = 'UserError'
+                        e.type = 'Invalid Operation'
+                        throw e
+                    }
+            }
             const userCollection = db.get().collection('user')
-            const result = await userCollection.updateMany(filters,{$set: values},options)
+            let operation = {}
+            operation[opr] = values
+            const result = await userCollection.updateMany(filters,operation,options)
             resolve(result)
         } catch (e) {
             reject(e)

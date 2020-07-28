@@ -23,8 +23,8 @@ signupEmailer.sendEmailVerification = async _data => {
         data.subject = 'OppenShop Email Verification'
         let token = jwt.sign({ email: _data.email, token: _data.token }, cfg.accessTokenSecret)
         let url = cfg.endpoint + 'verify?data=' + token
-        data.text = 'Good Day ' + _data.name + ',\n Please select the link below to verify your email address:\n' + url + '\n\nBest Regards,\nAdmin'
-        data.html = 'Good Day <b>' + _data.name + '</b>,<br> Please select the link below to verify your email address:<br><a href="' + url + '">Email Verify Link</a><br><br>Best Regards,<br>Admin'
+        data.text = 'Good Day ' + _data.name + ',\n\nPlease select the link below to verify your email address:\n' + url + '\n\nBest Regards,\nThe OppenShop Team'
+        data.html = 'Good Day ' + _data.name + ',<br><br>Please select the link below to verify your email address:<br><a href="' + url + '">Email Verify Link</a><br><br>Best Regards,<br>The OppenShop Team'
         data.to = _data.email
         await mailer.send(data)
     } catch (e) {
@@ -194,7 +194,7 @@ signup.post('/', async (req,res) => {
             // Add verify email call
             signupEmailer.sendEmailVerification({name: req.body.givenName, email: u.preferredUsername, token: u.verificationToken})
             //res.redirect('/signin')
-            res.render('verify', { title: cfg.title, theme: cfg.template, messages: { check: 'Verification link sent to email.' } })
+            res.render('verify', { title: cfg.title, theme: cfg.template, messages: { check: 'A verification link has been sent via email.' } })
         } catch (e) {
             if(debug) console.log('Unable to create user account due to error: ')
             if(debug) console.log(e)

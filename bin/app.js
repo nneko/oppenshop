@@ -23,8 +23,6 @@ const validator = require('../utilities/validator.js')
 
 const app = express()
 
-module.exports = app
-
 /**
  * Get port from environment and store in Express.
  */
@@ -125,7 +123,7 @@ if(!module.parent){
             store: new sessionStore({
                 client: db.getDriverClient(),
                 dbName: db.getName(),
-                collection: 'session',
+                collection: 'sessions',
                 secret: secretKey,
                 ttl: 1209600
             }),
@@ -232,3 +230,5 @@ if(!module.parent){
         process.exit(-1)
     })
 }
+
+module.exports = app

@@ -5,6 +5,7 @@ const validator = require('../utilities/validator.js')
 const user = require('../models/user')
 const debug = cfg.env == 'development' ? true : false
 const jwt = require('jsonwebtoken')
+const generator = require('../utilities/generator')
 
 let verify = express.Router()
 
@@ -19,9 +20,9 @@ let verifyEmailer = {}
 verifyEmailer.sendWelcome = async _data => {
     try {
         let data = {}
-        data.subject = 'OppenShop - Welcome'
-        data.text = 'Welcome ' + _data.name + ',\nOppenshop is local platform marketplace to view, shop and pay for locally.\n\nBest Regards,\nAdmin'
-        data.html = 'Welcome </b>' + _data.name + '</b>,<br>Oppenshop is local platform marketplace to view, shop and pay for locally.<br><br>Best Regards,<br>Admin'
+        data.subject = 'Welcome to OppenShop'
+        data.text = 'Welcome ' + _data.name + ',\nOppenshop is a platform that provides a marketplace to view, shop and pay for local goods and services.\n\nBest Regards,\nThe OppenShop Team'
+        data.html = 'Welcome </b>' + _data.name + '</b>,<br><br>Oppenshop is a platform that provides a marketplace to view, shop and pay for local goods and services.<br><br>Best Regards,<br>The OppenShop Team'
         data.to = _data.email
         await mailer.send(data)
     } catch (e) {
@@ -29,12 +30,30 @@ verifyEmailer.sendWelcome = async _data => {
     }
 }
 
+verifyEmailer.sendEmailVerification = async _data => {
+    try {
+        let data = {}
+        data.subject = 'OppenShop Email Verification'
+        let token = jwt.sign({ email: _data.email, token: _data.token }, cfg.accessTokenSecret)
+        let url = cfg.endpoint + 'verify?data=' + token
+        data.text = 'Good Day ' + _data.name + ',\n\nPlease select the link below to verify your email address:\n' + url + '\n\nBest Regards,\The OppenShop Team'
+        data.html = 'Good Day <b>' + _data.name + '</b>,<br><br>Please select the link below to verify your email address:<br><a href="' + url + '">Email Verify Link</a><br><br>Best Regards,<br>The OppenShop Team'
+        data.to = _data.email
+        await mailer.send(data)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+let dataDecoder = data => {
+    let decoded_data = jwt.verify(data, cfg.accessTokenSecret);
+    return decoded_data
+}
+
 let validate = async data => {
     try {
-        let decoded_data = jwt.verify(data, cfg.accessTokenSecret);
-        // TODO: Call to check if details in DB and add flag verified, return true or false 
-        const usr = await user.read({ preferredUsername: data.email })
-        if(validator.isNotNull(usr.verificationToken) && validator.isNotNull(usr.verified) && (usr.verified != true)){
+        const usr = await user.read({ preferredUsername: data.email },{limit: 1})
+        if(usr.verificationToken && (!usr.verified)){
             if(usr.verificationToken == data.token) {
                 return true
             } else {
@@ -55,11 +74,19 @@ verify.get('/', async (req, res) => {
         let isVerified = false
         let queryData = req.query.data
         if (validator.isNotNull(queryData)) {
-            isVerified = await validate(queryData)
+            let userData = dataDecoder(queryData)
+            isVerified = await validate(userData)
             if (isVerified) {
-                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { success: 'Email verified.' } })
+                let u = await user.read({ preferredUsername: userData.email }, { limit: 1 })
+                await user.update({preferredUsername: u.preferredUsername}, {verificationToken: null }, {}, 'unset')
+                await user.update({ preferredUsername: u.preferredUsername }, {verified: true})
+                userData.name = u.name.givenName
+                verifyEmailer.sendWelcome(userData)
+                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { success: 'Your account has been verified.' } })
             } else {
-                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { error: 'Account could not be verified.' } })
+                console.log('Invalid verification request')
+                console.log(userData)
+                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { error: 'Verification unsuccessful. Invalid or expired request.' } })
             }
         }
         else {
@@ -68,7 +95,7 @@ verify.get('/', async (req, res) => {
     } catch (e) {
         console.log(e)
         let status = 500
-        props.messages = { error: 'Unable to complete verification. Please try again later.' }
+        props.messages = { error: 'Unable to complete verification due to error. Please try again later.' }
         res.render('verify', props, (err, html) => {
             res.status(status).send(html)
         })
@@ -119,14 +146,15 @@ verify.post('/', async (req, res) => {
                 e.type = 'Invalid'
                 throw e
             }
-            const usr = await user.read(u)
-            console.log(typeof(usr.verified))
-            if(validator.isNotNull(usr.verified) && (usr.verified != true)) {
+            const usr = await user.read(u,{limit: 1})
+            console.log(usr)
+            console.log(usr.verified)
+            if(!usr.verified) {
                 let verificationToken = generator.randomString(32)
                 await user.update(u,{verificationToken: verificationToken, verified: false})
-                verifyEmailer.sendEmailVerification({ name: usr.givenName, email: u.preferredUsername, token: verificationToken })
+                verifyEmailer.sendEmailVerification({ name: usr.name.givenName, email: u.preferredUsername, token: verificationToken })
 
-                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { check: 'Verification link sent to email.' } })
+                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { check: 'New verification link sent.' } })
             } else {
                 res.render('verify', { title: cfg.title, theme: cfg.template, messages: { error: 'Account is already verified.' } })
             }
@@ -136,7 +164,7 @@ verify.post('/', async (req, res) => {
 
             let status = 500
 
-            formFields.error = 'The verification could not be resent at this time. Please try again later.'
+            formFields.error = 'The verification link could not be resent at this time. Please try again later.'
 
             if (e.name == 'UserError') {
                 if (e.type == 'Invalid') {
@@ -148,7 +176,7 @@ verify.post('/', async (req, res) => {
                     status = 403
                 }
             } else {
-                formFields.messages = {error: 'Verification could not be sent. Please try again later.'}
+                formFields.messages = {error: 'Verification link could not be sent. Please try again later.'}
             }
             res.render('verify', formFields, (err, html) => {
                 res.status(status).send(html)

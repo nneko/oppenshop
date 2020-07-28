@@ -20,10 +20,18 @@ environment.development = {
    secret: 'xxxxxxx',
    accessTokenSecret: 'xxxxxxxxxx',
    refreshTokenSecret: 'xxxxxxxxxxx',
-   tokenTTL: 3600000,
-   endpoint: 'http://localhost:3000/',
    mailgunDomain: 'xxxxxxxxx',
-   mailgunPassword: 'xxxxxxxx'
+   mailgunPassword: 'xxxxxxxx',
+   tokenTTL: 3600000,
+   sessionTTL: 1209600,//14 * 24 * 60 * 60
+   endpoint: 'http://localhost:3000/',
+   mailRelay: 'xxxxxxxx',
+   mailAPI: '/v3/<domain>/messages',
+   mailUser: 'api',
+   mailRelayPassword: 'xxxxxxxx',
+   mailDomain: 'xxxxxxxx',
+   mailSender: 'sender@xxxxxxxx.xxx',
+   verifyUsers: false
 };
 
 // Determine which environment was passed as a command-line argument

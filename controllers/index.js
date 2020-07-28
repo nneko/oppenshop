@@ -11,44 +11,17 @@ let props = {
     theme: cfg.template
 }
 
+//routes
 router.use('/api', api)
 router.use('/public', express.static(path.join(__dirname, '../views/public')))
 router.use('/view/assets', express.static(path.join(__dirname, '../views/' + cfg.template + '/assets')))
-
 router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 router.use('/signout', require('./signout'))
-router.use('/account', require('./account'))
+router.get('/verify', require('./verify'))
 router.use('/sell', require('./sell'));
-router.get('/verify', (req, res) => {
-    let name = undefined
-    let user = undefined
-    let email = undefined
-    if(validator.isNotNull(req.user)) {
-        user = req.user
-        if(validator.isNotNull(req.user.name)) {
-            name = req.user.name.givenName
-            email = req.user.emails["0"].value
-                if (email !== undefined){
-                        console.log('Calling Email Sender')
-                        email_sender.verify({name: name, email: email})
-                        console.log('Finished call Email Sender')
-                }
-        }
-    }
-    res.render('index', {title: props.title, theme: props.theme, name: name, user: user})
-})
-
-router.get('/email-verify', (req, res) => {
-    //console.log(req.query)
-    //console.log(req.query.t)
-    if (email_sender.verify_email(req.query)) {
-        console.log('Email Verify: True')
-    } else {
-        console.log('Email Verify: False')
-    }
-    res.render('index', {title: props.title, theme: props.theme})
-})
+router.use('/user/account', require('./user/account'))
+router.use('/user/resetpassword', require('./user/resetpassword'))
 
 router.get('/', (req, res) => {
     let name = undefined
@@ -71,8 +44,8 @@ router.use((req, res, next) => {
     
     // respond with html page
     if (req.accepts('html')) {
-    	let name = undefined
-    	let user = undefined
+        let name = undefined
+        let user = undefined
     	if(validator.isNotNull(req.user)) {
             user = req.user
             if(validator.isNotNull(req.user.name)) {

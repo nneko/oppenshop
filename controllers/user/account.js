@@ -1,6 +1,6 @@
-const cfg = require('../configuration/index.js')
-const validator = require('../utilities/validator')
-const user = require('../models/user')
+const cfg = require('../../configuration')
+const validator = require('../../utilities/validator')
+const user = require('../../models/user')
 const bcrypt = require('bcryptjs')
 const express = require('express')
 const debug = cfg.env == 'development' ? true : false

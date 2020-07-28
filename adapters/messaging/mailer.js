@@ -1,69 +1,38 @@
 const cfg = require('../../configuration')
 const jwt = require('jsonwebtoken')
+const validator = require('../../utilities/validator')
 
 let mailer = {}
 
-let mailgun = require('mailgun-js')({ apiKey: cfg.mailRelayPassword, domain: cfg.mailRelay})
- 
-let data = {
-  from: 'Oppenshop <no-reply@oppenshop.com>',
-  to: 'admin@oppenshop.com',
-  subject: 'Hello',
-  text: 'Testing some Mailgun awesomeness!'
-}
+let mailgun = require('mailgun-js')({ apiKey: cfg.mailRelayPassword, domain: cfg.mailDomain})
+
+let sender = cfg.mailSender
 
 //mailgun.messages().send(data, function (error, body) {
 //  console.log(body)
 //})
+mailer.send = async data => {
+	try {
+		if (validator.isNotNull(data.to) && validator.isNotNull(data.subject) && (validator.isNotNull(data.text) || validator.isNotNull(data.html))) {
+			//Validate the destination address
+			if(!validator.isEmailAddress(data.to)) throw new Error('Invalid destination')
 
-mailer.welcome = async _data => {
-	data.subject = 'Oppenshop - Welcome'
-	data.text = 'Welcome '+_data.name+',\nOppenshop is local platform marketplace to view, shop and pay for locally.\n\nBest Regards,\nAdmin'
-	data.html = 'Welcome </b>'+_data.name+'</b>,<br>Oppenshop is local platform marketplace to view, shop and pay for locally.<br><br>Best Regards,<br>Admin'
-	data.to = _data.email	
-	mailgun.messages().send(data, function (error, body) {
-		console.log(body)
-	})
-}
+			//Check if from field is set otherwise use default sender address from configuration
+			if(!validator.isNotNull(data.from)) data.from = sender
 
-mailer.verify = async _data => {
-	data.subject = 'Oppenshop - Email Verification'
-	var token = jwt.sign({ email: _data.email }, cfg.accessTokenSecret)
-	console.log(token)
-	var url = cfg.endpoint +'email-verify?t='+token
-	console.log(url)
-        data.text = 'Good Day '+_data.name+',\n Please select the link below to verify your email address:\n'+url+'\n\nBest Regards,\nAdmin'
-        data.html = 'Good Day <b>'+_data.name+'</b>,<br> Please select the link below to verify your email address:<br><a href="'+url+'">Email Verify Link</a><br><br>Best Regards,<br>Admin'
-	data.to = _data.email
-        console.log(_data)
-        console.log(data)
-        mailgun.messages().send(data, function (error, body) {
-                if (error) console.log(error)
-		console.log(body)
-        })
-}
-mailer.verify_email = async _data => {
-	console.log(_data)
-	var decoded = jwt.verify(_data.t, cfg.accessTokenSecret);
-	console.log(decoded.email)
-	// TODO: Call to check if details in DB and add flag verified, return true or false 
-	return true
-}
-mailer.password_reset = async _data => {
-        data.subject = 'Oppenshop - Password Rest'
-	var url = cfg.endpoint +'reset?'
-        data.text = 'Good Day '+_data.name+',\n Please select the link below to reset your password:\n.\n\nBest Regards,\nAdmin'
-        data.to = _data.email
-        console.log(_data)
-        console.log(data)
-        mailgun.messages().send(data, function (error, body) {
-                console.log(body)
-        })
-}
+			// Throw error if invalid entry for from field
+			if(!validator.isEmailAddress(data.from)) throw new Error('Invalid sender address')
 
-mailer.notify = async _data => {
-
+			//Send email message
+			await mailgun.messages().send(data, function (error, body) {
+				console.log(body)
+			})
+		} else {
+			throw new Error('Invalid message headers')
+		}
+	} catch (e) {
+		console.error(e)
+	}
 }
-
 
 module.exports = mailer

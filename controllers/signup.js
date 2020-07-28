@@ -4,13 +4,32 @@ const user = require('../models/user')
 const bcrypt = require('bcryptjs')
 const express = require('express')
 const debug = cfg.env == 'development' ? true : false
-const email_sender = require('../adapters/messaging/mailer.js')
+const mailer = require('../adapters/messaging/mailer.js')
+const jwt = require('jsonwebtoken')
+const generator = require('../utilities/generator')
 
 let signup = express.Router()
 
 let props = {
     title: cfg.title,
     theme: cfg.template
+}
+
+let signupEmailer = {}
+
+signupEmailer.sendEmailVerification = async _data => {
+    try {
+        let data = {}
+        data.subject = 'OppenShop Email Verification'
+        let token = jwt.sign({ email: _data.email, token: _data.token }, cfg.accessTokenSecret)
+        let url = cfg.endpoint + 'verify?data=' + token
+        data.text = 'Good Day ' + _data.name + ',\n Please select the link below to verify your email address:\n' + url + '\n\nBest Regards,\nAdmin'
+        data.html = 'Good Day <b>' + _data.name + '</b>,<br> Please select the link below to verify your email address:<br><a href="' + url + '">Email Verify Link</a><br><br>Best Regards,<br>Admin'
+        data.to = _data.email
+        await mailer.send(data)
+    } catch (e) {
+        console.error(e)
+    }
 }
 
 signup.get('/', (req, res) => {
@@ -165,12 +184,15 @@ signup.post('/', async (req,res) => {
         })
     } else {
         try {
+            let verificationToken = generator.randomString(32)
+            u.verificationToken = verificationToken
+            u.verified = false
             const result = await user.create(u)
             if(debug)console.log('User account created for '+u.preferredUsername)
             // Add welcome email call
-            email_sender.welcome({name: req.body.givenName, email: u.preferredUsername})
+            //signupEmailer.sendWelcome({name: req.body.givenName, email: u.preferredUsername})
             // Add verify email call
-            email_sender.verify({name: req.body.givenName, email: u.preferredUsername})
+            signupEmailer.sendEmailVerification({name: req.body.givenName, email: u.preferredUsername, token: u.verificationToken})
             res.redirect('/signin')
         } catch (e) {
             if(debug) console.log('Unable to create user account due to error: ')

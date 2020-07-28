@@ -15,6 +15,7 @@ let props = {
 router.use('/api', api)
 router.use('/public', express.static(path.join(__dirname, '../views/public')))
 router.use('/view/assets', express.static(path.join(__dirname, '../views/' + cfg.template + '/assets')))
+router.use('/user/view/assets', express.static(path.join(__dirname, '../views/' + cfg.template + '/assets')))
 router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 router.use('/signout', require('./signout'))

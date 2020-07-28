@@ -95,17 +95,22 @@
     text-decoration: underline;
 }
 
-.signup-section, .signin-section {
+.signup-section, .signin-section, .standard-form-section {
     display: flex;
     margin: 4rem auto;
     position: relative;
     width: 80%;
 }
 
-.signup-form, .signin-form {
+.signup-form, .signin-form, .standard-form {
     margin: auto;
     max-width: 38%;
     width: 38%;
+}
+
+.standard-form label {
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 .signin-form {
@@ -184,6 +189,15 @@
 
 .toggle .menu-line2 {
     transform: rotate(45deg) translate(-3px,-2px);
+}
+
+.main-panel {
+    margin: 2rem auto;
+}
+
+.content-pane {
+    background-color: white;
+    padding: 4rem 1rem;
 }
 
 nav h4  {
@@ -309,7 +323,7 @@ body {
         z-index: 10;
     }
 
-    .signup-form, .signin-form {
+    .signup-form, .signin-form, .standard-form {
         margin: auto;
         max-width: 50%;
         width: 50%;
@@ -317,7 +331,7 @@ body {
 }
 
 @media screen and (max-width: 640px) {
-    .signup-form, .signin-form {
+    .signup-form, .signin-form, .standard-form {
         margin: auto;
         max-width: 98%;
         width: 98%;

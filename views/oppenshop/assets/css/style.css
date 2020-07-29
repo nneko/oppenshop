@@ -155,6 +155,10 @@
     text-decoration: none;
 }
 
+.applogo img {
+    height: 48px;
+}
+
 .menu-button div {
     background-color: #444;
     height: 2px;

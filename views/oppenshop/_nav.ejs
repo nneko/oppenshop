@@ -1,9 +1,8 @@
 <nav class="menu">
     <div class="menu-main">
         <div class="applogo">
-            <!-- <h4><a href="/">OppenShop</a></h4> -->
             <a href="/">
-                <img src="/view/assets/images/logo.png" height="48px"/>
+                <img src="/view/assets/images/logo.png" onmouseover="logoHover(this);" onmouseout="logoUnhover(this);"/>
             </a>
         </div>
         <form id="main-search-form" class="search-form" autocomplete="on" action="/find" method="POST" oninput="" novalidate>
@@ -26,10 +25,6 @@
         </div>
     </div>
     <ul class="nav-links">
-        <!--
-        <li class="nav-link-item"><a href="/shops">Shops</a></li>
-        <li class="nav-link-item"><a href="/promotions">Promotions</a></li>
-        -->
         <li class="nav-link-item"><a href="/marketplace">Marketplace</a></li>
         <li class="nav-link-item"><a href="/sell">Sell</a></li>
         <li class="nav-link-item"><a href="/buy">Buy</a></li>
@@ -41,3 +36,12 @@
         <li class="nav-link-item"><a href="/support">Support</a></li>
     </ul>
 </nav>
+<script type="text/javascript"> 
+    function logoHover(element) {
+        element.setAttribute('src', '/view/assets/images/logo-onfocus.png')
+    }
+
+    function logoUnhover(element) {
+        element.setAttribute('src', '/view/assets/images/logo.png')
+    }
+</script>

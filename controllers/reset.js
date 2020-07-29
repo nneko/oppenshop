@@ -66,15 +66,15 @@ reset.post('/', async (req, res) => {
         try {
             const userExists = await user.exists(u)
             if(userExists) {
-		u = await user.read({ preferredUsername: u.preferredUsername }, { limit: 1 })
+		        u = await user.read({ preferredUsername: u.preferredUsername }, { limit: 1 })
                 //console.log(u)
-                formFields.messages = {check: 'Please check email for reset password details.'}
                 let new_password = generator.randomString(10)
                 let new_password_hash = await bcrypt.hash(String(new_password), 10)
-		await user.update(u,{password: new_password_hash})
-		// TODO: Send reset email
-		reset_mailer.password_reset({name: u.name.givenName, email: u.preferredUsername, temp: new_password})
-                res.render('signin', { title: cfg.title, theme: cfg.template, messages: { error: 'Please check email for reset password details.' } })
+                await user.update(u,{password: new_password_hash})
+		        // TODO: Send reset email
+                reset_mailer.password_reset({name: u.name.givenName, email: u.preferredUsername, temp: new_password})
+                formFields.messages = { info: 'Please check email for reset password details.' }
+                res.render('signin', { title: cfg.title, theme: cfg.template, messages: formFields.messages })
             } else {
                 res.render('reset', { title: cfg.title, theme: cfg.template, messages: { error: 'Account is not registered.' } })
             }

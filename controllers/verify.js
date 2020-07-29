@@ -154,7 +154,7 @@ verify.post('/', async (req, res) => {
                 await user.update(u,{verificationToken: verificationToken, verified: false})
                 verifyEmailer.sendEmailVerification({ name: usr.name.givenName, email: u.preferredUsername, token: verificationToken })
 
-                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { check: 'New verification link sent.' } })
+                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { info: 'New verification link sent.' } })
             } else {
                 res.render('verify', { title: cfg.title, theme: cfg.template, messages: { error: 'Account is already verified.' } })
             }

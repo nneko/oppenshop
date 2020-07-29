@@ -47,7 +47,7 @@ user.create = (u) => {
                 throw e
             }
 
-            const result = await db.get().collection('user').insertOne(u)
+            const result = await db.get().collection('users').insertOne(u)
             resolve(result)
         } catch (e) {
             reject(e)
@@ -58,7 +58,7 @@ user.create = (u) => {
 user.read = (properties, options) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const userCollection = db.get().collection('user')
+            const userCollection = db.get().collection('users')
             if(validator.isNotNull(options)) {
                 if(typeof(options.limit) !== 'undefined') {
                     switch(options.limit) {
@@ -115,7 +115,7 @@ user.update = (filters, values, options, operator) => {
                         throw e
                     }
             }
-            const userCollection = db.get().collection('user')
+            const userCollection = db.get().collection('users')
             let operation = {}
             operation[opr] = values
             const result = await userCollection.updateMany(filters,operation,options)
@@ -129,7 +129,7 @@ user.update = (filters, values, options, operator) => {
 user.delete = (filters) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const userCollection = db.get().collection('user')
+            const userCollection = db.get().collection('users')
             const result = await userCollection.deleteMany(filters)
             resolve(result)
         } catch (e) {

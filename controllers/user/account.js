@@ -165,7 +165,7 @@ account.post('/', async (req,res) => {
             console.log('Invalid update account request received. Missing fields: ')
             console.log(formFields)
         }
-        res.render('signup',formFields, (err, html) => {
+        res.render('account',formFields, (err, html) => {
             res.status(400).send(html)
         })
     } else {
@@ -191,7 +191,7 @@ account.post('/', async (req,res) => {
                     status = 403
                 } 
             }
-            res.render('signup',formFields,(err, html) => {
+            res.render('account',formFields,(err, html) => {
                 res.status(status).send(html)
             })
         }

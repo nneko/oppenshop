@@ -77,7 +77,7 @@
                             <small id="repasswordHint" class="form-text text-muted hidden"></small>
                             <hr>
                             <div id="security-update-button-container">
-                                <button id="update-security-button" type="submit" class="btn btn-danger" onclick="">Update</button>
+                                <button id="update-security-button" type="submit" class="btn btn-light" onclick="">Update</button>
                             </div>
                         </div>
                     </form>
@@ -114,6 +114,19 @@
                                 <div id="invalid-familyName" class="invalid-feedback">
                                     <% if(typeof(familyName) !== 'undefined' && familyName.class == 'is-invalid') { %><%= familyName.message %><% } else { %>You
                                     must provide your Family Name.<% } %>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="input-group mb-3">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="phone-basic-addon">Phone</span>
+                                    </div>
+                                    <input id="phone" class="form-control" type="text" name="phone" value="" aria-label="Address"
+                                        aria-describedby="phone-basic-addon" size="25" required>
+                                    <div id="invalid-phone" class="invalid-feedback">
+                                        You must a valid phone number.
+                                    </div>
                                 </div>
                             </div>
                             <hr>
@@ -192,7 +205,7 @@
                             </div>
                             <hr>
                             <div id="update-contact-button-container">
-                                <button id="update-contact-button" type="submit" class="btn btn-danger" onclick="">Update</button>
+                                <button id="update-contact-button" type="submit" class="btn btn-light" onclick="">Update</button>
                             </div>
                         </div>
                     </form>
@@ -205,7 +218,7 @@
                         <div class="form-group">
                             <hr>
                             <div id="addresses-add-button-container">
-                                <button id="add-addresses-button" type="submit" class="btn btn-danger" onclick="">Add Address</button>
+                                <button id="add-addresses-button" type="submit" class="btn btn-light" onclick="">Add Address</button>
                             </div>
                         </div>
                     </form>
@@ -222,7 +235,7 @@
                         <div class="form-group">
                             <hr>
                             <div id="payment-add-button-container">
-                                <button id="payment-add-button" type="submit" class="btn btn-danger" onclick="">Add Payment Method</button>
+                                <button id="payment-add-button" type="submit" class="btn btn-light" onclick="">Add Payment Method</button>
                             </div>
                         </div>
                     </form>
@@ -234,8 +247,8 @@
                         novalidate>
                         <div class="form-group">
                             <hr>
-                            <div id="settings-update-button-container">
-                                <button id="update-settings-button" type="submit" class="btn btn-danger" onclick="">Update</button>
+                            <div id="delete-account-button-container">
+                                <button id="delete-account-button" type="submit" class="btn btn-danger" onclick="">Delete Account</button>
                             </div>                
                         </div>
                     </form>

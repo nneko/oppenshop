@@ -25,6 +25,7 @@ router.use('/user/account', require('./user/account'))
 router.use('/user/resetpassword', require('./user/resetpassword'))
 router.use('/reset', require('./reset'))
 
+
 router.get('/', (req, res) => {
     let name = undefined
     let user = undefined

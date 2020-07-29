@@ -1,6 +1,6 @@
 <main class="container">
     <section class="signin-section">
-        <form id="signin-form" class="signin-form" autocomplete="off" action="/signin" method="POST" oninput="" novalidate>
+        <form id="signin-form" class="signin-form" autocomplete="off" action="/reset" method="POST" oninput="" novalidate>
             <div class="form-group">
                 <% if(typeof(messages.error) !== 'undefined') { %>
                 <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -9,8 +9,8 @@
                             aria-hidden="true">&times;</span></button>
                 </div>
                 <% } %> 
-                <p class="refer-to-signup">You don't have an account? <a class="signup-link" href="/signup">Signup</a>.</p>
-                <p class="refer-to-signup">Forgot password? <a class="signup-link" href="/reset">Reset</a>.</p>
+                <p class="refer-to-signup">No account? <a class="signup-link" href="/signup">Signup</a>.</p>
+                <p class="refer-to-signup">Or? <a class="signup-link" href="/signin">Signin</a>.</p>
 		<div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="username-basic-addon">Username</span>
@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <small id="validationUsername" class="form-text text-muted  validation-msg hidden"></small>
-                <div class="input-group mb-3">
+                <!-- div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="passowrd-basic-addon">Password</span>
                     </div>
@@ -32,11 +32,11 @@
                         Please enter a password.
                     </div>
                 </div>
-                <small id="passwordHint" class="form-text text-muted hidden"></small>
+                <small id="passwordHint" class="form-text text-muted hidden"></small -->
                 <div id="signin-buttons-container">
-                    <button id="signin-button" type="submit" class="btn btn-danger" onclick="">Signin</button>
+                    <button id="signin-button" type="submit" class="btn btn-danger" onclick="">Reset Password</button>
                 </div>
-                <hr>
+                <!-- hr>
                 <div class="authenticate-with mb-3">
                     <div>Or</div>
                 </div>
@@ -57,7 +57,7 @@
                         <button id="signin-ms" type="button" class="btn btn-large btn-secondary width-full" onclick="">Continue with
                             Microsoft</button>
                     </div>
-                </div>
+                </div -->
             </div>
         </form>
     </section>

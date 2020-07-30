@@ -14,9 +14,9 @@ let props = {
 }
 
 // Render account view for bad request
-let badRequest = (req, res) => {
-    res.status(400)
-    res.render('account', { title: props.title, theme: props.theme, user: req.user, messages: { error: 'Invalid request. Unable to perform account update.' } })
+let badRequest = (req, res, show, status, msg) => {
+    typeof(status) === 'number' ? res.status(status) : res.status(400);
+    res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: show, messages: { error: msg ? msg : 'Invalid account update request.' } })
 }
 
 // Login & Security updates form handler
@@ -26,31 +26,46 @@ let lsFormHandler = async (req, res) => {
     let formValidated = false
     let formFields = {}
 
-    //Preferred Username and Emails
+    if(!req.body) {
+        badRequest(req,res,'ls')
+        return
+    }
+
+    //Validate username
     if (validator.isNotNull(req.body.username) && validator.isEmailAddress(req.body.username)) {
         u.preferredUsername = String(req.body.username)
         formFields.username = { class: '', value: u.preferredUsername }
     } else {
-        badRequest(req,res)
+        badRequest(req,res,'ls')
         return
     }
 
-    //Password
-    if (validator.isNotNull(req.body.password) && validator.isNotNull(req.body['password-confirmation'])) {
-        if (req.body.password == req.body['password-confirmation']) {
-            const pwHash = await bcrypt.hash(String(req.body.password), 10)
-            u.password = pwHash
+    //Authenticate user and validate passwords
+    if (req.body.password && req.body.nw_pwd && req.body.nw_pwd_confirm) {
+        if (req.body.nw_pwd == req.body.nw_pwd_confirm) {
+            const usr = await user.read({preferredUsername: u.preferredUsername },{limit: 1})
+            if (await bcrypt.compare(req.body.password, usr.password)) {
+                const nwPwHash = await bcrypt.hash(String(req.body.nw_pwd), 10)
+                u.password = nwPwHash
+            } else {
+                res.status(403)
+                res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: 'ls', messages: { error: 'Authentication failed. Incorrect password.' } })
+                return
+            }
         } else {
-            formFields.password = {
+            formFields.nw_pwd = {
+                class: 'is-invalid',
+                message: 'Invalid or mismatched passwords'
+            }
+            formFields.nw_pwd_confirm = {
                 class: 'is-invalid',
                 message: 'Invalid or mismatched passwords'
             }
         }
     } else {
-        formFields.password = {
-            class: 'is-invalid',
-            message: 'Invalid or mismatched passwords'
-        }
+        console.log(req.body.password)
+        badRequest(req,res,'ls',400,'Passwords cannot be blank')
+        return
     }
 
     let hasInvalids = false;
@@ -64,6 +79,7 @@ let lsFormHandler = async (req, res) => {
 
     hasInvalids ? formValidated = false : formValidated = true
 
+    // If form validate update the user login and security fields
     if (!formValidated) {
         if (debug) {
             console.log('Invalid update account request received.')
@@ -73,6 +89,7 @@ let lsFormHandler = async (req, res) => {
         formFields.theme = props.theme
         formFields.messages = { info: 'Account could not be updated.' }
         formFields.user = req.user
+        formFields.pane = 'ls'
         res.status(400)
         res.render('account', formFields)
         return
@@ -80,7 +97,7 @@ let lsFormHandler = async (req, res) => {
         try {
             const result = await user.update({ preferredUsername: u.preferredUsername }, { password: u.password })
             if (debug) console.log('User account updated for ' + u.preferredUsername)
-            res.render('account', {user: req.user, title: props.title, theme: props.theme, messages: {success: 'Account updated.'}})
+            res.render('account', {user: req.user, title: props.title, theme: props.theme, messages: {success: 'Account updated.'}, pane: 'ls'})
         } catch (e) {
             console.error(e)
             res.status(500)
@@ -111,13 +128,26 @@ let prFormHandler = async (req, res) => {
 
 account.get('/', (req, res) => {
     if (validator.isNotNull(req.user)) {
-        res.render('account', { title: props.title, theme: props.theme, user: req.user })
+        let qd = req.query.data
+        let panel = undefined
+        if(qd) {
+            switch(qd.show){
+                case 'ls':
+                case 'ad':
+                case 'or':
+                case 'pm':
+                case 'pr':
+                    panel = qd.show
+                    break
+                default:
+                    panel = 'ci'
+            }
+        }
+        res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: panel })
     } else {
         props.messages = {error: "You need to be signed in."}
         res.render('signin', props, (err, html) => {
-            console.log('Error encountered during view render')
-            console.error(err)
-            res.status(500).send(html)
+            res.status(403).send(html)
         })
     }
 })
@@ -151,9 +181,7 @@ account.post('/', async (req, res) => {
     } else {
         props.messages = { error: "You need to be signed in." }
         res.render('signin', props, (err, html) => {
-            console.log('Error encountered during view render')
-            console.error(err)
-            res.status(500).send(html)
+            res.status(403).send(html)
         })
     }
 })

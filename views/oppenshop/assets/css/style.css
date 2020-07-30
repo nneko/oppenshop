@@ -270,7 +270,7 @@ bottom: .5em;
 }
 
 .main-center-section {
-    margin-top: 15rem;
+    margin: 12rem auto;
     width: 80%;
 }
 
@@ -294,6 +294,10 @@ bottom: .5em;
 
 .pane-h2 {
     color: #444;
+}
+
+.red-alert {
+    color: red;
 }
 
 #address-table th, td {

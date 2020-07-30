@@ -38,7 +38,7 @@ router.get('/auth/google/callback',
 router.get('/', (req, res) => {
     let name = undefined
     let user = undefined
-    if(validator.isNotNull(req.user)) {
+    if(validator.hasActiveSession(req)) {
 	user = req.user
         if(validator.isNotNull(req.user.name)) {
             name = req.user.name.givenName
@@ -58,7 +58,7 @@ router.use((req, res, next) => {
     if (req.accepts('html')) {
         let name = undefined
         let user = undefined
-    	if(validator.isNotNull(req.user)) {
+    	if(validator.hasActiveSession(req)) {
             user = req.user
             if(validator.isNotNull(req.user.name)) {
                 name = req.user.name.givenName

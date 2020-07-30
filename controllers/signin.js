@@ -1,6 +1,7 @@
 const cfg = require('../configuration/index.js')
 const express = require('express')
 const passport = require('passport')
+const validator = require('../utilities/validator.js')
 
 let signin = express.Router()
 
@@ -10,7 +11,11 @@ let props = {
 }
 
 signin.get('/', (req, res) => {
-    res.render('signin', props)
+    if(validator.hasActiveSession(req)){
+        res.redirect('/')
+    } else {
+        res.render('signin', props)
+    }
 })
 
 signin.post('/', passport.authenticate('local', {

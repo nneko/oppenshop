@@ -180,7 +180,7 @@ if(!module.parent){
             if (req.accepts('html')) {
                 let name = undefined
                 let user = undefined
-                if (validator.isNotNull(req.user)) {
+                if (validator.hasActiveSession(req)) {
                     user = req.user
                     if (validator.isNotNull(req.user.name)) {
                         name = req.user.name.givenName

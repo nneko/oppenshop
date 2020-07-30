@@ -22,4 +22,13 @@ validator.isAuthProvider = (provider) => {
     return isProvider
 }
 
+validator.hasActiveSession = (r) => {
+    if(r.session && r.user){
+        if(r.session.passport) {
+            return (r.session.passport.user == r.user.id)
+        }
+    }
+    return false
+}
+
 module.exports = validator

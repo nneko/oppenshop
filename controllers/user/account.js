@@ -19,8 +19,20 @@ let badRequest = (req, res, show, status, msg) => {
     res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: show, messages: { error: msg ? msg : 'Invalid account update request.' } })
 }
 
+// Render account view for bad request
+let _403redirect = (req, res, url, msg) => {
+    res.status(403);
+    res.render('signin', { title: props.title, theme: props.theme, url: url, messages: { error: msg ? msg : 'You must be signed in.' } })
+}
+
 // Login & Security updates form handler
 let lsFormHandler = async (req, res) => {
+
+    if(!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=ls', 'You need to be signed in.')
+        return
+    }
+
     let u = {}
 
     let formValidated = false
@@ -64,7 +76,7 @@ let lsFormHandler = async (req, res) => {
         }
     } else {
         console.log(req.body.password)
-        badRequest(req,res,'ls',400,'Passwords cannot be blank')
+        badRequest(req,res,'ls',400,'Passwords cannot be blank.')
         return
     }
 
@@ -109,25 +121,45 @@ let lsFormHandler = async (req, res) => {
 // Contact information updates form handler
 let ciFormHandler = async (req, res) => {
 
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=ci', 'You must be signed in.')
+        return
+    }
+
 }
 
 // New address updates form handler
 let naFormHandler = async (req, res) => {
+
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=na', 'You must be signed in.')
+        return
+    }
 
 }
 
 // Payment method updates form handler
 let pmFormHandler = async (req, res) => {
 
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pm', 'You must be signed in.')
+        return
+    }
+
 }
 
-// Preference updates form handler
+// Preferences updates form handler
 let prFormHandler = async (req, res) => {
+
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        return
+    }
 
 }
 
 account.get('/', (req, res) => {
-    if (validator.isNotNull(req.user)) {
+    if (validator.hasActiveSession(req)) {
         let qd = req.query.data
         let panel = undefined
         if(qd) {
@@ -153,8 +185,8 @@ account.get('/', (req, res) => {
 })
 
 account.post('/', async (req, res) => {
-    if (validator.isNotNull(req.user)) {
-        try {
+    try {
+        if (validator.hasActiveSession(req)) {
             let form = req.body
 
             // Check form id and pass off to appropriate form handler. Otherwise if no handler found render account page with unable to process request error message
@@ -173,16 +205,13 @@ account.post('/', async (req, res) => {
                 default:
                     badRequest(res, req)
             }
-        } catch (e) {
-            console.error(e)
-            res.status(500)
-            res.render('error', { error: { status: 500, message: 'Account update error' }, name: '', user: req.user })
+        } else {
+        _403redirect(req,res,'/user/account','You need to be signed in.')
         }
-    } else {
-        props.messages = { error: "You need to be signed in." }
-        res.render('signin', props, (err, html) => {
-            res.status(403).send(html)
-        })
+    } catch (e) {
+        console.error(e)
+        res.status(500)
+        res.render('error', { error: { status: 500, message: 'Account update error' }, name: '', user: req.user })
     }
 })
 

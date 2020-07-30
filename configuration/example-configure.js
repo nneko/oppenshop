@@ -31,7 +31,9 @@ environment.development = {
    mailRelayPassword: 'xxxxxxxx',
    mailDomain: 'xxxxxxxx',
    mailSender: 'sender@xxxxxxxx.xxx',
-   verifyUsers: false
+   verifyUsers: false,
+   googleClientID: 'xxxxxxx',
+   googleClientSecret: 'xxxxxxxx'
 };
 
 // Determine which environment was passed as a command-line argument

@@ -1,5 +1,6 @@
 const authProviderMap = {
-    native: 'local'
+    native: 'local',
+    google: 'google'
 }
 
 module.exports = authProviderMap

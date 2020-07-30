@@ -4,6 +4,7 @@ const path = require('path')
 const api = require('../api')
 const validator = require('../utilities/validator')
 const email_sender = require('../adapters/messaging/mailer.js')
+const passport = require('passport')
 let router = express.Router()
 
 let props = {
@@ -20,10 +21,18 @@ router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 router.use('/signout', require('./signout'))
 router.use('/verify', require('./verify'))
-router.use('/sell', require('./sell'));
+router.use('/sell', require('./sell'))
 router.use('/user/account', require('./user/account'))
 router.use('/user/resetpassword', require('./user/resetpassword'))
 router.use('/reset', require('./reset'))
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile email'] }))
+//router.get('/auth/google/callback', require('./google'))
+router.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/signin', session: true }),
+  function(req, res) {
+      req.session.context = {title: props.title, theme: props.theme, name: req.user.name.givenName, user: req.user}
+      res.redirect('/')
+  })
 
 
 router.get('/', (req, res) => {

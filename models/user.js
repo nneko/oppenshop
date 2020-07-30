@@ -71,8 +71,7 @@ user.read = (properties, options) => {
                             resolve(cursor.toArray())
                             break
                     }
-                }
-                if(typeof(options.findBy) !== 'undefined') {
+                } else if(typeof(options.findBy) !== 'undefined') {
                     switch(options.findBy){
                         case 'id':
                             const result = await userCollection.findOne({'_id': db.getObjectId(properties)})
@@ -83,6 +82,11 @@ user.read = (properties, options) => {
                             resolve(cursor.toArray())
                             break
                     }
+                } else {
+                    let e = new Error('Invalid options to find operator')
+                    e.name = 'UserError'
+                    e.type = 'Find Operation'
+                    throw e
                 }
             } else {
                 const cursor = await userCollection.find(properties)

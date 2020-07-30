@@ -158,6 +158,43 @@ let prFormHandler = async (req, res) => {
 
 }
 
+// Deletion form handler
+let deleteHandler = async (req, res) => {
+
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        return
+    } else {
+        try {
+            if (!req.body) {
+                badRequest(req, res, 'pr')
+                return
+            }
+
+            if (req.user.id != req.body.uid) {
+                badRequest(req, res, 'pr', 403, 'Bad request. Permission denied.')
+                return
+            }
+            let u = await user.read(req.body.uid,{findBy: 'id'})
+            req.logout()
+            const deleted = await user.delete({preferredUsername: u.preferredUsername})
+            if(deleted.deletedCount > 0){
+                res.render('index', { name: undefined, user: undefined, title: props.title, theme: props.theme, messages: { success: 'Account deleted.' } })
+            } else {
+                let e = new Error('Deletion failed')
+                e.name = 'UserError'
+                e.type = 'Delete Operation'
+                throw e
+            }
+        } catch (e) {
+            console.error(e)
+            res.status(500)
+            res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: 'pr', messages: { error: 'Unable to delete account.' } })
+        }
+    }
+
+}
+
 account.get('/', (req, res) => {
     if (validator.hasActiveSession(req)) {
         let qd = req.query.data
@@ -194,6 +231,9 @@ account.post('/', async (req, res) => {
                 case 'ls':
                     await lsFormHandler(req,res)
                     break
+                case 'del':
+                    await deleteHandler(req,res)
+                    break
                 case 'ci':
                     break
                 case 'na':
@@ -203,7 +243,7 @@ account.post('/', async (req, res) => {
                 case 'pr':
                     break
                 default:
-                    badRequest(res, req)
+                    badRequest(req, res)
             }
         } else {
         _403redirect(req,res,'/user/account','You need to be signed in.')

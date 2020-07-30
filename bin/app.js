@@ -136,6 +136,8 @@ if(!module.parent){
         app.use(passport.initialize())
         app.use(passport.session())
         app.use(express.json())
+        app.use(express.raw())
+        app.use(express.text())
         app.use(express.urlencoded({ extended: true }))
         
         //app routes

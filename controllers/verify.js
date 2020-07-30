@@ -97,6 +97,7 @@ verify.get('/', async (req, res) => {
         let status = 500
         props.messages = { error: 'Unable to complete verification due to error. Please try again later.' }
         res.render('verify', props, (err, html) => {
+            if(err) console.error(err)
             res.status(status).send(html)
         })
     }
@@ -135,6 +136,7 @@ verify.post('/', async (req, res) => {
         }
         formFields.messages = {error: 'Please enter valid user details'}
         res.render('verify', formFields, (err, html) => {
+            if(err) console.error(err)
             res.status(400).send(html)
         })
     } else {
@@ -179,6 +181,7 @@ verify.post('/', async (req, res) => {
                 formFields.messages = {error: 'Verification link could not be sent. Please try again later.'}
             }
             res.render('verify', formFields, (err, html) => {
+                if(err) console.error(err)
                 res.status(status).send(html)
             })
         }

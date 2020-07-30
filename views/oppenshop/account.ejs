@@ -15,9 +15,23 @@
             </div>
             <div class="col-8">
                 <div class="content-pane tab-content" id="account-settings-tab-content">
-                    <% if(typeof(error) !== 'undefined') { %>
+                    <% if(typeof(messages.success) !== 'undefined') { %>
+                    <div id="main-alert" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= messages.success %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    <% } %>
+                    <% if(typeof(messages.info) !== 'undefined') { %>
+                    <div id="main-alert" class="alert alert-primary alert-dismissible fade show" role="alert">
+                        <%= messages.info %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    <% } %>
+                    <% if(typeof(messages.error) !== 'undefined') { %>
                     <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <%= error %>
+                        <%= messages.error %>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
                     </div>
@@ -27,10 +41,11 @@
                         <section class="standard-form-section">
                             <form id="security-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
                                 novalidate>
+                                <input type="hidden" name="id" value="ls">
                                 <div class="form-group">
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text" id="username-basic-addon">Email</span>
+                                            <span class="input-group-text" id="username-basic-addon">Username</span>
                                         </div>
                                         <input id="username" class="form-control <% if(typeof(username) !== 'undefined') { %><%= username.class %><% } %>"
                                             type="text" name="username" placeholder="Email Address"
@@ -60,7 +75,7 @@
                                             <span class="input-group-text" id="passowrd-basic-addon">Re-enter Password</span>
                                         </div>
                                         <input id="repassword" class="form-control <% if(typeof(password) !== 'undefined') { %><%= password.class %><% } %>"
-                                            type="password" name="password" value="" aria-label="Password" aria-describedby="password-basic-addon" size="25"
+                                            type="password" name="password-confirmation" value="" aria-label="Password" aria-describedby="password-basic-addon" size="25"
                                             required>
                                         <div id="invalid-password" class="invalid-feedback">
                                             <% if(typeof(password) !== 'undefined' && password.class == 'is-invalid') { %><%= password.message %><% } else { %>Please
@@ -81,6 +96,7 @@
                         <section class="standard-form-section">
                             <form id="contact-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
                                 novalidate>
+                                <input type="hidden" name="id" value="ci">
                                 <div class="form-group">                            
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
@@ -230,6 +246,7 @@
                             <h3>Add a new address</h3>
                             <form id="addresses-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
                             novalidate>
+                            <input type="hidden" name="id" value="na">
                                 <div class="form-group">
                                     <div class="input-group mb-3">
                                         <div class="input-group mb-3">
@@ -347,6 +364,8 @@
                         <section class="standard-form-section">
                             <form id="payments-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
                                 novalidate>
+
+                                <input type="hidden" name="id" value="pm">
                                 <div class="form-group">
                                     <hr>
                                     <div id="payment-add-button-container">
@@ -361,6 +380,8 @@
                         <section class="standard-form-section">
                             <form id="settings-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
                                 novalidate>
+
+                                <input type="hidden" name="id" value="pr">
                                 <div class="form-group">
                                     <hr>
                                     <h3>Remove Account</h3>

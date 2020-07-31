@@ -36,31 +36,38 @@ let _403redirect = (req, res, url, msg) => {
 }
 
 let getPrimaryField = (list) => {
-    primary = false
-    
-    if(validator.isNotNull(list)) {
-        for (const k of Object.entries(list)) {
-            if(list[k] && list[k].primary) {
-                primary = list[k]
+    let field = null
+
+    if (validator.isNotNull(list)) {
+        for (let i = 0; i < list.length; i++) {
+            let e = new_list[i]
+            let p = undefined
+            for (const k of Object.keys(e)) {
+                if (k == 'primary') {
+                    p = e
+                    break
+                }
+            }
+            if(p) {
+                field = p
+                break
             }
         }
     }
-
-    return primary
+    return field
 }
 
 let removePrimaryFields = (list) => {
-    new_list = list
+    let new_list = list
 
     if (validator.isNotNull(new_list)) {
-        for (let i = 0; i < list.length; i++) {
+        for (let i = 0; i < new_list.length; i++) {
             let e = new_list[i]
             for (const k of Object.keys(e)) {
                 if(k == 'primary') delete e[k]
             }
         }
     }
-    console.log(new_list)
     return new_list
 }
 
@@ -219,7 +226,7 @@ let ciFormHandler = async (req, res) => {
     }
 
     //Validate address
-    if (validator.isNotNull(form.addressStreet) && validator.isNotNull(form.addressLocality && validator.isNotNull(form.addressRegion) && validator.isNotNull(form.addressPostcode) && validator.isNotNull(form.addressCountry))) {
+    if (validator.isNotNull(form.addressStreet) && validator.isNotNull(form.addressLocality) && validator.isNotNull(form.addressRegion) && validator.isNotNull(form.addressPostcode) && validator.isNotNull(form.addressCountry)) {
 
         usr.addresses ? u.addresses = usr.addresses : u.addresses = [];
 
@@ -247,7 +254,7 @@ let ciFormHandler = async (req, res) => {
         formFields.addressRegion = { class: 'valid', value: form.addressRegion}
         formFields.addressPostcode = { class: 'valid', value: form.addressPostcode}
         formFields.addressCountry = { class: 'valid', value: form.addressCountry}
-    } else {
+    } else if(form.addressStreet || form.addressLocality || form.addressRegion || form.addressPostcode || form.addressCountry) {
         formFields.addressStreet = { class: 'is-invalid', value: form.addressStreet }
         formFields.addressLocality = { class: 'is-invalid', value: form.addressLocality }
         formFields.addressRegion = { class: 'is-invalid', value: form.addressRegion }
@@ -376,7 +383,7 @@ account.get('/', (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query.data
-            let panel = undefined
+            let panel = 'ci'
             if(qd) {
                 switch(qd.show){
                     case 'ls':
@@ -403,15 +410,33 @@ account.get('/', (req, res) => {
             if(!validator.isLocalUserAccount(req.user)){
                 dForms.security = true
             }
+            let viewData = { title: props.title, theme: props.theme, user: req.user, pane: panel, disabledForms: dForms }
 
-            res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: panel, disabledForms: dForms })
+            const usr = user.read(req.user.id,{findBy: 'id'})
+            let primaryPhoneNumber = getPrimaryField(usr.phoneNumbers)
+            let primaryAddress = getPrimaryField(usr.addresses)
+            if(primaryPhoneNumber) {
+                viewData.phone = primaryPhoneNumber.value
+            }
+
+            if(primaryAddress) {
+                viewData.addressStreet = primaryAddress.streetAddress
+                viewData.addressLocality = primaryAddress.locality
+                viewData.addressRegion = primaryAddress.region
+                viewData.addressPostcode = primaryAddress.postalCode
+                viewData.addressCountry = primaryAddress.country
+            }
+            
+            res.render('account', viewData)
         } else {
             props.messages = {error: "You need to be signed in."}
-            res.render('signin', props, (err, html) => {
-                res.status(403).send(html)
-            })
+            res.status(403)
+            res.render('signin', props)
         }
     } catch (e) {
+        console.error(e)
+        res.status(500)
+        res.render('error', { error: { status: 500, message: 'Error retreiving account data' }, name: '', user: req.user })
 
     }
 })

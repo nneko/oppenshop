@@ -117,9 +117,8 @@ signup.post('/', async (req,res) => {
             console.log('Invalid signup request received. Missing fields: ')
             console.log(formFields)
         }
-        res.render('signup',formFields, (err, html) => {
-            res.status(400).send(html)
-        })
+        res.status(400)
+        res.render('signup',formFields)
     } else {
         try {
             let verificationToken = generator.randomString(32)
@@ -147,9 +146,8 @@ signup.post('/', async (req,res) => {
                     status = 403
                 } 
             }
-            res.render('signup',formFields,(err, html) => {
-                res.status(status).send(html)
-            })
+            res.status(status)
+            res.render('signup',formFields)
         }
     }
 })

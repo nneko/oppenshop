@@ -59,9 +59,8 @@ reset.post('/', async (req, res) => {
             console.log(formFields)
         }
         formFields.messages = {error: 'Please enter valid user details'}
-        res.render('reset', formFields, (err, html) => {
-            res.status(400).send(html)
-        })
+        res.status(400)
+        res.render('reset', formFields)
     } else {
         try {
             const userExists = await user.exists(u)
@@ -103,9 +102,8 @@ reset.post('/', async (req, res) => {
             } else {
                 formFields.messages = {error: 'Reset Password could not be sent. Please try again later.'}
             }
-            res.render('reset', formFields, (err, html) => {
-                res.status(status).send(html)
-            })
+            res.status(status)
+            res.render('reset', formFields)
         }
     }
     

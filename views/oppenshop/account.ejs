@@ -105,7 +105,7 @@
                             </form>
                         </section>
                     </div>
-                    <div class="tab-pane fade <% if(pane == 'ci' && typeof(pane) !== 'undefined') { %>show active<% } %>" id="contact-pane" role="tabpanel" aria-labelledby="contact-tab">
+                    <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'ci') { %>show active<% } %>" id="contact-pane" role="tabpanel" aria-labelledby="contact-tab">
                         <h2 class="pane-h2">Primary Contact Information</h2>
                         <section class="standard-form-section">
                             <form id="contact-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""

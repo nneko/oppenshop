@@ -50,22 +50,17 @@ let getPrimaryField = (list) => {
 }
 
 let removePrimaryFields = (list) => {
-    new_list = []
+    new_list = list
 
-    if (validator.isNotNull(list)) {
+    if (validator.isNotNull(new_list)) {
         for (let i = 0; i < list.length; i++) {
-            let o = {}
-            for (const k of Object.entries(list[i])) {
-                if (list[i][k] && list[i][k].primary) {
-                    continue
-                } else {
-                    o[k] = list[i][k]
-                }
+            let e = new_list[i]
+            for (const k of Object.keys(e)) {
+                if(k == 'primary') delete e[k]
             }
-            new_list[i] = o
         }
     }
-
+    console.log(new_list)
     return new_list
 }
 

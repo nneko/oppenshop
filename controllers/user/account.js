@@ -16,9 +16,17 @@ let props = {
 }
 
 // Render account view for bad request
-let badRequest = (req, res, show, status, msg) => {
+let badRequest = (req, res, show, status, msg, msgType) => {
     typeof(status) === 'number' ? res.status(status) : res.status(400);
-    res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: show, messages: { error: msg ? msg : 'Invalid account update request.' } })
+
+    let mtype = 'error'
+
+    typeof(msgType) === 'undefined' ? mtype = 'error' : mtype = msgType;
+    
+    let mObj = {}
+    mObj[mtype] = msg ? msg : 'Invalid account update request.' 
+
+    res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: show, messages:  mObj})
 }
 
 // Render account view for bad request
@@ -39,6 +47,26 @@ let getPrimaryField = (list) => {
     }
 
     return primary
+}
+
+let removePrimaryFields = (list) => {
+    new_list = []
+
+    if (validator.isNotNull(list)) {
+        for (let i = 0; i < list.length; i++) {
+            let o = {}
+            for (const k of Object.entries(list[i])) {
+                if (list[i][k].primary) {
+                    continue
+                } else {
+                    o[k] = list[i][k]
+                }
+            }
+            new_list[i] = o
+        }
+    }
+
+    return new_list
 }
 
 // Login & Security updates form handler
@@ -171,8 +199,8 @@ let ciFormHandler = async (req, res) => {
             givenName: String(form.givenName), 
             familyName: String(form.familyName)
         }
-        formFields.givenName = { class: '', value: form.givenName }
-        formFields.familyName = { class: '', value: form.familyName }
+        formFields.givenName = { class: 'valid', value: form.givenName }
+        formFields.familyName = { class: 'valid', value: form.familyName }
     } else {
         badRequest(req, res, 'ci', 400, 'You must provide the given and family names')
         return
@@ -188,15 +216,11 @@ let ciFormHandler = async (req, res) => {
             type: form.phoneType || "mobile",
             primary: true
         }
-        let prevPrimary = false
-        if(usr.phoneNumbers) prevPrimary = getPrimaryField(usr.phoneNumbers)
-        if(prevPrimary) {
-            delete prevPrimary.primary
-            u.phoneNumbers.push(prevPrimary)
-        }
+
+        u.phoneNumbers = removePrimaryFields(u.phoneNumbers)
         u.phoneNumbers.push(primaryPhone)
 
-        formFields.phone = { class: '', value: form.phone}
+        formFields.phone = { class: 'valid', value: form.phone}
     }
 
     //Validate address
@@ -220,19 +244,14 @@ let ciFormHandler = async (req, res) => {
             primary: true
         }
         if(!primaryAddr.formatted) delete primaryAddr.formatted
-        let prevPrimaryAddr = false
-        if (usr.addresses) prevPrimaryAddr = getPrimaryField(usr.addresses)
-        if (prevPrimaryAddr) {
-            delete prevPrimaryAddr.primary
-            u.addresses.push(prevPrimaryAddr)
-        }
-        u.phoneNumbers.push(primaryAddr)
+        u.addresses = removePrimaryFields(u.addresses)
+        u.addresses.push(primaryAddr)
 
-        formFields.addressStreet = { class: '', value: form.addressStreet}
-        formFields.addressLocality = { class: '', value: form.addressLocality}
-        formFields.addressRegion = { class: '', value: form.addressRegion}
-        formFields.addressPostcode = { class: '', value: form.addressPostcode}
-        formFields.addressCountry = { class: '', value: form.addressCountry}
+        formFields.addressStreet = { class: 'valid', value: form.addressStreet}
+        formFields.addressLocality = { class: 'valid', value: form.addressLocality}
+        formFields.addressRegion = { class: 'valid', value: form.addressRegion}
+        formFields.addressPostcode = { class: 'valid', value: form.addressPostcode}
+        formFields.addressCountry = { class: 'valid', value: form.addressCountry}
     } else {
         formFields.addressStreet = { class: 'is-invalid', value: form.addressStreet }
         formFields.addressLocality = { class: 'is-invalid', value: form.addressLocality }
@@ -268,9 +287,14 @@ let ciFormHandler = async (req, res) => {
         return
     } else {
         try {
-            const result = await user.update({ preferredUsername: u.preferredUsername }, u)
+            await user.update({ preferredUsername: u.preferredUsername }, u)
             if (debug) console.log('User account updated for ' + u.preferredUsername)
-            res.render('account', { user: req.user, title: props.title, theme: props.theme, messages: { success: 'Account updated.' }, pane: 'ci' })
+            formFields.title = props.title
+            formFields.theme = props.theme
+            formFields.user = req.user
+            formFields.messages = { success: 'Account updated.' }
+            formFields.pane = 'ci'
+            res.render('account', formFields)
         } catch (e) {
             console.error(e)
             res.status(500)
@@ -287,7 +311,7 @@ let naFormHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=na', 'You must be signed in.')
         return
     } else {
-        return badRequest(req,res,501,'ad','Functionality not implemented')
+        return badRequest(req,res,501,'ad','Functionality not implemented','info')
     }
 
 }
@@ -299,7 +323,7 @@ let pmFormHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=pm', 'You must be signed in.')
         return
     } else {
-        return badRequest(req, res, 501, 'ad', 'Functionality not implemented')
+        return badRequest(req, res, 501, 'pm', 'Functionality not implemented','info')
     }
 
 }
@@ -311,7 +335,7 @@ let prFormHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
         return
     } else {
-        return badRequest(req, res, 501, 'ad', 'Functionality not implemented')
+        return badRequest(req, res, 501, 'pr', 'Functionality not implemented','info')
     }
 
 }

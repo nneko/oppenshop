@@ -1,25 +1,25 @@
+<% if(typeof(messages.success) !== 'undefined') { %>
+<div id="main-alert-success" class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= messages.success %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+</div>
+<% } %>
+<% if(typeof(messages.info) !== 'undefined') { %>
+<div id="main-alert-info" class="alert alert-primary alert-dismissible fade show" role="alert">
+    <%= messages.info %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+</div>
+<% } %>
+<% if(typeof(messages.error) !== 'undefined') { %>
+<div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= messages.error %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+</div>
+<% } %>
 <main class="container">
-    <% if(typeof(messages.success) !== 'undefined') { %>
-    <div id="main-alert-success" class="alert alert-success alert-dismissible fade show" role="alert">
-        <%= messages.success %>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
-    </div>
-    <% } %>
-    <% if(typeof(messages.info) !== 'undefined') { %>
-    <div id="main-alert-info" class="alert alert-primary alert-dismissible fade show" role="alert">
-        <%= messages.info %>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
-    </div>
-    <% } %>
-    <% if(typeof(messages.error) !== 'undefined') { %>
-    <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
-        <%= messages.error %>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
-    </div>
-    <% } %>
     <section class="main-panel">
         <section class="main-center-section error-msg">
             <p>A <b>totally awesome way</b> of connecting buyers with sellers</p>

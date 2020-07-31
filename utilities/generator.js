@@ -134,15 +134,19 @@ generator.MIMEType = function (extension) {
 
 generator.formattedAddress = (addr) => {
     let addressString = ''
+    console.log(addr)
     if(addr) {
         let streetAddress = addr.addressStreet
         let locality = addr.addressLocality
         let region = addr.addressRegion
         let postalCode = addr.addressPostcode
         let country = addr.addressCountry
-        streetAddress && locality && region && postalCode && country ?
-        addressString = streetAddress + '\n' + locality + ', ' + region + ' ' + postalCode + ' ' + country : addressString = ''
+        if(streetAddress && locality && region && postalCode && country) {
+            addressString.concat(streetAddress + '\n' + locality + ', ' + region + ' ' + postalCode + ' ' + country)
+        }
     }
+    console.log('Formatted address to:')
+    console.log(addressString)
     return addressString
 }
 

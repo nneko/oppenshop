@@ -15,7 +15,7 @@ google.init = (passport,userModel) => {
     passport.use(new GoogleStrategy({
             clientID: cfg.googleClientID,
             clientSecret: cfg.googleClientSecret,
-            callbackURL: cfg.endpoint+"auth/google/callback"
+            callbackURL: cfg.endpoint+"auth/google/signin"
           },google.authenticate
         ))
     passport.serializeUser(google.serialize)
@@ -24,19 +24,24 @@ google.init = (passport,userModel) => {
 
 //google.authenticate = async (uid, pwd, done) => {
 google.authenticate = async (accessToken, refreshToken, profile, done) => {
+    console.log(profile)
     try {
         if(!model) throw new Error('Unable complete authentication. Model() not configured.')
+
         const user = await model.read({preferredUsername: profile._json.email},{limit: 1})
-	if(validator.isNotNull(user)) {
-            let isVerified = validator.isNotNull(user.verified) && (user.verified != false) ? true : false;
+        /*
+        * Validate if a profile already exists for the user. If one exists ensure that the provider is 'google'. Otherwise is no profile exists create one with google as the provider.
+        * If a profile already exists but is not provided by google then fail to authorize and throw error.
+        */
+        if(validator.isNotNull(user)) {
+            //Skip verification flag checks since google oauth service already verifies user identity
 
-            let verificationRequired = validator.isNotNull(cfg.verifyUsers) ? cfg.verifyUsers : false;
+            //Validate that user provide is google.
+            if(user.provider != 'google') {
+                return done(null, false, { message: 'Authentication failed. Cannot signin with google for previously created local account.' })
+            }
 
-            if (verificationRequired && (!isVerified)) {
-                return done(null, false, { message: 'Account verification required.' })
-            } 
-
-            //Extract only relevant user details
+            //Since provider is google populate session with relevant user data
             let u = {}
             u.id = user._id
             u.provider = user.provider
@@ -68,9 +73,7 @@ google.authenticate = async (accessToken, refreshToken, profile, done) => {
             delete u._raw
             delete u._json
             const result = await model.create(u)
-            //console.log(result)
             const user = await model.read({preferredUsername: u.preferredUsername},{limit: 1})
-            //console.log(user)
             u.id = user._id
             return done(null,u)
         }

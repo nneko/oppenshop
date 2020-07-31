@@ -25,15 +25,7 @@ router.use('/sell', require('./sell'))
 router.use('/user/account', require('./user/account'))
 router.use('/user/resetpassword', require('./user/resetpassword'))
 router.use('/reset', require('./reset'))
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile email'] }))
-//router.get('/auth/google/callback', require('./google'))
-router.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/signin', session: true }),
-  function(req, res) {
-      req.session.context = {title: props.title, theme: props.theme, name: req.user.name.givenName, user: req.user}
-      res.redirect('/')
-  })
-
+router.use('/auth/google', require('./auth/google_oauth'))
 
 router.get('/', (req, res) => {
     let name = undefined

@@ -31,4 +31,11 @@ validator.hasActiveSession = (r) => {
     return false
 }
 
+validator.isLocalUserAccount = (u) => {
+    if(validator.isNotNull(u)){
+        return u.provider == 'native' ? true : false
+    }
+    return false
+}
+
 module.exports = validator

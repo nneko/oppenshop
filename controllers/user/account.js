@@ -56,6 +56,12 @@ let lsFormHandler = async (req, res) => {
     if (req.body.password && req.body.nw_pwd && req.body.nw_pwd_confirm) {
         if (req.body.nw_pwd == req.body.nw_pwd_confirm) {
             const usr = await user.read({preferredUsername: u.preferredUsername },{limit: 1})
+
+            if(!validator.isLocalUserAccount(usr)) {
+                badRequest(req,res,'ls',403,'You are not allowed to update credentials for an external account.')
+                return
+            }
+
             if (await bcrypt.compare(req.body.password, usr.password)) {
                 const nwPwHash = await bcrypt.hash(String(req.body.nw_pwd), 10)
                 u.password = nwPwHash
@@ -196,28 +202,46 @@ let deleteHandler = async (req, res) => {
 }
 
 account.get('/', (req, res) => {
-    if (validator.hasActiveSession(req)) {
-        let qd = req.query.data
-        let panel = undefined
-        if(qd) {
-            switch(qd.show){
-                case 'ls':
-                case 'ad':
-                case 'or':
-                case 'pm':
-                case 'pr':
-                    panel = qd.show
-                    break
-                default:
-                    panel = 'ci'
+    try {
+        if (validator.hasActiveSession(req)) {
+            let qd = req.query.data
+            let panel = undefined
+            if(qd) {
+                switch(qd.show){
+                    case 'ls':
+                    case 'ad':
+                    case 'or':
+                    case 'pm':
+                    case 'pr':
+                        panel = qd.show
+                        break
+                    default:
+                        panel = 'ci'
+                }
             }
+            let dForms = {
+                security: false,
+                contact: false,
+                addresses: false,
+                orders: false,
+                payments: false,
+                settings: false
+            }
+
+            // Disable security credentials update for external accounts
+            if(!validator.isLocalUserAccount(req.user)){
+                dForms.security = true
+            }
+
+            res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: panel, disabledForms: dForms })
+        } else {
+            props.messages = {error: "You need to be signed in."}
+            res.render('signin', props, (err, html) => {
+                res.status(403).send(html)
+            })
         }
-        res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: panel })
-    } else {
-        props.messages = {error: "You need to be signed in."}
-        res.render('signin', props, (err, html) => {
-            res.status(403).send(html)
-        })
+    } catch (e) {
+
     }
 })
 

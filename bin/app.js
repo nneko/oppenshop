@@ -8,6 +8,7 @@ const passport = require('passport')
 
 const authLocal = require('../adapters/authentication/local')
 const authGoogle = require('../adapters/authentication/google')
+const authWindowsLive = require('../adapters/authentication/windowslive')
 const authToken = require('../adapters/authorization/jwt')
 const flash = require('express-flash')
 const session = require('express-session')
@@ -135,25 +136,10 @@ if(!module.parent){
         app.use(flash())
         authLocal.init(passport, require('../models/user'))
         authGoogle.init(passport, require('../models/user'))
-        authToken.init()
+        authWindowsLive.init(passport, require('../models/user'))
+	authToken.init()
         app.use(passport.initialize())
         app.use(passport.session())
-        /*passport.use(new GoogleStrategy({
-	    clientID: '935543720159-1ct37t6pbr7r23mfoean8dnl0ohd0jjn.apps.googleusercontent.com',
-	    clientSecret: 'RBo49yrL1hs0nIqLo2GmRwHe',
-	    callbackURL: cfg.endpoint+"auth/google/callback"
-	  },
-	  function(accessToken, refreshToken, profile, done) {
-	       console.log(profile)
-               let u = {}
-               u.preferredUsername = profile._json.email
-               //delete profile._raw
-               //delete profile._json
-               //delete profile.provider
-               console.log(profile)
-               return done(null,profile)
-	  }
-	))*/
 	
 	app.use(express.json())
         app.use(express.raw())

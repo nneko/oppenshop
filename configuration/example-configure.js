@@ -33,7 +33,9 @@ environment.development = {
    mailSender: 'sender@xxxxxxxx.xxx',
    verifyUsers: false,
    googleClientID: 'xxxxxxx',
-   googleClientSecret: 'xxxxxxxx'
+   googleClientSecret: 'xxxxxxxx',
+   windowsliveClientID: 'xxxxxxxxxx',
+   windowsliveClientSecret: 'xxxxxx'
 };
 
 // Determine which environment was passed as a command-line argument

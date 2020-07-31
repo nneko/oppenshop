@@ -32,11 +32,19 @@ google.authenticate = async (accessToken, refreshToken, profile, done) => {
         * If a profile already exists but is not provided by google then fail to authorize and throw error.
         */
         if(validator.isNotNull(user)) {
-            //Skip verification flag checks since google oauth service already verifies user identity
 
             //Validate that user provide is google.
             if(user.provider != 'google') {
                 return done(null, false, { message: 'Authentication failed. Cannot signin with google for previously created local account.' })
+            }
+
+            //Verification checks
+            let isVerified = validator.isNotNull(user.verified) && (user.verified != false) ? true : false;
+
+            let verificationRequired = validator.isNotNull(cfg.verifyUsers) ? cfg.verifyUsers : false;
+
+            if (verificationRequired && (!isVerified)) {
+                return done(null, false, { message: 'Account verification required.' })
             }
 
             //Since provider is google populate session with relevant user data

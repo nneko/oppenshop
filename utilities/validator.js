@@ -1,7 +1,16 @@
+/*
+ * Validates whether an object "is" something or "has" some property
+ * All methods return a boolean
+ *
+ */
 let validator = {}
 
 validator.isNotNull = (obj) => {
     return ((obj && obj !== 'null' && obj !== 'undefined') ? true : false)
+}
+
+validator.isPhoneNumber = (phone) => {
+    return typeof(phone) === 'string' ? true : false
 }
 
 validator.isEmailAddress = (email) => {

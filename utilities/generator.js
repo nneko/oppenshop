@@ -132,5 +132,19 @@ generator.MIMEType = function (extension) {
     return mimetype
 }
 
+generator.formattedAddress = (addr) => {
+    let addressString = ''
+    if(addr) {
+        let streetAddress = addr.addressStreet
+        let locality = addr.addressLocality
+        let region = addr.addressRegion
+        let postalCode = addr.addressPostcode
+        let country = addr.addressCountry
+        streetAddress && locality && region && postalCode && country ?
+        addressString = streetAddress + '\n' + locality + ', ' + region + ' ' + postalCode + ' ' + country : addressString = ''
+    }
+    return addressString
+}
+
 // Export the module
 module.exports = generator

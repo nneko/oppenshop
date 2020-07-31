@@ -3,6 +3,8 @@ const validator = require('../../utilities/validator')
 const user = require('../../models/user')
 const bcrypt = require('bcryptjs')
 const express = require('express')
+const converter = require('../../utilities/converter')
+const generator = require('../../utilities/generator')
 const debug = cfg.env == 'development' ? true : false
 //const passport = require('passport')
 
@@ -23,6 +25,20 @@ let badRequest = (req, res, show, status, msg) => {
 let _403redirect = (req, res, url, msg) => {
     res.status(403);
     res.render('signin', { title: props.title, theme: props.theme, url: url, messages: { error: msg ? msg : 'You must be signed in.' } })
+}
+
+let getPrimaryField = (list) => {
+    primary = false
+    
+    if(validator.isNotNull(list)) {
+        for (const k of Object.entries(list)) {
+            if(list[k] && list[k].primary) {
+                primary = list[k]
+            }
+        }
+    }
+
+    return primary
 }
 
 // Login & Security updates form handler
@@ -54,7 +70,7 @@ let lsFormHandler = async (req, res) => {
 
     //Authenticate user and validate passwords
     if (req.body.password && req.body.nw_pwd && req.body.nw_pwd_confirm) {
-        if (req.body.nw_pwd == req.body.nw_pwd_confirm) {
+        if (String(req.body.nw_pwd) == String(req.body.nw_pwd_confirm)) {
             const usr = await user.read({preferredUsername: u.preferredUsername },{limit: 1})
 
             if(!validator.isLocalUserAccount(usr)) {
@@ -62,7 +78,7 @@ let lsFormHandler = async (req, res) => {
                 return
             }
 
-            if (await bcrypt.compare(req.body.password, usr.password)) {
+            if (await bcrypt.compare(String(req.body.password), usr.password)) {
                 const nwPwHash = await bcrypt.hash(String(req.body.nw_pwd), 10)
                 u.password = nwPwHash
             } else {
@@ -81,7 +97,7 @@ let lsFormHandler = async (req, res) => {
             }
         }
     } else {
-        console.log(req.body.password)
+        console.log(String(req.body.password))
         badRequest(req,res,'ls',400,'Passwords cannot be blank.')
         return
     }
@@ -132,6 +148,136 @@ let ciFormHandler = async (req, res) => {
         return
     }
 
+    let u = {}
+
+    let formValidated = false
+    let formFields = {}
+
+    if (!req.body) {
+        badRequest(req, res, 'ci')
+        return
+    }
+
+    let form = converter.objectFieldsToString(req.body)
+
+    // Read existing stored user details
+    const usr = await user.read(form.uid, { findBy: 'id' })
+
+    u.preferredUsername = usr.preferredUsername
+
+    //Validate name
+    if (validator.isNotNull(form.givenName) && validator.isNotNull(form.familyName)) {
+        u.name = {
+            givenName: String(form.givenName), 
+            familyName: String(form.familyName)
+        }
+        formFields.givenName = { class: '', value: form.givenName }
+        formFields.familyName = { class: '', value: form.familyName }
+    } else {
+        badRequest(req, res, 'ci', 400, 'You must provide the given and family names')
+        return
+    }
+
+    //Validate phone
+    if (validator.isNotNull(form.phone) && validator.isPhoneNumber(form.phone)) {
+        
+        usr.phoneNumbers ? u.phoneNumbers = usr.phoneNumbers : u.phoneNumbers = [];
+
+        let primaryPhone  = {
+            value: form.phone,
+            type: form.phoneType || "mobile",
+            primary: true
+        }
+        let prevPrimary = false
+        if(usr.phoneNumbers) prevPrimary = getPrimaryField(usr.phoneNumbers)
+        if(prevPrimary) {
+            delete prevPrimary.primary
+            u.phoneNumbers.push(prevPrimary)
+        }
+        u.phoneNumbers.push(primaryPhone)
+
+        formFields.phone = { class: '', value: form.phone}
+    }
+
+    //Validate address
+    if (validator.isNotNull(form.addressStreet) && validator.isNotNull(form.addressLocality && validator.isNotNull(form.addressRegion) && validator.isNotNull(form.addressPostcode) && validator.isNotNull(form.addressCountry))) {
+
+        usr.addresses ? u.addresses = usr.addresses : u.addresses = [];
+
+        let primaryAddr = {
+            type: form.addressType || "home",
+            streetAddress: form.addressStreet,
+            locality: form.addressLocality,
+            region: form.addressRegion,
+            postalCode: form.addressPostcode,
+            country: form.addressCountry,
+            formatted: generator.formattedAddress({
+                streetAddress: form.addressStreet,
+                locality: form.addressLocality,
+                region: form.addressRegion,
+                postalCode: form.addressPostcode,
+                country: form.addressCountry}),
+            primary: true
+        }
+        if(!primaryAddr.formatted) delete primaryAddr.formatted
+        let prevPrimaryAddr = false
+        if (usr.addresses) prevPrimaryAddr = getPrimaryField(usr.addresses)
+        if (prevPrimaryAddr) {
+            delete prevPrimaryAddr.primary
+            u.addresses.push(prevPrimaryAddr)
+        }
+        u.phoneNumbers.push(primaryAddr)
+
+        formFields.addressStreet = { class: '', value: form.addressStreet}
+        formFields.addressLocality = { class: '', value: form.addressLocality}
+        formFields.addressRegion = { class: '', value: form.addressRegion}
+        formFields.addressPostcode = { class: '', value: form.addressPostcode}
+        formFields.addressCountry = { class: '', value: form.addressCountry}
+    } else {
+        formFields.addressStreet = { class: 'is-invalid', value: form.addressStreet }
+        formFields.addressLocality = { class: 'is-invalid', value: form.addressLocality }
+        formFields.addressRegion = { class: 'is-invalid', value: form.addressRegion }
+        formFields.addressPostcode = { class: 'is-invalid', value: form.addressPostcode }
+        formFields.addressCountry = { class: 'is-invalid', value: form.addressCountry }
+    }
+
+    let hasInvalids = false;
+
+    for (const k of Object.keys(formFields)) {
+        if (typeof (formFields[k].class) === 'undefined' || formFields[k].class == 'is-invalid') {
+            hasInvalids = true
+            break
+        }
+    }
+
+    hasInvalids ? formValidated = false : formValidated = true
+
+    // If form validate update the user login and security fields
+    if (!formValidated) {
+        if (debug) {
+            console.log('Invalid update account request received.')
+            console.log(formFields)
+        }
+        formFields.title = props.title
+        formFields.theme = props.theme
+        formFields.messages = { info: 'Account could not be updated. One or more fields had invalid entries.' }
+        formFields.user = req.user
+        formFields.pane = 'ci'
+        res.status(400)
+        res.render('account', formFields)
+        return
+    } else {
+        try {
+            const result = await user.update({ preferredUsername: u.preferredUsername }, u)
+            if (debug) console.log('User account updated for ' + u.preferredUsername)
+            res.render('account', { user: req.user, title: props.title, theme: props.theme, messages: { success: 'Account updated.' }, pane: 'ci' })
+        } catch (e) {
+            console.error(e)
+            res.status(500)
+            res.render('error', { title: props.title, theme: props.theme, user: req.user, messages: { error: 'Unable to complete account update.' } })
+        }
+    }
+
 }
 
 // New address updates form handler
@@ -140,6 +286,8 @@ let naFormHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
         _403redirect(req, res, '/user/account/?show=na', 'You must be signed in.')
         return
+    } else {
+        return badRequest(req,res,501,'ad','Functionality not implemented')
     }
 
 }
@@ -150,6 +298,8 @@ let pmFormHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
         _403redirect(req, res, '/user/account/?show=pm', 'You must be signed in.')
         return
+    } else {
+        return badRequest(req, res, 501, 'ad', 'Functionality not implemented')
     }
 
 }
@@ -160,6 +310,8 @@ let prFormHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
         _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
         return
+    } else {
+        return badRequest(req, res, 501, 'ad', 'Functionality not implemented')
     }
 
 }
@@ -259,12 +411,16 @@ account.post('/', async (req, res) => {
                     await deleteHandler(req,res)
                     break
                 case 'ci':
+                    await ciFormHandler(req, res)
                     break
                 case 'na':
+                    await naFormHandler(req, res)
                     break
                 case 'pm':
+                    await pmFormHandler(req, res)
                     break
                 case 'pr':
+                    await prFormHandler(req, res)
                     break
                 default:
                     badRequest(req, res)

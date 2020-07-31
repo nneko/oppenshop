@@ -416,15 +416,15 @@ account.get('/', (req, res) => {
             let primaryPhoneNumber = getPrimaryField(usr.phoneNumbers)
             let primaryAddress = getPrimaryField(usr.addresses)
             if(primaryPhoneNumber) {
-                viewData.phone = primaryPhoneNumber.value
+                viewData.phone = {value: primaryPhoneNumber.value}
             }
 
             if(primaryAddress) {
-                viewData.addressStreet = primaryAddress.streetAddress
-                viewData.addressLocality = primaryAddress.locality
-                viewData.addressRegion = primaryAddress.region
-                viewData.addressPostcode = primaryAddress.postalCode
-                viewData.addressCountry = primaryAddress.country
+                viewData.addressStreet = {value: primaryAddress.streetAddress}
+                viewData.addressLocality = {value: primaryAddress.locality}
+                viewData.addressRegion = {value: primaryAddress.region}
+                viewData.addressPostcode = {value: primaryAddress.postalCode}
+                viewData.addressCountry = {value: primaryAddress.country}
             }
             
             res.render('account', viewData)

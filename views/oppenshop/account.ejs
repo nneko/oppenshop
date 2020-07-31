@@ -164,10 +164,12 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="streetaddress-basic-addon">Street & No.</span>
                                                 </div>
-                                                <input id="addressStreet" class="form-control" type="text" name="addressStreet" value="" aria-label="Address"
+                                                <input id="addressStreet" class="form-control <% if(typeof(addressStreet) !== 'undefined') { %><%= addressStreet.class %><% } %>" type="text" name="addressStreet" value="<% if(typeof(addressStreet) !== 'undefined' && addressStreet.value) { %><%= addressStreet.value %><% } %>" aria-label="Address"
                                                     aria-describedby="streetaddress-basic-addon" size="25" required>
                                                 <div id="invalid-street" class="invalid-feedback">
+                                                    <% if(typeof(addressStreet) !== 'undefined' && addressStreet.class == 'is-invalid') { %><%= addressStreet.message %><% } else { %>
                                                     You must provide an address.
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </div>
@@ -176,17 +178,19 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="addressLocality-basic-addon">Community / Town / City</span>
                                                 </div>
-                                                <input id="addressLocality" class="form-control" type="text" name="addressLocality" value=""
+                                                <input id="addressLocality" class="form-control <% if(typeof(addressLocality) !== 'undefined') { %><%= addressLocality.class %><% } %>" type="text" name="addressLocality" value="<% if(typeof(addressLocality) !== 'undefined' && addressLocality.value) { %><%= addressLocality.value %><% } %>"
                                                     aria-label="Address" aria-describedby="addressLocality-basic-addon" size="25" required>
                                                 <div id="invalid-street" class="invalid-feedback">
+                                                    <% if(typeof(addressLocality) !== 'undefined' && addressLocality.class == 'is-invalid') { %><%= addressLocality.message %><% } else { %>
                                                     You must provide an address location.
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="form-group form-inline">
                                                 <label id="parishLabel" class="form-label" for="addressRegion">Parish</label>
-                                                <select id="addressRegion" class="form-control" type="text" name="addressRegion" value=""
+                                                <select id="addressRegion" class="form-control <% if(typeof(addressRegion) !== 'undefined') { %><%= addressRegion.class %><% } %>" type="text" name="addressRegion" value=""
                                                     aria-label="addressRegion" aria-describedby="addressRegion-basic-addon">
                                                     <option selected="selected">Kingston & St. Andrew</option>
                                                     <option>St. Catherine</option>
@@ -203,17 +207,21 @@
                                                     <option>St. Thomas</option>
                                                 </select>
                                                 <div id="invalid-region" class="invalid-feedback">
+                                                    <% if(typeof(addressRegion) !== 'undefined' && addressRegion.class == 'is-invalid') { %><%= addressRegion.message %><% } else { %>
                                                     You must select a region.
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="form-group form-inline">
                                                 <label id="postLabel" class="form-label" for="addressPostcode">Postcode</label>
-                                                <input id="addressPostcode" class="form-control" type="text" name="addressPostcode" value=""
+                                                <input id="addressPostcode" class="form-control <% if(typeof(addressPostcode) !== 'undefined') { %><%= addressPostcode.class %><% } %>" type="text" name="addressPostcode" value="<% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.value) { %><%= addressPostcode.value %><% } %>"
                                                     aria-label="Postcode" aria-describedby="addressPostcode-basic-addon" size="5" required>
                                                 <div id="invalid-postcode" class="invalid-feedback">
+                                                    <% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.class == 'is-invalid') { %><%= addressPostcode.message %><% } else { %>
                                                     Please enter a valid postal code.
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </div>
@@ -221,12 +229,14 @@
                                             <div class="form-group form-inline">
                                                 <div class="form-group form-inline">
                                                     <label id="addressCountryLabel" class="form-label" for="addressCountry">Country</label>
-                                                    <select id="addressCountry" class="form-control" type="text" name="addressCountry" value=""
+                                                    <select id="addressCountry" class="form-control <% if(typeof(addressCountry) !== 'undefined') { %><%= addressCountry.class %><% } %>" type="text" name="addressCountry" value=""
                                                         aria-label="addressCountry" aria-describedby="addressCountry-basic-addon" readonly>
                                                         <option selected="selected">Jamaica</option>
                                                     </select>
                                                     <div id="invalid-country" class="invalid-feedback">
+                                                        <% if(typeof(addressCountry) !== 'undefined' && addressCountry.class == 'is-invalid') { %><%= addressCountry.message %><% } else { %>
                                                         You must select a country.
+                                                        <% } %>
                                                     </div>
                                                 </div>
                                             </div>

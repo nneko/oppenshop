@@ -3,9 +3,9 @@ const passport = require('passport')
 
 let google_oauth = express.Router()
 
-google_oauth.get('/auth/google', passport.authenticate('google', { scope: ['profile email'] }))
+google_oauth.get('/', passport.authenticate('google', { scope: ['profile email'] }))
 
-google_oauth.get('/auth/google/signin',
+google_oauth.get('/signin',
     passport.authenticate('google', {
         successRedirect: '/',
         failureRedirect: '/signin',

@@ -1,9 +1,8 @@
 const cfg = require('../../configuration')
-const authStrategy = require('passport-local').Strategy
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const debug = cfg.env == 'development' ? true : false
-const bcrypt = require('bcryptjs')
 const validator = require('../../utilities/validator')
+const generator = require('../../utilities/generator')
 
 let model = false
 let google = {}
@@ -67,15 +66,54 @@ google.authenticate = async (accessToken, refreshToken, profile, done) => {
             }
             return done(null,u)
         } else {
-            let u = profile
-            u.preferredUsername = profile._json.email
-            delete u.id
-            delete u._raw
-            delete u._json
-            const result = await model.create(u)
-            const user = await model.read({preferredUsername: u.preferredUsername},{limit: 1})
+            let new_profile = profile
+            new_profile.preferredUsername = profile._json.email
+            profile._json.email_verified ? new_profile.verified = true : new_profile.verified = false;
+            if(!new_profile.verified){
+                new_profile.verificationToken = generator.randomString(32)
+            }
+            let primaryEmailSet = false
+            for(i=0;i<new_profile.emails.length;i++){
+                if(new_profile.emails[i].value == new_profile._json.email) {
+                    new_profile.emails[i].primary = true
+                    primaryEmailSet = true
+                    break
+                }
+            }
+            delete new_profile.id
+            delete new_profile._raw
+            delete new_profile._json
+            //Persist user profile
+            await model.create(new_profile)
+            
+            //Load user data
+            const user = await model.read({preferredUsername: new_profile.preferredUsername},{limit: 1})
+
+            //Extract only relevant user details for storage in session
+            let u = {}
             u.id = user._id
-            return done(null,u)
+            u.provider = user.provider
+            u.displayName = user.displayName
+            u.name = user.name
+            if (validator.isNotNull(user.emails)) {
+                u.emails = {}
+                for (const k of Object.keys(user.emails)) {
+                    if (user.emails[k].primary) {
+                        u.emails[k] = user.emails[k]
+                        break
+                    }
+                }
+            }
+            if (validator.isNotNull(user.photos)) {
+                u.photos = {}
+                for (const k of Object.keys(user.photos)) {
+                    if (user.photos[k].primary) {
+                        u.photos[k] = user.photos[k]
+                        break
+                    }
+                }
+            }
+            return done(null, u)
         }
     } catch(e) {
         return done(e)

@@ -23,7 +23,6 @@ google.init = (passport,userModel) => {
 
 //google.authenticate = async (uid, pwd, done) => {
 google.authenticate = async (accessToken, refreshToken, profile, done) => {
-    console.log(profile)
     try {
         if(!model) throw new Error('Unable complete authentication. Model() not configured.')
 

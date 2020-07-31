@@ -27,7 +27,11 @@ local.authenticate = async (uid, pwd, done) => {
 
             if (verificationRequired && (!isVerified)) {
                 return done(null, false, { message: 'Account verification required.' })
-            } 
+            }
+
+            if((!validator.isNotNull(user.password)) || (!validator.isNotNull(pwd))) {
+                return done(null, false, { message: 'Invalid password.' })
+            }
 
             if(await  bcrypt.compare(pwd,user.password)){
                 //Extract only relevant user details

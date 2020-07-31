@@ -69,7 +69,7 @@ reset.post('/', async (req, res) => {
 		        u = await user.read({ preferredUsername: u.preferredUsername }, { limit: 1 })
                 //console.log(u)
                 if(u.provider != 'native'){
-                    res.render('reset', { title: cfg.title, theme: cfg.template, messages: { error: 'Cannot reset passwords for third-party authenticated accounts' } })
+                    res.render('reset', { title: cfg.title, theme: cfg.template, messages: { error: 'You cannot reset passwords for external accounts' } })
                     return
                 }
                 let new_password = generator.randomString(10)

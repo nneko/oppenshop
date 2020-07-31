@@ -56,7 +56,7 @@ let removePrimaryFields = (list) => {
         for (let i = 0; i < list.length; i++) {
             let o = {}
             for (const k of Object.entries(list[i])) {
-                if (list[i][k].primary) {
+                if (list[i][k] && list[i][k].primary) {
                     continue
                 } else {
                     o[k] = list[i][k]

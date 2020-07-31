@@ -44,7 +44,7 @@ signup.post('/', async (req,res) => {
 
     //Preferred Username and Emails
     if(validator.isNotNull(req.body.username) && validator.isEmailAddress(req.body.username)) {
-        u.preferredUsername = String(req.body.username)
+        u.preferredUsername = String(req.body.username).toLowerCase()
         if(validator.isEmailAddress(req.body.username)) u.emails = [{value: u.preferredUsername, primary: true}]
         formFields.username = {class: 'is-valid', value: u.preferredUsername}
     } else {
@@ -88,72 +88,10 @@ signup.post('/', async (req,res) => {
     
     //Addresses
     let addresses = []
-    /*
-    let primaryAddress = {}
-    if (validator.isNotNull(req.body.addressStreet)) {
-        primaryAddress.streetAddress = String(req.body.addressStreet)
-        formFields.addressStreet = {class: 'is-valid', value: primaryAddress.streetAddress}
-     } else {
-        formFields.addressStreet = {
-            class: 'is-invalid',
-            message: 'Please provide a street address.'
-        }
-    }
-
-    if (validator.isNotNull(req.body.addressCity)) {
-        primaryAddress.locality = String(req.body.addressCity)
-    } else {
-        formFields.addressCity = {
-            class: 'is-invalid',
-            message: 'You must select a valid locality/city.'
-        }
-    }
-    
-    if (validator.isNotNull(req.body.addressState)) {
-        primaryAddress.region = String(req.body.addressState)
-    } else {
-        formFields.addressState = {
-            class: 'is-invalid',
-            message: 'You must select a valid Parish / State.'
-        }
-    }
-    
-    if (validator.isNotNull(req.body.addressPostcode)) {
-        primaryAddress.postalCode = String(req.body.addressPostcode)
-        formFields.addressPostcode = { class: 'is-valid', value: primaryAddress.postalCode}
-     } else {
-        formFields.addressPostcode = {
-            class: 'is-invalid',
-            message: 'You must enter a valid postal code.'
-        }
-    }
-    
-    if (validator.isNotNull(req.body.addressCountry)) {
-        primaryAddress.country = String(req.body.addressCountry)
-    } else {
-        formFields.addressCountry = {
-            class: 'is-invalid',
-            message: 'You must select a country.'
-        }
-    }
-    primaryAddress.primary = true
-    addresses.push(primaryAddress)    
-    */
     u.addresses = addresses
 
     //PhoneNumbers
     let phoneNumbers = []
-    /*
-    if (validator.isNotNull(req.body.phoneNumber)) {
-        phoneNumbers = [{value: String(req.body.phoneNumber), primary: true}]
-        formFields.phoneNumber = { class: 'is-valid', value: u.phoneNumbers[0] }
-    } else {
-        formFields.phoneNumber = {
-            class: 'is-invalid',
-            message: 'Please provide a valid phone number.'
-        }
-    }
-    */
     u.phoneNumbers = phoneNumbers
 
     if (!validator.isNotNull(req.body.tac)) {
@@ -189,12 +127,8 @@ signup.post('/', async (req,res) => {
             u.verified = false
             const result = await user.create(u)
             if(debug)console.log('User account created for '+u.preferredUsername)
-            // Add welcome email call
-            //signupEmailer.sendWelcome({name: req.body.givenName, email: u.preferredUsername})
-            // Add verify email call
             signupEmailer.sendEmailVerification({name: req.body.givenName, email: u.preferredUsername, token: u.verificationToken})
-            //res.redirect('/signin')
-            res.render('verify', { title: cfg.title, theme: cfg.template, messages: { check: 'A verification link has been sent via email.' } })
+            res.render('verify', { title: cfg.title, theme: cfg.template, messages: { info: 'A verification link has been sent via email.' } })
         } catch (e) {
             if(debug) console.log('Unable to create user account due to error: ')
             if(debug) console.log(e)

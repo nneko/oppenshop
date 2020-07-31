@@ -136,13 +136,13 @@ generator.formattedAddress = (addr) => {
     let addressString = ''
     console.log(addr)
     if(addr) {
-        let streetAddress = addr.addressStreet
-        let locality = addr.addressLocality
-        let region = addr.addressRegion
-        let postalCode = addr.addressPostcode
-        let country = addr.addressCountry
+        let streetAddress = addr.streetAddress
+        let locality = addr.locality
+        let region = addr.region
+        let postalCode = addr.postalCode
+        let country = addr.country
         if(streetAddress && locality && region && postalCode && country) {
-            addressString.concat(streetAddress + '\n' + locality + ', ' + region + ' ' + postalCode + ' ' + country)
+            addressString += addressString.concat(streetAddress + '\n' + locality + ', ' + region + ' ' + postalCode + ' ' + country)
         }
     }
     console.log('Formatted address to:')

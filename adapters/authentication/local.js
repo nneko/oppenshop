@@ -21,7 +21,7 @@ local.authenticate = async (uid, pwd, done) => {
         const user = await model.read({preferredUsername: uid},{limit: 1})
         
         if(validator.isNotNull(user)) {
-            let isVerified = validator.isNotNull(user.verified) && (user.verified != false) ? true : false;
+            let isVerified = user.verified
 
             let verificationRequired = validator.isNotNull(cfg.verifyUsers) ? cfg.verifyUsers : false;
 

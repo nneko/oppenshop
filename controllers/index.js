@@ -3,8 +3,7 @@ const express = require('express')
 const path = require('path')
 const api = require('../api')
 const validator = require('../utilities/validator')
-const email_sender = require('../adapters/messaging/mailer.js')
-const passport = require('passport')
+const userModel = require('../models/user')
 let router = express.Router()
 
 let props = {
@@ -29,16 +28,40 @@ router.use('/auth/google', require('./auth/google_oauth'))
 router.use('/auth/windowslive', require('./auth/windowslive_oauth'))
 router.use('/auth/facebook', require('./auth/facebook_oauth'))
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     let name = undefined
     let user = undefined
     if(validator.hasActiveSession(req)) {
-	user = req.user
-        if(validator.isNotNull(req.user.name)) {
-            name = req.user.name.givenName
+        try {
+            user = req.user
+            if(validator.isNotNull(req.user.name)) {
+                name = req.user.name.givenName
+            }
+
+            //Verification checks
+            let verificationRequired = validator.isNotNull(cfg.verifyUsers) ? cfg.verifyUsers : false;
+            const u = await userModel.read(user.id, {findBy: 'id'})
+
+            let isVerified = u && u.verified
+
+            if (verificationRequired && (!isVerified)) {
+                console.log(user)
+                console.log(isVerified)
+                req.logout()
+                res.render('verify', { title: props.title, theme: props.theme, name: undefined, user: undefined, messages: {error: 'Account verification is required.'} })
+                return
+            } else {
+                res.render('index', { title: props.title, theme: props.theme, name: name, user: user })
+            }
+        } catch (e) {
+            console.error(e)
+            res.render('error', { title: props.title, theme: props.theme, name: name, user: user, messages: {error: 'Error validating session.', status: 500} })
+
         }
     }
-    res.render('index', {title: props.title, theme: props.theme, name: name, user: user})
+    else {
+        res.render('index', {title: props.title, theme: props.theme, name: name, user: user})
+    }
 })
 
 //Default to 404 handler

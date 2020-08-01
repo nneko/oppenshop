@@ -41,7 +41,7 @@ windowslive.authenticate = async (accessToken, refreshToken, profile, done) => {
             }
 
             //Verification checks
-            let isVerified = validator.isNotNull(user.verified) && (user.verified != false) ? true : false;
+            let isVerified = user.verified
 
             let verificationRequired = validator.isNotNull(cfg.verifyUsers) ? cfg.verifyUsers : false;
 

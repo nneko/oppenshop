@@ -8,6 +8,7 @@ windowslive_oauth.get('/signin',
     passport.authenticate('windowslive', {
         successRedirect: '/',
         failureRedirect: '/signin',
+        failureFlash: true,
         session: true 
     })
 )/*,

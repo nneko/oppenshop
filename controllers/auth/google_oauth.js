@@ -9,6 +9,7 @@ google_oauth.get('/signin',
     passport.authenticate('google', {
         successRedirect: '/',
         failureRedirect: '/signin',
+        failureFlash: true,
         session: true 
     })
 )/*,

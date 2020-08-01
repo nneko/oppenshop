@@ -46,6 +46,7 @@ windowslive.authenticate = async (accessToken, refreshToken, profile, done) => {
             let verificationRequired = validator.isNotNull(cfg.verifyUsers) ? cfg.verifyUsers : false;
 
             if (verificationRequired && (!isVerified)) {
+                console.log('Authentication failure: ' + user.preferredUsername + ' is not verified.')
                 return done(null, false, { message: 'Account verification required.' })
             }
 

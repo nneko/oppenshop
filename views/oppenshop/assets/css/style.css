@@ -163,8 +163,23 @@ bottom: .5em;
     text-align: left;
 }
 
+.refer-to-signin {
+    margin-top: 1rem;
+}
+
+.signin-legend, .signup-legend {
+    color: #444;
+    font-size: 0.8rem;
+    text-align: left;
+}
+
+.signin-link {
+    font-weight: normal;
+    text-decoration: underline;
+}
+
 .signup-link {
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: bold;
     text-decoration: underline;
 }

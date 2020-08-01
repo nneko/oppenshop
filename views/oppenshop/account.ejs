@@ -44,6 +44,14 @@
                                     <input type="hidden" name="id" value="ls">
 
                                     <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                                    <div class="verfification-status mb-3">
+                                        <label>Verification Status</label>
+                                        <% if(typeof(verifiedUser) !== 'undefined' && verifiedUser) { %>
+                                        <span class="badge badge-success">verified</span>
+                                        <% } else { %>
+                                        <span><a href="/verify" class="badge badge-danger">unverified</a></span>
+                                        <% } %>
+                                    </div>
                                     <div class="form-group">
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">

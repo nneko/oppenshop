@@ -82,22 +82,27 @@ verify.get('/', async (req, res) => {
                 await user.update({ preferredUsername: u.preferredUsername }, {verified: true})
                 userData.name = u.name.givenName
                 verifyEmailer.sendWelcome(userData)
-                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { success: 'Your account has been verified.' } })
+                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { success: 'Your account has been verified.' }, user:req.user })
             } else {
                 console.log('Invalid verification request')
                 console.log(userData)
-                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { error: 'Verification unsuccessful. Invalid or expired request.' } })
+                res.render('verify', { title: cfg.title, theme: cfg.template, user: req.user, messages: { error: 'Verification unsuccessful. Invalid or expired request.' } })
             }
         }
         else {
-            res.render('verify', props)
+            let viewData = {
+                title: props.title, theme: props.template, user: req.user} 
+            res.render('verify', viewData)
         }
     } catch (e) {
         console.log(e)
         let status = 500
         props.messages = { error: 'Unable to complete verification due to error. Please try again later.' }
         res.status(status)
-        res.render('verify', props)
+        let viewData = {
+            title: props.title, theme: props.template, user: req.user
+        }
+        res.render('verify', viewData)
     }
 })
 
@@ -133,6 +138,7 @@ verify.post('/', async (req, res) => {
             console.log(formFields)
         }
         formFields.messages = {error: 'Please enter valid user details'}
+        formFields.user = req.user
         res.status(400)
         res.render('verify', formFields)
     } else {
@@ -152,9 +158,9 @@ verify.post('/', async (req, res) => {
                 await user.update(u,{verificationToken: verificationToken, verified: false})
                 verifyEmailer.sendEmailVerification({ name: usr.name.givenName, email: u.preferredUsername, token: verificationToken })
 
-                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { info: 'New verification link sent.' } })
+                res.render('verify', { title: cfg.title, theme: cfg.template, user: req.user, messages: { info: 'New verification link sent.' } })
             } else {
-                res.render('verify', { title: cfg.title, theme: cfg.template, messages: { error: 'Account is already verified.' } })
+                res.render('verify', { title: cfg.title, theme: cfg.template, user: req.user, messages: { error: 'Account is already verified.' } })
             }
         } catch (e) {
             if (debug) console.log('Unable to resend verification email due to error: ')
@@ -176,6 +182,7 @@ verify.post('/', async (req, res) => {
             } else {
                 formFields.messages = {error: 'Verification link could not be sent. Please try again later.'}
             }
+            formFields.user = req.user
             res.status(status)
             res.render('verify', formFields)
         }

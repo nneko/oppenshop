@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 const express = require('express')
 const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
+const { render } = require('../../bin/app')
 const debug = cfg.env == 'development' ? true : false
 //const passport = require('passport')
 
@@ -16,7 +17,12 @@ let props = {
 }
 
 // Render account view for bad request
-let badRequest = (req, res, show, status, msg, msgType) => {
+let badRequest = async (req, res, show, status, msg, msgType) => {
+    let verifiedUser = undefined
+    if(req.user) {
+        const u = await user.read(req.usr.id,{findBy: 'id'})
+        verifiedUser = u.verified
+    }
     typeof(status) === 'number' ? res.status(status) : res.status(400);
 
     let mtype = 'error'
@@ -32,7 +38,7 @@ let badRequest = (req, res, show, status, msg, msgType) => {
 // Render account view for bad request
 let _403redirect = (req, res, url, msg) => {
     res.status(403);
-    res.render('signin', { title: props.title, theme: props.theme, url: url, messages: { error: msg ? msg : 'You must be signed in.' } })
+    res.render('signin', { title: props.title, theme: props.theme, url: url, messages: { error: msg ? msg : 'You must be signed in.' }, verifiedUser: verifiedUser })
 }
 
 let getPrimaryField = (list) => {
@@ -40,7 +46,7 @@ let getPrimaryField = (list) => {
 
     if (validator.isNotNull(list)) {
         for (let i = 0; i < list.length; i++) {
-            let e = new_list[i]
+            let e = list[i]
             let p = undefined
             for (const k of Object.keys(e)) {
                 if (k == 'primary') {
@@ -73,100 +79,111 @@ let removePrimaryFields = (list) => {
 
 // Login & Security updates form handler
 let lsFormHandler = async (req, res) => {
+    try {
+        if(!validator.hasActiveSession(req)) {
+            _403redirect(req, res, '/user/account/?show=ls', 'You need to be signed in.')
+            return
+        }
 
-    if(!validator.hasActiveSession(req)) {
-        _403redirect(req, res, '/user/account/?show=ls', 'You need to be signed in.')
-        return
-    }
+        let u = {}
 
-    let u = {}
+        let formValidated = false
+        let formFields = {}
 
-    let formValidated = false
-    let formFields = {}
+        if(!req.body) {
+            await badRequest(req,res,'ls')
+            return
+        }
 
-    if(!req.body) {
-        badRequest(req,res,'ls')
-        return
-    }
+        const usr = await user.read(req.body.uid, { findBy: 'id' })
 
-    //Validate username
-    if (validator.isNotNull(req.body.username) && validator.isEmailAddress(req.body.username)) {
-        u.preferredUsername = String(req.body.username)
-        formFields.username = { class: '', value: u.preferredUsername }
-    } else {
-        badRequest(req,res,'ls')
-        return
-    }
+        if(!usr) {
+            _403redirect(req, res, '/user/account/?show=ls', 'You need to be signed in.')
+            return
+        }
 
-    //Authenticate user and validate passwords
-    if (req.body.password && req.body.nw_pwd && req.body.nw_pwd_confirm) {
-        if (String(req.body.nw_pwd) == String(req.body.nw_pwd_confirm)) {
-            const usr = await user.read({preferredUsername: u.preferredUsername },{limit: 1})
+        //Validate username
+        if (validator.isNotNull(req.body.username) && validator.isEmailAddress(req.body.username)) {
+            u.preferredUsername = String(req.body.username)
+            formFields.username = { class: '', value: u.preferredUsername }
+        } else {
+            await badRequest(req,res,'ls')
+            return
+        }
 
-            if(!validator.isLocalUserAccount(usr)) {
-                badRequest(req,res,'ls',403,'You are not allowed to update credentials for an external account.')
-                return
-            }
+        //Authenticate user and validate passwords
+        if (req.body.password && req.body.nw_pwd && req.body.nw_pwd_confirm) {
+            if (String(req.body.nw_pwd) == String(req.body.nw_pwd_confirm)) {
 
-            if (await bcrypt.compare(String(req.body.password), usr.password)) {
-                const nwPwHash = await bcrypt.hash(String(req.body.nw_pwd), 10)
-                u.password = nwPwHash
+                if(!validator.isLocalUserAccount(usr)) {
+                    await badRequest(req,res,'ls',403,'You are not allowed to update credentials for an external account.')
+                    return
+                }
+
+                if (await bcrypt.compare(String(req.body.password), usr.password)) {
+                    const nwPwHash = await bcrypt.hash(String(req.body.nw_pwd), 10)
+                    u.password = nwPwHash
+                } else {
+                    res.status(403)
+                    res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: 'ls', messages: { error: 'Authentication failed. Incorrect password.' }, verifiedUser: usr.verified })
+                    return
+                }
             } else {
-                res.status(403)
-                res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: 'ls', messages: { error: 'Authentication failed. Incorrect password.' } })
-                return
+                formFields.nw_pwd = {
+                    class: 'is-invalid',
+                    message: 'Invalid or mismatched passwords'
+                }
+                formFields.nw_pwd_confirm = {
+                    class: 'is-invalid',
+                    message: 'Invalid or mismatched passwords'
+                }
             }
         } else {
-            formFields.nw_pwd = {
-                class: 'is-invalid',
-                message: 'Invalid or mismatched passwords'
+            console.log(String(req.body.password))
+            await badRequest(req,res,'ls',400,'Passwords cannot be blank.')
+            return
+        }
+
+        let hasInvalids = false;
+
+        for (const k of Object.keys(formFields)) {
+            if (formFields[k].class == 'is-invalid') {
+                hasInvalids = true
+                break
             }
-            formFields.nw_pwd_confirm = {
-                class: 'is-invalid',
-                message: 'Invalid or mismatched passwords'
+        }
+
+        hasInvalids ? formValidated = false : formValidated = true
+
+        // If form validate update the user login and security fields
+        if (!formValidated) {
+            if (debug) {
+                console.log('Invalid update account request received.')
+                console.log(formFields)
+            }
+            formFields.title = props.title
+            formFields.theme = props.theme
+            formFields.messages = { info: 'Account could not be updated.' }
+            formFields.user = req.user
+            formFields.pane = 'ls'
+            formFields.verifiedUser = usr.verified
+            res.status(400)
+            res.render('account', formFields)
+            return
+        } else {
+            try {
+                const result = await user.update({ preferredUsername: u.preferredUsername }, { password: u.password })
+                if (debug) console.log('User account updated for ' + u.preferredUsername)
+                res.render('account', {user: req.user, title: props.title, theme: props.theme, messages: {success: 'Account updated.'}, pane: 'ls',verifiedUser: result.verified})
+            } catch (e) {
+                console.error(e)
+                res.status(500)
+                res.render('error', { title: props.title, theme: props.theme, user: req.user, messages: { error: 'Unable to complete account update.' } })
             }
         }
-    } else {
-        console.log(String(req.body.password))
-        badRequest(req,res,'ls',400,'Passwords cannot be blank.')
-        return
-    }
-
-    let hasInvalids = false;
-
-    for (const k of Object.keys(formFields)) {
-        if (formFields[k].class == 'is-invalid') {
-            hasInvalids = true
-            break
-        }
-    }
-
-    hasInvalids ? formValidated = false : formValidated = true
-
-    // If form validate update the user login and security fields
-    if (!formValidated) {
-        if (debug) {
-            console.log('Invalid update account request received.')
-            console.log(formFields)
-        }
-        formFields.title = props.title
-        formFields.theme = props.theme
-        formFields.messages = { info: 'Account could not be updated.' }
-        formFields.user = req.user
-        formFields.pane = 'ls'
-        res.status(400)
-        res.render('account', formFields)
-        return
-    } else {
-        try {
-            const result = await user.update({ preferredUsername: u.preferredUsername }, { password: u.password })
-            if (debug) console.log('User account updated for ' + u.preferredUsername)
-            res.render('account', {user: req.user, title: props.title, theme: props.theme, messages: {success: 'Account updated.'}, pane: 'ls'})
-        } catch (e) {
-            console.error(e)
-            res.status(500)
-            res.render('error', { title: props.title, theme: props.theme, user: req.user, messages: { error: 'Unable to complete account update.' } })
-        }
+    } catch (e) {
+        console.error(e)
+        render('error', { title: props.title, theme: props.theme, messages: { error: 'Unable to process request', status: 500 } })
     }
 }
 
@@ -184,7 +201,7 @@ let ciFormHandler = async (req, res) => {
     let formFields = {}
 
     if (!req.body) {
-        badRequest(req, res, 'ci')
+        await badRequest(req, res, 'ci')
         return
     }
 
@@ -204,7 +221,7 @@ let ciFormHandler = async (req, res) => {
         formFields.givenName = { class: 'valid', value: form.givenName }
         formFields.familyName = { class: 'valid', value: form.familyName }
     } else {
-        badRequest(req, res, 'ci', 400, 'You must provide the given and family names')
+        await badRequest(req, res, 'ci', 400, 'You must provide the given and family names')
         return
     }
 
@@ -284,6 +301,7 @@ let ciFormHandler = async (req, res) => {
         formFields.messages = { info: 'Account could not be updated. One or more fields had invalid entries.' }
         formFields.user = req.user
         formFields.pane = 'ci'
+        formFields.verifiedUser = usr.verified
         res.status(400)
         res.render('account', formFields)
         return
@@ -296,6 +314,7 @@ let ciFormHandler = async (req, res) => {
             formFields.user = req.user
             formFields.messages = { success: 'Account updated.' }
             formFields.pane = 'ci'
+            formFields.verifiedUser = usr.verified
             res.render('account', formFields)
         } catch (e) {
             console.error(e)
@@ -313,7 +332,8 @@ let naFormHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=na', 'You must be signed in.')
         return
     } else {
-        return badRequest(req,res,501,'ad','Functionality not implemented','info')
+        await badRequest(req,res,501,'ad','Functionality not implemented','info')
+        return
     }
 
 }
@@ -325,7 +345,7 @@ let pmFormHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=pm', 'You must be signed in.')
         return
     } else {
-        return badRequest(req, res, 501, 'pm', 'Functionality not implemented','info')
+        return await badRequest(req, res, 501, 'pm', 'Functionality not implemented','info')
     }
 
 }
@@ -337,7 +357,7 @@ let prFormHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
         return
     } else {
-        return badRequest(req, res, 501, 'pr', 'Functionality not implemented','info')
+        return await badRequest(req, res, 501, 'pr', 'Functionality not implemented','info')
     }
 
 }
@@ -351,12 +371,12 @@ let deleteHandler = async (req, res) => {
     } else {
         try {
             if (!req.body) {
-                badRequest(req, res, 'pr')
+                await badRequest(req, res, 'pr')
                 return
             }
 
             if (req.user.id != req.body.uid) {
-                badRequest(req, res, 'pr', 403, 'Bad request. Permission denied.')
+                await badRequest(req, res, 'pr', 403, 'Bad request. Permission denied.')
                 return
             }
             let u = await user.read(req.body.uid,{findBy: 'id'})
@@ -373,13 +393,13 @@ let deleteHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: 'pr', messages: { error: 'Unable to delete account.' } })
+            res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: 'pr', messages: { error: 'Unable to delete account.' }, verifiedUser: u.verified })
         }
     }
 
 }
 
-account.get('/', (req, res) => {
+account.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query.data
@@ -412,7 +432,8 @@ account.get('/', (req, res) => {
             }
             let viewData = { title: props.title, theme: props.theme, user: req.user, pane: panel, disabledForms: dForms }
 
-            const usr = user.read(req.user.id,{findBy: 'id'})
+            const usr = await user.read(req.user.id,{findBy: 'id'})
+            if(usr.verified) viewData.verifiedUser = usr.verified
             let primaryPhoneNumber = getPrimaryField(usr.phoneNumbers)
             let primaryAddress = getPrimaryField(usr.addresses)
             if(primaryPhoneNumber) {
@@ -436,7 +457,7 @@ account.get('/', (req, res) => {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retreiving account data' }, name: '', user: req.user })
+        res.render('error', { error: { status: 500, message: 'Error retrieving account data' }, name: '', user: req.user })
 
     }
 })
@@ -467,7 +488,7 @@ account.post('/', async (req, res) => {
                     await prFormHandler(req, res)
                     break
                 default:
-                    badRequest(req, res)
+                    await badRequest(req, res)
             }
         } else {
         _403redirect(req,res,'/user/account','You need to be signed in.')

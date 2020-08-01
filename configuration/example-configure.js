@@ -35,7 +35,9 @@ environment.development = {
    googleClientID: 'xxxxxxx',
    googleClientSecret: 'xxxxxxxx',
    windowsliveClientID: 'xxxxxxxxxx',
-   windowsliveClientSecret: 'xxxxxx'
+   windowsliveClientSecret: 'xxxxxx',
+   facebookAppID: 'xxxxxxx',
+   facebookAppSecret: 'xxxxx'
 };
 
 // Determine which environment was passed as a command-line argument

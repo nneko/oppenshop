@@ -27,6 +27,7 @@ router.use('/user/resetpassword', require('./user/resetpassword'))
 router.use('/reset', require('./reset'))
 router.use('/auth/google', require('./auth/google_oauth'))
 router.use('/auth/windowslive', require('./auth/windowslive_oauth'))
+router.use('/auth/facebook', require('./auth/facebook_oauth'))
 
 router.get('/', (req, res) => {
     let name = undefined

@@ -1,11 +1,24 @@
+//Standard Libraries
 const path = require('path')
 const logger = require('morgan')
 const http = require('http')
 
+//Configuration
+const cfg = require('../configuration')
+
+//Database backend
+const db = require('../adapters/storage/' + cfg.dbAdapter)
+
+//App middleware and runtime
 const express = require('express')
 const ejsLayouts = require('express-ejs-layouts')
-const passport = require('passport')
 
+//Utilities
+const validator = require('../utilities/validator.js')
+
+//Authentication
+const secretKey = cfg.secret
+const passport = require('passport')
 const authLocal = require('../adapters/authentication/local')
 const authGoogle = require('../adapters/authentication/google')
 const authWindowsLive = require('../adapters/authentication/windowslive')
@@ -15,16 +28,10 @@ const flash = require('express-flash')
 const session = require('express-session')
 const sessionStore = require('connect-mongo')(session)
 
-const cfg = require('../configuration')
-const secretKey = cfg.secret
-
-const db = require('../adapters/storage/' + cfg.dbAdapter)
-
 //const debug = cfg.env == 'development' ? true : false
 const debug = require('debug')('oppenshop:app')
 
-const validator = require('../utilities/validator.js')
-
+//Application Module
 const app = express()
 
 /**
@@ -116,30 +123,30 @@ if(!module.parent){
         app.use(logger('dev'))
         app.use(ejsLayouts)
         app.use(session({
+            name: 'session.sid',
+            secret: secretKey,
             cookie: {
                 httpOnly: true,
                 path: '/',
-                maxAge: validator.isNotNull(cfg.sessionTTL) ? cfg.sessionTTL : 60 * 60 * 1000
-
+                maxAge: cfg.sessionTTL
             },
-            name: 'session.sid',
-            secret: secretKey,
             store: new sessionStore({
                 client: db.getDriverClient(),
                 dbName: db.getName(),
                 collection: 'sessions',
                 secret: secretKey,
-                ttl: 1209600
+                ttl: cfg.sessionTTL
             }),
             resave: false,
-            saveUninitialized: false
+            saveUninitialized: false,
+            unset: 'destroy'
         }))
         app.use(flash())
         authLocal.init(passport, require('../models/user'))
         authGoogle.init(passport, require('../models/user'))
         authWindowsLive.init(passport, require('../models/user'))
-	authFacebook.init(passport, require('../models/user'))
-	authToken.init()
+	    authFacebook.init(passport, require('../models/user'))
+	    authToken.init()
         app.use(passport.initialize())
         app.use(passport.session())
 	
@@ -161,7 +168,7 @@ if(!module.parent){
             switch (statusCode) {
                 case 400:
                     message = 'Bad Request'
-                    console.log(err.stack)
+                    console.error(err.stack)
                     break
                 case 401:
                     message = 'Unauthorized'
@@ -177,10 +184,10 @@ if(!module.parent){
                     break
                 case 500:
                     message = 'Internal Server Error'
-                    console.log(err.stack)
+                    console.error(err.stack)
                     break
                 default:
-                    console.log(err.stack)
+                    console.error(err.stack)
                     break
             }
             res.status(statusCode)

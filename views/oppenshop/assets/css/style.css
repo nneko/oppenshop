@@ -73,6 +73,14 @@ table.dataTable thead .sorting_desc_disabled:before {
 bottom: .5em;
 }
 
+svg {
+    border: none;
+}
+
+.space-right-05 {
+    margin-right: 0.5rem;
+}
+
 #main-search-form {
     z-index: 10;
 }
@@ -203,7 +211,7 @@ bottom: .5em;
 
 .standard-form {
     max-width: 68%;
-    width: 60%;
+    width: 65%;
 }
 
 .standard-form label {
@@ -311,6 +319,21 @@ bottom: .5em;
     color: #444;
 }
 
+.tab-pane-h2 {
+    color: #444;
+    margin: 1rem;
+}
+
+.tab-hscroll-pane {
+    margin: 0 auto;
+    max-width: 600px;
+    overflow-x: scroll;
+}
+
+.address-table, .emails-table, .phone-numbers-table {
+    width: 100%;
+}
+
 .red-alert {
     color: red;
 }
@@ -385,6 +408,36 @@ white-space: nowrap;
         max-width: 50%;
         width: 50%;
     }
+}
+
+.small-icon {
+    width: 1rem;
+}
+
+.icon {
+    border: none;
+    width: 2rem;
+}
+
+.medium-icon {
+    width: 4rem;
+}
+
+.large-icon {
+    width: 8rem;
+}
+
+.extra-large-icon {
+    width: 8rem;
+}
+
+#account-settings-tablist svg {
+    margin-right: 1rem;
+}
+
+#account-settings-tab-content svg {
+    margin-right: 1rem;
+    width: 1rem;
 }
 
 @media screen and (max-width: 640px) {

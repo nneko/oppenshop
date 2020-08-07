@@ -232,7 +232,7 @@ let ciFormHandler = async (req, res) => {
 
         let primaryPhone  = {
             value: form.phone,
-            type: form.phoneType || "mobile",
+            type: form.phoneType || "other",
             primary: true
         }
 

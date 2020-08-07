@@ -2,7 +2,7 @@
     <div class="menu-main">
         <div class="applogo">
             <a href="/">
-                <img src="/view/assets/images/logo.png" onmouseover="logoHover(this);" onmouseout="logoUnhover(this);"/>
+                <%- include('assets/images/logo.svg') %>
             </a>
         </div>
         <form id="main-search-form" class="search-form" autocomplete="on" action="/find" method="POST" oninput="" novalidate>
@@ -37,12 +37,3 @@
         <li class="nav-link-item"><a href="/support">Support</a></li>
     </ul>
 </nav>
-<script type="text/javascript"> 
-    function logoHover(element) {
-        element.setAttribute('src', '/view/assets/images/logo-onfocus.png')
-    }
-
-    function logoUnhover(element) {
-        element.setAttribute('src', '/view/assets/images/logo.png')
-    }
-</script>

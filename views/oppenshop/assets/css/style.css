@@ -269,6 +269,23 @@ svg {
     height: 48px;
 }
 
+.logo {
+    height: 3rem;
+}
+
+.logo:hover path {
+    stroke: black;
+    fill: black;
+}
+
+.logo .logo-handle:hover {
+    fill: none !important;
+}
+
+.logo .logo-handle {
+    fill: none !important;
+}
+
 .menu-button div {
     background-color: #444;
     height: 2px;

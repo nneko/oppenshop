@@ -3,13 +3,13 @@
         <div class="row">
             <div class="col-4">
                 <div class="list-group flex-column" id="account-settings-tablist" role="tablist">
-                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'ls') { %>active<% } %>" id="security-tab" data-toggle="list" role="tab" aria-controls="security" aria-selected="false" href="#security-pane"><%- include('assets/icons/lock.svg') %>Login & Security</a>
-                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'ci' || typeof(pane) === 'undefined') { %>active<% } %>" id="contact-tab" data-toggle="list" role="tab" aria-controls="contact" aria-selected="true" href="#contact-pane"><%- include('assets/icons/person.svg') %>Contact Details</a>
+                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'ls') { %>active<% } %>" id="security-tab" data-toggle="list" role="tab" aria-controls="security" aria-selected="false" href="#security-pane"><%- include('assets/symbols/lock.svg') %>Login & Security</a>
+                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'ci' || typeof(pane) === 'undefined') { %>active<% } %>" id="contact-tab" data-toggle="list" role="tab" aria-controls="contact" aria-selected="true" href="#contact-pane"><%- include('assets/symbols/person.svg') %>Contact Details</a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'or') { %>active<% } %>" id="orders-tab" data-toggle="list" role="tab" aria-controls="orders" aria-selected="false"
-                        href="#orders-pane"><%- include('assets/icons/orders.svg') %>Orders</a>
+                        href="#orders-pane"><%- include('assets/symbols/order sheet.svg') %>Orders</a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pm') { %>active<% } %>" id="payments-tab" data-toggle="list" role="tab" aria-controls="payments" aria-selected="false"
-                        href="#payments-pane"><%- include('assets/icons/creditcard.svg') %>Payment Methods</a>
-                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pr') { %>active<% } %>" id="settings-tab" data-toggle="list" role="tab" aria-controls="settings" aria-selected="false" href="#settings-pane"><%- include('assets/icons/gear.svg') %>Preferences</a>
+                        href="#payments-pane"><%- include('assets/symbols/credit card.svg') %>Payment Methods</a>
+                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pr') { %>active<% } %>" id="settings-tab" data-toggle="list" role="tab" aria-controls="settings" aria-selected="false" href="#settings-pane"><%- include('assets/symbols/gear.svg') %>Preferences</a>
                 </div>
             </div>
             <div class="col-8">
@@ -116,19 +116,19 @@
                         <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="contactTabs" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="primary-tab" data-toggle="tab" href="#primaryTab" role="tab" aria-controls="home"
-                                    aria-selected="true"><%- include('assets/icons/contact.svg') %>Basic Info</a>
+                                    aria-selected="true"><%- include('assets/symbols/contact.svg') %>Basic Info</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="addresses-tab" data-toggle="tab" href="#addressesTab" role="tab" aria-controls="contact"
-                                    aria-selected="false"><%- include('assets/icons/location.svg') %>Addresses</a>
+                                    aria-selected="false"><%- include('assets/symbols/location.svg') %>Addresses</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="emails-tab" data-toggle="tab" href="#emailsTab" role="tab" aria-controls="profile"
-                                    aria-selected="false"><%- include('assets/icons/mail.svg') %>Emails</a>
+                                    aria-selected="false"><%- include('assets/symbols/mail.svg') %>Emails</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="phone-tab" data-toggle="tab" href="#phoneTab" role="tab" aria-controls="contact"
-                                    aria-selected="false"><%- include('assets/icons/phone.svg') %>Phone Numbers</a>
+                                    aria-selected="false"><%- include('assets/symbols/phone.svg') %>Phone Numbers</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="contactTabContent">
@@ -470,42 +470,7 @@
                                 <h2 class="tab-pane-h2">Emails</h2>
                                 <section id="email-list">
                                     <ul>
-                                        <svg class="small-icon" width="100%" height="100%" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
-                                            style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
-                                            <g transform="matrix(1.37131,0,0,1.37131,-63.9834,-17.3589)">
-                                                <g id="Trash">
-                                                    <g id="Trash-Can" serif:id="Trash Can">
-                                                        <g id="Can">
-                                                            <g transform="matrix(0.883333,0,0,0.9,15.8333,10)">
-                                                                <path
-                                                                    d="M112.264,100C112.264,100 116.165,134.458 117.49,146.163C117.737,148.347 119.619,150 121.858,150C130.457,150 150.839,150 159.36,150C161.562,150 163.425,148.399 163.716,146.256C165.294,134.643 170,100 170,100"
-                                                                    style="fill:none;stroke:rgb(203,36,49);stroke-width:6.54px;" />
-                                                            </g>
-                                                            <g transform="matrix(1,0,0,1,0,5)">
-                                                                <path d="M126,95L130,136" style="fill:none;stroke:rgb(203,36,49);stroke-width:5.83px;" />
-                                                            </g>
-                                                            <g transform="matrix(1,0,0,1,0,5)">
-                                                                <path d="M155,95L150,136" style="fill:none;stroke:rgb(203,36,49);stroke-width:5.83px;" />
-                                                            </g>
-                                                            <g transform="matrix(1,0,0,1,0,5)">
-                                                                <path d="M140.5,95L140.5,136" style="fill:none;stroke:rgb(203,36,49);stroke-width:5.83px;" />
-                                                            </g>
-                                                        </g>
-                                                        <g id="Handle">
-                                                            <g transform="matrix(1,0,0,1,0,4)">
-                                                                <path d="M110,80L170,80" style="fill:none;stroke:rgb(203,36,49);stroke-width:5.83px;" />
-                                                            </g>
-                                                            <g transform="matrix(0.75,0,0,0.85,35,16)">
-                                                                <path
-                                                                    d="M160,75.294L160,65.505C160,62.465 157.206,60 153.761,60C146.258,60 133.742,60 126.239,60C122.794,60 120,62.465 120,65.505C120,69.889 120,75.294 120,75.294"
-                                                                    style="fill:none;stroke:rgb(203,36,49);stroke-width:7.28px;" />
-                                                            </g>
-                                                        </g>
-                                                    </g>
-                                                </g>
-                                            </g>
-                                        </svg>
+                                        <span class="action-icons"><%- include('assets/symbols/bin.svg') %></span>
                                         <hr>
                                     </ul>
                                 </section>

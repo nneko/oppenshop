@@ -77,6 +77,35 @@ svg {
     border: none;
 }
 
+.small-icon {
+    width: 1rem;
+}
+
+.icon {
+    border: none;
+    width: 2rem;
+}
+
+.medium-icon {
+    width: 4rem;
+}
+
+.large-icon {
+    width: 8rem;
+}
+
+.extra-large-icon {
+    width: 8rem;
+}
+
+.action-icons svg {
+    height: 3rem;
+}
+
+.delete-icon {
+    stroke:  #cb2431;
+}
+
 .space-right-05 {
     margin-right: 0.5rem;
 }
@@ -359,6 +388,15 @@ svg {
 white-space: nowrap;
 }
 
+#account-settings-tablist svg {
+    margin-right: 1rem;
+}
+
+#account-settings-tab-content svg {
+    margin-right: 1rem;
+    width: 1rem;
+}
+
 @media screen and (max-width: 1028px) {
 
     .applogo a {
@@ -425,36 +463,6 @@ white-space: nowrap;
         max-width: 50%;
         width: 50%;
     }
-}
-
-.small-icon {
-    width: 1rem;
-}
-
-.icon {
-    border: none;
-    width: 2rem;
-}
-
-.medium-icon {
-    width: 4rem;
-}
-
-.large-icon {
-    width: 8rem;
-}
-
-.extra-large-icon {
-    width: 8rem;
-}
-
-#account-settings-tablist svg {
-    margin-right: 1rem;
-}
-
-#account-settings-tab-content svg {
-    margin-right: 1rem;
-    width: 1rem;
 }
 
 @media screen and (max-width: 640px) {

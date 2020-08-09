@@ -7,15 +7,15 @@ const userModel = require('../models/user')
 let router = express.Router()
 
 let props = {
-    title: cfg.title,
-    theme: cfg.template
+    title: cfg.title
 }
 
 //routes
 router.use('/api', api)
 router.use('/public', express.static(path.join(__dirname, '../views/public')))
-router.use('/view/assets', express.static(path.join(__dirname, '../views/' + cfg.template + '/assets')))
-router.use('/user/view/assets', express.static(path.join(__dirname, '../views/' + cfg.template + '/assets')))
+//Ignore cfg.template
+router.use('/view/assets', express.static(path.join(__dirname, '../views/' + '/assets')))
+router.use('/user/view/assets', express.static(path.join(__dirname, '../views/' + '/assets')))
 router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 router.use('/signout', require('./signout'))

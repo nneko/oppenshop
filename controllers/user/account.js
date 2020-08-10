@@ -19,24 +19,48 @@ let props = {
 // Render account view for bad request
 let badRequest = async (req, res, show, status, msg, msgType) => {
     let verifiedUser = undefined
-    if(req.user) {
-        const u = await user.read(req.usr.id,{findBy: 'id'})
-        verifiedUser = u.verified
-    }
-    typeof(status) === 'number' ? res.status(status) : res.status(400);
+
+    typeof (status) === 'number' ? res.status(status) : res.status(400);
 
     let mtype = 'error'
 
-    typeof(msgType) === 'undefined' ? mtype = 'error' : mtype = msgType;
-    
+    typeof (msgType) === 'undefined' ? mtype = 'error' : mtype = msgType;
+
     let mObj = {}
     mObj[mtype] = msg ? msg : 'Invalid account update request.' 
 
-    res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: show, messages:  mObj})
+    let viewData = { title: props.title, theme: props.theme, user: req.user, pane: show, messages: mObj}
+
+    if(req.user) {
+        const u = await user.read(req.user.id,{findBy: 'id'})
+        verifiedUser = u.verified
+
+        let primaryPhoneNumber = getPrimaryField(u.phoneNumbers)
+        let primaryAddress = getPrimaryField(u.addresses)
+        if (primaryPhoneNumber) {
+            viewData.phone = { value: primaryPhoneNumber.value }
+        }
+
+        if (primaryAddress) {
+            viewData.addressStreet = { value: primaryAddress.streetAddress }
+            viewData.addressLocality = { value: primaryAddress.locality }
+            viewData.addressRegion = { value: primaryAddress.region }
+            viewData.addressPostcode = { value: primaryAddress.postalCode }
+            viewData.addressCountry = { value: primaryAddress.country }
+        }
+
+        viewData.emails = u.emails
+        viewData.addresses = u.addresses
+        viewData.phoneNumbers = u.phoneNumbers 
+        viewData.verifiedUser = verifiedUser 
+    }
+
+    res.render('account', viewData)
 }
 
 // Render account view for bad request
 let _403redirect = (req, res, url, msg) => {
+    let verifiedUser = undefined
     res.status(403);
     res.render('signin', { title: props.title, theme: props.theme, url: url, messages: { error: msg ? msg : 'You must be signed in.' }, verifiedUser: verifiedUser })
 }
@@ -298,7 +322,7 @@ let ciFormHandler = async (req, res) => {
         }
         formFields.title = props.title
         formFields.theme = props.theme
-        formFields.messages = { info: 'Account could not be updated. One or more fields had invalid entries.' }
+        formFields.messages = { error: 'One or more fields has invalid entries.' }
         formFields.user = req.user
         formFields.pane = 'ci'
         formFields.verifiedUser = usr.verified
@@ -332,8 +356,122 @@ let naFormHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=na', 'You must be signed in.')
         return
     } else {
-        await badRequest(req,res,501,'ad','Functionality not implemented','info')
-        return
+        let u = {}
+
+        let formValidated = false
+        let formFields = {}
+
+        if (!req.body) {
+            await badRequest(req, res, 'ad', 400, 'Invalid address.')
+            return
+        }
+
+        let form = converter.objectFieldsToString(req.body)
+        console.log(form)
+
+        // Read existing stored user details
+        const usr = await user.read(form.uid, { findBy: 'id' })
+
+        u.preferredUsername = usr.preferredUsername
+
+        //Validate address
+        if (validator.isNotNull(form.addressStreet) && validator.isNotNull(form.addressLocality) && validator.isNotNull(form.addressRegion) && validator.isNotNull(form.addressPostcode) && validator.isNotNull(form.addressCountry)) {
+
+            usr.addresses ? u.addresses = usr.addresses : u.addresses = [];
+
+            let addr = {
+                type: form.addressType || "home",
+                streetAddress: form.addressStreet,
+                locality: form.addressLocality,
+                region: form.addressRegion,
+                postalCode: form.addressPostcode,
+                country: form.addressCountry,
+                formatted: generator.formattedAddress({
+                    streetAddress: form.addressStreet,
+                    locality: form.addressLocality,
+                    region: form.addressRegion,
+                    postalCode: form.addressPostcode,
+                    country: form.addressCountry
+                })
+            }
+
+            if (!addr.formatted) delete addr.formatted
+
+            if (validator.isNotNull(form.setPrimary) && form.setPrimary == 'true') {
+                addr.primary = true
+                u.addresses = removePrimaryFields(u.addresses)
+            }
+
+            // Add contact name to the address
+            if(validator.isNotNull(form.fullname)) {
+                let addrName = {formatted: form.fullname}
+                addr.name = addrName
+            }
+
+            // Add phone number to the address
+            if(validator.isPhoneNumber(form.phone)) {
+                let phone = {value: form.phone}
+                phone.type = form.phoneType || 'home'
+
+                addr.phoneNumbers = [phone]
+            }
+
+            u.addresses.push(addr)
+
+            formFields.addressStreet = { class: 'valid', value: form.addressStreet }
+            formFields.addressLocality = { class: 'valid', value: form.addressLocality }
+            formFields.addressRegion = { class: 'valid', value: form.addressRegion }
+            formFields.addressPostcode = { class: 'valid', value: form.addressPostcode }
+            formFields.addressCountry = { class: 'valid', value: form.addressCountry }
+        } else if (form.addressStreet || form.addressLocality || form.addressRegion || form.addressPostcode || form.addressCountry) {
+            formFields.addressStreet = { class: 'is-invalid', value: form.addressStreet }
+            formFields.addressLocality = { class: 'is-invalid', value: form.addressLocality }
+            formFields.addressRegion = { class: 'is-invalid', value: form.addressRegion }
+            formFields.addressPostcode = { class: 'is-invalid', value: form.addressPostcode }
+            formFields.addressCountry = { class: 'is-invalid', value: form.addressCountry }
+        }
+
+        let hasInvalids = false;
+
+        for (const k of Object.keys(formFields)) {
+            if (typeof (formFields[k].class) === 'undefined' || formFields[k].class == 'is-invalid') {
+                hasInvalids = true
+                break
+            }
+        }
+
+        hasInvalids ? formValidated = false : formValidated = true
+
+        // If form validate update the user login and security fields
+        if (!formValidated) {
+            if (debug) {
+                console.log('Invalid update account request received.')
+                console.log(formFields)
+            }
+            formFields.title = props.title
+            formFields.messages = { error: 'One or more fields has invalid entries.' }
+            formFields.user = req.user
+            formFields.pane = 'ci'
+            formFields.verifiedUser = usr.verified
+            res.status(400)
+            res.render('account', formFields)
+            return
+        } else {
+            try {
+                await user.update({ preferredUsername: u.preferredUsername }, u)
+                if (debug) console.log('User account updated for ' + u.preferredUsername)
+                formFields.title = props.title
+                formFields.user = req.user
+                formFields.messages = { success: 'Account updated.' }
+                formFields.pane = 'ci'
+                formFields.verifiedUser = usr.verified
+                res.render('account', formFields)
+            } catch (e) {
+                console.error(e)
+                res.status(500)
+                res.render('error', { title: props.title,  user: req.user, messages: { error: 'Unable to complete account update.' } })
+            }
+        }
     }
 
 }
@@ -345,7 +483,7 @@ let pmFormHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=pm', 'You must be signed in.')
         return
     } else {
-        return await badRequest(req, res, 501, 'pm', 'Functionality not implemented','info')
+        return await badRequest(req, res,'pm', 501,'Functionality not implemented','info')
     }
 
 }
@@ -357,7 +495,7 @@ let prFormHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
         return
     } else {
-        return await badRequest(req, res, 501, 'pr', 'Functionality not implemented','info')
+        return await badRequest(req, res, 'pr', 501, 'Functionality not implemented','info')
     }
 
 }
@@ -408,6 +546,8 @@ account.get('/', async (req, res) => {
                 switch(qd.show){
                     case 'ls':
                     case 'ad':
+                    case 'em':
+                    case 'pn':
                     case 'or':
                     case 'pm':
                     case 'pr':
@@ -430,7 +570,7 @@ account.get('/', async (req, res) => {
             if(!validator.isLocalUserAccount(req.user)){
                 dForms.security = true
             }
-            let viewData = { title: props.title, theme: props.theme, user: req.user, pane: panel, disabledForms: dForms }
+            let viewData = { title: props.title, user: req.user, pane: panel, disabledForms: dForms }
 
             const usr = await user.read(req.user.id,{findBy: 'id'})
             if(usr.verified) viewData.verifiedUser = usr.verified
@@ -447,6 +587,10 @@ account.get('/', async (req, res) => {
                 viewData.addressPostcode = {value: primaryAddress.postalCode}
                 viewData.addressCountry = {value: primaryAddress.country}
             }
+
+            viewData.emails = usr.emails
+            viewData.addresses = usr.addresses
+            viewData.phoneNumbers = usr.phoneNumbers
             
             res.render('account', viewData)
         } else {

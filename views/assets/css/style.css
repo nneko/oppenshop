@@ -83,7 +83,7 @@ svg {
 
 .icon {
     border: none;
-    width: 2rem;
+    height: 2rem;
 }
 
 .medium-icon {
@@ -98,12 +98,32 @@ svg {
     width: 8rem;
 }
 
-.action-icons svg {
-    height: 3rem;
+.action-icon svg {
+    height: 1rem;
+    margin: 1rem;
 }
 
-.delete-icon {
+.action-icon-button {
+    background: none;
+    border: none;
+    margin: 1rem;
+    padding: 0;
+}
+
+.action-icon-button svg {
+    margin: 0 !important;
+}
+
+.tick-icon path {
+    stroke: #28a745;
+}
+
+.delete-icon path {
     stroke:  #cb2431;
+}
+
+.delete-icon:hover path {
+    stroke: red;
 }
 
 .space-right-05 {
@@ -370,10 +390,11 @@ svg {
     margin: 1rem;
 }
 
-.tab-hscroll-pane {
+.tab-scroll-pane {
     margin: 0 auto;
-    max-width: 600px;
+    max-width: 80%;
     overflow-x: scroll;
+    position: relative;
 }
 
 .address-table, .emails-table, .phone-numbers-table {
@@ -382,6 +403,38 @@ svg {
 
 .red-alert {
     color: red;
+}
+
+.content-pane-scroll-cards-section {
+    max-height: 50vh;
+    overflow-y: scroll;
+}
+
+.content-pane-scroll-cards-section .card {
+    margin-top: 1rem;
+
+}
+
+.content-pane-scroll-cards-section ul {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.content-pane-scroll-cards-section li {
+    display: inline-block;
+    height: 1rem;
+    margin: 1rem;
+}
+
+.content-pane-scroll-cards-section svg {
+    height: 1rem;
+}
+
+.actionable-card-pane {
+    display: flex!important;
+    justify-content: space-between!important;
 }
 
 #address-table th, td {

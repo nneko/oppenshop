@@ -1,0 +1,46 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'pr') { %>show active<% } %>" id="settings-pane"
+    role="tabpanel" aria-labelledby="settings-tab">
+    <h2 class="pane-h2">Preferences</h2>
+    <section class="standard-form-section">
+        <form id="settings-form" class="standard-form" autocomplete="off" action="/user/account" method="POST"
+            oninput="" novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.settings) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="del">
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <div class="form-group">
+                    <hr>
+                    <h3>Remove Account</h3>
+                    <p>Account removal will purge all user data and is an irreversible process.</p>
+                    <div id="delete-account-button-container">
+                        <button id="delete-account-button" type="button" class="btn btn-danger" data-toggle="modal"
+                            data-target="#delete-account-modal">Delete Account</button>
+                    </div>
+
+                    <!-- Delete Account Modal -->
+                    <div class="modal fade" id="delete-account-modal" tabindex="-1" role="dialog"
+                        aria-labelledby="delete-account-modal-title" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="delete-account-modal-long-title">Are you sure?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="red-alert"> All data will be permanently erased. This cannot be reversed.
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+</div>

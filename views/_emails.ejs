@@ -1,0 +1,57 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'em') { %>show active<% } %>" id="emailsTab"
+    role="tabpanel" aria-labelledby="emails-tab">
+    <h2 class="tab-pane-h2">Emails</h2>
+    <section id="emails-list" class="content-pane-scroll-cards-section tab-scroll-pane">
+        <% if (typeof(emails) !== 'undefined' && Array.isArray(emails)) { %>
+        <% for(let i=0;i<emails.length;i++) { %>
+        <div class="card">
+            <div class="card-body">
+                <div class="actionable-card-pane">
+                    <div>
+                        <ul>
+                            <li><%= emails[i].value %></li>
+                            <% if(emails[i].verified) {%>
+                            <li class="tick-icon badge ">
+                                <p>Verified:
+                                    <%- include('assets/symbols/tick.svg') %></p>
+                            </li>
+                            <% } %>
+                            <% if(emails[i].primary) { %>
+                            <li class="tick-icon badge">
+                                <p>Primary:
+                                    <%- include('assets/symbols/tick.svg') %></p>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <div class="action-button-section">
+                        <form>
+                            <button class=" action-icon-button delete-icon action-icon" type="button"
+                                data-toggle="tooltip" data-placement="left" title="Delete">
+                                <%- include('assets/symbols/bin.svg') %>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+        <%  } else { %>
+        <p>No email addresses associated with account.</p>
+        <% } %>
+        <hr>
+    </section>
+    <section class="standard-form-section">
+        <form id="email-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
+            novalidate>
+            <div class="form-group form-inline">
+                <div class="input-group mb-3">
+                    <input type="hidden" name="id" value="em">
+                    <label>Add email address</label>
+                    <input class="form-control space-right-05" type="" name="nw-em" value="">
+                    <button id="add-email-button" type="submit" class="btn btn-light" onclick="">Add</button>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

@@ -1,0 +1,194 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'ci') { %>show active<% } %>"
+    id="primaryTab" role="tabpanel" aria-labelledby="primary-tab">
+    <h2 class="tab-pane-h2">Primary Contact Information</h2>
+    <section class="standard-form-section">
+        <form id="contact-form" class="standard-form" autocomplete="off" action="/user/account" method="POST"
+            oninput="" novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.contact) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="ci">
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="givenName-basic-addon">Given Name</span>
+                        </div>
+                        <input id="givenName"
+                            class="form-control <% if(typeof(givenName) !== 'undefined') { %><%= givenName.class %><% } %>"
+                            type="text" name="givenName"
+                            value="<% if(typeof(user.name.givenName) !== 'undefined') { %><%= user.name.givenName %><% } %>"
+                            aria-label="Given Name" aria-describedby="givenName-basic-addon" size="25" required>
+                        <div id="invalid-givenName" class="invalid-feedback">
+                            <% if(typeof(givenName) !== 'undefined' && givenName.class == 'is-invalid') { %><%= givenName.message %><% } else { %>You
+                            must provide your Given Name.<% } %>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="familyName-basic-addon">Family Name</span>
+                        </div>
+                        <input id="familyName"
+                            class="form-control <% if(typeof(familyName) !== 'undefined') { %><%= familyName.class %><% } %>"
+                            type="text" name="familyName"
+                            value="<% if(typeof(user.name.familyName) !== 'undefined') { %><%= user.name.familyName %><% } %>"
+                            aria-label="Family Name" aria-describedby="familyName-basic-addon" size="25" required>
+                        <div id="invalid-familyName" class="invalid-feedback">
+                            <% if(typeof(familyName) !== 'undefined' && familyName.class == 'is-invalid') { %><%= familyName.message %><% } else { %>You
+                            must provide your Family Name.<% } %>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="phone-basic-addon">Phone</span>
+                            </div>
+                            <input id="phone"
+                                class="form-control <% if(typeof(phone) !== 'undefined') { %><%= phone.class %><% } %>"
+                                type="text" name="phone"
+                                value="<% if(typeof(phone) !== 'undefined' && phone.value) { %><%= phone.value %><% } %>"
+                                aria-label="phone" aria-describedby="phone-basic-addon" size="25" required>
+                            <div class="form-group form-inline">
+                                <label id="phoneTypeLabel" class="form-label" for="phoneType">Type</label>
+                                <select id="phoneType"
+                                    class="form-control <% if(typeof(phoneType) !== 'undefined') { %><%= phoneType.class %><% } %>"
+                                    type="text" name="phoneType" value="" aria-label="phoneType"
+                                    aria-describedby="phoneType-basic-addon">
+                                    <option>home</option>
+                                    <option>work</option>
+                                    <option selected="selected">mobile</option>
+                                    <option>other</option>
+                                </select>
+                            </div>
+                            <div id="invalid-phone" class="invalid-feedback">
+                                <% if(typeof(phone) !== 'undefined' && phone.class == 'is-invalid') { %><%= phone.message %><% } else { %>
+                                You must a valid phone number.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <p>Primary Address</p>
+                    <hr>
+                    <div class="form-group form-inline mb-3">
+                        <label id="addressTypeLabel" class="form-label" for="adddressType">Type</label>
+                        <select id="addressType"
+                            class="form-control <% if(typeof(addressType) !== 'undefined') { %><%= addressType.class %><% } %>"
+                            type="text" name="addressType" value="" aria-label="addressType"
+                            aria-describedby="addressType-basic-addon">
+                            <option selected="selected">home</option>
+                            <option>work</option>
+                            <option>other</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="streetaddress-basic-addon">Street & No.</span>
+                            </div>
+                            <input id="addressStreet"
+                                class="form-control <% if(typeof(addressStreet) !== 'undefined') { %><%= addressStreet.class %><% } %>"
+                                type="text" name="addressStreet"
+                                value="<% if(typeof(addressStreet) !== 'undefined' && addressStreet.value) { %><%= addressStreet.value %><% } %>"
+                                aria-label="Address" aria-describedby="streetaddress-basic-addon" size="25"
+                                required>
+                            <div id="invalid-street" class="invalid-feedback">
+                                <% if(typeof(addressStreet) !== 'undefined' && addressStreet.class == 'is-invalid') { %><%= addressStreet.message %><% } else { %>
+                                You must provide an address.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="addressLocality-basic-addon">Community / Town /
+                                    City</span>
+                            </div>
+                            <input id="addressLocality"
+                                class="form-control <% if(typeof(addressLocality) !== 'undefined') { %><%= addressLocality.class %><% } %>"
+                                type="text" name="addressLocality"
+                                value="<% if(typeof(addressLocality) !== 'undefined' && addressLocality.value) { %><%= addressLocality.value %><% } %>"
+                                aria-label="Address" aria-describedby="addressLocality-basic-addon" size="25"
+                                required>
+                            <div id="invalid-street" class="invalid-feedback">
+                                <% if(typeof(addressLocality) !== 'undefined' && addressLocality.class == 'is-invalid') { %><%= addressLocality.message %><% } else { %>
+                                You must provide an address location.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="form-group form-inline">
+                            <label id="parishLabel" class="form-label" for="addressRegion">Parish</label>
+                            <select id="addressRegion"
+                                class="form-control <% if(typeof(addressRegion) !== 'undefined') { %><%= addressRegion.class %><% } %>"
+                                type="text" name="addressRegion" value="" aria-label="addressRegion"
+                                aria-describedby="addressRegion-basic-addon">
+                                <option selected="selected">Kingston & St. Andrew</option>
+                                <option>St. Catherine</option>
+                                <option>Clarendon</option>
+                                <option>Manchester</option>
+                                <option>St. Elizabeth</option>
+                                <option>Westmoreland</option>
+                                <option>Hanover</option>
+                                <option>St. James</option>
+                                <option>Trelawny</option>
+                                <option>St. Ann</option>
+                                <option>St. Mary</option>
+                                <option>Portland</option>
+                                <option>St. Thomas</option>
+                            </select>
+                            <div id="invalid-region" class="invalid-feedback">
+                                <% if(typeof(addressRegion) !== 'undefined' && addressRegion.class == 'is-invalid') { %><%= addressRegion.message %><% } else { %>
+                                You must select a region.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="form-group form-inline">
+                            <label id="postLabel" class="form-label" for="addressPostcode">Postcode</label>
+                            <input id="addressPostcode"
+                                class="form-control <% if(typeof(addressPostcode) !== 'undefined') { %><%= addressPostcode.class %><% } %>"
+                                type="text" name="addressPostcode"
+                                value="<% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.value) { %><%= addressPostcode.value %><% } %>"
+                                aria-label="Postcode" aria-describedby="addressPostcode-basic-addon" size="5"
+                                required>
+                            <div id="invalid-postcode" class="invalid-feedback">
+                                <% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.class == 'is-invalid') { %><%= addressPostcode.message %><% } else { %>
+                                Please enter a valid postal code.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="form-group form-inline">
+                            <div class="form-group form-inline">
+                                <label id="addressCountryLabel" class="form-label"
+                                    for="addressCountry">Country</label>
+                                <select id="addressCountry"
+                                    class="form-control <% if(typeof(addressCountry) !== 'undefined') { %><%= addressCountry.class %><% } %>"
+                                    type="text" name="addressCountry" value="" aria-label="addressCountry"
+                                    aria-describedby="addressCountry-basic-addon" readonly>
+                                    <option selected="selected">Jamaica</option>
+                                </select>
+                                <div id="invalid-country" class="invalid-feedback">
+                                    <% if(typeof(addressCountry) !== 'undefined' && addressCountry.class == 'is-invalid') { %><%= addressCountry.message %><% } else { %>
+                                    You must select a country.
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="update-contact-button-container">
+                        <button id="update-contact-button" type="submit" class="btn btn-light"
+                            onclick="">Update</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+</div>

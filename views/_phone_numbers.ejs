@@ -53,6 +53,16 @@
                     <input type="hidden" name="id" value="add-pn">
                     <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                     <label>Add phone number</label>
+                    <div class="form-group form-inline">
+                        <select id="newAddressPhoneType"
+                            class="form-control <% if(typeof(phoneType) !== 'undefined') { %><%= phoneType.class %><% } %>" type="text"
+                            name="phoneType" value="" aria-label="phoneType" aria-describedby="phoneType-basic-addon">
+                            <option>home</option>
+                            <option>work</option>
+                            <option selected="selected">mobile</option>
+                            <option>other</option>
+                        </select>
+                    </div>
                     <input class="form-control space-right-05" type="text" name="phoneNumber" value="">
                     <button id="add-phone-button" type="submit" class="btn btn-light" onclick="">Add</button>
                 </div>

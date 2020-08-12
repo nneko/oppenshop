@@ -471,7 +471,7 @@ white-space: nowrap;
     background-color: #f4f4f4;
     border-radius: 4px;
     margin-right: 4.25rem;
-    padding: 0.5rem;
+    padding: 0.25rem 0.5rem;
 }
 
 .add-address-link:hover {
@@ -497,6 +497,11 @@ white-space: nowrap;
 
 #new-address-form {
     margin-top: 2rem;
+}
+
+#phone-number-form {
+    max-width: 100%;
+    width: 100%;
 }
 
 @media screen and (max-width: 1028px) {

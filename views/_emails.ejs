@@ -25,8 +25,11 @@
                         </ul>
                     </div>
                     <div class="action-button-section">
-                        <form>
-                            <button class=" action-icon-button delete-icon action-icon" type="button"
+                        <form class="delete-action-form" method="POST" action="/user/account">
+                            <input type="hidden" name="id" value="del-em">
+                            <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                            <input type="hidden" name="email" value="<% if(typeof(emails) !== 'undefined' && Array.isArray(emails)) { %><%= emails[i].value %><% } %>">
+                            <button class=" action-icon-button delete-icon action-icon" type="submit"
                                 data-toggle="tooltip" data-placement="left" title="Delete">
                                 <%- include('assets/symbols/bin.svg') %>
                             </button>
@@ -46,9 +49,10 @@
             novalidate>
             <div class="form-group form-inline">
                 <div class="input-group mb-3">
-                    <input type="hidden" name="id" value="em">
+                    <input type="hidden" name="id" value="add-em">
+                    <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                     <label>Add email address</label>
-                    <input class="form-control space-right-05" type="" name="nw-em" value="">
+                    <input class="form-control space-right-05" type="text" name="email" value="">
                     <button id="add-email-button" type="submit" class="btn btn-light" onclick="">Add</button>
                 </div>
             </div>

@@ -25,8 +25,12 @@
                         </ul>
                     </div>
                     <div class="action-button-section">
-                        <form>
-                            <button class=" action-icon-button delete-icon action-icon" type="button"
+                        <form class="delete-action-form" method="POST" action="/user/account">
+                            <input type="hidden" name="id" value="del-pn">
+                            <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                            <input type="hidden" name="phoneNumber"
+                                value="<% if(typeof(phoneNumbers) !== 'undefined' && Array.isArray(phoneNumbers)) { %><%= phoneNumbers[i].value %><% } %>">
+                            <button class=" action-icon-button delete-icon action-icon" type="submit"
                                 data-toggle="tooltip" data-placement="left" title="Delete">
                                 <%- include('assets/symbols/bin.svg') %>
                             </button>
@@ -46,9 +50,10 @@
             novalidate>
             <div class="form-group form-inline">
                 <div class="input-group mb-3">
-                    <input type="hidden" name="id" value="em">
+                    <input type="hidden" name="id" value="add-pn">
+                    <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                     <label>Add phone number</label>
-                    <input class="form-control space-right-05" type="" name="nw-em" value="">
+                    <input class="form-control space-right-05" type="text" name="phoneNumber" value="">
                     <button id="add-phone-button" type="submit" class="btn btn-light" onclick="">Add</button>
                 </div>
             </div>

@@ -500,6 +500,71 @@ let prFormHandler = async (req, res) => {
 
 }
 
+// Update address form handler
+let addressUpdateHandler = async (req, res) => {
+
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        return
+    } else {
+        console.log(req.body)
+        return await badRequest(req, res, 'ad', 501, 'Functionality not implemented', 'info')
+    }
+
+}
+
+// Add email address form handler
+let emailAddHandler = async (req, res) => {
+
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        return
+    } else {
+        console.log(req.body)
+        return await badRequest(req, res, 'em', 501, 'Functionality not implemented', 'info')
+    }
+
+}
+
+// Delete email address form handler
+let emailDeleteHandler = async (req, res) => {
+
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        return
+    } else {
+        console.log(req.body)
+        return await badRequest(req, res, 'em', 501, 'Functionality not implemented', 'info')
+    }
+
+}
+
+// Add phone number form handler
+let phoneAddHandler = async (req, res) => {
+
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        return
+    } else {
+        console.log(req.body)
+        return await badRequest(req, res, 'pn', 501, 'Functionality not implemented', 'info')
+    }
+
+}
+
+// Delete phone number form handler
+let phoneDeleteHandler = async (req, res) => {
+
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        return
+    } else {
+        console.log(req.body)
+        return await badRequest(req, res, 'pn', 501, 'Functionality not implemented', 'info')
+    }
+
+}
+
 // Deletion form handler
 let deleteHandler = async (req, res) => {
 
@@ -616,8 +681,26 @@ account.post('/', async (req, res) => {
                 case 'ls':
                     await lsFormHandler(req,res)
                     break
+                case 'add-em':
+                    await emailAddHandler(req, res)
+                    break
+                case 'add-pn':
+                    await phoneAddHandler(req, res)
+                    break
+                case 'add-addr':
+                    await naFormHandler(req, res)
+                    break
                 case 'del':
                     await deleteHandler(req,res)
+                    break
+                case 'del-em':
+                    await emailDeleteHandler(req, res)
+                    break
+                case 'del-pn':
+                    await phoneDeleteHandler(req, res)
+                    break
+                case 'upaddr':
+                    await addressUpdateHandler(req, res)
                     break
                 case 'ci':
                     await ciFormHandler(req, res)

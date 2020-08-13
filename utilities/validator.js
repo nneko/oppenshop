@@ -10,7 +10,7 @@ validator.isNotNull = (obj) => {
 }
 
 validator.isPhoneNumber = (phone) => {
-    return typeof(phone) === 'string' ? true : false
+    return typeof(phone) === 'string' && phone != '' ? true : false
 }
 
 validator.isAddress = (addr) => {

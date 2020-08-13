@@ -970,11 +970,11 @@ let phoneDeleteHandler = async (req, res) => {
 
         u.preferredUsername = usr.preferredUsername
 
-        //Validate email address
+        //Validate phone address
         if (validator.isPhoneNumber(form.phoneNumber)) {
             formValidated = true
         } else {
-            await badRequest(req, res, 'em', 400, 'Invalid request.')
+            await badRequest(req, res, 'pn', 400, 'Invalid request.')
             return
         }
 

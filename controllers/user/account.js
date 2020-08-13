@@ -118,6 +118,23 @@ let removeFields = (list, val) => {
     return new_list
 }
 
+let removeAddressFields = (list, addr) => {
+    let new_list = []
+
+    if (validator.isNotNull(list) && validator.isAddress(addr)) {
+        for (let i = 0; i < list.length; i++) {
+            let e = list[i]
+            if (!validator.isAddressMatch(e,addr)) {
+                new_list.push(e)
+            }
+        }
+    } else {
+        return list
+    }
+
+    return new_list
+}
+
 let populateUserViewData = async (uid) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -604,10 +621,90 @@ let addressUpdateHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
         return
     } else {
-        console.log(req.body)
-        return await badRequest(req, res, 'ad', 501, 'Functionality not implemented', 'info')
-    }
+        if(!req.body) {
 
+        }
+        else {
+            let u = {}
+
+            let formValidated = false
+            let formFields = {}
+            let form = converter.objectFieldsToString(req.body)
+
+            switch(form.update) {
+                case 'delete':
+                    if (form.uid != req.user.id) {
+                            _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
+                            return
+                    }
+                    console.log(form)
+                    // Read existing stored user details
+                    const usr = await user.read(form.uid, { findBy: 'id' })
+
+                    u.preferredUsername = usr.preferredUsername
+
+                    //Validate address
+                    if (validator.isAddress({
+                        streetAddress: form.street, 
+                        locality: form.locality, 
+                        region: form.region, 
+                        postalCode: form.postalCode, 
+                        country: form.country
+                    })) {
+                        formValidated = true
+                    } else {
+                        await badRequest(req, res, 'ad', 400, 'Invalid request.')
+                        return
+                    }
+
+                    if (!formValidated) {
+                        if (debug) {
+                            console.log('Invalid account update request received.')
+                        }
+                        let viewData = await populateUserViewData(req.user.id)
+                        viewData.user = req.user
+                        viewData.pane = 'ad'
+                        if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
+                        viewData.messages = formFields.messages
+                        formFields.status ? res.status(formFields.status) : res.status(400)
+                        res.render('account', viewData)
+                        return
+                    } else {
+                        try {
+                            u.addresses = removeAddressFields(usr.addresses, {
+                                streetAddress: form.streetAddress,
+                                locality: form.locality,
+                                region: form.region,
+                                postalCode: form.postalCode,
+                                country: form.country
+                            })
+                            if(!(u.addresses.length < usr.addresses.length)) {
+                                throw new Error('Unable to remove address')
+                            }
+                            await user.update({ preferredUsername: u.preferredUsername }, u)
+                            if (debug) console.log('User account updated for ' + u.preferredUsername)
+                            let viewData = await populateUserViewData(req.user.id)
+                            viewData.user = req.user
+                            viewData.pane = 'ad'
+                            viewData.messages = { success: 'Account updated.' }
+                            res.render('account', viewData)
+                        } catch (e) {
+                            console.error(e)
+                            res.status(500)
+                            res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                        }
+                    }
+                    break
+                case 'edit':
+                    return await badRequest(req, res, 'ad', 501, 'Functionality not implemented', 'info')
+                    break
+                default:
+                    return await badRequest(req, res, 'ad', 400, 'Invalid address.')
+                    break
+            }
+
+        }
+    }
 }
 
 // Add email address form handler

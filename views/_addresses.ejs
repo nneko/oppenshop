@@ -42,8 +42,16 @@
                         <form class="edit-delete-action-form" method="POST" action="/user/account">
                             <input type="hidden" name="id" value="upaddr">
                             <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-                            <input type="hidden" name="address"
+                            <input type="hidden" name="streetAddress"
                                 value="<% if(typeof(addresses) !== 'undefined' && Array.isArray(addresses)) { %><%= addresses[i].streetAddress %><% } %>">
+                            <input type="hidden" name="locality"
+                                value="<% if(typeof(addresses) !== 'undefined' && Array.isArray(addresses)) { %><%= addresses[i].locality %><% } %>">
+                            <input type="hidden" name="region"
+                                    value="<% if(typeof(addresses) !== 'undefined' && Array.isArray(addresses)) { %><%= addresses[i].region %><% } %>">
+                            <input type="hidden" name="postalCode"
+                                value="<% if(typeof(addresses) !== 'undefined' && Array.isArray(addresses)) { %><%= addresses[i].postalCode %><% } %>">
+                            <input type="hidden" name="country"
+                                value="<% if(typeof(addresses) !== 'undefined' && Array.isArray(addresses)) { %><%= addresses[i].country %><% } %>">
                             <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
                             <%- include('assets/symbols/edit.svg') %>
                             </button>

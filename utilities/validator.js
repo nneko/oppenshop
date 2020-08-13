@@ -13,6 +13,23 @@ validator.isPhoneNumber = (phone) => {
     return typeof(phone) === 'string' ? true : false
 }
 
+validator.isAddress = (addr) => {
+    let isValid = false
+    if(validator.isNotNull(addr)) {
+        if(addr.hasOwnProperty('streetAddress') && addr.hasOwnProperty('locality') && addr.hasOwnProperty('region') && addr.hasOwnProperty('postalCode') && addr.hasOwnProperty('country')) isValid = true
+    }
+
+    return isValid
+}
+
+validator.isAddressMatch = (addr1, addr2) => {
+    if(validator.isAddress(addr1) && validator.isAddress(addr2)){
+        return ((addr1.streetAddress === addr2.streetAddress) && (addr1.locality === addr2.locality) && (addr1.region === addr2.region) && (addr1.postalCode === addr2.postalCode) && (addr1.country === addr2.country))
+    } else {
+        return false
+    }
+}
+
 validator.isEmailAddress = (email) => {
     // Email format definition based on RFC822 / RFC2822  
     // Compliant regex as provided by https://html.spec.whatwg.org/multipage/input.html#e-mail-state-(type=email)

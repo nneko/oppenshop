@@ -28,33 +28,22 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
     let mObj = {}
     mObj[mtype] = msg ? msg : 'Invalid account update request.' 
 
-    let viewData = { title: props.title, theme: props.theme, user: req.user, pane: show, messages: mObj}
-
-    if(req.user) {
-        const u = await user.read(req.user.id,{findBy: 'id'})
-        verifiedUser = u.verified
-
-        let primaryPhoneNumber = getPrimaryField(u.phoneNumbers)
-        let primaryAddress = getPrimaryField(u.addresses)
-        if (primaryPhoneNumber) {
-            viewData.phone = { value: primaryPhoneNumber.value }
+    try {
+        if (req.user) {
+            let viewData = await populateUserViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = show
+            viewData.messages = mObj
+            res.render('account', viewData)
+        } else {
+            res.render('account', {user: undefined, title: props.title, pane: show, messages: mObj})
         }
 
-        if (primaryAddress) {
-            viewData.addressStreet = { value: primaryAddress.streetAddress }
-            viewData.addressLocality = { value: primaryAddress.locality }
-            viewData.addressRegion = { value: primaryAddress.region }
-            viewData.addressPostcode = { value: primaryAddress.postalCode }
-            viewData.addressCountry = { value: primaryAddress.country }
-        }
-
-        viewData.emails = u.emails
-        viewData.addresses = u.addresses
-        viewData.phoneNumbers = u.phoneNumbers 
-        viewData.verifiedUser = verifiedUser 
+    } catch (e) {
+        console.error(e)
+        res.status(500)
+        res.render('error', { title: props.title, theme: props.theme, user: req.user, messages: { error: 'Internal error due to bad request' } })
     }
-
-    res.render('account', viewData)
 }
 
 // Render account view for bad request
@@ -121,12 +110,61 @@ let removeFields = (list, val) => {
     if (validator.isNotNull(list)) {
         for (let i = 0; i < list.length; i++) {
             let e = list[i]
-            if(e && e.value != val) {
+            if(validator.isNotNull(e.value) && e.value != val) {
                 new_list.push(e)
             }
         }
     }
     return new_list
+}
+
+let populateUserViewData = async (uid) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let u = await user.read(uid, { findBy: 'id' })
+            let viewData = {}
+            viewData.title = props.title
+            viewData.theme = props.theme
+            viewData.addresses = u.addresses
+            let primaryAddr = getPrimaryField(viewData.addresses)
+            if (primaryAddr) {
+                viewData.addressStreet = { value: primaryAddr.streetAddress }
+                viewData.addressLocality = { value: primaryAddr.locality }
+                viewData.addressRegion = { value: primaryAddr.region }
+                viewData.addressPostcode = { value: primaryAddr.postalCode }
+                viewData.addressCountry = { value: primaryAddr.country }
+                viewData.addressType = { value: primaryAddr.type }
+            }
+            viewData.emails = u.emails
+            viewData.phoneNumbers = u.phoneNumbers
+            let phone = getPrimaryField(viewData.phoneNumbers)
+            if (phone) {
+                viewData.phone ={
+                    value: phone.value,
+                    type: phone.type
+                }
+            }
+            viewData.verifiedUser = u.verified
+
+            let dForms = {
+                security: false,
+                contact: false,
+                addresses: false,
+                orders: false,
+                payments: false,
+                settings: false
+            }
+
+            // Disable security credentials update for external accounts
+            if (!validator.isLocalUserAccount(u)) {
+                dForms.security = true
+            }
+            viewData.disabledForms = dForms
+            resolve(viewData)
+        } catch (e) {
+            reject(e)
+        }
+    })
 }
 
 // Login & Security updates form handler
@@ -176,8 +214,12 @@ let lsFormHandler = async (req, res) => {
                     const nwPwHash = await bcrypt.hash(String(req.body.nw_pwd), 10)
                     u.password = nwPwHash
                 } else {
+                    let viewData = await populateUserViewData(req.user.id)
+                    viewData.user = req.user
+                    viewData.pane = 'ls'
+                    viewData.messages = { error: 'Authentication failed. Incorrect password.' }
                     res.status(403)
-                    res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: 'ls', messages: { error: 'Authentication failed. Incorrect password.' }, verifiedUser: usr.verified, emails: usr.emails, addresses: usr.addresses })
+                    res.render('account', viewData)
                     return
                 }
             } else {
@@ -213,22 +255,22 @@ let lsFormHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
                 console.log(formFields)
             }
-            formFields.title = props.title
-            formFields.theme = props.theme
-            formFields.messages = { info: 'Account could not be updated.' }
-            formFields.user = req.user
-            formFields.pane = 'ls'
-            formFields.verifiedUser = usr.verified
-            formFields.emails = usr.emails
-            formFields.addresses = usr.addresses
+            let viewData = await populateUserViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = 'ls'
+            viewData.messages = { info: 'Account could not be updated.' }
             res.status(400)
-            res.render('account', formFields)
+            res.render('account', viewData)
             return
         } else {
             try {
                 const result = await user.update({ preferredUsername: u.preferredUsername }, { password: u.password })
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                res.render('account', {user: req.user, title: props.title, theme: props.theme, messages: {success: 'Account updated.'}, pane: 'ls',verifiedUser: result.verified,emails: usr.emails, addresses: usr.addresses})
+                let viewData = await populateUserViewData(req.user.id)
+                viewData.user = req.user
+                viewData.pane = 'ls'
+                viewData.messages = { success: 'Account updated.' }
+                res.render('account', viewData)
             } catch (e) {
                 console.error(e)
                 res.status(500)
@@ -355,30 +397,27 @@ let ciFormHandler = async (req, res) => {
             console.log('Invalid update account request received.')
             console.log(formFields)
         }
-        formFields.title = props.title
-        formFields.theme = props.theme
-        formFields.messages = { error: 'One or more fields has invalid entries.' }
-        formFields.user = req.user
-        formFields.pane = 'ci'
-        formFields.verifiedUser = usr.verified
-        formFields.emails = usr.emails
-        formFields.addresses = usr.addresses
+        let viewData = await populateUserViewData(req.user.id)
+        viewData.addressStreet = formFields.addressStreet
+        viewData.addressLocality = formFields.addressLocality
+        viewData.addressRegion = formFields.addressRegion
+        viewData.addressPostcode = formFields.addressPostcode
+        viewData.addressCountry = formFields.addressCountry
+        viewData.user = req.user
+        viewData.pane = 'ci'
+        viewData.messages = {error: 'One or more fields has invalid entries.'}
         res.status(400)
-        res.render('account', formFields)
+        res.render('account', viewData)
         return
     } else {
         try {
             await user.update({ preferredUsername: u.preferredUsername }, u)
             if (debug) console.log('User account updated for ' + u.preferredUsername)
-            formFields.title = props.title
-            formFields.theme = props.theme
-            formFields.user = req.user
-            formFields.messages = { success: 'Account updated.' }
-            formFields.pane = 'ci'
-            formFields.verifiedUser = usr.verified
-            formFields.emails = usr.emails
-            formFields.addresses = usr.addresses
-            res.render('account', formFields)
+            let viewData = await populateUserViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = 'ci'
+            viewData.messages = { success: 'Account updated.' }
+            res.render('account', viewData)
         } catch (e) {
             console.error(e)
             res.status(500)
@@ -406,7 +445,6 @@ let naFormHandler = async (req, res) => {
         }
 
         let form = converter.objectFieldsToString(req.body)
-        console.log(form)
 
         if (form.uid != req.user.id) {
             _403redirect(req, res, '/user/account/?show=ad', 'Permission denied.')
@@ -458,6 +496,11 @@ let naFormHandler = async (req, res) => {
                 phone.type = form.phoneType || 'home'
 
                 addr.phoneNumbers = [phone]
+                formFields.new_Phone = {value: phone.value, class: 'valid'}
+                formFields.new_PhoneType = {value: phone.type, class: 'unchecked'}
+            } else {
+                formFields.new_Phone = { value: '', class: 'unspecified' }
+                formFields.new_PhoneType = { value: form.phoneType, class: 'unchecked' }
             }
 
             u.addresses.push(addr)
@@ -467,16 +510,17 @@ let naFormHandler = async (req, res) => {
             formFields.new_addressRegion = { class: 'valid', value: form.addressRegion }
             formFields.new_addressPostcode = { class: 'valid', value: form.addressPostcode }
             formFields.new_addressCountry = { class: 'valid', value: form.addressCountry }
+            formFields.new_addressType = { class: 'unchecked', value: form.addressType }
         } else if (form.addressStreet || form.addressLocality || form.addressRegion || form.addressPostcode || form.addressCountry) {
             formFields.new_addressStreet = { class: 'is-invalid', value: form.addressStreet }
             formFields.new_addressLocality = { class: 'is-invalid', value: form.addressLocality }
             formFields.new_addressRegion = { class: 'is-invalid', value: form.addressRegion }
             formFields.new_addressPostcode = { class: 'is-invalid', value: form.addressPostcode }
             formFields.new_addressCountry = { class: 'is-invalid', value: form.addressCountry }
+            formFields.new_addressType = { class: 'unchecked', value: form.addressType }
         }
 
-        if(form.fullname) formFields.fullname = { value: form.fullname }
-        if(form.phone) formFields.new_addrphone = { value: form.phone }
+        if(form.fullname) formFields.fullname = { value: form.fullname, class: 'valid' }
 
         let hasInvalids = false;
 
@@ -495,28 +539,30 @@ let naFormHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
                 console.log(formFields)
             }
-            formFields.title = props.title
-            formFields.messages = { error: 'One or more fields has invalid entries.' }
-            formFields.user = req.user
-            formFields.pane = 'ad'
-            formFields.verifiedUser = usr.verified
-            formFields.emails = usr.emails
-            formFields.addresses = usr.addresses
+            let viewData = await populateUserViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = 'ad'
+            viewData.messages = { error: 'One or more fields has invalid entries.' }
+            viewData.new_addressStreet = formFields.new_addressStreet
+            viewData.new_addressLocality = formFields.new_addressLocality
+            viewData.new_addressRegion = formFields.new_addressRegion
+            viewData.new_addressPostcode = formFields.new_addressPostcode
+            viewData.new_addressCountry = formFields.new_addressCountry
+            viewData.new_addressType = formFields.new_addressType
+            viewData.new_Phone = formFields.new_Phone
+            viewData.new_PhoneType = formFields.new_PhoneType
             res.status(400)
-            res.render('account', formFields)
+            res.render('account', viewData)
             return
         } else {
             try {
                 await user.update({ preferredUsername: u.preferredUsername }, u)
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                formFields.title = props.title
-                formFields.user = req.user
-                formFields.messages = { success: 'Account updated.' }
-                formFields.pane = 'ci'
-                formFields.verifiedUser = usr.verified
-                formFields.emails = usr.emails
-                formFields.addresses = usr.addresses
-                res.render('account', formFields)
+                let viewData = await populateUserViewData(req.user.id)
+                viewData.user = req.user
+                viewData.pane = 'ad'
+                viewData.messages = { success: 'Account updated.' }
+                res.render('account', viewData)
             } catch (e) {
                 console.error(e)
                 res.status(500)
@@ -581,7 +627,6 @@ let emailAddHandler = async (req, res) => {
         }
 
         let form = converter.objectFieldsToString(req.body)
-        console.log(form)
 
         if (form.uid != req.user.id) {
             _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
@@ -616,28 +661,24 @@ let emailAddHandler = async (req, res) => {
             if (debug) {
                 console.log('Invalid update account request received.')
             }
-            formFields.title = props.title
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
-            formFields.user = req.user
-            formFields.pane = 'em'
-            formFields.verifiedUser = usr.verified
-            formFields.emails = usr.emails
-            formFields.addresses = usr.addresses
+            let viewData = await populateUserViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = 'em'
+            viewData.messages = formFields.messages
+            viewData.email = formFields.email
             formFields.status ? res.status(formFields.status) : res.status(400)
-            res.render('account', formFields)
+            res.render('account', viewData)
             return
         } else {
             try {
                 await user.update({ preferredUsername: u.preferredUsername }, u)
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                formFields.title = props.title
-                formFields.user = req.user
-                formFields.messages = { success: 'Account updated.' }
-                formFields.pane = 'em'
-                formFields.verifiedUser = usr.verified
-                formFields.emails = usr.emails
-                formFields.addresses = usr.addresses
-                res.render('account', formFields)
+                let viewData = await populateUserViewData(req.user.id)
+                viewData.user = req.user
+                viewData.pane = 'em'
+                viewData.messages = { success: 'Account updated.' }
+                res.render('account', viewData)
             } catch (e) {
                 console.error(e)
                 res.status(500)
@@ -664,7 +705,6 @@ let emailDeleteHandler = async (req, res) => {
         }
 
         let form = converter.objectFieldsToString(req.body)
-        console.log(form)
 
         if (form.uid != req.user.id) {
             _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
@@ -697,32 +737,26 @@ let emailDeleteHandler = async (req, res) => {
 
         if (!formValidated) {
             if (debug) {
-                console.log('Invalid update account request received.')
+                console.log('Invalid account update request received.')
             }
-            formFields.title = props.title
-            if(!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
-            formFields.user = req.user
-            formFields.pane = 'em'
-            formFields.verifiedUser = usr.verified
-            formFields.emails = usr.emails
-            formFields.addresses = usr.addresses
+            let viewData = await populateUserViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = 'em'
+            if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
+            viewData.messages = formFields.messages
             formFields.status ? res.status(formFields.status) : res.status(400)
-            res.render('account', formFields)
+            res.render('account', viewData)
             return
         } else {
             try {
                 u.emails = removeFields(usr.emails, form.email)
                 await user.update({ preferredUsername: u.preferredUsername }, u)
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                const u_updated = await user.read(form.uid, { findBy: 'id' })
-                formFields.title = props.title
-                formFields.user = req.user
-                formFields.messages = { success: 'Account updated.' }
-                formFields.pane = 'em'
-                formFields.verifiedUser = u_updated.verified
-                formFields.emails = u_updated.emails
-                formFields.addresses = u_updated.addresses
-                res.render('account', formFields)
+                let viewData = await populateUserViewData(req.user.id)
+                viewData.user = req.user
+                viewData.pane = 'em'
+                viewData.messages = { success: 'Account updated.' }
+                res.render('account', viewData)
             } catch (e) {
                 console.error(e)
                 res.status(500)
@@ -734,28 +768,148 @@ let emailDeleteHandler = async (req, res) => {
 
 // Add phone number form handler
 let phoneAddHandler = async (req, res) => {
-
     if (!validator.hasActiveSession(req)) {
         _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
         return
     } else {
-        console.log(req.body)
-        return await badRequest(req, res, 'pn', 501, 'Functionality not implemented', 'info')
-    }
+        let u = {}
 
+        let formValidated = false
+        let formFields = {}
+
+        if (!req.body) {
+            await badRequest(req, res, 'pn', 400, 'Invalid request.')
+            return
+        }
+
+        let form = converter.objectFieldsToString(req.body)
+
+        if (form.uid != req.user.id) {
+            _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
+            return
+        }
+
+        // Read existing stored user details
+        const usr = await user.read(form.uid, { findBy: 'id' })
+
+        u.preferredUsername = usr.preferredUsername
+
+        //Validate email address
+        if (validator.isPhoneNumber(form.phoneNumber)) {
+            let hasPhoneNumberAlready = getField(usr.phoneNumbers, form.phoneNumber)
+            if (hasPhoneNumberAlready) {
+                formValidated = false
+                formFields.messages = { error: 'Phone numbers must be unique.' }
+                formFields.status = 400
+            } else {
+                u.phoneNumbers = usr.phoneNumbers
+                u.phoneNumbers ? u.phoneNumbers.push({ value: form.phoneNumber, type: form.phoneType }) : u.phoneNumbers = [{ value: form.phoneNumber, type: form.phoneType, primary: true }]
+                formValidated = true
+            }
+        } else {
+            formValidated = false
+            formFields.phoneNumber = { class: 'invalid', value: form.phoneNumber }
+            formFields.messages = {
+                error: 'You must enter a valid phone number.'
+            }
+        }
+
+        if (!formValidated) {
+            if (debug) {
+                console.log('Invalid update account request received.')
+            }
+            if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
+            let viewData = await populateUserViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = 'pn'
+            viewData.messages = formFields.messages
+            viewData.phoneNumber = formFields.phoneNumber
+            formFields.status ? res.status(formFields.status) : res.status(400)
+            res.render('account', viewData)
+            return
+        } else {
+            try {
+                await user.update({ preferredUsername: u.preferredUsername }, u)
+                if (debug) console.log('User account updated for ' + u.preferredUsername)
+                let viewData = await populateUserViewData(req.user.id)
+                viewData.user = req.user
+                viewData.pane = 'pn'
+                viewData.messages = { success: 'Account updated.' }
+                res.render('account', viewData)
+            } catch (e) {
+                console.error(e)
+                res.status(500)
+                res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested update.' } })
+            }
+        }
+    }
 }
 
 // Delete phone number form handler
 let phoneDeleteHandler = async (req, res) => {
-
     if (!validator.hasActiveSession(req)) {
-        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        _403redirect(req, res, '/user/account/?show=em', 'You must be signed in.')
         return
     } else {
-        console.log(req.body)
-        return await badRequest(req, res, 'pn', 501, 'Functionality not implemented', 'info')
-    }
+        let u = {}
 
+        let formValidated = false
+        let formFields = {}
+
+        if (!req.body) {
+            await badRequest(req, res, 'pn', 400, 'Invalid request.')
+            return
+        }
+
+        let form = converter.objectFieldsToString(req.body)
+
+        if (form.uid != req.user.id) {
+            _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
+            return
+        }
+
+        // Read existing stored user details
+        const usr = await user.read(form.uid, { findBy: 'id' })
+
+        u.preferredUsername = usr.preferredUsername
+
+        //Validate email address
+        if (validator.isPhoneNumber(form.phoneNumber)) {
+            formValidated = true
+        } else {
+            await badRequest(req, res, 'em', 400, 'Invalid request.')
+            return
+        }
+
+        if (!formValidated) {
+            if (debug) {
+                console.log('Invalid account update request received.')
+            }
+            let viewData = await populateUserViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = 'pn'
+            if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
+            viewData.messages = formFields.messages
+            formFields.status ? res.status(formFields.status) : res.status(400)
+            res.render('account', viewData)
+            return
+        } else {
+            try {
+                u.phoneNumbers = removeFields(usr.phoneNumbers, form.phoneNumber)
+                await user.update({ preferredUsername: u.preferredUsername }, u)
+                if (debug) console.log('User account updated for ' + u.preferredUsername)
+                let viewData = await populateUserViewData(req.user.id)
+                viewData.user = req.user
+                viewData.pane = 'pn'
+                viewData.messages = { success: 'Account updated.' }
+                res.render('account', viewData)
+            } catch (e) {
+                console.error(e)
+                res.status(500)
+                res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested update.' } })
+            }
+        }
+    }
 }
 
 // Deletion form handler
@@ -789,7 +943,11 @@ let deleteHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('account', { title: props.title, theme: props.theme, user: req.user, pane: 'pr', messages: { error: 'Unable to delete account.' }, verifiedUser: u.verified })
+            let viewData = await populateUserViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = 'pr'
+            viewData.messages = { error: 'Unable to delete account.' }
+            res.render('account', viewData)
         }
     }
 
@@ -815,41 +973,9 @@ account.get('/', async (req, res) => {
                         panel = 'ci'
                 }
             }
-            let dForms = {
-                security: false,
-                contact: false,
-                addresses: false,
-                orders: false,
-                payments: false,
-                settings: false
-            }
-
-            // Disable security credentials update for external accounts
-            if(!validator.isLocalUserAccount(req.user)){
-                dForms.security = true
-            }
-            let viewData = { title: props.title, user: req.user, pane: panel, disabledForms: dForms }
-
-            const usr = await user.read(req.user.id,{findBy: 'id'})
-            if(usr.verified) viewData.verifiedUser = usr.verified
-            let primaryPhoneNumber = getPrimaryField(usr.phoneNumbers)
-            let primaryAddress = getPrimaryField(usr.addresses)
-            if(primaryPhoneNumber) {
-                viewData.phone = {value: primaryPhoneNumber.value}
-            }
-
-            if(primaryAddress) {
-                viewData.addressStreet = {value: primaryAddress.streetAddress}
-                viewData.addressLocality = {value: primaryAddress.locality}
-                viewData.addressRegion = {value: primaryAddress.region}
-                viewData.addressPostcode = {value: primaryAddress.postalCode}
-                viewData.addressCountry = {value: primaryAddress.country}
-            }
-
-            viewData.emails = usr.emails
-            viewData.addresses = usr.addresses
-            viewData.phoneNumbers = usr.phoneNumbers
-            
+            let viewData = await populateUserViewData(req.user.id)     
+            viewData.user = req.user 
+            viewData.pane = panel    
             res.render('account', viewData)
         } else {
             props.messages = {error: "You need to be signed in."}

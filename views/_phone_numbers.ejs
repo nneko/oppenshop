@@ -2,7 +2,7 @@
     role="tabpanel" aria-labelledby="phone-tab">
     <h2 class="tab-pane-h2">Phone Numbers</h2>
     <section id="phone-number-list" class="content-pane-scroll-cards-section tab-scroll-pane">
-        <% if (typeof(phoneNumbers) !== 'undefined' && Array.isArray(phoneNumbers)) { %>
+        <% if (typeof(phoneNumbers) !== 'undefined' && Array.isArray(phoneNumbers) && phoneNumbers.length > 0) { %>
         <% for(let i=0;i<phoneNumbers.length;i++) { %>
         <div class="card">
             <div class="card-body">

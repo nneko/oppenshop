@@ -4,7 +4,7 @@
         <a class="right add-address-link" href="#new-address-form"><%- include('assets/symbols/plus.svg') %> Add Address</a>
     </div>
     <section id="address-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
-        <% if (typeof(addresses) !== 'undefined' && Array.isArray(addresses)) { %>
+        <% if (typeof(addresses) !== 'undefined' && Array.isArray(addresses) && addresses.length > 0) { %>
         <% for(let i=0;i<addresses.length;i++) { %>
         <div class="card">
             <div class="card-body">
@@ -92,10 +92,10 @@
                                 <span class="input-group-text" id="add-address-phone-basic-addon">Phone</span>
                                 
                             </div>
-                            <input id="add-address-phone" class="form-control <% if(typeof(new_addrphone) !== 'undefined') { %><%= new_addrphone.class %><% } %>" type="text" name="phone" value="<% if(typeof(new_addrphone) !== 'undefined' && new_addrphone.value) { %><%= phone.value %><% } %>"
+                            <input id="add-address-phone" class="form-control <% if(typeof(new_Phone) !== 'undefined') { %><%= new_Phone.class %><% } %>" type="text" name="phone" value="<% if(typeof(new_Phone) !== 'undefined' && new_Phone.value) { %><%= new_Phone.value %><% } %>"
                                 aria-label="Address" aria-describedby="phone-basic-addon" size="25" required>
                             <div id="add-address-invalid-phone" class="invalid-feedback">
-                                <% if(typeof(new_addrphone) !== 'undefined' && new_addrphone.class == 'is-invalid') { %><%= new_addrphone.message %><% } else { %>
+                                <% if(typeof(new_Phone) !== 'undefined' && new_Phone.class == 'is-invalid') { %><%= new_Phone.message %><% } else { %>
                                 You must a valid phone number.
                                 <% } %>
                             </div>
@@ -103,7 +103,7 @@
                         <div class="form-group form-inline">
                             <label id="newAddressPhoneTypeLabel" class="form-label" for="newAddressPhoneType">Type</label>
                             <select id="newAddressPhoneType"
-                                class="form-control <% if(typeof(phoneType) !== 'undefined') { %><%= phoneType.class %><% } %>" type="text"
+                                class="form-control <% if(typeof(new_PhoneType) !== 'undefined') { %><%= new_PhoneType.class %><% } %>" type="text"
                                 name="phoneType" value="" aria-label="phoneType" aria-describedby="phoneType-basic-addon">
                                 <option>home</option>
                                 <option>work</option>
@@ -116,7 +116,7 @@
                     <div class="form-group form-inline mb-3">
                         <label id="newAddressTypeLabel" class="form-label" for="newAdddressType">Type of Address</label>
                         <select id="newAddressType"
-                            class="form-control <% if(typeof(addressType) !== 'undefined') { %><%= addressType.class %><% } %>" type="text"
+                            class="form-control <% if(typeof(new_addressType) !== 'undefined') { %><%= new_addressType.class %><% } %>" type="text"
                             name="addressType" value="" aria-label="addressType" aria-describedby="addressType-basic-addon">
                             <option selected="selected">home</option>
                             <option>work</option>

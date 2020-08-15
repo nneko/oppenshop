@@ -1,15 +1,14 @@
 Currency:
 Fields - id, code
 
-Vender:
-Fields -  vid, name, addressStreet, addressState, addressPostCode, addressCountry, phone
-
 Product:
-Fields - vid, pid, ppid, productName, description, specifications, isSKU, SKU, price, currency, productImage
+Fields - _id, shopID, parentProductID, productName, description, specifications, isSKU, SKU, price, currency, productImage
 
 Catalog:
-Fields - cid, name, description, productListing
+Fields - _id, name, description, productListing: []
 
 Order:
-Fields - oid, timestamp, uid, pid, quantity
+Fields - _id, timestamp, userID, productId, quantity
 
+Shop:
+Fields - _id, ownerID, name, description, address: {streetAddress, locality, region, postalCode, country}, phoneNumber: {value,type}

@@ -11,4 +11,4 @@ Order:
 Fields - _id, timestamp, userID, productId, quantity
 
 Shop:
-Fields - _id, ownerID, name, description, address: {streetAddress, locality, region, postalCode, country}, phoneNumber: {value,type}
+Fields - _id, owner, name, description, address: {streetAddress, locality, region, postalCode, country}, phoneNumber: {value,type}

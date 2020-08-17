@@ -120,7 +120,7 @@ if(!module.parent){
         app.set('view engine', 'ejs')
         app.set('views', path.join(__dirname, '../views/' + app.locals.template))
         app.set('layout', path.join(__dirname, '../views/' + app.locals.template + '/layout'))
-        app.use(logger('dev'))
+        app.use(logger('combined'))
         app.use(ejsLayouts)
         app.use(session({
             name: 'session.sid',

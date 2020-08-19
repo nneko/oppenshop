@@ -6,9 +6,10 @@ const user = require('user')
 
 let shop = {}
 
-shop.isValid = (s) => {
+shop.isValid = async (s) => {
     try {
-        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && await shop.exists({ _id: db.getObjectId(p.shop) }) && typeof (p.name) == 'string' && validator.isNotNull(p.name) && typeof (p.description) == 'string' && validator.isNotNull(p.description) && s.hasOwnProperty('address') && s.hasOwnProperty('phoneNumber') && p.hasOwnProperty('parentProduct')) {
+        let shopExists = await shop.exists({ _id: db.getObjectId(p.shop) })
+        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && shopExists && typeof (p.name) == 'string' && validator.isNotNull(p.name) && typeof (p.description) == 'string' && validator.isNotNull(p.description) && s.hasOwnProperty('address') && s.hasOwnProperty('phoneNumber') && p.hasOwnProperty('parentProduct')) {
             return true
         } else {
             return false

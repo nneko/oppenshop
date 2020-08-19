@@ -6,9 +6,10 @@ const shop = require('shop')
 
 let product = {}
 
-product.isValid = (p) => {
+product.isValid = async (p) => {
     try {
-        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && await shop.exists({ _id: db.getObjectId(p.shop) }) && typeof (p.name) == 'string' && validator.isNotNull(s.name) && typeof (s.description) == 'string' && validator.isNotNull(s.description) && p.hasOwnProperty('image') && p.hasOwnProperty('specification') && p.hasOwnProperty('price') && p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')) {
+        let shopExists = await shop.exists({ _id: db.getObjectId(p.shop) })
+        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && shopExists && typeof (p.name) == 'string' && validator.isNotNull(s.name) && typeof (s.description) == 'string' && validator.isNotNull(s.description) && p.hasOwnProperty('image') && p.hasOwnProperty('specification') && p.hasOwnProperty('price') && p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')) {
             return true
         } else {
             return false

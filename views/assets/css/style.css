@@ -87,8 +87,10 @@ svg {
 }
 
 .icon {
+    background: transparent;
     border: none;
-    height: 2rem;
+    height: 2.4rem;
+    padding: 0.2rem;
 }
 
 .medium-icon {
@@ -417,6 +419,21 @@ svg {
 
 .red-alert {
     color: red;
+}
+
+.active .icon {
+    /*
+    fill: white !important;
+    stroke: white !important;
+    */
+    background: white;
+    border-radius: 50%;
+}
+
+.tab-pane .icon, .tab-pane svg, .nav-link .icon {
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
 }
 
 .content-pane-scroll-cards-section {

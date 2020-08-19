@@ -4,16 +4,16 @@
         <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'ci') { %>active<% } %>" id="primary-tab"
                 data-toggle="tab" href="#primaryTab" role="tab" aria-controls="home"
-                aria-selected="true"><%- include('assets/symbols/contact.svg') %>All Products</a>
+                aria-selected="true"><%- include('assets/symbols/gallery.svg') %>All Products</a>
         </li>
         <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'ad') { %>active<% } %>" id="addresses-tab"
                 data-toggle="tab" href="#addressesTab" role="tab" aria-controls="contact"
-                aria-selected="false"><%- include('assets/symbols/location.svg') %>New Product</a>
+                aria-selected="false"><%- include('assets/symbols/add.svg') %>New Product</a>
         </li>
         <li class="nav-item <% if(typeof(pane) !== 'undefined' && pane == 'em') { %>active<% } %>">
             <a class="nav-link" id="emails-tab" data-toggle="tab" href="#emailsTab" role="tab" aria-controls="profile"
-                aria-selected="false"><%- include('assets/symbols/mail.svg') %>Archived</a>
+                aria-selected="false"><%- include('assets/symbols/box.svg') %>Archived</a>
         </li>
         <!-- <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pn') { %>active<% } %>" id="phone-tab"

@@ -47,7 +47,7 @@ let shopAddHandler = async (req, res) => {
         // Read existing stored user details
         const usr = await user.read(form.uid, { findBy: 'id' })
 
-        u.uid = form.uid
+        u.owner = form.uid
 	u.name = form.fullname
         u.status = 'active'
         if (req.file !== 'undefined'){
@@ -77,9 +77,9 @@ let shopAddHandler = async (req, res) => {
             console.log(u)
             let t = await shop.create(u)
             console.log(t.ops)
-            if (debug) console.log('Shop added for ' + u.uid)
+            if (debug) console.log('Shop added for ' + u.owner)
             //let viewData = await populateUserShopViewData('\''+u.uid+'\'')
-            let viewData = await populateUserShopViewData(u.uid.toString())
+            let viewData = await populateUserShopViewData(u.owner)
             viewData.user = req.user
             viewData.pane = 'ls'
             viewData.messages = { success: 'Shop added.' }
@@ -172,13 +172,24 @@ let populateUserShopViewData = async (uid,status = 'active') => {
         console.log(t)
         try {
             //u = await shop.read(uid, { findBy: 'uid' })
-            u = await shop.read(t)
+            s = await shop.read(t.uid,{findBy: 'owner'})
+            console.log(s)
+            u = await user.read(uid, {findBy: 'id'})
             console.log(u)
             let viewData = {}
             viewData.title = props.title
             viewData.theme = props.theme
             
-            viewData.shops = u
+            viewData.shops = []
+            if(s) {
+                if(Array.isArray(s)) {
+                    viewData.shops = s
+                } else {
+                    if (shop.isValid(s)){
+                        viewData.shops.push(s)
+                    }
+                }
+            } 
             
             viewData.addresses = u.addresses
             /*

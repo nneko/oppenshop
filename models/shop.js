@@ -8,8 +8,8 @@ let shop = {}
 
 shop.isValid = async (s) => {
     try {
-        let shopExists = await shop.exists({ _id: db.getObjectId(p.shop) })
-        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && shopExists && typeof (p.name) == 'string' && validator.isNotNull(p.name) && typeof (p.description) == 'string' && validator.isNotNull(p.description) && s.hasOwnProperty('address') && s.hasOwnProperty('phoneNumber') && p.hasOwnProperty('parentProduct')) {
+        let userExists = await user.exists({ _id: db.getObjectId(s.owner) })
+        if (validator.isNotNull(s) && typeof (s.owner) == 'string' && userExists && typeof (s.name) == 'string' && validator.isNotNull(s.name) && typeof (s.description) == 'string' && validator.isNotNull(s.description) && s.hasOwnProperty('address') && s.hasOwnProperty('phoneNumber')) {
             return true
         } else {
             return false
@@ -83,6 +83,10 @@ shop.read = (properties, options) => {
                         case 'id':
                             const result = await shopCollection.findOne({'_id': db.getObjectId(properties)})
                             resolve(result)
+                            break
+                        case 'owner':
+                            const ownerShops = await shopCollection.findOne({ owner: properties})
+                            resolve(ownerShops)
                             break
                         default:
                             const cursor = await shopCollection.find(properties).limit(1)

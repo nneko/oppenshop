@@ -2,7 +2,7 @@ const cfg = require('../configuration')
 const db = require('../adapters/storage/'+cfg.dbAdapter)
 const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
-const shop = require('shop')
+const shop = require('./shop')
 
 let product = {}
 
@@ -43,8 +43,8 @@ product.create = (s) => {
                 e.name = 'ProductError'
                 e.type = 'Invalid'
                 throw e
-            } 
-            
+            }
+
             if (await product.exists({ name: p.name, shop: p.shop })) {
                 let e = new Error('Product already exists')
                 e.name = 'ProductError'
@@ -145,7 +145,7 @@ product.delete = (filters) => {
             resolve(result)
         } catch (e) {
             reject(e)
-        } 
+        }
     })
 }
 

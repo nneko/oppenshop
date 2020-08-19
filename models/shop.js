@@ -2,13 +2,13 @@ const cfg = require('../configuration')
 const db = require('../adapters/storage/'+cfg.dbAdapter)
 const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
-const user = require('user')
+const user = require('./user')
 
 let shop = {}
 
 shop.isValid = (s) => {
     try {
-        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && await shop.exists({ _id: db.getObjectId(p.shop) }) && typeof (p.name) == 'string' && validator.isNotNull(p.name) && typeof (p.description) == 'string' && validator.isNotNull(p.description) && s.hasOwnProperty('address') && s.hasOwnProperty('phoneNumber') && p.hasOwnProperty('parentProduct')) {
+        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && shop.exists({ _id: db.getObjectId(p.shop) }) && typeof (p.name) == 'string' && validator.isNotNull(p.name) && typeof (p.description) == 'string' && validator.isNotNull(p.description) && s.hasOwnProperty('address') && s.hasOwnProperty('phoneNumber') && p.hasOwnProperty('parentProduct')) {
             return true
         } else {
             return false
@@ -42,8 +42,8 @@ shop.create = (s) => {
                 e.name = 'ShopError'
                 e.type = 'Invalid'
                 throw e
-            } 
-            
+            }
+
             if (await shop.exists({ name: s.name })) {
                 let e = new Error('Shop already exists')
                 e.name = 'ShopError'
@@ -144,7 +144,7 @@ shop.delete = (filters) => {
             resolve(result)
         } catch (e) {
             reject(e)
-        } 
+        }
     })
 }
 

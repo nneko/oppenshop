@@ -2,13 +2,13 @@ const cfg = require('../configuration')
 const db = require('../adapters/storage/'+cfg.dbAdapter)
 const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
-const shop = require('shop')
+const shop = require('./shop')
 
 let product = {}
 
 product.isValid = (p) => {
     try {
-        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && await shop.exists({ _id: db.getObjectId(p.shop) }) && typeof (p.name) == 'string' && validator.isNotNull(s.name) && typeof (s.description) == 'string' && validator.isNotNull(s.description) && p.hasOwnProperty('image') && p.hasOwnProperty('specification') && p.hasOwnProperty('price') && p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')) {
+        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && shop.exists({ _id: db.getObjectId(p.shop) }) && typeof (p.name) == 'string' && validator.isNotNull(s.name) && typeof (s.description) == 'string' && validator.isNotNull(s.description) && p.hasOwnProperty('image') && p.hasOwnProperty('specification') && p.hasOwnProperty('price') && p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')) {
             return true
         } else {
             return false
@@ -42,8 +42,8 @@ product.create = (s) => {
                 e.name = 'ProductError'
                 e.type = 'Invalid'
                 throw e
-            } 
-            
+            }
+
             if (await product.exists({ name: p.name, shop: p.shop })) {
                 let e = new Error('Product already exists')
                 e.name = 'ProductError'
@@ -144,7 +144,7 @@ product.delete = (filters) => {
             resolve(result)
         } catch (e) {
             reject(e)
-        } 
+        }
     })
 }
 

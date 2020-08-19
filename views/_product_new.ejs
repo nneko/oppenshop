@@ -1,0 +1,87 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'ad') { %>show active<% } %>" id="addressesTab" role="tabpanel" aria-labelledby="addresses-tab">
+    <h2 class="tab-pane-h2">New Product</h2>
+    <div>
+        <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length == 0 && typeof(archived) == 'undefined') { %>
+        <a class="left add-address-link" href="">
+            <%- include('assets/symbols/plus.svg') %> Required Active Storefronts
+        </a>
+        <% } %>
+    </div>
+    <hr>
+    <section class="standard-form-section new-address-form-section" <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length == 0 && typeof(archived) == 'undefined') { %> hidden<% } %> >
+        <h3>Add a new product</h3>
+        <form id="new-product-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
+            oninput="" novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.addresses) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="np">
+
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <div class="form-group">
+                    <div class="form-group form-inline mb-3">
+                        <label id="newAddressTypeLabel" class="form-label" for="newAdddressType">Shop</label>
+                        <select id="newAddressType"
+                            class="form-control <% if(typeof(new_addressType) !== 'undefined') { %><%= new_addressType.class %><% } %>" type="text"
+                            name="addressType" value="" aria-label="addressType" aria-describedby="addressType-basic-addon">
+                            <% for(let i=0;i<shops.length;i++) { %>
+                            <option id="<%= shops[i]._id %>"><%= shops[i].name %></option>
+                            <% } %>
+                            <!-- <option selected="selected">home</option>
+                            <option>work</option>
+                            <option>other</option> -->
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="add-address-fullname-basic-addon">Name</span>
+                            </div>
+                            <input id="add-address-fullname" class="form-control <% if(typeof(fullname) !== 'undefined') { %><%= fullname.class %><% } %>" type="text" name="fullname" value="<% if(typeof(fullname) !== 'undefined' && fullname.value) { %><%= fullname.value %><% } %>"
+                                aria-label="Address" aria-describedby="fullname-basic-addon" size="25" required>
+                            <div id="add-address-invalid-fullname" class="invalid-feedback">
+                                <% if(typeof(fullname) !== 'undefined' && fullname.class == 'is-invalid') { %><%= fullname.message %><% } else { %>
+                                You must a valid name.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="add-address-fullname-basic-addon">Description</span>
+                            </div>
+                            <textarea rows="4" cols="25" name="description" form="new-product-form"> Product Description ... </textarea>
+                            <!-- <input id="add-address-fullname" class="form-control <% if(typeof(fullname) !== 'undefined') { %><%= fullname.class %><% } %>" type="text" name="fullname" value="<% if(typeof(fullname) !== 'undefined' && fullname.value) { %><%= fullname.value %><% } %>"
+                                aria-label="Address" aria-describedby="fullname-basic-addon" size="25" required> -->
+                            <div id="add-address-invalid-fullname" class="invalid-feedback">
+                                <% if(typeof(fullname) !== 'undefined' && fullname.class == 'is-invalid') { %><%= fullname.message %><% } else { %>
+                                You must a valid name.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="add-address-fullname-basic-addon">Image(s)</span>
+                            </div>
+                            <input id="add-address-fullimage" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullimage.class %><% } %>" type="file" name="fullimage"
+                                aria-label="Image" aria-describedby="fullname-basic-addon" accept=".jpg,.jpeg,.png">
+                            <div id="add-address-invalid-fullname" class="invalid-feedback">
+                                <% if(typeof(fullimage) !== 'undefined' && fullimage.class == 'is-invalid') { %><%= fullimage.message %><% } else { %>
+                                You must provide a valid image of type: jpg/jpeg/png.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="addresses-add-button-container">
+                        <button id="add-addresses-button" type="submit" class="btn btn-light" onclick="">Add
+                            Product</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+</div>

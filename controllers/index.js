@@ -16,6 +16,7 @@ router.use('/public', express.static(path.join(__dirname, '../views/public')))
 //Ignore cfg.template
 router.use('/view/assets', express.static(path.join(__dirname, '../views/' + '/assets')))
 router.use('/user/view/assets', express.static(path.join(__dirname, '../views/' + '/assets')))
+router.use('/market', require('./market'))
 router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
 router.use('/signout', require('./signout'))

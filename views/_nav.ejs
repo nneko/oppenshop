@@ -25,7 +25,7 @@
             <div class="menu-line2"></div>
         </div>
     </div>
-    <ul class="nav-links">
+    <ul class="menu-main-navigation nav-links">
         <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && (reqData.path.split('/')[1] == 'market' || reqData.path.split('/')[1] == '')) { %>class="menu-item-selected" <% } %> href="/market">Marketplace</a></li>
         <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag') { %>class="menu-item-selected" <% } %> href="/user/bag">Buy</a></li>
         <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'shop') { %>class="menu-item-selected" <% } %> href="/user/shop">Sell</a></li>

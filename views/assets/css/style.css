@@ -556,6 +556,10 @@ white-space: nowrap;
     width: 100%;
 }
 
+.menu-main-navigation {
+    z-index: 9;
+}
+
 @media screen and (max-width: 1028px) {
 
     .applogo a {
@@ -629,6 +633,35 @@ white-space: nowrap;
         margin: auto;
         max-width: 98%;
         width: 98%;
+    }
+
+    .sidebar {
+        flex: 0 0 100%;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .main-content {
+        flex: 0 0 100%;
+        margin-top: 1rem;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .nav-link {
+        text-align: left;
+    }
+
+    .nav-link.active {
+        background-color: #007bff !important;
+        border: 0 !important;
+        border-radius: .25rem !important;
+        color: #fff !important;
+    }
+
+    .nav-link.active .icon path {
+        fill: white;
+        stroke: white;
     }
 }
 

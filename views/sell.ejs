@@ -1,7 +1,7 @@
 <main class="container">
 	<section class="main-panel">
         <div class="row">
-            <div class="sidebar col-3">
+            <div class="col-3 flex-column flex-sm-row sidebar">
                 <div class="list-group flex-column" id="account-settings-tablist" role="tablist">
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'ls') { %>active<% } %>" id="security-tab" data-toggle="list" role="tab" aria-controls="security" aria-selected="false" href="#security-pane"><%- include('assets/symbols/shop.svg') %>Storefronts</a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'ci' || pane == 'ad' || pane == 'pn' || pane == 'em') { %>active<% } %>" id="contact-tab" data-toggle="list" role="tab" aria-controls="contact" aria-selected="true" href="#contact-pane"><%- include('assets/symbols/tags.svg') %>Products</a>
@@ -13,7 +13,7 @@
                     <!-- <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pr') { %>active<% } %>" id="settings-tab" data-toggle="list" role="tab" aria-controls="settings" aria-selected="false" href="#settings-pane"><%- include('assets/symbols/gear.svg') %>Preferences</a> -->
                 </div>
             </div>
-            <div class="col-9">
+            <div class="col-9 main-content">
                 <div class="content-pane tab-content" id="account-settings-tab-content">
                     <% if(typeof(messages.success) !== 'undefined') { %>
                         <div id="main-alert-success" class="alert alert-success alert-dismissible fade show" role="alert">

@@ -89,8 +89,8 @@ svg {
 .icon {
     background: transparent;
     border: none;
-    height: 2.4rem;
-    padding: 0.2rem;
+    height: 2rem;
+    padding: 0;
 }
 
 .medium-icon {
@@ -179,7 +179,9 @@ svg {
 }
 
 .container {
+    max-width: 100%;
     overflow-y: scroll;
+    width: calc(100% - 2rem);
     z-index: 1;
 }
 
@@ -421,10 +423,10 @@ svg {
     color: red;
 }
 
-.active .icon path {
+.sidebar .active .icon path {
     
-    fill: white !important;
-    stroke: white !important;
+    fill: white;
+    stroke: white;
     /*
     background: white;
     border-radius: 50%;

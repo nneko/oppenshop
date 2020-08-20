@@ -394,6 +394,24 @@ svg {
     transform: rotate(45deg) translate(-3px,-2px);
 }
 
+.search-button {
+    background-color: #eff1f4;
+    border: 1px solid #ced4da;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    width: 3rem;
+}
+
+.search-button .icon {
+    height: 1.6rem;
+    padding: 0.2rem;
+}
+
+.search-button .icon:hover path {
+    fill: #007bff;
+    stroke: #007bff;
+}
+
 .main-panel {
     margin: 2rem auto;
 }

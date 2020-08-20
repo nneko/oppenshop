@@ -9,7 +9,7 @@ signin.get('/', (req, res) => {
     if(validator.hasActiveSession(req)){
         res.redirect('/')
     } else {
-        res.render('signin', props)
+        res.render('signin')
     }
 })
 

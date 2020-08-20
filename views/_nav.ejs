@@ -5,13 +5,14 @@
                 <%- include('assets/images/logo.svg') %>
             </a>
         </div>
-        <form id="main-search-form" class="search-form" autocomplete="on" action="/find" method="POST" oninput="" novalidate>
+        <form id="main-search-form" class="search-form" autocomplete="on" action="/market" method="POST" oninput="" novalidate>
             <div class="form-group">
                 <div class="input-group">
                     <input id="find" class="form-control" type="text" name="find" placeholder="Search the Market" value=""
                         aria-label="find" aria-describedby="find-basic-addon" size="25" required>
                     <div class="input-group-append">
-                        <span class="input-group-text" id="find-basic-addon">Find</span>
+                        <button class="search-button" type="submit"
+                                data-toggle="tooltip" data-placement="bottom" title="Search Marketplace"><%- include('assets/symbols/search.svg') %></button>
                     </div>
                     <div id="invalid-find" class="invalid-feedback">
                         Invalid search query.

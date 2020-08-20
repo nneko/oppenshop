@@ -1,30 +1,23 @@
-<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && (pane == 'ci' || pane =='ad' || pane == 'em' || pane == 'pn')) { %>show active<% } %>"
-    id="contact-pane" role="tabpanel" aria-labelledby="contact-tab">
-    <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="contactTabs" role="tablist">
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && (pane == 'pd' || pane =='pd-all' || pane == 'pd-new' || pane == 'pd-arc')) { %>show active<% } %>" id="products-pane" role="tabpanel" aria-labelledby="products-tab">
+    <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="productsTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'ci') { %>active<% } %>" id="primary-tab"
-                data-toggle="tab" href="#primaryTab" role="tab" aria-controls="home"
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pd' || pane == 'sf') { %>active<% } %>" id="all-products-tab"
+                data-toggle="tab" href="#allProductsTab" role="tab" aria-controls="all"
                 aria-selected="true"><%- include('assets/symbols/gallery.svg') %>All Products</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'ad') { %>active<% } %>" id="addresses-tab"
-                data-toggle="tab" href="#addressesTab" role="tab" aria-controls="contact"
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pd-new') { %>active<% } %>" id="new-products-tab"
+                data-toggle="tab" href="#newProductsTab" role="tab" aria-controls="new"
                 aria-selected="false"><%- include('assets/symbols/add.svg') %>New Product</a>
         </li>
-        <li class="nav-item <% if(typeof(pane) !== 'undefined' && pane == 'em') { %>active<% } %>">
-            <a class="nav-link" id="emails-tab" data-toggle="tab" href="#emailsTab" role="tab" aria-controls="profile"
+        <li class="nav-item <% if(typeof(pane) !== 'undefined' && pane == 'pd-arc') { %>active<% } %>">
+            <a class="nav-link" id="emails-tab" data-toggle="tab" href="#emailsTab" role="tab" aria-controls="archive"
                 aria-selected="false"><%- include('assets/symbols/box.svg') %>Archived</a>
         </li>
-        <!-- <li class="nav-item">
-            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pn') { %>active<% } %>" id="phone-tab"
-                data-toggle="tab" href="#phoneTab" role="tab" aria-controls="contact"
-                aria-selected="false"><%- include('assets/symbols/phone.svg') %>Phone Numbers</a>
-        </li> -->
     </ul>
-    <div class="tab-content" id="contactTabContent">
+    <div class="tab-content" id="productsTabContent">
         <%- include('./_product_all.ejs') %>
         <%- include('./_product_new.ejs') %>
-        <%- include('./_product_archived.ejs') %>
-        
+        <%- include('./_product_archived.ejs') %>        
     </div>
 </div>

@@ -1,5 +1,5 @@
-<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'ls') { %>show active<% } %>" id="security-pane"
-    role="tabpanel" aria-labelledby="security-tab">
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'sf') { %>show active<% } %>" id="storefronts-pane"
+    role="tabpanel" aria-labelledby="storefronts-tab">
     <h2 class="pane-h2">Storefronts</h2>
     <div>
         <a class="right add-address-link" href="#new-address-form" onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %> Add Storefront</a>
@@ -24,10 +24,11 @@
                         <li><span><p>
                         <b><% if(typeof(shops[i].displayName) !== 'undefined') {%><%= shops[i].displayName %><% } else { %><%= shops[i].name %><% } %></b><br>
                                 <%= shops[i].status %>
-                                <% if (typeof(shops[i].image) !== 'undefined' ) { %>
-                                <img alt="<%= shops[i].image.originalname %>" width="50" height="60" src="data:<%= shops[i].image.mimetype %>;base64,<%= shops[i].image.base64 %>"/>
-                                <% } %>
                             </p>
+                            <% if (typeof(shops[i].image) !== 'undefined' ) { %>
+                            <img class="storefront-image" alt="<%= shops[i].image.originalname %>"
+                                src="data:<%= shops[i].image.mimetype %>;base64,<%= shops[i].image.base64 %>" />
+                            <% } %>
                             </span></li>
                         </ul>
                     </div>
@@ -56,9 +57,9 @@
     <section class="standard-form-section" id="newstore" <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0 ){ %>hidden<% } %> >
     <h3>Add a new store</h3>
     <div>
-        <button class="right action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" 
-                     title="Delete" name="update" value="delete" onclick="document.getElementById('newstore').setAttribute('hidden', true);">
-                            <%- include('assets/symbols/bin.svg') %>
+        <button class="right action-icon-button action-icon" type="submit"  data-toggle="tooltip" data-placement="left" 
+                     title="Cancel" name="update" value="cancel" onclick="document.getElementById('newstore').setAttribute('hidden', true);">
+                            <%- include('assets/symbols/close.svg') %>
         </button>
     </div>
         <form id="new-address-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"

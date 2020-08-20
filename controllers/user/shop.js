@@ -347,23 +347,22 @@ shops.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query.data
-            let panel = 'ci'
+            let panel = 'sf'
             if(qd) {
                 switch(qd.show){
-                    case 'ls':
-                    case 'ad':
-                    case 'em':
-                    case 'pn':
+                    case 'pd':
+                    case 'pd-all':
+                    case 'pd-new':
+                    case 'pd-arc':
                     case 'or':
-                    case 'pm':
-                    case 'pr':
+                    case 'pkg':
+                    case 'py':
                         panel = qd.show
                         break
                     default:
-                        panel = 'ci'
+                        panel = 'sf'
                 }
             }
-            console.log('Shops Get call..')
             let viewData = {}
             if (req.query.id !== 'undefined'){
                if (req.query.id == 'upshop'){
@@ -377,17 +376,12 @@ shops.get('/', async (req, res) => {
                   }
                 } else {
                   viewData = await populateUserShopViewData(req.user.id.toString())
-                  //panel = req.query.panel
                 }
             } else {
                 viewData = await populateUserShopViewData(req.user.id.toString())
             }
-            //viewData = await populateUserShopViewData(req.user.id)
-            //let viewData = await populateUserViewData(req.user.id)
             viewData.user = req.user
             viewData.pane = panel
-            console.log(viewData)
-            console.log(req.query)
             res.render('sell', viewData)
         } else {
             messages = {error: "You need to be signed in."}

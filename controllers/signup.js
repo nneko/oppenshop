@@ -10,11 +10,6 @@ const generator = require('../utilities/generator')
 
 let signup = express.Router()
 
-let props = {
-    title: cfg.title,
-    theme: cfg.template
-}
-
 let signupEmailer = {}
 
 signupEmailer.sendEmailVerification = async _data => {
@@ -33,7 +28,7 @@ signupEmailer.sendEmailVerification = async _data => {
 }
 
 signup.get('/', (req, res) => {
-    res.render('signup', props)
+    res.render('signup')
 })
 
 signup.post('/', async (req,res) => {

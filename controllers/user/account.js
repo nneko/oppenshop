@@ -10,11 +10,6 @@ const debug = cfg.env == 'development' ? true : false
 
 let account = express.Router()
 
-let props = {
-    title: cfg.title,
-    theme: cfg.template
-}
-
 // Render account view for bad request
 let badRequest = async (req, res, show, status, msg, msgType) => {
     let verifiedUser = undefined
@@ -36,13 +31,13 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
             viewData.messages = mObj
             res.render('account', viewData)
         } else {
-            res.render('account', {user: undefined, title: props.title, pane: show, messages: mObj})
+            res.render('account', {user: undefined, pane: show, messages: mObj})
         }
 
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { title: props.title, theme: props.theme, user: req.user, messages: { error: 'Internal error due to bad request' } })
+        res.render('error', {  user: req.user, messages: { error: 'Internal error due to bad request' } })
     }
 }
 
@@ -50,7 +45,7 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
 let _403redirect = (req, res, url, msg) => {
     let verifiedUser = undefined
     res.status(403);
-    res.render('signin', { title: props.title, theme: props.theme, url: url, messages: { error: msg ? msg : 'You must be signed in.' }, verifiedUser: verifiedUser })
+    res.render('signin', {  url: url, messages: { error: msg ? msg : 'You must be signed in.' }, verifiedUser: verifiedUser })
 }
 
 let getField = (list, val) => {
@@ -140,8 +135,6 @@ let populateUserViewData = async (uid) => {
         try {
             let u = await user.read(uid, { findBy: 'id' })
             let viewData = {}
-            viewData.title = props.title
-            viewData.theme = props.theme
             viewData.addresses = u.addresses
             let primaryAddr = getPrimaryField(viewData.addresses)
             if (primaryAddr) {
@@ -291,12 +284,12 @@ let lsFormHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { title: props.title, theme: props.theme, user: req.user, messages: { error: 'Unable to complete account update.' } })
+                res.render('error', {  user: req.user, messages: { error: 'Unable to complete account update.' } })
             }
         }
     } catch (e) {
         console.error(e)
-        render('error', { title: props.title, theme: props.theme, messages: { error: 'Unable to process request', status: 500 } })
+        render('error', {  messages: { error: 'Unable to process request', status: 500 } })
     }
 }
 
@@ -438,7 +431,7 @@ let ciFormHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { title: props.title, theme: props.theme, user: req.user, messages: { error: 'Unable to complete account update.' } })
+            res.render('error', {  user: req.user, messages: { error: 'Unable to complete account update.' } })
         }
     }
 
@@ -583,7 +576,7 @@ let naFormHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { title: props.title,  user: req.user, messages: { error: 'Unable to complete account update.' } })
+                res.render('error', { user: req.user, messages: { error: 'Unable to complete account update.' } })
             }
         }
     }
@@ -691,7 +684,7 @@ let addressUpdateHandler = async (req, res) => {
                         } catch (e) {
                             console.error(e)
                             res.status(500)
-                            res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested update.' } })
                         }
                     }
                     break
@@ -779,7 +772,7 @@ let emailAddHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                res.render('error', { user: req.user, messages: { error: 'Unable to complete requested update.' } })
             }
         }
     }
@@ -857,7 +850,7 @@ let emailDeleteHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                res.render('error', { user: req.user, messages: { error: 'Unable to complete requested update.' } })
             }
         }
     }
@@ -936,7 +929,7 @@ let phoneAddHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                res.render('error', {  user: req.user, messages: { error: 'Unable to complete requested update.' } })
             }
         }
     }
@@ -1003,7 +996,7 @@ let phoneDeleteHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                res.render('error', {  user: req.user, messages: { error: 'Unable to complete requested update.' } })
             }
         }
     }
@@ -1030,7 +1023,7 @@ let deleteHandler = async (req, res) => {
             req.logout()
             const deleted = await user.delete({preferredUsername: u.preferredUsername})
             if(deleted.deletedCount > 0){
-                res.render('index', { name: undefined, user: undefined, title: props.title, theme: props.theme, messages: { success: 'Account deleted.' } })
+                res.render('index', { name: undefined, user: undefined,  messages: { success: 'Account deleted.' } })
             } else {
                 let e = new Error('Deletion failed')
                 e.name = 'UserError'
@@ -1075,9 +1068,9 @@ account.get('/', async (req, res) => {
             viewData.pane = panel    
             res.render('account', viewData)
         } else {
-            props.messages = {error: "You need to be signed in."}
+            messages = {error: "You need to be signed in."}
             res.status(403)
-            res.render('signin', props)
+            res.render('signin', {messages: messages})
         }
     } catch (e) {
         console.error(e)

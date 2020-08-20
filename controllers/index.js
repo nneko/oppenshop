@@ -6,10 +6,6 @@ const validator = require('../utilities/validator')
 const userModel = require('../models/user')
 let router = express.Router()
 
-let props = {
-    title: cfg.title
-}
-
 //routes
 router.use('/api', api)
 router.use('/public', express.static(path.join(__dirname, '../views/public')))
@@ -50,19 +46,19 @@ router.get('/', async (req, res) => {
                 console.log(user)
                 console.log(isVerified)
                 req.logout()
-                res.render('verify', { title: props.title, theme: props.theme, name: undefined, user: undefined, messages: {error: 'Account verification is required.'} })
+                res.render('verify', { name: undefined, user: undefined, messages: {error: 'Account verification is required.'} })
                 return
             } else {
-                res.render('index', { title: props.title, theme: props.theme, name: name, user: user })
+                res.render('index', {  name: name, user: user })
             }
         } catch (e) {
             console.error(e)
-            res.render('error', { title: props.title, theme: props.theme, name: name, user: user, messages: {error: 'Error validating session.', status: 500} })
+            res.render('error', { name: name, user: user, messages: {error: 'Error validating session.', status: 500} })
 
         }
     }
     else {
-        res.render('index', {title: props.title, theme: props.theme, name: name, user: user})
+        res.render('index', { name: name, user: user})
     }
 })
 

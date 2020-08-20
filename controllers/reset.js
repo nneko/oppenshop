@@ -12,13 +12,8 @@ const generator = require('../utilities/generator')
 
 let reset = express.Router()
 
-let props = {
-    title: cfg.title,
-    theme: cfg.template
-}
-
 reset.get('/', (req, res) => {
-    res.render('reset', props)
+    res.render('reset')
 })
 /*
 reset.post('/', passport.authenticate('local', {
@@ -68,7 +63,7 @@ reset.post('/', async (req, res) => {
 		        u = await user.read({ preferredUsername: u.preferredUsername }, { limit: 1 })
                 //console.log(u)
                 if(u.provider != 'native'){
-                    res.render('reset', { title: cfg.title, theme: cfg.template, messages: { error: 'You cannot reset passwords for external accounts' } })
+                    res.render('reset', {messages: { error: 'You cannot reset passwords for external accounts' } })
                     return
                 }
                 let new_password = generator.randomString(10)
@@ -77,9 +72,9 @@ reset.post('/', async (req, res) => {
 		        // TODO: Send reset email
                 reset_mailer.password_reset({name: u.name.givenName, email: u.preferredUsername, temp: new_password})
                 formFields.messages = { info: 'Please check email for reset password details.' }
-                res.render('signin', { title: cfg.title, theme: cfg.template, messages: formFields.messages })
+                res.render('signin', { messages: formFields.messages })
             } else {
-                res.render('reset', { title: cfg.title, theme: cfg.template, messages: { error: 'Account is not registered.' } })
+                res.render('reset', { messages: { error: 'Account is not registered.' } })
             }
             
         } catch (e) {

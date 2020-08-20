@@ -9,9 +9,4 @@ const debug = cfg.env == 'development' ? true : false
 
 let edit = express.Router()
 
-let props = {
-    title: cfg.title,
-    theme: cfg.template
-}
-
 module.exports = edit

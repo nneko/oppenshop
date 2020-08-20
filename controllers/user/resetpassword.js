@@ -5,11 +5,6 @@ const mailer = require('../../adapters/messaging/mailer')
 
 let resetpassword = express.Router()
 
-let props = {
-    title: cfg.title,
-    theme: cfg.template
-}
-
 let resetEmailer = {}
 
 //resetEmailer.password_reset = async _data => {
@@ -29,7 +24,7 @@ resetpassword.password_reset = async _data => {
 }
 
 resetpassword.get('/', (req, res) => {
-    res.render('signin', props)
+    res.render('signin')
 })
 
 module.exports = resetpassword

@@ -3,13 +3,8 @@ const express = require('express')
 
 let market = express.Router()
 
-let props = {
-    title: cfg.title,
-    theme: cfg.template
-}
-
 market.get('/', (req, res) => {
-    res.render('market', props)
+    res.render('market', { user: req.user })
 })
 
 module.exports = market

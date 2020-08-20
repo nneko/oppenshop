@@ -17,11 +17,6 @@ const btoa = require('btoa')
 
 let shops = express.Router()
 
-let props = {
-    title: cfg.title,
-    theme: cfg.template
-}
-
 // Add shop form handler
 let shopAddHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
@@ -68,7 +63,7 @@ let shopAddHandler = async (req, res) => {
             if (usr.addresses !== 'undefined') {
                //u.address = getPrimaryField(usr.addresses)
             } else {
-                res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested addition of a shop, due to no address assigned to user.' } })
+                res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop, due to no address assigned to user.' } })
             }
         }
 
@@ -88,7 +83,7 @@ let shopAddHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested addition of a shop.' } })
+            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop.' } })
         }
     }
 }
@@ -141,7 +136,7 @@ let productAddHandler = async (req, res) => {
             if (usr.addresses !== 'undefined') {
                //u.address = getPrimaryField(usr.addresses)
             } else {
-                res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested addition of a shop, due to no address assigned to user.' } })
+                res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop, due to no address assigned to user.' } })
             }
         }
         */
@@ -161,7 +156,7 @@ let productAddHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested addition of a product.' } })
+            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a product.' } })
         }
     }
 }
@@ -179,8 +174,6 @@ let populateUserShopViewData = async (uid,status = 'active') => {
             u = await user.read(uid, {findBy: 'id'})
             console.log(u)
             let viewData = {}
-            viewData.title = props.title
-            viewData.theme = props.theme
             
             viewData.shops = []
             if(s) {
@@ -245,8 +238,6 @@ let populateUserViewData = async (uid) => {
         try {
             let u = await user.read(uid, { findBy: 'id' })
             let viewData = {}
-            viewData.title = props.title
-            viewData.theme = props.theme
             viewData.addresses = u.addresses
             /*
             let primaryAddr = getPrimaryField(viewData.addresses)
@@ -335,7 +326,7 @@ let shopUpdateHandler = async (req, res) => {
                     } catch (e) {
                         console.error(e)
                         res.status(500)
-                        res.render('error', { title: props.title, user: req.user, messages: { error: 'Unable to complete requested removal.' } })
+                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested removal.' } })
                     }
 
                     break
@@ -399,9 +390,9 @@ shops.get('/', async (req, res) => {
             console.log(req.query)
             res.render('sell', viewData)
         } else {
-            props.messages = {error: "You need to be signed in."}
+            messages = {error: "You need to be signed in."}
             res.status(403)
-            res.render('signin', props)
+            res.render('signin', {messages: messages})
         }
     } catch (e) {
         console.error(e)
@@ -460,7 +451,7 @@ shops.post('/', upload.single('fullimage'),
                     console.log(req.file)
                     //await productAddHandler(req, res)
                     res.status(500)
-                    res.render('error', { title: props.title, user: req.user, messages: { error: 'Testing.' } })
+                    res.render('error', { user: req.user, messages: { error: 'Testing.' } })
                     break
                 case 'ci':
                     await ciFormHandler(req, res)

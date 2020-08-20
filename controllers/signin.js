@@ -5,11 +5,6 @@ const validator = require('../utilities/validator.js')
 
 let signin = express.Router()
 
-let props = {
-    title: cfg.title,
-    theme: cfg.template
-}
-
 signin.get('/', (req, res) => {
     if(validator.hasActiveSession(req)){
         res.redirect('/')

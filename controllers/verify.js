@@ -9,11 +9,6 @@ const generator = require('../utilities/generator')
 
 let verify = express.Router()
 
-let props = {
-    title: cfg.title,
-    theme: cfg.template
-}
-
 let verifyEmailer = {}
 
 
@@ -91,16 +86,17 @@ verify.get('/', async (req, res) => {
         }
         else {
             let viewData = {
-                title: props.title, theme: props.template, user: req.user} 
+                user: req.user} 
             res.render('verify', viewData)
         }
     } catch (e) {
         console.log(e)
         let status = 500
-        props.messages = { error: 'Unable to complete verification due to error. Please try again later.' }
+        messages = { error: 'Unable to complete verification due to error. Please try again later.' }
         res.status(status)
         let viewData = {
-            title: props.title, theme: props.template, user: req.user
+            user: req.user,
+            messages: messages
         }
         res.render('verify', viewData)
     }

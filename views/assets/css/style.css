@@ -407,7 +407,7 @@ svg {
     padding: 0.2rem;
 }
 
-.search-button .icon:hover path {
+.search-button:hover path {
     fill: #007bff;
     stroke: #007bff;
 }
@@ -460,6 +460,11 @@ svg {
     background: transparent;
     border-radius: 0;
     padding: 0;
+}
+
+.nav-link.active .icon path {
+    fill: #007bff;
+    stroke: #007bff;
 }
 
 .content-pane-scroll-cards-section {

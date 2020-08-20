@@ -421,13 +421,14 @@ svg {
     color: red;
 }
 
-.active .icon {
-    /*
+.active .icon path {
+    
     fill: white !important;
     stroke: white !important;
-    */
+    /*
     background: white;
     border-radius: 50%;
+    */
 }
 
 .tab-pane .icon, .tab-pane svg, .nav-link .icon {

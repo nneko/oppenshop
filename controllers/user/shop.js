@@ -48,7 +48,8 @@ let shopAddHandler = async (req, res) => {
         const usr = await user.read(form.uid, { findBy: 'id' })
 
         u.owner = form.uid
-	u.name = form.fullname
+        u.name = form.fullname
+        u.displayName = form.fullname
         u.status = 'active'
         if (req.file !== 'undefined'){
             var binary = ''
@@ -119,6 +120,7 @@ let productAddHandler = async (req, res) => {
 
         u.uid = form.uid
         u.name = form.fullname
+        u.displayName = form.name
         u.desc = form.description
         u.status = 'active'
         if (req.file !== 'undefined'){
@@ -172,7 +174,7 @@ let populateUserShopViewData = async (uid,status = 'active') => {
         console.log(t)
         try {
             //u = await shop.read(uid, { findBy: 'uid' })
-            s = await shop.read(t.uid,{findBy: 'owner'})
+            s = await shop.read({owner: t.uid})
             console.log(s)
             u = await user.read(uid, {findBy: 'id'})
             console.log(u)

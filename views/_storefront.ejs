@@ -22,7 +22,7 @@
                     <div class="address-view-card-pane">
                         <ul>
                         <li><span><p>
-                                <b><%= shops[i].name %></b><br>
+                        <b><% if(typeof(shops[i].displayName) !== 'undefined') {%><%= shops[i].displayName %><% } else { %><%= shops[i].name %><% } %></b><br>
                                 <%= shops[i].status %>
                                 <% if (typeof(shops[i].image) !== 'undefined' ) { %>
                                 <img alt="<%= shops[i].image.originalname %>" width="50" height="60" src="data:<%= shops[i].image.mimetype %>;base64,<%= shops[i].image.base64 %>"/>

@@ -8,8 +8,18 @@ let product = {}
 
 product.isValid = async (p) => {
     try {
-        let shopExists = await shop.exists({ _id: db.getObjectId(p.shop) })
-        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && shopExists && typeof (p.name) == 'string' && validator.isNotNull(s.name) && typeof (s.description) == 'string' && validator.isNotNull(s.description) && p.hasOwnProperty('image') && p.hasOwnProperty('specification') && p.hasOwnProperty('price') && p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')) {
+        //If product is associated with shop validate that shop exists
+        if(p.shop) {
+            let shopExists = await shop.exists({ _id: db.getObjectId(p.shop) })
+            if(!shopExists) {
+                let e = new Error('Cannot create product using invalid shop')
+                e.name = 'ProductError'
+                e.type = 'Invalid Shop'
+                throw e
+            }
+        }
+
+        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && typeof (p.name) == 'string' && validator.isNotNull(s.name) && typeof (s.description) == 'string' && validator.isNotNull(s.description) && p.hasOwnProperty('image') && p.hasOwnProperty('specification') && p.hasOwnProperty('price') && p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')) {
             return true
         } else {
             return false

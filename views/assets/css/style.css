@@ -178,6 +178,10 @@ svg {
     color: #263237;
 }
 
+.main-alert {
+    border-radius: 0 !important;
+}
+
 .container {
     max-width: 100%;
     overflow-y: scroll;

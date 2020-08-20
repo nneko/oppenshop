@@ -113,7 +113,6 @@ if(!module.parent){
         app.locals.title = cfg.title
         app.locals.port = cfg.port
         app.locals.env = cfg.env
-
         //Configure the app server
         app.set('x-powered-by', false)
         app.set('env', app.locals.env)
@@ -150,10 +149,20 @@ if(!module.parent){
         app.use(passport.initialize())
         app.use(passport.session())
 	
-	app.use(express.json())
+	    app.use(express.json())
         app.use(express.raw())
         app.use(express.text())
         app.use(express.urlencoded({ extended: true }))
+
+        //app populate request data for all routes
+        app.use((req, res, next) => {
+            if (typeof (app.locals.reqData) === 'object') {
+                app.locals.reqData.path = req.path
+            } else {
+                app.locals.reqData = { path: req.path }
+            }
+            next()
+        })
         
         //app routes
         app.use(require('../controllers'))

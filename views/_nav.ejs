@@ -27,12 +27,12 @@
     <ul class="nav-links">
         <li class="nav-link-item"><a href="/marketplace">Marketplace</a></li>
         <li class="nav-link-item"><a href="/buy">Buy</a></li>
-        <li class="nav-link-item"><a href="/user/shop">Sell</a></li>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'shop') { %>class="menu-item-selected" <% } %> href="/user/shop">Sell</a></li>
         <% if(typeof(user) !== 'undefined') {%> 
-            <li class="menu-item"><a href="/user/account">Account</a></li>
+        <li class="menu-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'account') { %>class="menu-item-selected" <% } %> href="/user/account">Account</a></li>
             <li class="menu-item"><a href="/signout">Sign Out</a></li>
         <% } else { %>
-            <li class="nav-link-item"><a href="/signin">Sign in</a></li>
+            <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'signin' || reqData.path.split('/')[1] == 'signup' || reqData.path.split('/')[1] == 'reset' || reqData.path.split('/')[1] == 'verify') { %>class="menu-item-selected" <% } %> href="/signin">Sign in</a></li>
         <% } %>
         <li class="nav-link-item"><a href="/support">Support</a></li>
     </ul>

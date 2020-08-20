@@ -381,6 +381,11 @@ svg {
     width: 80%;
 }
 
+.menu-item-selected {
+    border-bottom: #007bff 2px solid;
+    color: #007bff;
+}
+
 .toggle .menu-line1 {
     transform: rotate(-45deg) translate(-3px,2px);
 }

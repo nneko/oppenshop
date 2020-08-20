@@ -5,7 +5,7 @@ let signout = express.Router()
 
 signout.get('/', (req, res) => {
     req.logout()
-    res.render('signin')
+    res.render('signin',{messages: {success: 'You have been signed out.'}})
 })
 
 module.exports = signout

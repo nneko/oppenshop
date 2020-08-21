@@ -142,6 +142,10 @@ svg {
     fill: red;
 }
 
+.input-prepend-icon svg {
+    height: 1rem;
+}
+
 .space-right-05 {
     margin-right: 0.5rem;
 }

@@ -77,9 +77,9 @@ let shopAddHandler = async (req, res) => {
             //let viewData = await populateUserShopViewData('\''+u.uid+'\'')
             let viewData = await populateUserShopViewData(u.owner)
             viewData.user = req.user
-            viewData.pane = 'ls'
+            viewData.pane = 'sf'
             viewData.messages = { success: 'Shop added.' }
-            res.render('user/shop', viewData)
+            res.render('sell', viewData)
         } catch (e) {
             console.error(e)
             res.status(500)

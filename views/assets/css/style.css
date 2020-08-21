@@ -1,3 +1,25 @@
+/* Global style variables */
+:root {
+  --main-highlight-color: #007bff;
+  --main-sub-border-color: rgba(0,0,0,.125);
+  --main-bg-color: #f4f4f4;
+  --main-text-color: #444;
+  --main-text-em-color: black;
+  --main-sub-text-color: rgb(96,96,96);
+  --main-alert-err-color: #be4e3b;
+  --main-alert-err-em-color: red;
+  --main-content-bg-color: white;
+  --main-content-btn-hover-color: #e9ecef;
+  --signin-with-btn-border-color: #c4cdd5;
+  --signin-with-btn-bg-color: #f9fafb;
+  --signin-with-btn-text-color: #263237;
+  --nav-bg-color: white;
+  --nav-btn-color: #eff1f4;
+  --nav-btn-border-color: #ced4da;
+  --sidebar-icon-highlight-color: white;
+  --green-light-color: #28a745;
+  --icon-delete-color: #cb2431;
+}
 
 * {
     box-sizing: border-box ;
@@ -6,7 +28,7 @@
 }
 
 body {
-    background-color: #f4f4f4;
+    background-color: var(--main-bg-color);
 }
 
 nav h4  {
@@ -15,17 +37,17 @@ nav h4  {
 }
 
 nav h4 a {
-    color: #444;
+    color: var(--main-text-color);
 }
 
 nav h4 a:hover {
     border: none;
-    color: black;
+    color: var(--main-text-em-color);
 }
 
 nav a:hover {
-    border-bottom: black 2px solid;
-    color: black;
+    border-bottom: var(--main-text-em-color) 2px solid;
+    color: var(--main-text-em-color);
     text-decoration: none;
 }
 
@@ -41,23 +63,23 @@ nav li {
 
 nav {
     align-items: center;
-    background-color: white;
+    background-color: var(--nav-bg-color);
     display: flex;
     justify-content: space-around;
     min-height: 4rem;
 }
 
 li a {
-    color: #444;
+    color: var(--main-text-color);
     /*color: #979898;*/
 }
 
 a {
-    color: #444;
+    color: var(--main-text-color);
 }
 
 a:hover {
-    color: black;
+    color: var(--main-text-em-color);
 }
 
 table.dataTable thead .sorting:after,
@@ -120,8 +142,8 @@ svg {
 
 .action-icon:hover path {
 
-    /* stroke: #007bff; */
-    stroke: black;
+    /* stroke: var(--main-highlight-color); */
+    stroke: var(--main-text-em-color);
 }
 
 .action-icon-button {
@@ -130,20 +152,25 @@ svg {
 }
 
 .tick-icon path {
-    stroke: #28a745;
+    stroke: var(--green-light-color);
 }
 
 .delete-icon path {
-    stroke:  #cb2431;
+    stroke:  var(--icon-delete-color);
 }
 
 .delete-icon:hover path {
-    stroke: red;
-    fill: red;
+    stroke: var(--main-alert-err-em-color);
+    fill: var(--main-alert-err-em-color);
 }
 
 .input-prepend-icon svg {
     height: 1rem;
+}
+
+.input-prepend-icon:hover svg {
+    fill: var(--main-highlight-color);
+    stroke: var(--main-highlight-color);
 }
 
 .space-right-05 {
@@ -160,9 +187,9 @@ svg {
 
 #signin-fb, #signin-google, #signin-apple, #signin-ms {
     background-color: transparent;
-    border-color: #c4cdd5;
+    border-color: var(--signin-with-btn-border-color);
     /*box-shadow: 0 0 0 1px rgba(63,63,68,0.05),0 1px 3px 0 rgba(63,63,68,0.15);*/
-    color: #444;
+    color: var(--main-text-color);
     /*
     background-color: #495d66;
     border-color: #ced4da;
@@ -177,9 +204,9 @@ svg {
     background-color: #f9f9f7;
     color: #f7f7f7;
     */
-    background-color: #f9fafb;
+    background-color: var(--signin-with-btn-bg-color);
     /*border-color: #263237;*/
-    color: #263237;
+    color: var(--signin-with-btn-text-color);
 }
 
 .main-alert {
@@ -219,7 +246,7 @@ svg {
 }
 
 .error-msg b {
-    color: #BE4E3B;
+    color: var(--main-alert-err-color);
 }
 
 .error-msg p {
@@ -227,7 +254,7 @@ svg {
 }
 
 .error-msg a {
-    color: black;
+    color: var(--main-text-em-color);
     font-size: 1.25rem;
 }
 
@@ -251,7 +278,7 @@ svg {
 }
 
 .signin-legend, .signup-legend {
-    color: #444;
+    color: var(--main-text-color);
     font-size: 0.8rem;
     text-align: left;
 }
@@ -310,7 +337,7 @@ svg {
 }
 
 .nav-links {
-    background-color: white;
+    background-color: var(--nav-bg-color);
     display: flex;
     justify-content: space-around;
     margin: 0;
@@ -328,14 +355,14 @@ svg {
 }
 
 .applogo a {
-    color: black;
+    color: var(--main-text-em-color);
     font-size: 1rem;
     font-weight: normal;
     padding: 0;
 }
 
 .applogo a:hover {
-    color: #444;
+    color: var(--main-text-color);
     border: none;
     text-decoration: none;
 }
@@ -349,8 +376,8 @@ svg {
 }
 
 .logo:hover path {
-    stroke: black;
-    fill: black;
+    stroke: var(--main-text-em-color);
+    fill: var(--main-text-em-color);
 }
 
 .logo .logo-handle:hover {
@@ -362,7 +389,7 @@ svg {
 }
 
 .menu-button div {
-    background-color: #444;
+    background-color: var(--main-text-color);
     height: 2px;
     margin: 5px;
     width: 20px;
@@ -390,8 +417,8 @@ svg {
 }
 
 .menu-item-selected {
-    border-bottom: #007bff 2px solid;
-    color: #007bff;
+    border-bottom: var(--main-highlight-color) 2px solid;
+    color: var(--main-highlight-color);
 }
 
 .toggle .menu-line1 {
@@ -403,8 +430,8 @@ svg {
 }
 
 .search-button {
-    background-color: #eff1f4;
-    border: 1px solid #ced4da;
+    background-color: var(--nav-btn-color);
+    border: 1px solid var(--nav-btn-border-color)
     border-top-right-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;
     width: 3rem;
@@ -416,8 +443,8 @@ svg {
 }
 
 .search-button:hover path {
-    fill: #007bff;
-    stroke: #007bff;
+    fill: var(--main-highlight-color);
+    stroke: var(--main-highlight-color);
 }
 
 .main-panel {
@@ -425,17 +452,17 @@ svg {
 }
 
 .content-pane {
-    background-color: white;
+    background-color: var(--main-content-bg-color);
     border-radius: 4px;
     padding: 1rem;
 }
 
 .pane-h2 {
-    color: #444;
+    color: var(--main-text-color);
 }
 
 .tab-pane-h2 {
-    color: #444;
+    color: var(--main-text-color);
     margin: 1rem;
 }
 
@@ -451,13 +478,13 @@ svg {
 }
 
 .red-alert {
-    color: red;
+    color: var(--main-alert-err-em-color);
 }
 
 .sidebar .active .icon path {
     
-    fill: white;
-    stroke: white;
+    fill: var(--sidebar-icon-highlight-color);
+    stroke: var(--sidebar-icon-highlight-color);
     /*
     background: white;
     border-radius: 50%;
@@ -471,8 +498,8 @@ svg {
 }
 
 .nav-link.active .icon path {
-    fill: #007bff;
-    stroke: #007bff;
+    fill: var(--main-highlight-color);
+    stroke: var(--main-highlight-color);
 }
 
 .content-pane-scroll-cards-section {
@@ -524,21 +551,21 @@ white-space: nowrap;
 }
 
 .add-address-link {
-    background-color: #f4f4f4;
+    background-color: var(--main-bg-color);
     border-radius: 4px;
     margin-right: 4.25rem;
     padding: 0.25rem 0.5rem;
 }
 
 .add-address-link:hover {
-    /*border-bottom: black 2px solid;*/
-    background-color: #e9ecef;
-    color: #444;
+    /*border-bottom: var(--main-text-em-color) 2px solid;*/
+    background-color: var(--main-content-btn-hover-color);
+    color: var(--main-text-color);
     text-decoration: underline;
 }
 
 .add-address-link:hover path {
-    stroke: #444;
+    stroke: var(--main-text-color);
 }
 
 .add-address-link svg {
@@ -546,8 +573,8 @@ white-space: nowrap;
 }
 
 .address-extra {
-    border-top: 1px solid rgba(0,0,0,.125);
-    color: rgb(96,96,96);
+    border-top: 1px solid var(--main-sub-border-color);
+    color: var(--main-sub-text-color)
     padding-top: 1rem;
 }
 
@@ -612,7 +639,7 @@ white-space: nowrap;
     }
 
     .nav-link-item:hover {
-        background-color: #f4f4f4;
+        background-color: var(--main-bg-color);
     }
 
     .nav-link-item a:hover {
@@ -625,7 +652,7 @@ white-space: nowrap;
 
     .menu-main {
         align-items: center;
-        background-color: white;
+        background-color: var(--nav-bg-color);
         display: flex;
         justify-content: space-around;
         min-height: 4rem;
@@ -665,15 +692,15 @@ white-space: nowrap;
     }
 
     .nav-link.active {
-        background-color: #007bff !important;
+        background-color: var(--main-highlight-color) !important;
         border: 0 !important;
         border-radius: .25rem !important;
-        color: #fff !important;
+        color: var(--sidebar-icon-highlight-color) !important;
     }
 
     .nav-link.active .icon path {
-        fill: white;
-        stroke: white;
+        fill: var(--sidebar-icon-highlight-color);
+        stroke: var(--sidebar-icon-highlight-color);
     }
 }
 

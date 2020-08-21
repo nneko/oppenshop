@@ -17,6 +17,44 @@ const btoa = require('btoa')
 
 let shops = express.Router()
 
+// Render account view for bad request
+let badRequest = async (req, res, show, status, msg, msgType) => {
+    let verifiedUser = undefined
+
+    typeof (status) === 'number' ? res.status(status) : res.status(400);
+
+    let mtype = 'error'
+
+    typeof (msgType) === 'undefined' ? mtype = 'error' : mtype = msgType;
+
+    let mObj = {}
+    mObj[mtype] = msg ? msg : 'Invalid account update request.'
+
+    try {
+        if (req.user) {
+            let viewData = await populateUserShopViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = show
+            viewData.messages = mObj
+            res.render('account', viewData)
+        } else {
+            res.render('account', { user: undefined, pane: show, messages: mObj })
+        }
+
+    } catch (e) {
+        console.error(e)
+        res.status(500)
+        res.render('error', { user: req.user, messages: { error: 'Internal error due to bad request' } })
+    }
+}
+
+// Render account view for bad request
+let _403redirect = (req, res, url, msg) => {
+    let verifiedUser = undefined
+    res.status(403);
+    res.render('signin', { url: url, messages: { error: msg ? msg : 'You must be signed in.' }, verifiedUser: verifiedUser })
+}
+
 // Add shop form handler
 let shopAddHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {

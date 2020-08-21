@@ -431,7 +431,7 @@ svg {
 
 .search-button {
     background-color: var(--nav-btn-color);
-    border: 1px solid var(--nav-btn-border-color)
+    border: 1px solid var(--nav-btn-border-color);
     border-top-right-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;
     width: 3rem;
@@ -574,7 +574,7 @@ white-space: nowrap;
 
 .address-extra {
     border-top: 1px solid var(--main-sub-border-color);
-    color: var(--main-sub-text-color)
+    color: var(--main-sub-text-color);
     padding-top: 1rem;
 }
 

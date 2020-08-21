@@ -84,7 +84,7 @@ let shopAddHandler = async (req, res) => {
         u.name = form.fullname
         u.displayName = form.fullname
         u.status = 'active'
-        if (req.file !== 'undefined'){
+        if (typeof(req.file) !== 'undefined'){
             var binary = ''
             var bytes = [].slice.call(new Uint8Array(req.file.buffer))
             bytes.forEach((b) => binary += String.fromCharCode(b))
@@ -98,7 +98,7 @@ let shopAddHandler = async (req, res) => {
             // TODO: add new address for Shop
             //if (debug) console.log('New to add Address fields for new Shop ' + u.uid)
         } else {
-            if (usr.addresses !== 'undefined') {
+            if (typeof(usr.addresses) !== 'undefined') {
                //u.address = getPrimaryField(usr.addresses)
             } else {
                 res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop, due to no address assigned to user.' } })

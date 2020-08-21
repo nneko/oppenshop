@@ -178,6 +178,7 @@ svg {
 }
 
 #main-search-form {
+    margin: 0 2rem 0 2rem;
     z-index: 10;
 }
 
@@ -220,10 +221,16 @@ svg {
     z-index: 1;
 }
 
+.menu {
+    margin: 0;
+    padding: 0 2rem 0 2rem;
+    width: 100%;
+}
+
 .menu-main {
     align-items: center;
     display: flex;
-    justify-content: space-around;
+    justify-content: left;
     width: 40%;
     z-index: 10;
 }
@@ -339,18 +346,16 @@ svg {
 .nav-links {
     background-color: var(--nav-bg-color);
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     margin: 0;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 0;
     width: 60%;
     z-index: 1;
 }
 
 .applogo {
     display: flex;
-    margin-left: 1rem;
-    margin-right: 1rem;
+    margin: 0;
     z-index: 10;
 }
 
@@ -398,8 +403,7 @@ svg {
 
 .menu-button {
     display: none;
-    margin-left: 1rem;
-    margin-right: 1rem;
+    margin: 0;
     z-index: 1;
 }
 
@@ -611,6 +615,7 @@ white-space: nowrap;
 
     .nav-links {
         align-items: center;
+        padding-top: 2rem;
         position: absolute;
         flex-direction: column;
         height: calc(100vh - 3rem);
@@ -654,7 +659,7 @@ white-space: nowrap;
         align-items: center;
         background-color: var(--nav-bg-color);
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         min-height: 4rem;
         width: 100%;
         z-index: 10;

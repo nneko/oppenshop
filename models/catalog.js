@@ -2,24 +2,13 @@ const cfg = require('../configuration')
 const db = require('../adapters/storage/'+cfg.dbAdapter)
 const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
-const shop = require('./shop')
+const product = require('./product')
 
-let product = {}
+let catalog = {}
 
-product.isValid = async (p) => {
+catalog.isValid = async (c) => {
     try {
-        //If product is associated with shop validate that shop exists
-        if(p.shop) {
-            let shopExists = await shop.exists({ _id: db.getObjectId(p.shop) })
-            if(!shopExists) {
-                let e = new Error('Cannot create product using invalid shop')
-                e.name = 'ProductError'
-                e.type = 'Invalid Shop'
-                throw e
-            }
-        }
-
-        if (validator.isNotNull(p) && typeof (p.shop) == 'string' && typeof (p.name) == 'string' && validator.isNotNull(s.name) && typeof (s.description) == 'string' && validator.isNotNull(s.description) && p.hasOwnProperty('image') && p.hasOwnProperty('specification') && p.hasOwnProperty('price') && p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')) {
+        if (validator.isNotNull(c) && typeof (c.name) == 'string' && validator.isNotNull(s.name) && typeof (c.description) == 'string' && validator.isNotNull(c.description) && c.hasOwnProperty('products') && Array.isArray(c.products)) {
             return true
         } else {
             return false
@@ -30,13 +19,13 @@ product.isValid = async (p) => {
     }
 }
 
-product.exists = async (p) => {
+catalog.exists = async (c) => {
     try {
-        const result = validator.isNotNull(await product.read(p,{limit: 1}))
+        const result = validator.isNotNull(await catalog.read(c,{limit: 1}))
         if(debug) {
-            console.log('Checking product exits: ')
-            console.log(p)
-            console.log('Product exists ' + result)
+            console.log('Checking catalog exits: ')
+            console.log(c)
+            console.log('Catalog exists ' + result)
         }
         return result
     } catch (e) {
@@ -45,26 +34,24 @@ product.exists = async (p) => {
     }
 }
 
-product.create = (p) => {
+catalog.create = (c) => {
     return new Promise(async (resolve,reject) => {
         try {
-            if(!product.isValid(p)){
-                let e = new Error('Invalid product object')
-                e.name = 'ProductError'
+            if(!catalog.isValid(c)){
+                let e = new Error('Invalid catalog object')
+                e.name = 'CatalogError'
                 e.type = 'Invalid'
                 throw e
             }
 
-            if (await product.exists({ name: p.name, shop: p.shop })) {
-                let e = new Error('Product already exists')
-                e.name = 'ProductError'
+            if (await catalog.exists({name: c.name})) {
+                let e = new Error('Catalog already exists')
+                e.name = 'CatalogError'
                 e.type = 'Duplicate'
                 throw e
             }
 
-            p.name = p.name.toLowerCase()
-
-            const result = await db.get().collection('products').insertOne(p)
+            const result = await db.get().collection('catalogs').insertOne(c)
             resolve(result)
         } catch (e) {
             reject(e)
@@ -72,41 +59,41 @@ product.create = (p) => {
     })
 }
 
-product.read = (properties, options) => {
+catalog.read = (properties, options) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const productCollection = db.get().collection('products')
+            const catalogCollection = db.get().collection('catalogs')
             if(validator.isNotNull(options)) {
                 if(typeof(options.limit) !== 'undefined') {
                     switch(options.limit) {
                         case 1:
-                            const result = await productCollection.findOne(properties)
+                            const result = await catalogCollection.findOne(properties)
                             resolve(result)
                             break
                         default:
-                            const cursor = await productCollection.find(properties).limit(options.limit)
+                            const cursor = await catalogCollection.find(properties).limit(options.limit)
                             resolve(cursor.toArray())
                             break
                     }
                 } else if(typeof(options.findBy) !== 'undefined') {
                     switch(options.findBy){
                         case 'id':
-                            const result = await productCollection.findOne({'_id': db.getObjectId(properties)})
+                            const result = await catalogCollection.findOne({'_id': db.getObjectId(properties)})
                             resolve(result)
                             break
                         default:
-                            const cursor = await productCollection.find(properties).limit(1)
+                            const cursor = await catalogCollection.find(properties).limit(1)
                             resolve(cursor.toArray())
                             break
                     }
                 } else {
                     let e = new Error('Invalid options to find operator')
-                    e.name = 'ProductError'
+                    e.name = 'CatalogError'
                     e.type = 'Find Operation'
                     throw e
                 }
             } else {
-                const cursor = await productCollection.find(properties)
+                const cursor = await catalogCollection.find(properties)
                 resolve(cursor.toArray())
             }
         } catch (e) {
@@ -115,7 +102,7 @@ product.read = (properties, options) => {
     })
 }
 
-product.update = (filters, values, options, operator) => {
+catalog.update = (filters, values, options, operator) => {
     return new Promise(async (resolve, reject) => {
         try {
             let opr = '$set'
@@ -130,16 +117,16 @@ product.update = (filters, values, options, operator) => {
                     break
                 default:
                     if (validator.isNotNull(operator)) {
-                        let e = new Error('Invalid product operation')
-                        e.name = 'ProductError'
+                        let e = new Error('Invalid catalog operation')
+                        e.name = 'CatalogError'
                         e.type = 'Invalid Operation'
                         throw e
                     }
             }
-            const productCollection = db.get().collection('products')
+            const catalogCollection = db.get().collection('catalogs')
             let operation = {}
             operation[opr] = values
-            const result = await productCollection.updateMany(filters,operation,options)
+            const result = await catalogCollection.updateMany(filters,operation,options)
             resolve(result)
         } catch (e) {
             reject(e)
@@ -147,11 +134,11 @@ product.update = (filters, values, options, operator) => {
     })
 }
 
-product.delete = (filters) => {
+catalog.delete = (filters) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const productCollection = db.get().collection('products')
-            const result = await productCollection.deleteMany(filters)
+            const catalogCollection = db.get().collection('catalogs')
+            const result = await catalogCollection.deleteMany(filters)
             resolve(result)
         } catch (e) {
             reject(e)
@@ -159,4 +146,4 @@ product.delete = (filters) => {
     })
 }
 
-module.exports = product
+module.exports = catalog

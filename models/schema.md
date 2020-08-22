@@ -1,4 +1,4 @@
-##Sample User Model (JSON):
+# Sample User Model (JSON):
 ```
     {
         "_id": ObjectId("2342345235"),
@@ -86,7 +86,7 @@
         roles: []
     }
 ```
-##Sample Shop Model (JSON): 
+# Sample Shop Model (JSON): 
 ```
     {
         "_id": ObjectId("2342345235"),
@@ -112,7 +112,7 @@
         "catalogs": [""]
     }
 ```
-##Sample Product Model (JSON):
+# Sample Product Model (JSON):
 ```
     {
         "_id": ObjectId("2342345235"),
@@ -135,7 +135,7 @@
         ]
     }
 ```
-##Sample Catalog Model (JSON):
+# Sample Catalog Model (JSON):
 ```
     {
         "_id":, ObjectId("2342345235"),
@@ -145,8 +145,27 @@
     }
 ```
 
-Currency:
-Fields - id, code
+# Sample Currency Model (JSON):
+```
+    {
+        "_id":, ObjectId("2342345235"),
+        "code": "usd",
+        "description": ""
+        "exchangeRate": 1
+    }
+```
 
-Order:
-Fields - _id, timestamp, user, product, quantity
+# Sample Order Model (JSON):
+```
+    {
+        "_id":, ObjectId("2342345235"),
+        "timestamp": Math.floor(Date.now() / 1000),
+        "user": ""
+        "items": [
+            {
+                "product": "xyz",
+                "quantity": 1
+            }
+        ]
+    }
+```

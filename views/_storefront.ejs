@@ -4,11 +4,11 @@
     <div>
         <a class="right add-address-link" href="#new-address-form" onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %> Add Storefront</a>
         <% if (typeof(archived) !== 'undefined' && archived == 'true') { %>
-        <a class="left add-address-link" href="/user/shop?id=upshop&panel=ls&update=active&uid=<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+        <a class="left add-address-link" href="/user/shop?id=upshop&panel=sf&update=active&uid=<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
             <%- include('assets/symbols/plus.svg') %> View Active Storefronts
         </a>
         <% } else { %>
-        <a class="left add-address-link" href="/user/shop?id=upshop&panel=ls&update=archived&uid=<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+        <a class="left add-address-link" href="/user/shop?id=upshop&panel=sf&update=archived&uid=<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
             <%- include('assets/symbols/plus.svg') %> View Archived Storefronts
         </a>
         <% } %>

@@ -1,13 +1,13 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && (pane == 'pd' || pane =='pd-all' || pane == 'pd-new' || pane == 'pd-arc')) { %>show active<% } %>" id="products-pane" role="tabpanel" aria-labelledby="products-tab">
     <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="productsTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pd' || pane == 'cl') { %>active<% } %>"
-                id="catalog-products-tab" data-toggle="tab" href="#catalogs-tab" role="tab" aria-controls="all"
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'cl' || pane == 'sf') { %>active<% } %>"
+                id="catalog-products-tab" data-toggle="tab" href="#catalogs-pane" role="tab" aria-controls="all"
                 aria-selected="true"><%- include('assets/symbols/library.svg') %>Catalogs</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'sf') { %>active<% } %>" id="all-products-tab"
-                data-toggle="tab" href="#allProductsTab" role="tab" aria-controls="all"
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'in') { %>active<% } %>" id="product-inventory-tab"
+                data-toggle="tab" href="#inventory-pane" role="tab" aria-controls="all"
                 aria-selected="true"><%- include('assets/symbols/gallery.svg') %>Inventory</a>
         </li>
         <li class="nav-item">

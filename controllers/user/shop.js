@@ -195,7 +195,7 @@ let productAddHandler = async (req, res) => {
             //let viewData = await populateUserShopViewData('\''+u.uid+'\'')
             let viewData = await populateUserProductViewData(form.uid.toString(),u.shop.toString())
             viewData.user = req.user
-            viewData.pane = 'ad'
+            viewData.pane = 'in'
             viewData.messages = { success: 'Product added.' }
             res.render('sell', viewData)
         } catch (e) {
@@ -470,7 +470,7 @@ let shopUpdateHandler = async (req, res) => {
                         if (debug) console.log('Shop status made \'inactive\' for ' + form.uid)
                         let viewData = await populateUserShopViewData(form.uid.toString())
                         viewData.user = req.user
-                        viewData.pane = 'ls'
+                        viewData.pane = 'sf'
                         viewData.messages = { success: 'Shop removed and made inactive.' }
                         res.render('sell', viewData)
                     } catch (e) {
@@ -507,6 +507,8 @@ shops.get('/', async (req, res) => {
                     case 'or':
                     case 'pkg':
                     case 'py':
+                    case 'cl':
+                    case 'in':
                         panel = qd.show
                         break
                     default:

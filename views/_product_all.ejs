@@ -1,11 +1,11 @@
-<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'pd' || pane == 'sf' ) { %>show active<% } %>"
-    id="allProductsTab" role="tabpanel" aria-labelledby="all-products-tab">
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'in' ) { %>show active<% } %>"
+    id="inventory-pane" role="tabpanel" aria-labelledby="product-inventory-tab">
     <h2 class="tab-pane-h2">All Products</h2>
     <div class="form-group form-inline mb-3">
-       <label id="newAddressTypeLabel" class="form-label" for="newAdddressType">Shop</label>
-       <select id="newAddressType"
+       <label id="shop-select-label" class="form-label" for="shop-select">From: </label>
+       <select id="shop-select"
             class="form-control" type="text"
-            name="addressType" value="" aria-label="addressType" aria-describedby="addressType-basic-addon">
+            name="shops" value="" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
                  <option>All</option>
                  <% for(let i=0;i<shops.length;i++) { %>
                  <option id="<%= shops[i]._id %>"><%= shops[i].name %></option>

@@ -595,7 +595,7 @@ white-space: nowrap;
     width: 100%;
 }
 
-#catalog-select {
+#catalog-select, #shop-select {
     margin-left: 1rem;
 }
 

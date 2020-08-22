@@ -501,14 +501,14 @@ shops.get('/', async (req, res) => {
             if(qd) {
                 switch(qd.show){
                     case 'pd':
+                    case 'cl':
+                    case 'in':
                     case 'pd-all':
                     case 'pd-new':
                     case 'pd-arc':
                     case 'or':
                     case 'pkg':
                     case 'py':
-                    case 'cl':
-                    case 'in':
                         panel = qd.show
                         break
                     default:

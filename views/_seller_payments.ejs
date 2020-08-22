@@ -1,0 +1,22 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'py') { %>show active<% } %>" id="seller-payments-pane"
+    role="tabpanel" aria-labelledby="payments-tab">
+    <h2 class="pane-h2">Payments</h2>
+    <section class="standard-form-section">
+        <form id="payments-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
+            oninput="" novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.payments) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="pm">
+
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <div class="form-group">
+                    <hr>
+                    <div id="payment-add-button-container">
+                        <button id="payment-add-button" type="submit" class="btn btn-light" onclick="">Make payment</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+</div>

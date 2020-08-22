@@ -1,0 +1,53 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'em') { %>show active<% } %>" id="withdrawn-product-pane"
+    role="tabpanel" aria-labelledby="withdrawn-product-tab">
+    <h2 class="tab-pane-h2">Withdrawn Products</h2>
+    <hr>
+    <section id="withdrawn-product-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
+        <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
+        <% for(let i=0;i<products.length;i++) { %>
+        <div class="card">
+            <div class="card-body">
+                <div class="actionable-card-pane">
+                    <div class="address-view-card-pane">
+                        <ul>
+                            <li><span>
+                                    <p>
+                                        <b><%= products[i].name %></b><br>
+                                        <%= products[i].status %>
+                                        <% if (typeof(products[i].image) !== 'undefined' ) { %>
+                                        <img alt="<%= products[i].image.originalname %>" width="50" height="60"
+                                            src="data:<%= shops[i].image.mimetype %>;base64,<%= products[i].image.base64 %>" />
+                                        <% } %>
+                                    </p>
+                                </span></li>
+                        </ul>
+                    </div>
+                    <div class="action-button-section">
+                        <form class="edit-delete-action-form" method="POST" action="/user/shop">
+                            <input type="hidden" name="id" value="upproduct">
+                            <input type="hidden" name="pid"
+                                value="<% if(typeof(products[i]._id) !== 'undefined') { %><%= products[i]._id %><% } %>">
+    
+                            <input type="hidden" name="sid"
+                                value="<% if(typeof(products[i].sid) !== 'undefined') { %><%= products[i].sid %><% } %>">
+                            <input type="hidden" name="uid"
+                                value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                            <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip"
+                                data-placement="left" title="Edit" name="update" value="edit">
+                                <%- include('assets/symbols/edit.svg') %>
+                            </button>
+                            <button class=" action-icon-button delete-icon action-icon" type="submit" data-toggle="tooltip"
+                                data-placement="left" title="Delete" name="update" value="delete">
+                                <%- include('assets/symbols/bin.svg') %>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+        <%  } else { %>
+        <p>No products withdrawn.</p>
+        <% } %>
+    </section>
+</div>

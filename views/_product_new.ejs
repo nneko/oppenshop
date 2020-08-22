@@ -11,7 +11,7 @@
     <section class="standard-form-section new-address-form-section" <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length == 0 && typeof(archived) == 'undefined') { %> hidden<% } %> >
         <h3>Add a new product</h3>
         <form id="new-product-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
-            oninput="" novalidate>
+            oninput=""  enctype="multipart/form-data" novalidate>
             <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.addresses) { %> disabled="disabled"
                 <% } %>>
                 <input type="hidden" name="id" value="np">
@@ -20,12 +20,13 @@
                     value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                 <div class="form-group">
                     <div class="form-group form-inline mb-3">
-                        <label id="newAddressTypeLabel" class="form-label" for="newAdddressType">Shop</label>
-                        <select id="newAddressType"
+                        <label id="ShopIDLabel" class="form-label" for="ShopID">Shop</label>
+                        <select id="ShopID"
                             class="form-control <% if(typeof(new_addressType) !== 'undefined') { %><%= new_addressType.class %><% } %>" type="text"
-                            name="addressType" value="" aria-label="addressType" aria-describedby="addressType-basic-addon">
+                            name="sid" value="" aria-label="addressType" aria-describedby="addressType-basic-addon" ondurationchange=""
+                            onchange="document.getElementById('sid').value = this.value;">
                             <% for(let i=0;i<shops.length;i++) { %>
-                            <option id="<%= shops[i]._id %>"><%= shops[i].name %></option>
+                            <option value="<%= shops[i]._id %>"><%= shops[i].name %></option>
                             <% } %>
                             <!-- <option selected="selected">home</option>
                             <option>work</option>

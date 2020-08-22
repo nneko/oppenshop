@@ -45,7 +45,7 @@ product.exists = async (p) => {
     }
 }
 
-product.create = (s) => {
+product.create = (p) => {
     return new Promise(async (resolve,reject) => {
         try {
             if(!product.isValid(p)){

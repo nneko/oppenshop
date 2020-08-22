@@ -27,7 +27,7 @@
                             </p>
                             <% if (typeof(shops[i].image) !== 'undefined' ) { %>
                             <img class="storefront-image" alt="<%= shops[i].image.originalname %>"
-                                src="data:<%= shops[i].image.mimetype %>;base64,<%= shops[i].image.base64 %>" />
+                                src="<%= shops[i].image.src %>" />
                             <% } %>
                             </span></li>
                         </ul>
@@ -57,7 +57,7 @@
     <section class="standard-form-section" id="newstore" <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0 ){ %>hidden<% } %> >
     <h3>Add a new store</h3>
     <div>
-        <button class="right action-icon-button action-icon" type="submit"  data-toggle="tooltip" data-placement="left" 
+        <button class="right action-icon-button action-icon" type="submit"  data-toggle="tooltip" data-placement="left"
                      title="Cancel" name="update" value="cancel" onclick="document.getElementById('newstore').setAttribute('hidden', true);">
                             <%- include('assets/symbols/close.svg') %>
         </button>

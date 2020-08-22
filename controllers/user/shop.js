@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs')
 const express = require('express')
 const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
+const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
 //const passport = require('passport')
 const multer  = require('multer')
@@ -36,9 +37,9 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
             viewData.user = req.user
             viewData.pane = show
             viewData.messages = mObj
-            res.render('account', viewData)
+            res.render('user/shop', viewData)
         } else {
-            res.render('account', { user: undefined, pane: show, messages: mObj })
+            res.render('user/shop', { user: undefined, pane: show, messages: mObj })
         }
 
     } catch (e) {
@@ -58,7 +59,7 @@ let _403redirect = (req, res, url, msg) => {
 // Add shop form handler
 let shopAddHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
-        _403redirect(req, res, '/sell/?show=ls', 'You must be signed in.')
+        _403redirect(req, res, '/user/shop/?show=ls', 'You must be signed in.')
         return
     } else {
         let u = {}
@@ -74,7 +75,7 @@ let shopAddHandler = async (req, res) => {
         let form = converter.objectFieldsToString(req.body)
 
         if (form.uid != req.user.id) {
-            _403redirect(req, res, '/sell/?show=em', 'Permission denied.')
+            _403redirect(req, res, '/user/shop/?show=em', 'Permission denied.')
             return
         }
         // Read existing stored user details
@@ -85,13 +86,14 @@ let shopAddHandler = async (req, res) => {
         u.displayName = form.fullname
         u.status = 'active'
         if (typeof(req.file) !== 'undefined'){
-            var binary = ''
-            var bytes = [].slice.call(new Uint8Array(req.file.buffer))
-            bytes.forEach((b) => binary += String.fromCharCode(b))
+            //var binary = ''
+            //var bytes = [].slice.call(new Uint8Array(req.file.buffer))
+            //bytes.forEach((b) => binary += String.fromCharCode(b))
             //req.file.binary = 'data:'+req.file.mimetype+';base64'+binary
-            req.file.base64 = btoa([].reduce.call(new Uint8Array(req.file.buffer),function(p,c){return p+String.fromCharCode(c)},''))
+            //req.file.base64 = btoa([].reduce.call(new Uint8Array(req.file.buffer),function(p,c){return p+String.fromCharCode(c)},''))
             //console.log(req.file.base64)
-            console.log(req.file)
+            req.file.storage = 'db'
+            //console.log(req.file)
             u.image = req.file
         }
         if (form.setPrimary != 'true'){
@@ -117,7 +119,7 @@ let shopAddHandler = async (req, res) => {
             viewData.user = req.user
             viewData.pane = 'sf'
             viewData.messages = { success: 'Shop added.' }
-            res.render('sell', viewData)
+            res.render('user/shop', viewData)
         } catch (e) {
             console.error(e)
             res.status(500)
@@ -129,7 +131,7 @@ let shopAddHandler = async (req, res) => {
 // Add shop form handler
 let productAddHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
-        _403redirect(req, res, '/sell/?show=ls', 'You must be signed in.')
+        _403redirect(req, res, '/user/shop/?show=ls', 'You must be signed in.')
         return
     } else {
         let u = {}
@@ -145,24 +147,29 @@ let productAddHandler = async (req, res) => {
         let form = converter.objectFieldsToString(req.body)
 
         if (form.uid != req.user.id) {
-            _403redirect(req, res, '/sell/?show=em', 'Permission denied.')
+            _403redirect(req, res, '/user/shop/?show=em', 'Permission denied.')
             return
         }
         // Read existing stored user details
         const usr = await user.read(form.uid, { findBy: 'id' })
 
-        u.uid = form.uid
+        //u.uid = form.uid
+        u.shop = form.sid
         u.name = form.fullname
-        u.displayName = form.name
-        u.desc = form.description
+        u.description = form.description
         u.status = 'active'
+        if (form.name !== 'undefined'){
+          u.displayName = form.name
+
+        }
         if (req.file !== 'undefined'){
-            var binary = ''
-            var bytes = [].slice.call(new Uint8Array(req.file.buffer))
-            bytes.forEach((b) => binary += String.fromCharCode(b))
+            //var binary = ''
+            //var bytes = [].slice.call(new Uint8Array(req.file.buffer))
+            //bytes.forEach((b) => binary += String.fromCharCode(b))
             //req.file.binary = 'data:'+req.file.mimetype+';base64'+binary
-            req.file.base64 = btoa([].reduce.call(new Uint8Array(req.file.buffer),function(p,c){return p+String.fromCharCode(c)},''))
+            //req.file.base64 = btoa([].reduce.call(new Uint8Array(req.file.buffer),function(p,c){return p+String.fromCharCode(c)},''))
             //console.log(req.file.base64)
+            req.file.storage = 'db'
             console.log(req.file)
             u.image = req.file
         }
@@ -182,15 +189,15 @@ let productAddHandler = async (req, res) => {
             //await user.update({ preferredUsername: u.preferredUsername }, u)
             console.log(usr)
             console.log(u)
-            let t = await shop.create(u)
+            let t = await product.create(u)
             console.log(t.ops)
-            if (debug) console.log('Shop added for ' + u.uid)
+            if (debug) console.log('Product added for Shop:'+ u.shop)
             //let viewData = await populateUserShopViewData('\''+u.uid+'\'')
-            let viewData = await populateUserShopViewData(u.uid.toString())
+            let viewData = await populateUserProductViewData(form.uid.toString(),u.shop.toString())
             viewData.user = req.user
-            viewData.pane = 'ls'
+            viewData.pane = 'ad'
             viewData.messages = { success: 'Product added.' }
-            res.render('user/shop', viewData)
+            res.render('sell', viewData)
         } catch (e) {
             console.error(e)
             res.status(500)
@@ -203,27 +210,43 @@ let productAddHandler = async (req, res) => {
 let populateUserShopViewData = async (uid,status = 'active') => {
     return new Promise(async (resolve, reject) => {
         let u = {}
-        t = {uid: uid, status: status}
+        //t = {uid: uid, status: status}
+        t = {owner: uid, status: status}
         console.log(t)
         try {
             //u = await shop.read(uid, { findBy: 'uid' })
-            s = await shop.read({owner: t.uid})
-            console.log(s)
+            //s = await shop.read({owner: t.uid})
+            s = await shop.read(t)
+            //console.log(s)
             u = await user.read(uid, {findBy: 'id'})
-            console.log(u)
+            //console.log(u)
             let viewData = {}
-            
+
             viewData.shops = []
             if(s) {
                 if(Array.isArray(s)) {
+                    for (x of s) {
+                      //console.log(x)
+                      //console.log(typeof(x.image))
+                      if (typeof(x.image) !== 'undefined'){
+                        //console.log(x.image.mimetype)
+                        //console.log(media.getBinaryDetails(x.image))
+                        x.image.src = media.getBinaryDetails(x.image)
+                        //console.log(x.image.src)
+                      }
+                    }
                     viewData.shops = s
-                } else {
+                    // For handling an array of files
+                    // s.file.map(x.src => media.getBinaryDetails(x))
+                    //viewData.shops = s
+                } /*
+                else {
                     if (shop.isValid(s)){
                         viewData.shops.push(s)
                     }
-                }
-            } 
-            
+                } */
+            }
+
             viewData.addresses = u.addresses
             /*
             let primaryAddr = getPrimaryField(viewData.addresses)
@@ -234,7 +257,7 @@ let populateUserShopViewData = async (uid,status = 'active') => {
                 viewData.addressPostcode = { value: primaryAddr.postalCode }
                 viewData.addressCountry = { value: primaryAddr.country }
                 viewData.addressType = { value: primaryAddr.type }
-            }   
+            }
             */
             viewData.emails = u.emails
             viewData.phoneNumbers = u.phoneNumbers
@@ -244,8 +267,8 @@ let populateUserShopViewData = async (uid,status = 'active') => {
                 viewData.phone ={
                     value: phone.value,
                     type: phone.type
-                }   
-            }   
+                }
+            }
             */
             //viewData.verifiedUser = u.verified
             /*
@@ -256,20 +279,108 @@ let populateUserShopViewData = async (uid,status = 'active') => {
                 orders: false,
                 payments: false,
                 settings: false
-            }   
-            
+            }
+
             // Disable security credentials update for external accounts
             if (!validator.isLocalUserAccount(u)) {
                 dForms.security = true
-            }   
+            }
             viewData.disabledForms = dForms
             */
             resolve(viewData)
         } catch (e) {
             reject(e)
-        }   
-    })  
-}   
+        }
+    })
+}
+
+let populateUserProductViewData = async (uid,sid,status = 'active') => {
+    return new Promise(async (resolve, reject) => {
+        let u = {}
+        //t = {uid: uid, status: status}
+        //t = {owner: uid, status: status}
+        t = {_id: sid}
+        console.log(t)
+        try {
+            //u = await shop.read(uid, { findBy: 'uid' })
+            //s = await shop.read({owner: t.uid})
+            let p = {}
+            s = await shop.read(t)
+            console.log(s)
+
+            u = await user.read(uid, {findBy: 'id'})
+            //console.log(u)
+            let viewData = {}
+
+            viewData.shops = []
+            if(s) {
+                if(Array.isArray(s)) {
+                    for (x of s) {
+                      console.log(x)
+                      p.append(await product.read({shop: x._id, status: status}))
+                      console.log(p)
+
+
+                    }
+                    s.products = p
+                    viewData.shops = s
+                    // For handling an array of files
+                    // s.file.map(x.src => media.getBinaryDetails(x))
+                    //viewData.shops = s
+                } /*
+                else {
+                    if (shop.isValid(s)){
+                        viewData.shops.push(s)
+                    }
+                } */
+            }
+
+            viewData.addresses = u.addresses
+            /*
+            let primaryAddr = getPrimaryField(viewData.addresses)
+            if (primaryAddr) {
+                viewData.addressStreet = { value: primaryAddr.streetAddress }
+                viewData.addressLocality = { value: primaryAddr.locality }
+                viewData.addressRegion = { value: primaryAddr.region }
+                viewData.addressPostcode = { value: primaryAddr.postalCode }
+                viewData.addressCountry = { value: primaryAddr.country }
+                viewData.addressType = { value: primaryAddr.type }
+            }
+            */
+            viewData.emails = u.emails
+            viewData.phoneNumbers = u.phoneNumbers
+            /*
+            let phone = getPrimaryField(viewData.phoneNumbers)
+            if (phone) {
+                viewData.phone ={
+                    value: phone.value,
+                    type: phone.type
+                }
+            }
+            */
+            //viewData.verifiedUser = u.verified
+            /*
+            let dForms = {
+                security: false,
+                contact: false,
+                addresses: false,
+                orders: false,
+                payments: false,
+                settings: false
+            }
+
+            // Disable security credentials update for external accounts
+            if (!validator.isLocalUserAccount(u)) {
+                dForms.security = true
+            }
+            viewData.disabledForms = dForms
+            */
+            resolve(viewData)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 
 let populateUserViewData = async (uid) => {
     return new Promise(async (resolve, reject) => {
@@ -327,7 +438,7 @@ let populateUserViewData = async (uid) => {
 let shopUpdateHandler = async (req, res) => {
 
     if (!validator.hasActiveSession(req)) {
-        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        _403redirect(req, res, '/user/shop/?show=pr', 'You must be signed in.')
         return
     } else {
         if(!req.body) {
@@ -343,15 +454,16 @@ let shopUpdateHandler = async (req, res) => {
             switch(form.update) {
                 case 'delete':
                     if (form.uid != req.user.id) {
-                            _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
+                            _403redirect(req, res, '/user/shop/?show=em', 'Permission denied.')
                             return
                     }
                     console.log(form)
                     // Read existing stored user details
                     const s = await shop.read(form.sid, { findBy: 'id' })
                     s.status = 'inactive'
+
                     console.log(s)
-                    
+
                     try {
                         let t = await shop.update({_id: s._id}, s)
                         console.log(t)
@@ -434,9 +546,9 @@ shops.get('/', async (req, res) => {
     }
 })
 
-shops.post('/', upload.single('fullimage'), 
+shops.post('/', upload.single('fullimage'),
     /*function (err, req, res, next) {
-    if (err) { 
+    if (err) {
         console.log(req)
         console.log(req.file)
         console.error(err)
@@ -481,9 +593,9 @@ shops.post('/', upload.single('fullimage'),
                 case 'np':
                     console.log(req.body)
                     console.log(req.file)
-                    //await productAddHandler(req, res)
-                    res.status(500)
-                    res.render('error', { user: req.user, messages: { error: 'Testing.' } })
+                    await productAddHandler(req, res)
+                    //res.status(500)
+                    //res.render('error', { user: req.user, messages: { error: 'Testing.' } })
                     break
                 case 'ci':
                     await ciFormHandler(req, res)
@@ -502,18 +614,20 @@ shops.post('/', upload.single('fullimage'),
                     console.log(req.body)
                     console.log(req.file)
                     await shopAddHandler(req,res)
+                    //res.status(500)
+                    //res.render('error', { user: req.user, messages: { error: 'Testing.' } })
                     break
                 default:
-                   console.log(req) 
+                   console.log(req)
                    await badRequest(req, res)
             }
         } else {
-        _403redirect(req,res,'/user/account','You need to be signed in.')
+        _403redirect(req,res,'/user/shop','You need to be signed in.')
         }
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Account update error' }, name: '', user: req.user })
+        res.render('error', { error: { status: 500, message: 'Shop update error' }, name: '', user: req.user })
     }
 })
 

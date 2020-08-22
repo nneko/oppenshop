@@ -16,7 +16,8 @@
             {
             "value": "mhashimoto-04@plaxo.com",
             "type": "work",
-            "primary": "true"
+            "primary": "true",
+            "verified": true
             },
             {
             "value": "mhashimoto-04@plaxo.com",
@@ -83,7 +84,9 @@
             "userid": "2706"
             }
         ],
-        roles: []
+        "roles": [],
+        "verificationToken": "ombhe65mfv31c1ugk2xxchnwmq0weksv",
+        "verified": true
     }
 ```
 # Sample Shop Model (JSON): 

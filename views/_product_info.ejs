@@ -1,21 +1,27 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && (pane == 'pd' || pane =='pd-all' || pane == 'pd-new' || pane == 'pd-arc')) { %>show active<% } %>" id="products-pane" role="tabpanel" aria-labelledby="products-tab">
     <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="productsTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pd' || pane == 'sf') { %>active<% } %>" id="all-products-tab"
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pd' || pane == 'cl') { %>active<% } %>"
+                id="catalog-products-tab" data-toggle="tab" href="#catalogs-tab" role="tab" aria-controls="all"
+                aria-selected="true"><%- include('assets/symbols/library.svg') %>Catalogs</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'sf') { %>active<% } %>" id="all-products-tab"
                 data-toggle="tab" href="#allProductsTab" role="tab" aria-controls="all"
-                aria-selected="true"><%- include('assets/symbols/gallery.svg') %>All Products</a>
+                aria-selected="true"><%- include('assets/symbols/gallery.svg') %>Inventory</a>
         </li>
         <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pd-new') { %>active<% } %>" id="new-products-tab"
                 data-toggle="tab" href="#newProductsTab" role="tab" aria-controls="new"
-                aria-selected="false"><%- include('assets/symbols/add.svg') %>New Product</a>
+                aria-selected="false"><%- include('assets/symbols/add.svg') %>Registration</a>
         </li>
         <li class="nav-item <% if(typeof(pane) !== 'undefined' && pane == 'pd-arc') { %>active<% } %>">
             <a class="nav-link" id="emails-tab" data-toggle="tab" href="#emailsTab" role="tab" aria-controls="archive"
-                aria-selected="false"><%- include('assets/symbols/box.svg') %>Archived</a>
+                aria-selected="false"><%- include('assets/symbols/box.svg') %>Archive</a>
         </li>
     </ul>
     <div class="tab-content" id="productsTabContent">
+        <%- include('./_product_catalog.ejs') %>
         <%- include('./_product_all.ejs') %>
         <%- include('./_product_new.ejs') %>
         <%- include('./_product_archived.ejs') %>        

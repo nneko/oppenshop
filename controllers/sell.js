@@ -7,10 +7,10 @@ let sell = express.Router()
 
 sell.get('/', (req, res) => {
     if(validator.isNotNull(req.user)){
-        properties = {user: req.user }
+        let properties = {user: req.user }
         res.render('sell',properties)
     } else {
-        res.render('become_seller', viewProperties)
+        res.render('become_seller')
     }
 })
 

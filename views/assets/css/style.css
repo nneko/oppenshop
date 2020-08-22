@@ -465,9 +465,13 @@ svg {
     color: var(--main-text-color);
 }
 
+.tab-pane {
+    margin: 1rem;
+
+}
+
 .tab-pane-h2 {
     color: var(--main-text-color);
-    margin: 1rem;
 }
 
 .tab-scroll-pane {
@@ -589,6 +593,10 @@ white-space: nowrap;
 #phone-number-form {
     max-width: 100%;
     width: 100%;
+}
+
+#catalog-select {
+    margin-left: 1rem;
 }
 
 .storefront-image {

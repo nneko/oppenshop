@@ -21,6 +21,43 @@
                 <div class="shop-products-card" id="<%= shops[j]._id %>" name="<% shops[j].name %>" hidden="true">
                 <% if (typeof(shops[j].products) !== 'undefined' && Array.isArray(shops[j].products) && shops[j].products.length > 0) { %>
                     <% for(let i=0;i<shops[j].products.length;i++) { %>
+<<<<<<< HEAD
+                      <% if (shops[j].products[i].status == 'active') { %>
+                      <div class="card shop-products-card" id="<%= shops[j]._id %>" name="cards_products" hidden="true">
+                          <div class="card-body">
+                              <div class="actionable-card-pane">
+                                  <div class="address-view-card-pane">
+                                      <ul>
+                                      <li><span><p>
+                                              <b><%= shops[j].products[i].name %></b><br>
+                                              <%= shops[j].products[i].status %>
+                                              <% if (typeof(shops[j].products[i].image) !== 'undefined' ) { %>
+                                              <img alt="<%= shops[j].products[i].image.originalname %>" width="50" height="60" src="<%= shops[j].products[i].image.src %>"/>
+                                              <% } %>
+                                          </p>
+                                          </span></li>
+                                      </ul>
+                                  </div>
+                                  <div class="action-button-section">
+                                      <form class="edit-delete-action-form" method="POST" action="/user/shop">
+                                          <input type="hidden" name="id" value="upproduct">
+                                          <input type="hidden" name="pid" value="<% if(typeof(shops[j].products[i]._id) !== 'undefined') { %><%= shops[j].products[i]._id %><% } %>">
+
+                                          <input type="hidden" name="sid" value="<% if(typeof(shops[j].products[i].sid) !== 'undefined') { %><%= shops[j].products[i].sid %><% } %>">
+                                          <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                                          <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
+                                          <%- include('assets/symbols/edit.svg') %>
+                                          </button>
+                                          <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
+                                              <%- include('assets/symbols/bin.svg') %>
+                                          </button>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <% } %>
+=======
                         <div class="card">
                             <div class="card-body">
                                 <div class="actionable-card-pane">
@@ -65,6 +102,7 @@
                                 </div>
                             </div>
                         </div>
+>>>>>>> 2393707ed26aac8b3dbc8a63bfc5b3f5927cfbbd
                     <% } %>
                 <%  } else { %>
                     <div class="no-products-card" data-value="<%= shops[j]._id %>">
@@ -86,8 +124,16 @@ function toggleShopSelector(){
             console.log(y)
             y.setAttribute('hidden', true)
         }
+<<<<<<< HEAD
+    } else {
+        let x = document.getElementsByClassName('shop-products-card');
+        let noProdsCard = document.getElementsByClassName('no-product-card');
+        for (w of noProdsCard) {
+            w.setAttribute('hidden', true);
+=======
         for (const z of x) {
             z.removeAttribute('hidden');
+>>>>>>> 2393707ed26aac8b3dbc8a63bfc5b3f5927cfbbd
         }
     } else {
         for (const y of x) {
@@ -102,6 +148,16 @@ function toggleShopSelector(){
         if(z) {
             z.removeAttribute('hidden');
         }
+<<<<<<< HEAD
+        for( c of noProdsCard) {
+            for (o of elem.options) {
+                if (c.value == o.value) {
+                    c.removeAttribute('hidden');
+                }
+            }
+        }
+=======
+>>>>>>> 2393707ed26aac8b3dbc8a63bfc5b3f5927cfbbd
     }
 }
 toggleShopSelector()

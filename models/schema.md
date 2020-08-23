@@ -143,6 +143,7 @@
     {
         "_id":, ObjectId("2342345235"),
         "name": "",
+        "shop": "",
         "description": "",
         "products": [""]
     }

@@ -9,6 +9,18 @@ validator.isNotNull = (obj) => {
     return ((obj && obj !== 'null' && obj !== 'undefined') ? true : false)
 }
 
+validator.isEmpty = (obj) => {
+    if(!validator.isNotNull(obj)) {
+        return true
+    } else {
+        if(Array.isArray(obj) && obj.length == 0) {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
 validator.isPhoneNumber = (phone) => {
     return typeof(phone) === 'string' && phone != '' ? true : false
 }

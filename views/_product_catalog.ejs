@@ -10,7 +10,7 @@
             class="form-control" type="text"
             name="catalogs" value="" aria-label="catalogs-select-label" aria-describedby="addressType-basic-addon">
                  <option>All</option>
-                 <% if(typeof(catalogs) !== 'undefined') { %>
+                 <% if(typeof(catalogs) !== 'undefined' && Array.isArray(catalogs) && catalogs.length > 0) { %>
                     <% for(let i=0;i<catalogs.length;i++) { %>
                         <option id="<%= catalogs[i]._id %>"><%= catalogs[i].name %></option>
                     <% } %>

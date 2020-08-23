@@ -9,6 +9,7 @@ const crypto = require('crypto')
 const https = require('https')
 const querystring = require('querystring')
 const { v4: uuidv4 } = require('uuid')
+const validator = require('./validator')
 
 //Secret Key used in Hashing
 let secretKey = cfg.secret
@@ -148,6 +149,88 @@ generator.formattedAddress = (addr) => {
     console.log('Formatted address to:')
     console.log(addressString)
     return addressString
+}
+
+generator.getField = (list, val) => {
+    let field = null
+
+    if (validator.isNotNull(list)) {
+        for (let i = 0; i < list.length; i++) {
+            let e = list[i]
+            if (e && e.value == val) {
+                field = e
+                break
+            }
+        }
+    }
+    return field
+}
+
+generator.getPrimaryField = (list) => {
+    let field = null
+
+    if (validator.isNotNull(list)) {
+        for (let i = 0; i < list.length; i++) {
+            let e = list[i]
+            let p = undefined
+            for (const k of Object.keys(e)) {
+                if (k == 'primary') {
+                    p = e
+                    break
+                }
+            }
+            if (p) {
+                field = p
+                break
+            }
+        }
+    }
+    return field
+}
+
+generator.removePrimaryFields = (list) => {
+    let new_list = list
+
+    if (validator.isNotNull(new_list)) {
+        for (let i = 0; i < new_list.length; i++) {
+            let e = new_list[i]
+            for (const k of Object.keys(e)) {
+                if (k == 'primary') delete e[k]
+            }
+        }
+    }
+    return new_list
+}
+
+generator.removeFields = (list, val) => {
+    let new_list = []
+
+    if (validator.isNotNull(list)) {
+        for (let i = 0; i < list.length; i++) {
+            let e = list[i]
+            if (validator.isNotNull(e.value) && e.value != val) {
+                new_list.push(e)
+            }
+        }
+    }
+    return new_list
+}
+
+generator.removeAddressFields = (list, addr) => {
+    let new_list = []
+
+    if (validator.isNotNull(list) && validator.isAddress(addr)) {
+        for (let i = 0; i < list.length; i++) {
+            let e = list[i]
+            if (!validator.isAddressMatch(e, addr)) {
+                new_list.push(e)
+            }
+        }
+    } else {
+        return list
+    }
+
+    return new_list
 }
 
 // Export the module

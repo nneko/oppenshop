@@ -8,7 +8,7 @@ let catalog = {}
 
 catalog.isValid = async (c) => {
     try {
-        if (validator.isNotNull(c) && typeof (c.name) == 'string' && validator.isNotNull(s.name) && typeof (c.description) == 'string' && validator.isNotNull(c.description) && c.hasOwnProperty('products') && Array.isArray(c.products)) {
+        if (validator.isNotNull(c) && (!validator.isEmpty(c)) && c.hasOwnProperty('name') && c.hasOwnProperty('description') && c.hasOwnProperty('shop') && typeof(c.name) == 'string' && validator.isNotNull(s.name) && typeof (c.description) == 'string' && validator.isNotNull(c.description) && c.hasOwnProperty('products') && Array.isArray(c.products)) {
             return true
         } else {
             return false

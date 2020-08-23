@@ -48,87 +48,15 @@ let _403redirect = (req, res, url, msg) => {
     res.render('signin', {  url: url, messages: { error: msg ? msg : 'You must be signed in.' }, verifiedUser: verifiedUser })
 }
 
-let getField = (list, val) => {
-    let field = null
+let getField = generator.getField
 
-    if (validator.isNotNull(list)) {
-        for (let i = 0; i < list.length; i++) {
-            let e = list[i]
-            if (e && e.value == val) {
-                field = e
-                break
-            }
-        }
-    }
-    return field
-}
+let getPrimaryField = generator.getPrimaryField
 
-let getPrimaryField = (list) => {
-    let field = null
+let removePrimaryFields = generator.removePrimaryFields
 
-    if (validator.isNotNull(list)) {
-        for (let i = 0; i < list.length; i++) {
-            let e = list[i]
-            let p = undefined
-            for (const k of Object.keys(e)) {
-                if (k == 'primary') {
-                    p = e
-                    break
-                }
-            }
-            if(p) {
-                field = p
-                break
-            }
-        }
-    }
-    return field
-}
+let removeFields = generator.removeFields
 
-let removePrimaryFields = (list) => {
-    let new_list = list
-
-    if (validator.isNotNull(new_list)) {
-        for (let i = 0; i < new_list.length; i++) {
-            let e = new_list[i]
-            for (const k of Object.keys(e)) {
-                if(k == 'primary') delete e[k]
-            }
-        }
-    }
-    return new_list
-}
-
-let removeFields = (list, val) => {
-    let new_list = []
-
-    if (validator.isNotNull(list)) {
-        for (let i = 0; i < list.length; i++) {
-            let e = list[i]
-            if(validator.isNotNull(e.value) && e.value != val) {
-                new_list.push(e)
-            }
-        }
-    }
-    return new_list
-}
-
-let removeAddressFields = (list, addr) => {
-    let new_list = []
-
-    if (validator.isNotNull(list) && validator.isAddress(addr)) {
-        for (let i = 0; i < list.length; i++) {
-            let e = list[i]
-            if (!validator.isAddressMatch(e,addr)) {
-                new_list.push(e)
-            }
-        }
-    } else {
-        return list
-    }
-
-    return new_list
-}
+let removeAddressFields = generator.removeAddressFields
 
 let populateUserViewData = async (uid) => {
     return new Promise(async (resolve, reject) => {

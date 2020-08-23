@@ -15,6 +15,7 @@ const storage = multer.memoryStorage()
 var upload = multer({storage: storage})
 //const upload = multer({ dest: 'uploads/' })
 const btoa = require('btoa')
+const catalog = require('../../models/catalog')
 
 let shops = express.Router()
 
@@ -54,6 +55,64 @@ let _403redirect = (req, res, url, msg) => {
     let verifiedUser = undefined
     res.status(403);
     res.render('signin', { url: url, messages: { error: msg ? msg : 'You must be signed in.' }, verifiedUser: verifiedUser })
+}
+
+let catalogAddHander = async (req, res) => {
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/shop/?show=cl', 'You must be signed in.')
+        return
+    } else {
+        try {
+            let c = {}
+
+            let formValidated = false
+            let formFields = {}
+
+            if (!req.body) {
+                await badRequest(req, res, 'cl', 400, 'Invalid request.')
+                return
+            }
+
+            let form = converter.objectFieldsToString(req.body)
+
+            if (form.uid != req.user.id) {
+                _403redirect(req, res, '/user/shop/?show=cl', 'Permission denied.')
+                return
+            }
+
+            if (!validator.isNotNull(form.name)) {
+                await badRequest(req, res, 'cl', 400, 'Catalogs must have a name.')
+                return
+            }
+
+            const shp = await shop.read(form.shop, {findBy: 'id'})
+
+            if (!shop.isValid(shp) && shp.status == 'active') {
+                await badRequest(req, res, 'cl', 400, 'Catalogs must be associated with a valid and active storefront.')
+                return
+            }
+
+            c.name = form.name
+            c.description = form.description
+            c.shop = form.shop
+            c.products = []
+
+            let ctg = await catalog.create(c)
+            if (debug) console.log('Catalog added for ' + shp.displayName)
+            //let viewData = await populateUserShopViewData('\''+u.uid+'\'')
+            let viewData = await populateUserShopViewData(req.user.id)
+            viewData.user = req.user
+            viewData.pane = 'cl'
+            viewData.messages = { success: 'Catalog created.' }
+            res.render('sell', viewData)
+            return
+        } catch (e) {
+            console.error(e)
+            res.status(500)
+            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a catalog.' } })
+            return
+        }
+    }
 }
 
 // Add shop form handler
@@ -255,9 +314,26 @@ let populateUserShopViewData = async (uid,status = 'active') => {
                 } */
             }
 
+            viewData.catalogs = []
+            for (let i=0;i<viewData.shops.length;i++) {
+                try {
+                    if(shop.isValid(viewData.shops[i])) {
+                        let cList = await catalog.read({shop: viewData.shops[i]._id})
+                        if(Array.isArray(cList) && cList.length > 0) {
+                            for(let j=0;j<cList.length;j++) {
+                                if(catalog.isValid(cList[j])) viewData.catalogs.push(c)
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error(e)
+                    console.log('Error reading shop list skipping remainder.')
+                }
+            }
+            console.log(viewData.catalogs)
+
             viewData.addresses = u.addresses
-            /*
-            let primaryAddr = getPrimaryField(viewData.addresses)
+            let primaryAddr = generator.getPrimaryField(viewData.addresses)
             if (primaryAddr) {
                 viewData.addressStreet = { value: primaryAddr.streetAddress }
                 viewData.addressLocality = { value: primaryAddr.locality }
@@ -266,35 +342,15 @@ let populateUserShopViewData = async (uid,status = 'active') => {
                 viewData.addressCountry = { value: primaryAddr.country }
                 viewData.addressType = { value: primaryAddr.type }
             }
-            */
             viewData.emails = u.emails
             viewData.phoneNumbers = u.phoneNumbers
-            /*
-            let phone = getPrimaryField(viewData.phoneNumbers)
+            let phone = generator.getPrimaryField(viewData.phoneNumbers)
             if (phone) {
                 viewData.phone ={
                     value: phone.value,
                     type: phone.type
                 }
             }
-            */
-            //viewData.verifiedUser = u.verified
-            /*
-            let dForms = {
-                security: false,
-                contact: false,
-                addresses: false,
-                orders: false,
-                payments: false,
-                settings: false
-            }
-
-            // Disable security credentials update for external accounts
-            if (!validator.isLocalUserAccount(u)) {
-                dForms.security = true
-            }
-            viewData.disabledForms = dForms
-            */
             resolve(viewData)
         } catch (e) {
             reject(e)
@@ -396,8 +452,7 @@ let populateUserViewData = async (uid) => {
             let u = await user.read(uid, { findBy: 'id' })
             let viewData = {}
             viewData.addresses = u.addresses
-            /*
-            let primaryAddr = getPrimaryField(viewData.addresses)
+            let primaryAddr = generator.getPrimaryField(viewData.addresses)
             if (primaryAddr) {
                 viewData.addressStreet = { value: primaryAddr.streetAddress }
                 viewData.addressLocality = { value: primaryAddr.locality }
@@ -406,34 +461,15 @@ let populateUserViewData = async (uid) => {
                 viewData.addressCountry = { value: primaryAddr.country }
                 viewData.addressType = { value: primaryAddr.type }
             }
-            */
             viewData.emails = u.emails
             viewData.phoneNumbers = u.phoneNumbers
-            /*
-            let phone = getPrimaryField(viewData.phoneNumbers)
+            let phone = generator.getPrimaryField(viewData.phoneNumbers)
             if (phone) {
                 viewData.phone ={
                     value: phone.value,
                     type: phone.type
                 }
             }
-            */
-            viewData.verifiedUser = u.verified
-
-            let dForms = {
-                security: false,
-                contact: false,
-                addresses: false,
-                orders: false,
-                payments: false,
-                settings: false
-            }
-
-            // Disable security credentials update for external accounts
-            if (!validator.isLocalUserAccount(u)) {
-                dForms.security = true
-            }
-            viewData.disabledForms = dForms
             resolve(viewData)
         } catch (e) {
             reject(e)

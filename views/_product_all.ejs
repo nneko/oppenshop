@@ -7,23 +7,7 @@
     <div class="form-group form-inline mb-3">
        <label id="shop-select-label" class="form-label" for="shop-select">From: </label>
        <select id="shop-select"
-            class="form-control" type="text" onchange="
-            if (this.value == 'cards_products') {
-              var x = document.getElementsByClassName('card');
-              for (y of x)(
-                y.removeAttribute('hidden');
-              )
-            } else {
-              var x = document.getElementsByClassName('card');
-              for (y of x)(
-                y.setAttribute('hidden', true);
-              )
-              var z = document.getElementsByName(this.value);
-              for (y of z)(
-                y.removeAttribute('hidden');
-              )
-            }
-            "
+            class="form-control" type="text" onchange="toggleShopSelector()"
             name="shops" value="" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
                  <option value="cards_products">All</option>
                  <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
@@ -83,3 +67,23 @@
     </section>
     <hr>
 </div>
+<script>
+function toggleShopSelector(){
+    let elem = document.getElementById('shop-select')
+    if (elem && elem.value == 'cards_products') {
+        var x = document.getElementsByClassName('card');
+        for (y of x) {
+            y.removeAttribute('hidden');
+        }
+    } else {
+        var x = document.getElementsByClassName('card');
+        for (y of x) {
+            y.setAttribute('hidden', true);
+        }
+        var z = document.getElementsByName(elem.value);
+        for (y of z) {
+            y.removeAttribute('hidden');
+        }
+    }
+}
+</script>

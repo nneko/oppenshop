@@ -1,9 +1,6 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'in' ) { %>show active<% } %>"
     id="inventory-pane" role="tabpanel" aria-labelledby="product-inventory-tab">
     <h2 class="tab-pane-h2">All Products</h2>
-    <div>
-        <a class="right add-address-link" href="#new-product-form"><%- include('assets/symbols/plus.svg') %> Add Product</a>
-    </div>
     <div class="form-group form-inline mb-3">
        <label id="shop-select-label" class="form-label" for="shop-select">From: </label>
        <select id="shop-select"
@@ -28,17 +25,27 @@
                             <div class="card-body">
                                 <div class="actionable-card-pane">
                                     <div class="address-view-card-pane">
-                                        <ul>
-                                        <li><span><p>
-                                                <b><%= shops[j].products[i].displayName %></b>
-                                        </p><p class="extra-info">
-                                                <img alt="<%= shops[j].products[i].image.originalname %>" class="card-product-image" src="<%= shops[j].products[i].image.src %>"/>
-                                                <%= shops[j].products[i].status %>
-                                                <% if (typeof(shops[j].products[i].image) !== 'undefined' ) { %>
-                                                <% } %>
-                                            </p>
-                                            </span></li>
-                                        </ul>
+                                        <ul><li>
+                                            <span>
+                                                <p class="item-card-label">
+                                                    <b><%= shops[j].products[i].displayName %></b>
+                                                </p>
+                                                <div class="item-card">
+                                                    <div class="item-card-left">
+                                                        <img alt="<%= shops[j].products[i].image.originalname %>" class="card-product-image"
+                                                            src="<%= shops[j].products[i].image.src %>" />
+                                                    </div>
+                                                    <div class="item-card-right extra-info">
+                                                        <h4>Availability</h4>
+                                                        <p>
+                                                            <%= shops[j].products[i].status %>
+                                                        </p>
+                                                        <h4>Description</h4>
+                                                        <p><%= shops[j].products[i].description %></p>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </li></ul>
                                     </div>
                                     <div class="action-button-section">
                                         <form class="edit-delete-action-form" method="POST" action="/user/shop">
@@ -68,7 +75,6 @@
             <% } %>
         <%  } %>
     </section>
-    <hr>
 </div>
 <script>
 function toggleShopSelector(){

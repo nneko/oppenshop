@@ -586,6 +586,11 @@ white-space: nowrap;
     padding-top: 1rem;
 }
 
+.extra-info h4 {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
 #new-address-form {
     margin-top: 2rem;
 }
@@ -612,6 +617,20 @@ white-space: nowrap;
     height: 4rem;
     margin: 0.5rem 1rem;
     /*width: 4rem;*/
+}
+
+.item-card {
+    display: flex;
+}
+
+.item-card-label {
+    border-bottom: 1px solid var(--main-sub-border-color);
+    margin-bottom: 0.5rem;
+    padding-bottom: 1rem;
+}
+
+.item-card .extra-info {
+    border-top: none;
 }
 
 .menu-main-navigation {

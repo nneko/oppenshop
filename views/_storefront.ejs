@@ -2,7 +2,7 @@
     role="tabpanel" aria-labelledby="storefronts-tab">
     <h2 class="pane-h2">Storefronts</h2>
     <div>
-        <a class="right add-address-link" href="#new-address-form" onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %> Add Storefront</a>
+        <a class="right add-address-link" href="#new-storefront-form" onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %> Add Storefront</a>
         <% if (typeof(archived) !== 'undefined' && archived == 'true') { %>
         <a class="left add-address-link" href="/user/shop?id=upshop&panel=sf&update=active&uid=<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
             <%- include('assets/symbols/plus.svg') %> View Active Storefronts
@@ -60,15 +60,15 @@
         <p>No stores associated with account.</p>
         <% } %>
     </section>
-    <hr>
     <section class="standard-form-section" id="newstore" <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0 ){ %>hidden<% } %> >
-    <h3>Add a new store</h3>
-    <div>
-        <button class="right action-icon-button action-icon" type="submit"  data-toggle="tooltip" data-placement="left"
-                     title="Cancel" name="update" value="cancel" onclick="document.getElementById('newstore').setAttribute('hidden', true);">
-                            <%- include('assets/symbols/close.svg') %>
-        </button>
-    </div>
+        <hr>
+        <h3>Add a new store</h3>
+        <div>
+            <button class="right action-icon-button action-icon" type="submit"  data-toggle="tooltip" data-placement="left"
+                        title="Cancel" name="update" value="cancel" onclick="document.getElementById('newstore').setAttribute('hidden', true);">
+                                <%- include('assets/symbols/close.svg') %>
+            </button>
+        </div>
         <form id="new-storefront-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
             oninput="" enctype="multipart/form-data" novalidate>
             <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.addresses) { %> disabled="disabled"

@@ -607,6 +607,13 @@ white-space: nowrap;
     width: 4rem;
 }
 
+.card-product-image {
+    border-style: none;
+    height: 4rem;
+    margin: 0.5rem 1rem;
+    /*width: 4rem;*/
+}
+
 .menu-main-navigation {
     z-index: 9;
 }

@@ -62,6 +62,7 @@ product.create = (p) => {
                 throw e
             }
 
+            if(!validator.isNotNull(p.displayName)) p.displayName = p.name
             p.name = p.name.toLowerCase()
 
             const result = await db.get().collection('products').insertOne(p)

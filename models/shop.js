@@ -52,6 +52,7 @@ shop.create = (s) => {
                 throw e
             }
 
+            if (!validator.isNotNull(s.displayName)) s.displayName = s.name
             s.name = s.name.toLowerCase()
 
             const result = await db.get().collection('shops').insertOne(s)

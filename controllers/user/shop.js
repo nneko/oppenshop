@@ -278,7 +278,8 @@ let populateUserShopViewData = async (uid,status = 'active') => {
     return new Promise(async (resolve, reject) => {
         let u = {}
         //t = {uid: uid, status: status}
-        t = {owner: uid, status: status}
+        //t = {owner: uid, status: status}
+        t = {owner: uid}
         console.log(t)
         try {
             //u = await shop.read(uid, { findBy: 'uid' })
@@ -302,7 +303,8 @@ let populateUserShopViewData = async (uid,status = 'active') => {
                         x.image.src = media.getBinaryDetails(x.image)
                         //console.log(x.image.src)
                       }
-                      let p = await product.read({shop: x._id.toString(), status: status})
+                      //let p = await product.read({shop: x._id.toString(), status: status})
+                      let p = await product.read({shop: x._id.toString()})
                       //console.log(p)
                       for (y of p){
                         if (typeof(y.image) !== 'undefined'){
@@ -390,7 +392,8 @@ let populateUserProductViewData = async (uid,sid,status = 'active') => {
                 if(Array.isArray(s)) {
                     for (x of s) {
                       //console.log(x)
-                      p.append(await product.read({shop: x._id.toString(), status: status}))
+                      //p.append(await product.read({shop: x._id.toString(), status: status}))
+                      p.append(await product.read({shop: x._id.toString()}))
                       //console.log(p)
 
 
@@ -635,6 +638,7 @@ shops.get('/', async (req, res) => {
             }
             //console.log('Shop Get:')
             let viewData = {}
+            /*
             if (req.query.id !== 'undefined'){
                if (req.query.id == 'upshop'){
                   if (req.query.update == 'archived'){
@@ -650,7 +654,8 @@ shops.get('/', async (req, res) => {
                 }
             } else {
                 viewData = await populateUserShopViewData(req.user.id.toString())
-            }
+            } */
+            viewData = await populateUserShopViewData(req.user.id.toString())
             //console.log(viewData)
             viewData.user = req.user
             viewData.pane = panel

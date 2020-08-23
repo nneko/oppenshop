@@ -5,7 +5,7 @@
         <a class="right add-address-link" href="#new-address-form" onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %> Add Storefront</a>
         <a class="left add-address-link" id="shop_choice" href="#" onclick="toggleArchiveShopSelector();">
             <%- include('assets/symbols/plus.svg') %> <span id="inactive">View Archived Storefronts</span>
-        </a>
+        </a>  
    </div>
     <section id="address-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
         <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>

@@ -26,7 +26,7 @@
                             name="sid" value="" aria-label="addressType" aria-describedby="addressType-basic-addon" ondurationchange=""
                             onchange="document.getElementById('sid').value = this.value;">
                             <% for(let i=0;i<shops.length;i++) { %>
-                            <option value="<%= shops[i]._id %>"><%= shops[i].name %></option>
+                            <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
                             <% } %>
                             <!-- <option selected="selected">home</option>
                             <option>work</option>
@@ -52,7 +52,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="add-address-fullname-basic-addon">Description</span>
                             </div>
-                            <textarea rows="4" cols="25" name="description" form="new-product-form"> Product Description ... </textarea>
+                            <textarea class="form-control" rows="4" cols="25" name="description" form="new-product-form"> Product Description ... </textarea>
                             <!-- <input id="add-address-fullname" class="form-control <% if(typeof(fullname) !== 'undefined') { %><%= fullname.class %><% } %>" type="text" name="fullname" value="<% if(typeof(fullname) !== 'undefined' && fullname.value) { %><%= fullname.value %><% } %>"
                                 aria-label="Address" aria-describedby="fullname-basic-addon" size="25" required> -->
                             <div id="add-address-invalid-fullname" class="invalid-feedback">

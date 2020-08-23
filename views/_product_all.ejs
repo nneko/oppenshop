@@ -11,7 +11,7 @@
             name="shops" value="" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
                  <option>All</option>
                  <% for(let i=0;i<shops.length;i++) { %>
-                 <option id="<%= shops[i]._id %>"><%= shops[i].name %></option>
+                 <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
                  <% } %>
         </select>
     </div>

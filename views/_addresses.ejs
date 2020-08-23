@@ -13,7 +13,7 @@
                         <ul>
                         <li><span><p><b><%= addresses[i].streetAddress %></b><br>
                                 <%= addresses[i].locality %>,<br><%= addresses[i].region %> <%= addresses[i].postalCode %><br><%= addresses[i].country %>
-                                <br></p><p class="address-extra">
+                                <br></p><p class="extra-info">
                                 <% if(typeof(addresses[i].type) !== 'undefined') { %>Type:
                                 <em><%=  addresses[i].type %></em><br><% } %>
                                 <% if(typeof(addresses[i].name) !== 'undefined' && addresses[i].name.formatted) { %>Contact: <em><%=  addresses[i].name.formatted %></em><br><% } %>

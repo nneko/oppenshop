@@ -37,9 +37,9 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
             viewData.user = req.user
             viewData.pane = show
             viewData.messages = mObj
-            res.render('user/shop', viewData)
+            res.render('sell', viewData)
         } else {
-            res.render('user/shop', { user: undefined, pane: show, messages: mObj })
+            res.render('sell', { user: undefined, pane: show, messages: mObj })
         }
 
     } catch (e) {
@@ -68,16 +68,22 @@ let shopAddHandler = async (req, res) => {
         let formFields = {}
 
         if (!req.body) {
-            await badRequest(req, res, 'pn', 400, 'Invalid request.')
+            await badRequest(req, res, 'sf', 400, 'Invalid request.')
             return
         }
 
         let form = converter.objectFieldsToString(req.body)
 
         if (form.uid != req.user.id) {
-            _403redirect(req, res, '/user/shop/?show=em', 'Permission denied.')
+            _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
             return
         }
+
+        if (!validator.isNotNull(form.fullname)) {
+            await badRequest(req, res, 'sf', 400, 'Shops must have a name.')
+            return
+        }
+
         // Read existing stored user details
         const usr = await user.read(form.uid, { findBy: 'id' })
 
@@ -119,11 +125,13 @@ let shopAddHandler = async (req, res) => {
             viewData.user = req.user
             viewData.pane = 'sf'
             viewData.messages = { success: 'Shop added.' }
-            res.render('user/shop', viewData)
+            res.render('sell', viewData)
+            return
         } catch (e) {
             console.error(e)
             res.status(500)
             res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop.' } })
+            return
         }
     }
 }
@@ -438,7 +446,7 @@ let populateUserViewData = async (uid) => {
 let shopUpdateHandler = async (req, res) => {
 
     if (!validator.hasActiveSession(req)) {
-        _403redirect(req, res, '/user/shop/?show=pr', 'You must be signed in.')
+        _403redirect(req, res, '/user/shop/?show=sf', 'You must be signed in.')
         return
     } else {
         if(!req.body) {
@@ -476,7 +484,7 @@ let shopUpdateHandler = async (req, res) => {
                     } catch (e) {
                         console.error(e)
                         res.status(500)
-                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested removal.' } })
+                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
                     }
 
                     break
@@ -612,12 +620,7 @@ shops.post('/', upload.single('fullimage'),
                     await prFormHandler(req, res)
                     break
                 case 'st':
-                    //console.log(req)
-                    console.log(req.body)
-                    console.log(req.file)
                     await shopAddHandler(req,res)
-                    //res.status(500)
-                    //res.render('error', { user: req.user, messages: { error: 'Testing.' } })
                     break
                 default:
                    console.log(req)

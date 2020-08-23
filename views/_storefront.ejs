@@ -21,15 +21,22 @@
                 <div class="actionable-card-pane">
                     <div class="address-view-card-pane">
                         <ul>
-                        <li><span><p>
-                        <b><% if(typeof(shops[i].displayName) !== 'undefined') {%><%= shops[i].displayName %><% } else { %><%= shops[i].name %><% } %></b><br>
-                                <%= shops[i].status %>
-                            </p>
-                            <% if (typeof(shops[i].image) !== 'undefined' ) { %>
-                            <img class="storefront-image" alt="<%= shops[i].image.originalname %>"
-                                src="<%= shops[i].image.src %>" />
-                            <% } %>
-                            </span></li>
+                            <li>
+                                <span>
+                                    <p>
+                                        <b><% if(typeof(shops[i].displayName) !== 'undefined') {%><%= shops[i].displayName %><% } else { %><%= shops[i].name %><% } %></b>
+                                        <% if(typeof(shops[i].description) !== 'undefined') { %>
+                                            <%= shops[i].description %>
+                                        <% } %>
+                                    </p>
+                                    <p class="extra-info">
+                                        <% if (typeof(shops[i].image) !== 'undefined' ) { %>
+                                        <img class="storefront-image" alt="<%= shops[i].image.originalname %>" src="<%= shops[i].image.src %>" />
+                                        <% } %>
+                                        Status: <b><%= shops[i].status %></b>
+                                    </p>
+                                </span>
+                            </li>
                         </ul>
                     </div>
                     <div class="action-button-section">
@@ -62,7 +69,7 @@
                             <%- include('assets/symbols/close.svg') %>
         </button>
     </div>
-        <form id="new-address-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
+        <form id="new-storefront-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
             oninput="" enctype="multipart/form-data" novalidate>
             <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.addresses) { %> disabled="disabled"
                 <% } %>>
@@ -76,7 +83,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="add-address-fullname-basic-addon">Shop Name</span>
                             </div>
-                            <input id="add-address-fullname" class="form-control <% if(typeof(fullname) !== 'undefined') { %><%= fullname.class %><% } %>" type="text" name="fullname" value="<% if(typeof(fullname) !== 'undefined' && fullname.value) { %><%= fullname.value %><% } %>"
+                            <input id="add-storefront-fullname" class="form-control <% if(typeof(fullname) !== 'undefined') { %><%= fullname.class %><% } %>" type="text" name="fullname" value="<% if(typeof(fullname) !== 'undefined' && fullname.value) { %><%= fullname.value %><% } %>"
                                 aria-label="Address" aria-describedby="fullname-basic-addon" size="55" required>
                             <div id="add-address-invalid-fullname" class="invalid-feedback">
                                 <% if(typeof(fullname) !== 'undefined' && fullname.class == 'is-invalid') { %><%= fullname.message %><% } else { %>
@@ -88,11 +95,11 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text input-prepend-icon" id="add-address-fullname-basic-addon" data-toggle="tooltip" data-placement="bottom" data-original-title="Shop Image" title="Shop Image"><%- include('assets/symbols/picture.svg') %></span>
+                                <span class="input-group-text input-prepend-icon" id="add-storefront-fullimage-basic-addon" data-toggle="tooltip" data-placement="bottom" data-original-title="Shop Image" title="Shop Image"><%- include('assets/symbols/picture.svg') %></span>
                             </div>
                             <input id="add-address-fullimage" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullname.class %><% } %>" type="file" name="fullimage"
-                                aria-label="Image" aria-describedby="fullname-basic-addon" accept=".jpg,.jpeg,.png">
-                            <div id="add-address-invalid-fullname" class="invalid-feedback">
+                                aria-label="Image" aria-describedby="fullimage-basic-addon" accept=".jpg,.jpeg,.png">
+                            <div id="add-storefront-invalid-fullname" class="invalid-feedback">
                                 <% if(typeof(fullimage) !== 'undefined' && fullimage.class == 'is-invalid') { %><%= fullimage.message %><% } else { %>
                                 You must provide a valid image of type: jpg/jpeg/png.
                                 <% } %>
@@ -111,8 +118,8 @@
                         </div>
                     </div>
                     <hr>
-                    <div id="addresses-add-button-container">
-                        <button id="add-addresses-button" type="submit" class="btn btn-light" onclick="">Add
+                    <div id="storefront-add-button-container">
+                        <button id="add-storefront-button" type="submit" class="btn btn-light" onclick="">Add
                             Storefront</button>
                     </div>
                 </div>

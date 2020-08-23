@@ -224,6 +224,7 @@ let populateUserShopViewData = async (uid,status = 'active') => {
         try {
             //u = await shop.read(uid, { findBy: 'uid' })
             //s = await shop.read({owner: t.uid})
+
             s = await shop.read(t)
             //console.log(s)
             u = await user.read(uid, {findBy: 'id'})
@@ -242,6 +243,14 @@ let populateUserShopViewData = async (uid,status = 'active') => {
                         x.image.src = media.getBinaryDetails(x.image)
                         //console.log(x.image.src)
                       }
+                      let p = await product.read({shop: x._id.toString(), status: status})
+                      //console.log(p)
+                      for (y of p){
+                        if (typeof(y.image) !== 'undefined'){
+                          y.image.src = media.getBinaryDetails(y.image)
+                        }
+                      }
+                      x.products = p
                     }
                     viewData.shops = s
                     // For handling an array of files
@@ -324,13 +333,13 @@ let populateUserProductViewData = async (uid,sid,status = 'active') => {
             if(s) {
                 if(Array.isArray(s)) {
                     for (x of s) {
-                      console.log(x)
-                      p.append(await product.read({shop: x._id, status: status}))
-                      console.log(p)
+                      //console.log(x)
+                      p.append(await product.read({shop: x._id.toString(), status: status}))
+                      //console.log(p)
 
 
                     }
-                    s.products = p
+                    s.all_products = p
                     viewData.shops = s
                     // For handling an array of files
                     // s.file.map(x.src => media.getBinaryDetails(x))
@@ -458,7 +467,7 @@ let shopUpdateHandler = async (req, res) => {
             let formValidated = false
             let formFields = {}
             let form = converter.objectFieldsToString(req.body)
-
+            console.log(form)
             switch(form.update) {
                 case 'delete':
                     if (form.uid != req.user.id) {
@@ -500,6 +509,65 @@ let shopUpdateHandler = async (req, res) => {
     }
 }
 
+// Update product form handler
+let productUpdateHandler = async (req, res) => {
+
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/shop/?show=sf', 'You must be signed in.')
+        return
+    } else {
+        if(!req.body) {
+
+        }
+        else {
+            let u = {}
+
+            let formValidated = false
+            let formFields = {}
+            let form = converter.objectFieldsToString(req.body)
+
+            switch(form.update) {
+                case 'delete':
+                    if (form.uid != req.user.id) {
+                            _403redirect(req, res, '/user/shop/?show=em', 'Permission denied.')
+                            return
+                    }
+                    console.log(form)
+                    // Read existing stored user details
+                    const p = await product.read(form.pid, { findBy: 'id' })
+                    //const s = await shop.read(form.sid, { findBy: 'id' })
+                    p.status = 'inactive'
+
+                    console.log(p)
+
+                    try {
+                        let t = await product.update({_id: p._id}, p)
+                        console.log(t)
+                        if (debug) console.log('Product status made \'inactive\' for ' + form.pid)
+                        let viewData = await populateUserShopViewData(form.uid.toString())
+                        viewData.user = req.user
+                        viewData.pane = 'in'
+                        viewData.messages = { success: 'Product removed and made inactive.' }
+                        res.render('sell', viewData)
+                    } catch (e) {
+                        console.error(e)
+                        res.status(500)
+                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                    }
+
+                    break
+                case 'edit':
+                    return await badRequest(req, res, 'ls', 501, 'Functionality not implemented', 'info')
+                    break
+                default:
+                    return await badRequest(req, res, 'ls', 400, 'Invalid address.')
+                    break
+            }
+
+        }
+    }
+}
+
 
 shops.get('/', async (req, res) => {
     try {
@@ -507,10 +575,16 @@ shops.get('/', async (req, res) => {
             let qd = req.query.data
             let panel = 'sf'
             if(qd) {
+                //console.log(qd)
+
                 switch(qd.show){
+                    case 'in':
+                      //console.log('Shop Inventory - All Products:')
+                      //console.log(qd.show)
+                      panel = qd.show
+                      break
                     case 'pd':
                     case 'cl':
-                    case 'in':
                     case 'pd-all':
                     case 'pd-new':
                     case 'pd-arc':
@@ -523,6 +597,7 @@ shops.get('/', async (req, res) => {
                         panel = 'sf'
                 }
             }
+            //console.log('Shop Get:')
             let viewData = {}
             if (req.query.id !== 'undefined'){
                if (req.query.id == 'upshop'){
@@ -540,6 +615,7 @@ shops.get('/', async (req, res) => {
             } else {
                 viewData = await populateUserShopViewData(req.user.id.toString())
             }
+            //console.log(viewData)
             viewData.user = req.user
             viewData.pane = panel
             res.render('sell', viewData)
@@ -599,6 +675,11 @@ shops.post('/', upload.single('fullimage'),
                     //await addressUpdateHandler(req, res)
                     console.log(form)
                     await shopUpdateHandler(req,res)
+                    break
+                case 'upproduct':
+                    //await addressUpdateHandler(req, res)
+                    console.log(form)
+                    await productUpdateHandler(req,res)
                     break
                 case 'np':
                     console.log(req.body)

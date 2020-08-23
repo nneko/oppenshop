@@ -9,7 +9,7 @@
        <select id="shop-select"
             class="form-control" type="text" onchange="toggleShopSelector()"
             name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
-                 <option value="all-product-cards" selected>All</option>
+                 <option value="all-products-cards" selected>All</option>
                  <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
                  <% for(let i=0;i<shops.length;i++) { %>
                  <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
@@ -21,45 +21,50 @@
     <section id="address-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
         <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
             <% for(let j=0;j<shops.length;j++) { %>
+                <div class="shop-products-card" id="<%= shops[j]._id %>" name="<% shops[j].name %>" hidden="true">
                 <% if (typeof(shops[j].products) !== 'undefined' && Array.isArray(shops[j].products) && shops[j].products.length > 0) { %>
                     <% for(let i=0;i<shops[j].products.length;i++) { %>
-                    <div class="card shop-products-card" id="<%= shops[j]._id %>" name="cards_products" hidden="true">
-                        <div class="card-body">
-                            <div class="actionable-card-pane">
-                                <div class="address-view-card-pane">
-                                    <ul>
-                                    <li><span><p>
-                                            <b><%= shops[j].products[i].name %></b><br>
-                                            <%= shops[j].products[i].status %>
-                                            <% if (typeof(shops[j].products[i].image) !== 'undefined' ) { %>
-                                            <img alt="<%= shops[j].products[i].image.originalname %>" width="50" height="60" src="<%= shops[j].products[i].image.src %>"/>
-                                            <% } %>
-                                        </p>
-                                        </span></li>
-                                    </ul>
-                                </div>
-                                <div class="action-button-section">
-                                    <form class="edit-delete-action-form" method="POST" action="/user/shop">
-                                        <input type="hidden" name="id" value="upproduct">
-                                        <input type="hidden" name="pid" value="<% if(typeof(shops[j].products[i]._id) !== 'undefined') { %><%= shops[j].products[i]._id %><% } %>">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="actionable-card-pane">
+                                    <div class="address-view-card-pane">
+                                        <ul>
+                                        <li><span><p>
+                                                <b><%= shops[j].products[i].displayName %></b>
+                                        </p><p class="extra-info">
+                                                <img alt="<%= shops[j].products[i].image.originalname %>" class="card-product-image" src="<%= shops[j].products[i].image.src %>"/>
+                                                <%= shops[j].products[i].status %>
+                                                <% if (typeof(shops[j].products[i].image) !== 'undefined' ) { %>
+                                                <% } %>
+                                            </p>
+                                            </span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="action-button-section">
+                                        <form class="edit-delete-action-form" method="POST" action="/user/shop">
+                                            <input type="hidden" name="id" value="upproduct">
+                                            <input type="hidden" name="pid" value="<% if(typeof(shops[j].products[i]._id) !== 'undefined') { %><%= shops[j].products[i]._id %><% } %>">
 
-                                        <input type="hidden" name="sid" value="<% if(typeof(shops[j].products[i].sid) !== 'undefined') { %><%= shops[j].products[i].sid %><% } %>">
-                                        <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-                                        <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
-                                        <%- include('assets/symbols/edit.svg') %>
-                                        </button>
-                                        <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
-                                            <%- include('assets/symbols/bin.svg') %>
-                                        </button>
-                                    </form>
+                                            <input type="hidden" name="sid" value="<% if(typeof(shops[j].products[i].sid) !== 'undefined') { %><%= shops[j].products[i].sid %><% } %>">
+                                            <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                                            <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
+                                            <%- include('assets/symbols/edit.svg') %>
+                                            </button>
+                                            <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
+                                                <%- include('assets/symbols/bin.svg') %>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     <% } %>
                 <%  } else { %>
-                <div class="no-products-card" value="<%= shops[j]._id %>" hidden="true"><p>No products associated with shop.</p></div>
+                    <div class="no-products-card" data-value="<%= shops[j]._id %>">
+                        <p>No products associated with shop.</p>
+                    </div>
                 <% } %>
+                </div>
             <% } %>
         <%  } %>
     </section>
@@ -68,30 +73,28 @@
 <script>
 function toggleShopSelector(){
     let elem = document.getElementById('shop-select')
-    if (elem && elem.value == 'all-product-cards') {
-        let x = document.getElementsByClassName('shop-products-card');
-        for (y of x) {
-            y.removeAttribute('hidden');
+    let x = document.getElementsByClassName('shop-products-card')
+    let w = document.getElementsByClassName('no-products-card')
+    if (elem && elem.value == 'all-products-cards') {
+        for (const y of w) {
+            console.log(y)
+            y.setAttribute('hidden', true)
+        }
+        for (const z of x) {
+            z.removeAttribute('hidden');
         }
     } else {
-        let x = document.getElementsByClassName('shop-products-card');
-        let noProdsCard = document.getElementsByClassName('no-product-card')
-        for (w of noProdsCard) {
-            w.setAttribute('hidden', true)
-        }
-        for (y of x) {
+        for (const y of x) {
             y.setAttribute('hidden', true);
         }
+
+        for (const z of w) {
+            z.removeAttribute('hidden')
+        }
+        
         let z = document.getElementById(elem.value);
         if(z) {
             z.removeAttribute('hidden');
-        }
-        for( c of noProdsCard) {
-            for (o of elem.options) {
-                if (c.value == o.value) {
-                    c.removeAttribute('hidden')
-                }
-            }
         }
     }
 }

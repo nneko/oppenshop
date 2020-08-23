@@ -127,18 +127,18 @@ if(!module.parent){
             cookie: {
                 httpOnly: true,
                 path: '/',
-                maxAge: cfg.sessionTTL
+                maxAge: cfg.sessionTTL // Default configuration should be 14 days in milliseconds = 14 * 24 * 60 * 60 * 1000
             },
+            resave: false,
+            rolling: true,
+            saveUninitialized: false,
+            unset: 'destroy',
             store: new sessionStore({
                 client: db.getDriverClient(),
                 dbName: db.getName(),
                 collection: 'sessions',
-                secret: secretKey,
-                ttl: cfg.sessionTTL
-            }),
-            resave: false,
-            saveUninitialized: false,
-            unset: 'destroy'
+                secret: cfg.env == 'development' ? false : secretKey // Make encryption transparent in development mode and encrypted for production
+            })
         }))
         app.use(flash())
         authLocal.init(passport, require('../models/user'))

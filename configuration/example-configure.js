@@ -22,8 +22,8 @@ environment.development = {
    refreshTokenSecret: 'xxxxxxxxxxx',
    mailgunDomain: 'xxxxxxxxx',
    mailgunPassword: 'xxxxxxxx',
-   tokenTTL: 3600000,
-   sessionTTL: 1209600,//14 * 24 * 60 * 60
+   tokenTTL: 3600000,// 1 Hour
+   sessionTTL: 1209600000,//14 * 24 * 60 * 60 * 1000
    endpoint: 'http://localhost:3000/',
    mailRelay: 'xxxxxxxx',
    mailAPI: '/v3/<domain>/messages',

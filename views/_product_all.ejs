@@ -7,28 +7,48 @@
     <div class="form-group form-inline mb-3">
        <label id="shop-select-label" class="form-label" for="shop-select">From: </label>
        <select id="shop-select"
-            class="form-control" type="text"
+            class="form-control" type="text" onchange="
+            if (this.value == 'cards_products') {
+              var x = document.getElementsByClassName('card');
+              for (y of x)(
+                y.removeAttribute('hidden');
+              )
+            } else {
+              var x = document.getElementsByClassName('card');
+              for (y of x)(
+                y.setAttribute('hidden', true);
+              )
+              var z = document.getElementsByName(this.value);
+              for (y of z)(
+                y.removeAttribute('hidden');
+              )
+            }
+            "
             name="shops" value="" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
-                 <option>All</option>
+                 <option value="cards_products">All</option>
+                 <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
                  <% for(let i=0;i<shops.length;i++) { %>
                  <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
+                 <% } %>
                  <% } %>
         </select>
     </div>
     <hr>
     <section id="address-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
-        <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
-        <% for(let i=0;i<products.length;i++) { %>
-        <div class="card">
+        <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
+        <% for(let j=0;j<shops.length;j++) { %>
+        <% if (typeof(shops[j].products) !== 'undefined' && Array.isArray(shops[j].products) && shops[j].products.length > 0) { %>
+        <% for(let i=0;i<shops[j].products.length;i++) { %>
+        <div class="card" id="<%= shops[j]._id %>" name="cards_products">
             <div class="card-body">
                 <div class="actionable-card-pane">
                     <div class="address-view-card-pane">
                         <ul>
                         <li><span><p>
-                                <b><%= products[i].name %></b><br>
-                                <%= products[i].status %>
-                                <% if (typeof(products[i].image) !== 'undefined' ) { %>
-                                <img alt="<%= products[i].image.originalname %>" width="50" height="60" src="data:<%= shops[i].image.mimetype %>;base64,<%= products[i].image.base64 %>"/>
+                                <b><%= shops[j].products[i].name %></b><br>
+                                <%= shops[j].products[i].status %>
+                                <% if (typeof(shops[j].products[i].image) !== 'undefined' ) { %>
+                                <img alt="<%= shops[j].products[i].image.originalname %>" width="50" height="60" src="<%= shops[j].products[i].image.src %>"/>
                                 <% } %>
                             </p>
                             </span></li>
@@ -37,9 +57,9 @@
                     <div class="action-button-section">
                         <form class="edit-delete-action-form" method="POST" action="/user/shop">
                             <input type="hidden" name="id" value="upproduct">
-                            <input type="hidden" name="pid" value="<% if(typeof(products[i]._id) !== 'undefined') { %><%= products[i]._id %><% } %>">
-                            
-                            <input type="hidden" name="sid" value="<% if(typeof(products[i].sid) !== 'undefined') { %><%= products[i].sid %><% } %>">
+                            <input type="hidden" name="pid" value="<% if(typeof(shops[j].products[i]._id) !== 'undefined') { %><%= shops[j].products[i]._id %><% } %>">
+
+                            <input type="hidden" name="sid" value="<% if(typeof(shops[j].products[i].sid) !== 'undefined') { %><%= shops[j].products[i].sid %><% } %>">
                             <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                             <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
                             <%- include('assets/symbols/edit.svg') %>
@@ -55,6 +75,10 @@
         <% } %>
         <%  } else { %>
         <p>No products associated with shop.</p>
+        <% } %>
+        <% } %>
+        <%  } else { %>
+        <p>No shops associated with account.</p>
         <% } %>
     </section>
     <hr>

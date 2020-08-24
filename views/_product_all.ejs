@@ -1,18 +1,29 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'in' ) { %>show active<% } %>"
     id="inventory-pane" role="tabpanel" aria-labelledby="product-inventory-tab">
     <h2 class="tab-pane-h2">All Products</h2>
-    <div class="form-group form-inline mb-3">
-       <label id="shop-select-label" class="form-label" for="shop-select">From: </label>
-       <select id="shop-select"
-            class="form-control" type="text" onchange="toggleShopSelector()"
-            name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
-                 <option value="all-products-cards" selected>All</option>
-                 <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
-                 <% for(let i=0;i<shops.length;i++) { %>
-                 <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
-                 <% } %>
-                 <% } %>
-        </select>
+    <div class="card-filter-section">
+        <div class="form-group form-inline mb-3 card-filter-selector">
+        <label id="shop-select-label" class="form-label" for="shop-select">From: </label>
+        <select id="shop-select"
+                class="form-control" type="text" onchange="toggleShopSelector()"
+                name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
+                    <option value="all-products-cards" selected>All</option>
+                    <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
+                    <% for(let i=0;i<shops.length;i++) { %>
+                    <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
+                    <% } %>
+                    <% } %>
+            </select>
+        </div>
+        <div class="form-group form-inline mb-3 card-filter-selector">
+            <label id="product-status-select-label" class="form-label" for="product-status-select">Filter: </label>
+            <select id="product-status-select" class="form-control" type="text" onchange="toggleShopSelector()" name="product-status-selector"
+                aria-label="product-status-select-label" aria-describedby="product-status-select-basic-addon">
+                <option value="all-products-cards" selected>None</option>
+                <option value="all-active">Active</option>
+                <option value="all-inactive">Inactive</option>
+            </select>
+        </div>
     </div>
     <hr>
     <section id="address-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
@@ -79,6 +90,7 @@
 <script>
 function toggleShopSelector(){
     let elem = document.getElementById('shop-select')
+    let elemFilter = document.getElementById('product-status-select')
     let x = document.getElementsByClassName('shop-products-card')
     let w = document.getElementsByClassName('no-products-card')
     if (elem && elem.value == 'all-products-cards') {

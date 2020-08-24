@@ -11,7 +11,7 @@
             </select>
         </div>
         <div class="add-action-button-section">
-            <a class="right add-storefront-link" href="#new-storefront-form"
+            <a id="new-storefront-link" class="right add-storefront-link" href="#new-storefront-form"
                 onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %>
                 Add Storefront
             </a>
@@ -86,8 +86,8 @@
         <hr>
         <h3>Add a new store</h3>
         <div>
-            <button class="right action-icon-button action-icon" type="submit"  data-toggle="tooltip" data-placement="left"
-                        title="Cancel" name="update" value="cancel" onclick="document.getElementById('newstore').setAttribute('hidden', true);">
+            <button class="right action-icon-button action-icon" type="submit"  data-toggle="tooltip" data-placement="left" href="#add-storefront-button-section    "
+                        title="Cancel" name="update" value="cancel" onclick="closeNewStoreForm()">
                                 <%- include('assets/symbols/close.svg') %>
             </button>
         </div>
@@ -175,5 +175,11 @@ function toggleStorefrontView(){
         console.log(cardSelector.value);
     }
 }
+
+function closeNewStoreForm(){
+    document.getElementById('newstore').setAttribute('hidden', true)
+    document.getElementById('new-storefront-link').scrollIntoView(false)
+}
+
 toggleStorefrontView()
 </script>

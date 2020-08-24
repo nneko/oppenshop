@@ -20,8 +20,8 @@
             <select id="product-status-select" class="form-control" type="text" onchange="toggleShopSelector()" name="product-status-selector"
                 aria-label="product-status-select-label" aria-describedby="product-status-select-basic-addon">
                 <option value="all-products-cards" selected>None</option>
-                <option value="all-active">Open</option>
-                <option value="all-inactive">Closed</option>
+                <option value="all-active">Active</option>
+                <option value="all-inactive">Withdrawn</option>
             </select>
         </div>
     </div>
@@ -77,10 +77,15 @@
                                                     title="Re-activate" name="update" value="reactivate">
                                                     <%- include('assets/symbols/reload.svg') %>
                                                 </button>
+                                                <button class=" action-icon-button delete-icon action-icon" type="submit" data-toggle="tooltip" data-placement="left"
+                                                    title="Delete" name="update" value="delete">
+                                                    <%- include('assets/symbols/bin.svg') %>
+                                                </button>
+                                            <% }  else { %>
+                                                <button class=" action-icon-button close-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Close" name="update" value="close">
+                                                    <%- include('assets/symbols/no.svg') %>
+                                                </button>
                                             <% } %>
-                                            <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
-                                                <%- include('assets/symbols/bin.svg') %>
-                                            </button>
                                         </form>
                                     </div>
                                 </div>

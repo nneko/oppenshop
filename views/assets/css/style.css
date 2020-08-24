@@ -173,6 +173,16 @@ svg {
     fill: var(--main-alert-err-em-color);
 }
 
+.close-icon path {
+    stroke:  var(--icon-delete-color);
+    fill: var(--icon-delete-color);
+}
+
+.close-icon:hover path {
+    stroke: var(--main-alert-err-em-color);
+    fill: var(--main-alert-err-em-color);
+}
+
 .input-prepend-icon svg {
     height: 1rem;
 }

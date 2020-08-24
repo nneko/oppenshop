@@ -50,12 +50,16 @@
                             <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Activate" name="update" value="activate">
                             <%- include('assets/symbols/edit.svg') %>
                             </button>
+                            <button class=" action-icon-button delete-icon action-icon" type="submit" data-toggle="tooltip" data-placement="left"
+                                title="Delete" name="update" value="delete">
+                                <%- include('assets/symbols/bin.svg') %>
+                            </button>
                             <%  } else { %>
                             <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
                             <%- include('assets/symbols/edit.svg') %>
                             </button>
-                            <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
-                                <%- include('assets/symbols/bin.svg') %>
+                            <button class=" action-icon-button close-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Close" name="update" value="close">
+                                <%- include('assets/symbols/no.svg') %>
                             </button>
                             <% } %>
                         </form>

@@ -49,7 +49,11 @@
                                                     <div class="item-card-right extra-info">
                                                         <h4>Availability</h4>
                                                         <p>
-                                                            <%= shops[j].products[i].status %>
+                                                            <% if(typeof(shops[j].products[i].quantity) !== 'undefined' &&  shops[j].products[i].quantity > 0 ) { %>
+                                                            <%= shops[j].products[i].quantity %>
+                                                            <% } else { %>
+                                                                <%= 'Out of Stock' %>
+                                                            <% } %>
                                                         </p>
                                                         <h4>Description</h4>
                                                         <p><%= shops[j].products[i].description %></p>

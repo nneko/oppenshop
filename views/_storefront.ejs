@@ -7,7 +7,7 @@
             <%- include('assets/symbols/plus.svg') %> <span id="inactive">View Archived Storefronts</span>
         </a>  
    </div>
-    <section id="address-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
+    <section id="storefront-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
         <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
         <% for(let i=0;i<shops.length;i++) { %>
         <div class="card <%= shops[i].status %>" <% if (shops[i].status == 'inactive'){ %>hidden<% } %>>
@@ -129,68 +129,36 @@
 </div>
 <script>
 function toggleArchiveShopSelector(){
-    let s = document.getElementById('shop_choice').childNodes;
-    var i;
-    var x = document.getElementById("address-list-section");
-    for (i = 0; i < s.length; i++) {
+    let s = document.getElementById('shop_choice').childNodes
+    let x = document.getElementById("storefront-list-section")
+    for (let i = 0; i < s.length; i++) {
       if (s[i].nodeName == 'SPAN') {
         if (s[i].id == 'inactive'){
-          var z = x.querySelectorAll(".card");
-          for (zz of z) {
-              zz.setAttribute('hidden', true);
+          let z = x.querySelectorAll(".card")
+          for (const zz of z) {
+              zz.setAttribute('hidden', true)
           }
-          var y = x.querySelectorAll(".inactive");
-          for (yy of y) {
-              yy.removeAttribute('hidden');
+          let y = x.querySelectorAll(".inactive")
+          for (const yy of y) {
+              yy.removeAttribute('hidden')
           }
           s[i].id = 'active';
-          s[i].innerHTML = 'View Active Storefronts';
+          s[i].innerHTML = 'View Active Storefronts'
         } else if (s[i].id == 'active') {
-          var z = x.querySelectorAll(".card");
-          for (zz of z) {
-              zz.setAttribute('hidden', true);
+          let z = x.querySelectorAll(".card")
+          for (const zz of z) {
+              zz.setAttribute('hidden', true)
           }
-          var y = x.querySelectorAll(".active");
-          for (yy of y) {
-              yy.removeAttribute('hidden');
+          let y = x.querySelectorAll(".active")
+          for (const yy of y) {
+              yy.removeAttribute('hidden')
           }
           s[i].id = 'inactive';
           s[i].innerHTML = 'View Archived Storefronts';
         } else {
           console.log(s[i].id);
         }
-      //console.log(s[i].id);
-      //console.log(s[i].innerHTML);
       }
     }
-    /*
-    let elem = document.getElementById('shop-select')
-    if (elem && elem.value == 'all-product-cards') {
-        let x = document.getElementsByClassName('shop-products-card');
-        for (y of x) {
-            y.removeAttribute('hidden');
-        }
-    } else {
-        let x = document.getElementsByClassName('shop-products-card');
-        let noProdsCard = document.getElementsByClassName('no-product-card');
-        for (w of noProdsCard) {
-            w.setAttribute('hidden', true);
-        }
-        for (y of x) {
-            y.setAttribute('hidden', true);
-        }
-        let z = document.getElementById(elem.value);
-        if(z) {
-            z.removeAttribute('hidden');
-        }
-        for( c of noProdsCard) {
-            for (o of elem.options) {
-                if (c.value == o.value) {
-                    c.removeAttribute('hidden');
-                }
-            }
-        }
-    }*/
 }
-//toggleArchiveShopSelector()
 </script>

@@ -105,7 +105,9 @@ dist
 .tern-port
 
 # Test Scripts
-/test/*.rest
+tests/*.rest
+tests/sampledata/
+tests/sampledata/*
 
 # Operating System Directories
 .DS_Store

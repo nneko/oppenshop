@@ -198,7 +198,7 @@ let shopAddHandler = async (req, res) => {
 // Add shop form handler
 let productAddHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
-        _403redirect(req, res, '/user/shop/?show=ls', 'You must be signed in.')
+        _403redirect(req, res, '/user/shop/?show=pd', 'You must be signed in.')
         return
     } else {
         let u = {}
@@ -207,14 +207,14 @@ let productAddHandler = async (req, res) => {
         let formFields = {}
 
         if (!req.body) {
-            await badRequest(req, res, 'pn', 400, 'Invalid request.')
+            await badRequest(req, res, 'pd', 400, 'Invalid request.')
             return
         }
 
         let form = converter.objectFieldsToString(req.body)
 
         if (form.uid != req.user.id) {
-            _403redirect(req, res, '/user/shop/?show=em', 'Permission denied.')
+            _403redirect(req, res, '/user/shop/?show=pd', 'Permission denied.')
             return
         }
         // Read existing stored user details

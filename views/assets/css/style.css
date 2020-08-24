@@ -155,6 +155,15 @@ svg {
     stroke: var(--green-light-color);
 }
 
+.reactivate-icon path {
+    stroke: var(--green-light-color);
+    fill: var(--green-light-color);
+}
+
+.reactivate-icon:hover path {
+    fill: var(--main-text-em-color);
+}
+
 .delete-icon path {
     stroke:  var(--icon-delete-color);
 }

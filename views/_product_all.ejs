@@ -68,6 +68,12 @@
                                             <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
                                             <%- include('assets/symbols/edit.svg') %>
                                             </button>
+                                            <% if(shops[j].products[i].status == 'inactive') { %>
+                                                <button class=" action-icon-button reactivate-icon action-icon" type="submit" data-toggle="tooltip" data-placement="left"
+                                                    title="Re-activate" name="update" value="reactivate">
+                                                    <%- include('assets/symbols/reload.svg') %>
+                                                </button>
+                                            <% } %>
                                             <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
                                                 <%- include('assets/symbols/bin.svg') %>
                                             </button>

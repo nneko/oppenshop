@@ -577,26 +577,31 @@ white-space: nowrap;
     margin-top: 2rem;
 }
 
-.add-address-link {
+.add-address-link, .add-storefront-link {
     background-color: var(--main-bg-color);
     border-radius: 4px;
     margin-right: 5.25rem;
     padding: 0.25rem 0.5rem;
 }
 
-.add-address-link:hover {
+
+.add-address-link:hover, .add-storefront-link:hover {
     /*border-bottom: var(--main-text-em-color) 2px solid;*/
     background-color: var(--main-content-btn-hover-color);
     color: var(--main-text-color);
     text-decoration: underline;
 }
 
-.add-address-link:hover path {
+.add-address-link:hover path, .add-storefront-link:hover path {
     stroke: var(--main-text-color);
 }
 
-.add-address-link svg {
+.add-address-link svg, .add-storefront-link svg {
     margin: 0.2rem !important;
+}
+
+.add-storefront-link {
+    margin-right: 0;
 }
 
 #new-address-form {
@@ -608,16 +613,29 @@ white-space: nowrap;
     width: 100%;
 }
 
-#catalog-select, #shop-select, #product-status-select {
+#catalog-select, #shop-select, #storefront-select, #product-status-select {
     margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 .card-filter-section {
     display: flex;
+    margin: 0 auto;
+max-width: 80%;
+overflow-x: scroll;
+position: relative;
 }
 
 .card-filter-selector {
-    margin: 1rem;
+    margin: 1rem 0;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.add-action-button-section {
+    margin: 1rem 0;
 }
 
 .storefront-image {

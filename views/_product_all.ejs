@@ -7,13 +7,13 @@
         <select id="shop-select"
                 class="form-control" type="text" onchange="toggleShopSelector()"
                 name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
-                    <option value="all-products-cards" selected>All</option>
-                    <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
-                    <% for(let i=0;i<shops.length;i++) { %>
-                    <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
-                    <% } %>
-                    <% } %>
-            </select>
+            <option value="all-products-cards" selected>All</option>
+            <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
+            <% for(let i=0;i<shops.length;i++) { %>
+            <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
+            <% } %>
+            <% } %>
+        </select>
         </div>
         <div class="form-group form-inline mb-3 card-filter-selector">
             <label id="product-status-select-label" class="form-label" for="product-status-select">Filter: </label>
@@ -26,7 +26,7 @@
         </div>
     </div>
     <hr>
-    <section id="address-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
+    <section id="product-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
         <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
             <% for(let j=0;j<shops.length;j++) { %>
                 <div class="shop-products-card" id="<%= shops[j]._id %>" name="<% shops[j].name %>" hidden="true">
@@ -35,7 +35,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="actionable-card-pane">
-                                    <div class="address-view-card-pane">
+                                    <div class="product-view-card-pane">
                                         <ul><li>
                                             <span>
                                                 <p class="item-card-label">
@@ -82,7 +82,7 @@
                                                     <%- include('assets/symbols/bin.svg') %>
                                                 </button>
                                             <% }  else { %>
-                                                <button class=" action-icon-button close-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Close" name="update" value="close">
+                                                <button class=" action-icon-button close-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Withdraw" name="update" value="withdraw">
                                                     <%- include('assets/symbols/no.svg') %>
                                                 </button>
                                             <% } %>

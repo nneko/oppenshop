@@ -126,6 +126,7 @@
         specifications: {
 
         },
+        "quantity": 1234,
         "isSKU": true,
         "SKU": "",
         "price", 00.00,

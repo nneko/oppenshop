@@ -4,7 +4,7 @@
     <div>
         <a class="right add-address-link" href="#new-storefront-form" onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %> Add Storefront</a>
         <a class="left add-address-link" id="shop_choice" href="#" onclick="toggleArchiveShopSelector();">
-            <%- include('assets/symbols/plus.svg') %> <span id="inactive">View Archived Storefronts</span>
+            <%- include('assets/symbols/plus.svg') %> <span id="inactive">View Closed Storefronts</span>
         </a>  
    </div>
     <section id="storefront-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
@@ -27,7 +27,15 @@
                                         <% if (typeof(shops[i].image) !== 'undefined' ) { %>
                                         <img class="storefront-image" alt="<%= shops[i].image.originalname %>" src="<%= shops[i].image.src %>" />
                                         <% } %>
-                                        Status: <b><%= shops[i].status %></b>
+                                        <% if(typeof(shops[i].status !== 'undefined')) { %>
+                                            Status: <b>
+                                                <% if(shops[i].status == 'active') { %>
+                                                    Open
+                                                <% } else { %>
+                                                    Closed
+                                                <% } %>
+                                            </b>
+                                        <% } %>
                                     </p>
                                 </span>
                             </li>
@@ -143,7 +151,7 @@ function toggleArchiveShopSelector(){
               yy.removeAttribute('hidden')
           }
           s[i].id = 'active';
-          s[i].innerHTML = 'View Active Storefronts'
+          s[i].innerHTML = 'View Open Storefronts'
         } else if (s[i].id == 'active') {
           let z = x.querySelectorAll(".card")
           for (const zz of z) {
@@ -154,7 +162,7 @@ function toggleArchiveShopSelector(){
               yy.removeAttribute('hidden')
           }
           s[i].id = 'inactive';
-          s[i].innerHTML = 'View Archived Storefronts';
+          s[i].innerHTML = 'View Closed Storefronts';
         } else {
           console.log(s[i].id);
         }

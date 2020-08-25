@@ -229,13 +229,13 @@ let shopAddHandler = async (req, res) => {
             if (typeof(usr.addresses) !== 'undefined') {
                 let primaryAddr = getPrimaryField(usr.addresses)
                 if (primaryAddr) {
-                    u.addressStreet = primaryAddr.addressStreet
+                    u.addressStreet = primaryAddr.streetAddress
                     //viewData.addressLocality = { value: primaryAddr.locality }
-                    u.addressRegion = primaryAddr.addressRegion
+                    u.addressRegion = primaryAddr.region
                     //u.addressState = primaryAddr.addressState
-                    u.addressPostcode = primaryAddr.addressPostcode
-                    u.addressCountry = primaryAddr.addressCountry
-                    u.addressType = primaryAddr.addressType
+                    u.addressPostcode = primaryAddr.postalCode
+                    u.addressCountry = primaryAddr.country
+                    u.addressType = primaryAddr.type
                 }
             } else {
                 res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop, due to no address assigned to user.' } })

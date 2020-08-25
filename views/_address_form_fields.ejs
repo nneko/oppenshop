@@ -21,8 +21,8 @@
                 <div class="input-group mb-3">
                     <div class="form-group form-inline">
                         <label class="form-label" for="addressState">Parish / State</label>
-                        <select class="form-control <% if(typeof(addressState) !== 'undefined') { %><%= addressState.class %><% } %>" type="text" name="addressState" value=""
-                            aria-label="State Address" aria-describedby="addressState-basic-addon">
+                        <select class="form-control <% if(typeof(addressState) !== 'undefined') { %><%= addressState.class %><% } %>" type="text" name="AddressRegion" value=""
+                            aria-label="State Address" aria-describedby="AddressRegion-basic-addon">
                             <option selected="selected">Kingston & St. Andrew</option>
                             <option>St. Catherine</option>
                             <option>Clarendon</option>
@@ -38,7 +38,7 @@
                             <option>St. Thomas</option>
                         </select>
                         <div class="invalid-feedback">
-                        <% if(typeof(addressState) !== 'undefined' && addressState.class == 'is-invalid') { %><%= addressState.message %><% } else { %>You must select a valid Parish / State. <% } %>
+                        <% if(typeof(AddressRegion) !== 'undefined' && AddressRegion.class == 'is-invalid') { %><%= AddressRegion.message %><% } else { %>You must select a valid Parish / State. <% } %>
                         </div>
                     </div>
                 </div>

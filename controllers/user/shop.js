@@ -19,6 +19,8 @@ const catalog = require('../../models/catalog')
 
 let shops = express.Router()
 
+let getPrimaryField = generator.getPrimaryField
+
 // Render account view for bad request
 let badRequest = async (req, res, show, status, msg, msgType) => {
     let verifiedUser = undefined
@@ -214,10 +216,18 @@ let shopAddHandler = async (req, res) => {
         }
         if (form.setPrimary != 'true'){
             // TODO: add new address for Shop
-            //if (debug) console.log('New to add Address fields for new Shop ' + u.uid)
+            let add = {}
+            add.type = form.addressType
+            add.street = form.street
+            add.state = form.state
+            add.postcode = form.postcode
+            add.country = form.country
+            u.address = add
+            //if (debug) console.log('New to add Address fields for new Shop ' + form)
+
         } else {
             if (typeof(usr.addresses) !== 'undefined') {
-               //u.address = getPrimaryField(usr.addresses)
+                u.address = getPrimaryField(usr.addresses)
             } else {
                 res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop, due to no address assigned to user.' } })
             }
@@ -225,10 +235,10 @@ let shopAddHandler = async (req, res) => {
 
         try {
             //await user.update({ preferredUsername: u.preferredUsername }, u)
-            console.log(usr)
-            console.log(u)
+            //console.log(usr)
+            //console.log(u)
             let t = await shop.create(u)
-            console.log(t.ops)
+            //console.log(t.ops)
             if (debug) console.log('Shop added for ' + u.owner)
             //let viewData = await populateViewData('\''+u.uid+'\'')
             let viewData = await populateViewData(u.owner)
@@ -290,7 +300,7 @@ let productAddHandler = async (req, res) => {
                 console.log('Added product: ')
                 console.log(p)
                 console.log('Product added for Shop:' + p.shop)
-            } 
+            }
             let viewData = await populateViewData(form.uid.toString(),p.shop.toString())
             viewData.user = req.user
             viewData.pane = 'in'
@@ -482,6 +492,7 @@ shops.post('/', upload.single('fullimage'),
                     await productAddHandler(req, res)
                     break
                 case 'st':
+                    console.log(req.body)
                     await shopAddHandler(req,res)
                     break
                 default:

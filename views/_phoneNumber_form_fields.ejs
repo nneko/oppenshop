@@ -1,12 +1,12 @@
 
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="phoneNumber-basic-addon">Phone Number</span>
+                        <span class="input-group-text">Phone Number</span>
                     </div>
-                    <input id="phoneNumber" class="form-control <% if(typeof(phoneNumber) !== 'undefined') { %><%= phoneNumber.class %><% } %>" type="text" name="phoneNumber" value="<% if(typeof(phoneNumber) !== 'undefined' && phoneNumber.class == 'is-valid') { %><%= phoneNumber.value %><% } %>"
+                    <input class="form-control <% if(typeof(phoneNumber) !== 'undefined') { %><%= phoneNumber.class %><% } %>" type="text" name="phoneNumber" value="<% if(typeof(phoneNumber) !== 'undefined' && phoneNumber.class == 'is-valid') { %><%= phoneNumber.value %><% } %>"
                         aria-label="Phone Number" aria-describedby="phoneNumber-basic-addon" size="25" required>
-                    <div id="invalid-phonenumber" class="invalid-feedback">
+                    <div  class="invalid-feedback">
                     <% if(typeof(phoneNumber) !== 'undefined' && phoneNumber.class == 'is-invalid') { %><%= phoneNumber.message %><% } else { %>Please enter a valid phone number.<% } %>
                     </div>
                 </div>
-                <small id="validationPhone" class="form-text text-muted  validation-msg hidden"></small>
+                <small class="form-text text-muted  validation-msg hidden"></small>

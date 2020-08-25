@@ -11,7 +11,7 @@
             </select>
         </div>
         <div class="add-action-button-section">
-            <a id="new-storefront-link" class="right add-storefront-link" href="#new-storefront-form"
+            <a id="new-storefront-link" class="right add-storefront-link" href="#newstore"
                 onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %>
                 Add Storefront
             </a>
@@ -115,6 +115,14 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="add-address-fullname-basic-addon">Description</span>
+                        </div>
+                        <textarea class="form-control" rows="4" cols="25" name="description" form="new-storefront-form"
+                            placeholder="Store Description ...">
+                        </textarea>
+                    </div>
+                    <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text input-prepend-icon" id="add-storefront-fullimage-basic-addon" data-toggle="tooltip" data-placement="bottom" data-original-title="Shop Image" title="Shop Image"><%- include('assets/symbols/picture.svg') %></span>
@@ -128,10 +136,11 @@
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="form-group mb-3">
                         <div class="form-check">
-                            <input class="form-check-input <% if(typeof(setPrimary) !== 'undefined') { %><%= setPrimary.class %><% } %>" type="checkbox"
-                                id="set-primary" name="setPrimary" value="true" required>
+                            <input id="use-addr-checkbox" class="form-check-input <% if(typeof(setPrimary) !== 'undefined') { %><%= setPrimary.class %><% } %>" type="checkbox"
+                                id="set-primary" name="setPrimary" value="true" required onchange="toggleAddressFields()">
                             <label class="form-check-label" for="set-primary">
                                 Use same address as user's address
                             </label>
@@ -139,9 +148,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-callout mb-3">
+                        <div>Or</div>
+                        <p class="form-callout-legend">Provide different contact details for the shop by filling in the below.</p>
+                    </div>
                     <hr>
+                    <fieldset id="new-store-address-fieldset">
+                        <%- include('./_address_form_fields.ejs') %>
+                    </fieldset>
+                    <hr>
+                    <div class="form-callout mb-3">
+                        <p class="form-callout-legend">Provide a contact number for the shop.</p>
+                    </div>
+                    <%- include('./_phoneNumber_form_fields') %>
                     <div id="storefront-add-button-container">
-                        <button id="add-storefront-button" type="submit" class="btn btn-light" onclick="">Add
+                        <button id="add-storefront-button" type="submit" class="btn btn-primary" onclick="">Add
                             Storefront</button>
                     </div>
                 </div>
@@ -173,6 +194,20 @@ function toggleStorefrontView(){
         }
     } else {
         console.log(cardSelector.value);
+    }
+}
+
+function toggleAddressFields(){
+    let useAddr = document.getElementById('use-addr-checkbox')
+    let addrFieldSet = document.getElementById('new-store-address-fieldset')
+    if(useAddr && useAddr.checked) {
+        if(addrFieldSet) {
+            addrFieldSet.setAttribute('disabled', 'disabled')
+        }
+    } else {
+        if (addrFieldSet) {
+            addrFieldSet.removeAttribute('disabled')
+        }
     }
 }
 

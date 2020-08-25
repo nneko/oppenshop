@@ -288,7 +288,7 @@ svg {
     width: 100%;
 }
 
-.authenticate-with {
+.authenticate-with, .form-callout {
     margin: 0 auto;
     position: relative;
     text-align: center;
@@ -303,7 +303,7 @@ svg {
     margin-top: 1rem;
 }
 
-.signin-legend, .signup-legend {
+.signin-legend, .signup-legend, .form-callout-legend {
     color: var(--main-text-color);
     font-size: 0.8rem;
     text-align: left;
@@ -338,6 +338,7 @@ svg {
 }
 
 .standard-form {
+    margin-top: 1rem;
     max-width: 68%;
     width: 65%;
 }

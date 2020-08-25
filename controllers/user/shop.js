@@ -217,17 +217,25 @@ let shopAddHandler = async (req, res) => {
         if (form.setPrimary != 'true'){
             // TODO: add new address for Shop
             let add = {}
-            add.type = form.addressType
-            add.street = form.street
-            add.state = form.state
-            add.postcode = form.postcode
-            add.country = form.country
-            u.address = add
+            u.addressType = form.addressType
+            u.addressStreet = form.addressStreet
+            u.addressState = form.addressState
+            u.addressPostcode = form.addressPostcode
+            u.addressCountry = form.country
+            //u.address = add
             //if (debug) console.log('New to add Address fields for new Shop ' + form)
 
         } else {
             if (typeof(usr.addresses) !== 'undefined') {
-                u.address = getPrimaryField(usr.addresses)
+                let primaryAddr = getPrimaryField(usr.addresses)
+                if (primaryAddr) {
+                    viewData.addressStreet = primaryAddr.streetAddress
+                    //viewData.addressLocality = { value: primaryAddr.locality }
+                    viewData.addressRegion = primaryAddr.region
+                    viewData.addressPostcode = primaryAddr.postalCode
+                    viewData.addressCountry = primaryAddr.country
+                    viewData.addressType = primaryAddr.type 
+                }
             } else {
                 res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop, due to no address assigned to user.' } })
             }

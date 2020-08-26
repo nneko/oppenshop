@@ -183,6 +183,11 @@ svg {
     fill: var(--main-alert-err-em-color);
 }
 
+.close-highlight-onhover-icon:hover path {
+    stroke: var(--main-alert-err-em-color);
+    fill: var(--main-alert-err-em-color);
+}
+
 .input-prepend-icon svg {
     height: 1rem;
 }
@@ -679,6 +684,36 @@ position: relative;
     font-weight: bold;
 }
 
+#specifications-add-button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#product-specification-button {
+    margin-left: 1rem;
+}
+
+.spec-item-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.spec-item-form-control {
+    max-width: calc(100% - 3rem);
+    width: auto;
+}
+
+.spec-input {
+    height: 3rem;
+}
+
+.price-label {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
 .menu-main-navigation {
     z-index: 9;
 }
@@ -749,6 +784,15 @@ position: relative;
         margin: auto;
         max-width: 50%;
         width: 50%;
+    }
+
+    .small-input-control {
+        margin: 1rem;
+        width: 100%;
+    }
+
+    #product-specification-button {
+        margin: 1rem;
     }
 }
 

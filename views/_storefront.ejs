@@ -140,7 +140,7 @@
                     <div class="form-group mb-3">
                         <div class="form-check">
                             <input id="use-addr-checkbox" class="form-check-input <% if(typeof(setPrimary) !== 'undefined') { %><%= setPrimary.class %><% } %>" type="checkbox"
-                                id="set-primary" name="setPrimary" value="true" required onchange="toggleAddressFields()">
+                                id="set-primary" name="setPrimary" value="true" required onchange="toggleAddressFields()" checked>
                             <label class="form-check-label" for="set-primary">
                                 Use same address as user's address
                             </label>
@@ -153,7 +153,7 @@
                         <p class="form-callout-legend">Provide different contact details for the shop by filling in the below.</p>
                     </div>
                     <hr>
-                    <fieldset id="new-store-address-fieldset">
+                    <fieldset id="new-store-address-fieldset" disabled="disabled">
                         <%- include('./_address_form_fields.ejs') %>
                     </fieldset>
                     <hr>

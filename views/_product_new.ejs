@@ -1,14 +1,7 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'pd-new' || pane == 'sf') { %>show active<% } %>" id="add-product-pane" role="tabpanel" aria-labelledby="new-products-tab">
     <h2 class="tab-pane-h2">Product Registration</h2>
-    <div>
-        <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length == 0 && typeof(archived) == 'undefined') { %>
-        <a class="left add-address-link" href="">
-            <%- include('assets/symbols/plus.svg') %> Required Active Storefronts
-        </a>
-        <% } %>
-    </div>
     <hr>
-    <section class="standard-form-section new-address-form-section" <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length == 0 && typeof(archived) == 'undefined') { %> hidden<% } %> >
+    <section class="standard-form-section new-address-form-section">
         <h3>Add a new product</h3>
         <form id="new-product-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
             oninput=""  enctype="multipart/form-data" novalidate>
@@ -77,8 +70,57 @@
                         </div>
                     </div>
                     <hr>
+                    <div>
+                        <h3>Specifications</h3>
+                        <div class="speclist-section"></div>
+                        <div id="specifications-add-button-container">
+                            <div class="input-group mb-3">
+                                <div class="input-group form-inline">
+                                    <div class="input-group-prepend small-input-control">
+                                        <span class="input-group-text">Name</span>
+                                    </div>
+                                    <input id="speckey-input"  class="form-control small-input-control <% if(typeof(speckey) !== 'undefined') { %><%= speckey.class %><% } %>" type="text"
+                                        name="speckey" value="<% if(typeof(speckey) !== 'undefined' && speckey.value) { %><%= speckey.value %><% } %>"
+                                        aria-label="Spec" aria-describedby="speckey-basic-addon" size="" required>
+                                    <div class="input-group-prepend small-input-control">
+                                        <span class="input-group-text">Value</span>
+                                    </div>
+                                    <input id="specval-input" class="form-control small-input-control <% if(typeof(specval) !== 'undefined') { %><%= specval.class %><% } %>" type="text"
+                                        name="specval" value="<% if(typeof(specval) !== 'undefined' && specval.value) { %><%= specval.value %><% } %>"
+                                        aria-label="specval" aria-describedby="specval-basic-addon" size="" required>
+                                    <button id="product-specification-button" type="button" class="btn btn-secondary small-input-control" onclick="addSpec()">Add Spec
+                                    </button>
+                                </div>
+                                
+                            </div>                            
+                        </div>
+                    </div>
+                    <hr>
+                        <div class="input-group mb-3">
+                            <div class="input-group form-inline">
+                                <div class="input-group-prepend small-input-control">
+                                    <span class="input-group-text">Quantity</span>
+                                </div>
+                                <input class="form-control small-input-control" type="number" id="quantity" name="quantity" min="0" step="1" value="0" aria-label="" aria-describedby="" size="" required>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group form-inline">
+                                <div class="input-group-prepend small-input-control">
+                                    <span class="input-group-text">Price</span>
+                                </div>
+                                <input class="form-control small-input-control"
+                                    type="number" aria-label="" aria-describedby="" size="" placeholder="00" min="" required>
+                                <h6 class="price-label">.</h6>
+                                <input class="form-control small-input-control"
+                                    type="number" aria-label=""
+                                    aria-describedby="" size="" placeholder="00" min="0" required>
+                                <%- include('./_currency_dropdown.ejs') %>
+                            </div>
+                        </div>
+                    <hr>
                     <div id="addresses-add-button-container">
-                        <button id="add-addresses-button" type="submit" class="btn btn-light" onclick="">Add
+                        <button id="add-addresses-button" type="submit" class="btn btn-primary" onclick="">Add
                             Product</button>
                     </div>
                 </div>
@@ -86,3 +128,43 @@
         </form>
     </section>
 </div>
+<script>
+    let specItemCounter = 0
+    function addSpec(){
+        let skey = document.getElementById('speckey-input')
+        let sval = document.getElementById('specval-input')
+        let speclist = document.getElementsByClassName('speclist-section')
+        if(skey.value && sval.value) {
+            specItemCounter += 1
+            let spec = 
+            ` 
+            <div class="input-group mb-3">
+                <div class="input-group form-inline">
+                    <div class="input-group-prepend small-input-control spec-input">
+                        <span class="input-group-text">` + skey.value +`</span>
+                    </div>
+                    <input class="form-control spec-input" type="text"
+                        name="spec-` + skey.value + `" value="` + sval.value + `"
+                        aria-label="specval" aria-describedby="specval-basic-addon" size="" required>
+                    <div class="input-group-append">
+                        <button class="action-icon-button action-icon close-highlight-onhover-icon" type="button" data-toggle="tooltip" data-placement="left" data-original-title="remove"
+                                title="remove" name="removespec" value="remove" onclick="removeSpec('` + 'spec-item-' + specItemCounter.toString() + `')">
+                        <%- include('assets/symbols/close.svg') %>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            `;
+            specitem = document.createElement("DIV")
+            specitem.id = "spec-item-" + specItemCounter.toString()
+            specitem.classList.add('spec-item-container')
+            specitem.innerHTML = spec
+            if(speclist && speclist.length > 0 ) speclist[0].appendChild(specitem)
+        }
+    }
+
+    function removeSpec(itemID){
+        let e = document.getElementById(itemID)
+        if(e) e.remove()
+    }
+</script>

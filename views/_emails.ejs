@@ -52,8 +52,8 @@
                     <input type="hidden" name="id" value="add-em">
                     <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                     <label>Add email address</label>
-                    <input class="form-control space-right-05" type="text" name="email" value="">
-                    <button id="add-email-button" type="submit" class="btn btn-light" onclick="">Add</button>
+                    <input class="form-control space-right-05" type="email" name="email" value="">
+                    <button id="add-email-button" type="submit" class="btn btn-primary" onclick="">Add</button>
                 </div>
             </div>
         </form>

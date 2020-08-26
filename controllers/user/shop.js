@@ -306,11 +306,15 @@ let productAddHandler = async (req, res) => {
             console.log(req.file)
             p.image = req.file
         }
+        let specs = {}
         for (key in form){
           if (!key.startsWith('spec_')) continue
-          p[key] = form[key]
-          console.log(key, form[key])
+          specs[key.replace('spec_', '')] = form[key]
+          //p[key] = form[key]
+          //console.log(key, form[key])
+          //console.log(key.replace('spec_', ''), form[key])
         }
+        p.specifications = specs
         try {
             let t = await product.create(p)
             if (debug) {

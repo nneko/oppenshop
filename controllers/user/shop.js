@@ -203,7 +203,8 @@ let shopAddHandler = async (req, res) => {
         u.name = form.fullname
         u.displayName = form.fullname
         u.status = 'active'
-        if (typeof(req.file) !== 'undefined'){
+        //if (typeof(req.file) !== 'undefined'){
+        if (req.file){
             //var binary = ''
             //var bytes = [].slice.call(new Uint8Array(req.file.buffer))
             //bytes.forEach((b) => binary += String.fromCharCode(b))
@@ -298,10 +299,17 @@ let productAddHandler = async (req, res) => {
           p.displayName = form.name
 
         }
-        if (req.file !== 'undefined'){
+        //if (req.file) {console.log('File exists')} else {console.log('file doesnt exist')}
+        //if (req.file !== 'undefined'){
+        if (req.file){
             req.file.storage = 'db'
             console.log(req.file)
             p.image = req.file
+        }
+        for (key in form){
+          if (!key.startsWith('spec_')) continue
+          p[key] = form[key]
+          console.log(key, form[key])
         }
         try {
             let t = await product.create(p)
@@ -312,7 +320,8 @@ let productAddHandler = async (req, res) => {
             }
             let viewData = await populateViewData(form.uid.toString(),p.shop.toString())
             viewData.user = req.user
-            viewData.pane = 'in'
+            //viewData.pane = 'in'
+            viewData.pane = 'pd-new'
             viewData.messages = { success: 'Product added.' }
             res.render('sell', viewData)
         } catch (e) {

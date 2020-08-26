@@ -43,8 +43,10 @@
                                                 </p>
                                                 <div class="item-card">
                                                     <div class="item-card-left">
+                                                        <% if(typeof(shops[j].products[i].image) !== 'undefined') { %>
                                                         <img alt="<%= shops[j].products[i].image.originalname %>" class="card-product-image"
                                                             src="<%= shops[j].products[i].image.src %>" />
+                                                        <% } %>
                                                     </div>
                                                     <div class="item-card-right extra-info">
                                                         <h4>Availability</h4>
@@ -123,7 +125,7 @@ function toggleShopSelector(){
         for (const z of w) {
             z.removeAttribute('hidden')
         }
-        
+
         let z = document.getElementById(elem.value);
         if(z) {
             z.removeAttribute('hidden');

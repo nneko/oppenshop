@@ -91,8 +91,8 @@
                                     <button id="product-specification-button" type="button" class="btn btn-secondary small-input-control" onclick="addSpec()">Add Spec
                                     </button>
                                 </div>
-                                
-                            </div>                            
+
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -136,15 +136,15 @@
         let speclist = document.getElementsByClassName('speclist-section')
         if(skey.value && sval.value) {
             specItemCounter += 1
-            let spec = 
-            ` 
+            let spec =
+            `
             <div class="input-group mb-3">
                 <div class="input-group form-inline">
                     <div class="input-group-prepend small-input-control spec-input">
                         <span class="input-group-text">` + skey.value +`</span>
                     </div>
                     <input class="form-control spec-input" type="text"
-                        name="spec-` + skey.value + `" value="` + sval.value + `"
+                        name="spec_` + skey.value + `" value="` + sval.value + `"
                         aria-label="specval" aria-describedby="specval-basic-addon" size="" required>
                     <div class="input-group-append">
                         <button class="action-icon-button action-icon close-highlight-onhover-icon" type="button" data-toggle="tooltip" data-placement="left" data-original-title="remove"

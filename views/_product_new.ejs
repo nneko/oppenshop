@@ -109,10 +109,12 @@
                                 <div class="input-group-prepend small-input-control">
                                     <span class="input-group-text">Unit Price</span>
                                 </div>
-                                <input class="form-control small-input-control"
+                                <input class="form-control small-input-control" 
+                                    name = "unit_dollar"
                                     type="number" aria-label="" aria-describedby="" size="" placeholder="00" min="" required>
                                 <h6 class="price-label">.</h6>
                                 <input class="form-control small-input-control"
+                                    name = "unit_cents"
                                     type="number" aria-label=""
                                     aria-describedby="" size="" placeholder="00" min="0" required>
                                 <%- include('./_currency_dropdown.ejs') %>

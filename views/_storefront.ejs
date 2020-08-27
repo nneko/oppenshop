@@ -1,4 +1,4 @@
-<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'sf' || (pane != 'pd' || pane != 'pkg' || pane != 'or' || pane != 'in' || pane != 'pd-all' || pane != 'pd-new')) { %>show active<% } %>" id="storefronts-pane"
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'sf') { %>show active<% } %>" id="storefronts-pane"
     role="tabpanel" aria-labelledby="storefronts-tab">
     <h2 class="pane-h2">Storefronts</h2>
     <div class="card-filter-section space-between">
@@ -59,6 +59,10 @@
                             <% if (shops[i].status == 'inactive'){ %>
                             <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Activate" name="update" value="activate">
                             <%- include('assets/symbols/edit.svg') %>
+                            </button>
+                            <button class=" action-icon-button reactivate-icon action-icon" type="submit" data-toggle="tooltip"
+                                data-placement="left" title="Re-activate" name="update" value="open">
+                                <%- include('assets/symbols/reload.svg') %>
                             </button>
                             <button class=" action-icon-button delete-icon action-icon" type="submit" data-toggle="tooltip" data-placement="left"
                                 title="Delete" name="update" value="delete">

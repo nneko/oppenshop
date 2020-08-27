@@ -32,19 +32,14 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
     typeof (msgType) === 'undefined' ? mtype = 'error' : mtype = msgType;
 
     let mObj = {}
-    mObj[mtype] = msg ? msg : 'Invalid account update request.'
+    mObj[mtype] = msg ? msg : 'Invalid request.'
 
     try {
-        if (req.user) {
-            let viewData = await populateViewData(req.user.id)
-            viewData.user = req.user
-            viewData.pane = show
-            viewData.messages = mObj
-            res.render('sell', viewData)
-        } else {
-            res.render('sell', { user: undefined, pane: show, messages: mObj })
-        }
-
+        let viewData = await populateViewData(req.user.id)
+        viewData.user = req.user
+        viewData.pane = typeof(show) == 'string' && show !== "" ? show : 'sf'
+        viewData.messages = mObj
+        res.render('sell', viewData)
     } catch (e) {
         console.error(e)
         res.status(500)
@@ -347,46 +342,91 @@ let shopUpdateHandler = async (req, res) => {
 
         }
         else {
-            let u = {}
-
             let formValidated = false
             let formFields = {}
             let form = converter.objectFieldsToString(req.body)
             console.log(form)
-            switch(form.update) {
-                case 'delete':
-                    if (form.uid != req.user.id) {
-                            _403redirect(req, res, '/user/shop/?show=em', 'Permission denied.')
-                            return
-                    }
-                    console.log(form)
-                    // Read existing stored user details
-                    const s = await shop.read(form.sid, { findBy: 'id' })
-                    s.status = 'inactive'
+            // Read existing shop details
+            const s = await shop.read(form.sid, { findBy: 'id' })
 
-                    console.log(s)
+            console.log(s)
+            switch (form.update) {
+                case 'open':
+                    if (form.uid != req.user.id) {
+                        _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
+                        return
+                    }
 
                     try {
-                        let t = await shop.update({_id: s._id}, s)
+                        let t = await shop.update({ _id: s._id }, { status: 'active' })
                         console.log(t)
-                        if (debug) console.log('Shop status made \'inactive\' for ' + form.uid)
+                        if (debug) console.log('Shop status made \'active\' for ' + form.uid)
                         let viewData = await populateViewData(form.uid.toString())
                         viewData.user = req.user
                         viewData.pane = 'sf'
-                        viewData.messages = { success: 'Shop removed and made inactive.' }
+                        viewData.messages = { success: 'Shop opened.' }
                         res.render('sell', viewData)
                     } catch (e) {
                         console.error(e)
                         res.status(500)
                         res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
                     }
+                    break
+                case 'close':
+                    if (form.uid != req.user.id) {
+                            _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
+                            return
+                    }
 
+                    try {
+                        let t = await shop.update({_id: s._id}, {status: 'inactive'})
+                        console.log(t)
+                        if (debug) console.log('Shop status made \'inactive\' for ' + form.uid)
+                        let viewData = await populateViewData(form.uid.toString())
+                        viewData.user = req.user
+                        viewData.pane = 'sf'
+                        viewData.messages = { success: 'Shop closed.' }
+                        res.render('sell', viewData)
+                    } catch (e) {
+                        console.error(e)
+                        res.status(500)
+                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                    }
+                    break
+                case 'delete':
+                    if (form.uid != req.user.id) {
+                        _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
+                        return
+                    }
+
+                    try {
+                        if(s.status == 'inactive'){
+                            let t = await shop.delete({ _id: s._id })
+                            console.log(t)
+                            if (debug) console.log('Shop deleted for ' + form.uid)
+                            let viewData = await populateViewData(form.uid.toString())
+                            viewData.user = req.user
+                            viewData.pane = 'sf'
+                            viewData.messages = { success: 'Shop deleted.' }
+                            res.render('sell', viewData)
+                        } else {
+                            let viewData = await populateViewData(form.uid.toString())
+                            viewData.user = req.user
+                            viewData.pane = 'sf'
+                            viewData.messages = { error: 'Permission denied. Only closed shops can be deleted.' }
+                            res.render('sell', viewData)
+                        }
+                    } catch (e) {
+                        console.error(e)
+                        res.status(500)
+                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                    }
                     break
                 case 'edit':
-                    return await badRequest(req, res, 'ls', 501, 'Functionality not implemented', 'info')
+                    return await badRequest(req, res, 'sf', 501, 'Functionality not implemented', 'info')
                     break
                 default:
-                    return await badRequest(req, res, 'ls', 400, 'Invalid address.')
+                    return await badRequest(req, res, 'sf', 400, 'Invalid request.')
                     break
             }
 
@@ -398,54 +438,99 @@ let shopUpdateHandler = async (req, res) => {
 let productUpdateHandler = async (req, res) => {
 
     if (!validator.hasActiveSession(req)) {
-        _403redirect(req, res, '/user/shop/?show=sf', 'You must be signed in.')
+        _403redirect(req, res, '/user/shop/?show=in', 'You must be signed in.')
         return
     } else {
         if(!req.body) {
 
         }
         else {
-            let u = {}
-
             let formValidated = false
             let formFields = {}
             let form = converter.objectFieldsToString(req.body)
 
+            console.log(form)
+            // Read product details
+            const p = await product.read(form.pid, { findBy: 'id' })
+
+            console.log(p)
+
             switch(form.update) {
                 case 'delete':
                     if (form.uid != req.user.id) {
-                            _403redirect(req, res, '/user/shop/?show=em', 'Permission denied.')
+                            _403redirect(req, res, '/user/shop/?show=in', 'Permission denied.')
                             return
                     }
-                    console.log(form)
-                    // Read existing stored user details
-                    const p = await product.read(form.pid, { findBy: 'id' })
-                    //const s = await shop.read(form.sid, { findBy: 'id' })
-                    p.status = 'inactive'
-
-                    console.log(p)
 
                     try {
-                        let t = await product.update({_id: p._id}, p)
+                        if(p.status == 'inactive') {
+                            let t = await product.delete({_id: p._id}, p)
+                            console.log(t)
+                            let viewData = await populateViewData(form.uid.toString())
+                            viewData.user = req.user
+                            viewData.pane = 'in'
+                            viewData.messages = { success: 'Product deleted.' }
+                            res.render('sell', viewData)
+                        } else {
+                            let viewData = await populateViewData(form.uid.toString())
+                            viewData.user = req.user
+                            viewData.pane = 'in'
+                            viewData.messages = { error: 'Permission denied. Only withdrawn products can be deleted.' }
+                            res.render('sell', viewData)
+                        }
+                    } catch (e) {
+                        console.error(e)
+                        res.status(500)
+                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                    }
+                    break
+                case 'reactivate':
+                    if (form.uid != req.user.id) {
+                        _403redirect(req, res, '/user/shop/?show=in', 'Permission denied.')
+                        return
+                    }
+
+                    try {
+                        let t = await product.update({ _id: p._id }, { status: 'active' })
                         console.log(t)
-                        if (debug) console.log('Product status made \'inactive\' for ' + form.pid)
+                        if (debug) console.log('Product status made \'active\' for ' + form.pid)
                         let viewData = await populateViewData(form.uid.toString())
                         viewData.user = req.user
                         viewData.pane = 'in'
-                        viewData.messages = { success: 'Product removed and made inactive.' }
+                        viewData.messages = { success: 'Product re-activated.' }
                         res.render('sell', viewData)
                     } catch (e) {
                         console.error(e)
                         res.status(500)
                         res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
                     }
+                    break
+                case 'withdraw':
+                    if (form.uid != req.user.id) {
+                        _403redirect(req, res, '/user/shop/?show=in', 'Permission denied.')
+                        return
+                    }
 
+                    try {
+                        let t = await product.update({ _id: p._id }, {status: 'inactive'})
+                        console.log(t)
+                        if (debug) console.log('Product status made \'inactive\' for ' + form.pid)
+                        let viewData = await populateViewData(form.uid.toString())
+                        viewData.user = req.user
+                        viewData.pane = 'in'
+                        viewData.messages = { success: 'Product withdrawn.' }
+                        res.render('sell', viewData)
+                    } catch (e) {
+                        console.error(e)
+                        res.status(500)
+                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                    }
                     break
                 case 'edit':
-                    return await badRequest(req, res, 'ls', 501, 'Functionality not implemented', 'info')
+                    return await badRequest(req, res, 'in', 501, 'Functionality not implemented', 'info')
                     break
                 default:
-                    return await badRequest(req, res, 'ls', 400, 'Invalid address.')
+                    return await badRequest(req, res, 'in', 501, 'Functionality not implemented', 'info')
                     break
             }
 

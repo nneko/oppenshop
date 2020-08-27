@@ -46,6 +46,10 @@
                                                         <% if(typeof(shops[j].products[i].image) !== 'undefined') { %>
                                                         <img alt="<%= shops[j].products[i].image.originalname %>" class="card-product-image"
                                                             src="<%= shops[j].products[i].image.src %>" />
+                                                        <% } else { %>
+                                                            <figure class="card-product-image">
+                                                                <%- include('assets/symbols/tags.svg') %>
+                                                            </figure>
                                                         <% } %>
                                                     </div>
                                                     <div class="item-card-right extra-info">

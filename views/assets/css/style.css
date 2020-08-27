@@ -95,6 +95,11 @@ table.dataTable thead .sorting_desc_disabled:before {
 bottom: .5em;
 }
 
+figure {
+    border: none;
+    margin: 0;
+}
+
 svg {
     border: none;
 }
@@ -657,6 +662,12 @@ position: relative;
     height: 4rem;
     margin: 0.5rem 1rem;
     /*width: 4rem;*/
+}
+
+.card-product-image svg {
+    height: 4rem !important;
+    width: 4rem !important;
+    margin: 0.5rem 1rem !important;
 }
 
 .item-card {

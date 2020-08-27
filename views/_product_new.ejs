@@ -159,6 +159,10 @@
             specitem.id = "spec-item-" + specItemCounter.toString()
             specitem.classList.add('spec-item-container')
             specitem.innerHTML = spec
+            skey.value = ""
+            skey.innerHTML = ""
+            sval.value = ""
+            sval.innerHTML = ""
             if(speclist && speclist.length > 0 ) speclist[0].appendChild(specitem)
         }
     }

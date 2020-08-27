@@ -89,7 +89,7 @@
         "verified": true
     }
 ```
-# Sample Shop Model (JSON): 
+# Sample Shop Model (JSON):
 ```
     {
         "_id": ObjectId("2342345235"),
@@ -97,6 +97,12 @@
         "name": "",
         "displayName": "",
         "description": "",
+        "images": [
+            {
+            "value": "http://sample.site.org/photos/12345.jpg",
+            "type": "thumbnail"
+            }
+        ]
         "addresses": [
             {
                 "streetAddress": "",

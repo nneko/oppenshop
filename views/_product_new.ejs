@@ -17,7 +17,7 @@
                         <select id="ShopID"
                             class="form-control <% if(typeof(new_addressType) !== 'undefined') { %><%= new_addressType.class %><% } %>" type="text"
                             name="sid" value="" aria-label="addressType" aria-describedby="addressType-basic-addon" ondurationchange=""
-                            onchange="document.getElementById('sid').value = this.value;">
+                            onchange="">
                             <% for(let i=0;i<shops.length;i++) { %>
                             <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
                             <% } %>
@@ -61,8 +61,8 @@
                                 <span class="input-group-text" id="add-address-fullname-basic-addon">Image(s)</span>
                             </div>
                             <input id="add-address-fullimage" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullimage.class %><% } %>" type="file" name="fullimage"
-                                aria-label="Image" aria-describedby="fullname-basic-addon" accept=".jpg,.jpeg,.png">
-                            <div id="add-address-invalid-fullname" class="invalid-feedback">
+                                aria-label="Image" aria-describedby="fullname-basic-addon" accept=".jpg,.jpeg,.png" multiple>
+                            <div id="add-address-invalid-fullimage" class="invalid-feedback">
                                 <% if(typeof(fullimage) !== 'undefined' && fullimage.class == 'is-invalid') { %><%= fullimage.message %><% } else { %>
                                 You must provide a valid image of type: jpg/jpeg/png.
                                 <% } %>
@@ -109,7 +109,7 @@
                                 <div class="input-group-prepend small-input-control">
                                     <span class="input-group-text">Unit Price</span>
                                 </div>
-                                <input class="form-control small-input-control" 
+                                <input class="form-control small-input-control"
                                     name = "unit_dollar"
                                     type="number" aria-label="" aria-describedby="" size="" placeholder="0" min="" required>
                                 <h6 class="price-label">.</h6>
@@ -133,11 +133,11 @@
 <script>
     let specItemCounter = 0
     function addSpec(){
-        let skey = document.getElementById('speckey-input')
-        let sval = document.getElementById('specval-input')
-        let speclist = document.getElementsByClassName('speclist-section')
+        let skey = document.getElementById('speckey-input');
+        let sval = document.getElementById('specval-input');
+        let speclist = document.getElementsByClassName('speclist-section');
         if(skey.value && sval.value) {
-            specItemCounter += 1
+            specItemCounter += 1;
             let spec =
             `
             <div class="input-group mb-3">
@@ -166,6 +166,7 @@
             sval.value = ""
             sval.innerHTML = ""
             if(speclist && speclist.length > 0 ) speclist[0].appendChild(specitem)
+
         }
     }
 
@@ -173,4 +174,20 @@
         let e = document.getElementById(itemID)
         if(e) e.remove()
     }
+    /*
+    function ImageLimit(){
+      console.log('-----');
+      console.log(document.getElementById("add-address-fullimage"));
+      console.log(document.getElementById('add-address-fullimage').files.length);
+      if (parseInt(document.getElementById("add-address-fullimage").files.length) > 10){
+        document.getElementById("add-address-invalid-fullimage").innerHTML = 'Maximum 10 images can be uploaded.';
+        alert('False');
+        return false;
+      } else {
+        alert('True');
+        return true;
+      }
+    }
+    */
+
 </script>

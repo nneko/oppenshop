@@ -43,9 +43,11 @@
                                                 </p>
                                                 <div class="item-card">
                                                     <div class="item-card-left">
-                                                        <% if(typeof(shops[j].products[i].image) !== 'undefined') { %>
-                                                        <img alt="<%= shops[j].products[i].image.originalname %>" class="card-product-image"
-                                                            src="<%= shops[j].products[i].image.src %>" />
+                                                        <% if(typeof(shops[j].products[i].images) !== 'undefined' && Array.isArray(shops[j].products[i].images) && shops[j].products[i].images.length > 0) { %>
+                                                          <% for(let k=0;k<shops[j].products[i].images.length;k++) { %>
+                                                        <img alt="<%= shops[j].products[i].images[k].originalname %>" class="card-product-image"
+                                                            src="<%= shops[j].products[i].images[k].src %>" />
+                                                            <% } %>
                                                         <% } else { %>
                                                             <figure class="card-product-image">
                                                                 <%- include('assets/symbols/tags.svg') %>

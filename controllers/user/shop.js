@@ -12,7 +12,12 @@ const debug = cfg.env == 'development' ? true : false
 //const passport = require('passport')
 const multer  = require('multer')
 const storage = multer.memoryStorage()
-var upload = multer({storage: storage})
+var upload = multer({storage: storage,
+                    onError : function(err, next) {
+                      console.log('error', err);
+                      next(err);
+                    }
+                  }).array('fullimage', 10)
 //const upload = multer({ dest: 'uploads/' })
 const btoa = require('btoa')
 const catalog = require('../../models/catalog')
@@ -67,13 +72,17 @@ let populateViewData = async (uid, status = 'active') => {
             if (s) {
                 if (Array.isArray(s)) {
                     for (x of s) {
-                        if (typeof (x.image) !== 'undefined') {
-                            x.image.src = media.getBinaryDetails(x.image)
+                        if (typeof (x.images) !== 'undefined') {
+                            for (xx of x){
+                            xx.src = media.getBinaryDetails(xx)
+                            }
                         }
                         let p = await product.read({ shop: x._id.toString() })
                         for (y of p) {
-                            if (typeof (y.image) !== 'undefined') {
-                                y.image.src = media.getBinaryDetails(y.image)
+                            if (typeof (y.images) !== 'undefined') {
+                                for (yy of y) {
+                                  yy.src = media.getBinaryDetails(yy)
+                                }
                             }
                         }
                         x.products = p
@@ -199,16 +208,12 @@ let shopAddHandler = async (req, res) => {
         u.displayName = form.fullname
         u.status = 'active'
         //if (typeof(req.file) !== 'undefined'){
-        if (req.file){
-            //var binary = ''
-            //var bytes = [].slice.call(new Uint8Array(req.file.buffer))
-            //bytes.forEach((b) => binary += String.fromCharCode(b))
-            //req.file.binary = 'data:'+req.file.mimetype+';base64'+binary
-            //req.file.base64 = btoa([].reduce.call(new Uint8Array(req.file.buffer),function(p,c){return p+String.fromCharCode(c)},''))
-            //console.log(req.file.base64)
-            req.file.storage = 'db'
-            //console.log(req.file)
-            u.image = req.file
+        if (req.files){
+            for (x of req.files){
+              x.storage = 'db'
+            }
+            console.log(req.files)
+            u.images = req.files
         }
         if (form.setPrimary != 'true'){
             // TODO: add new address for Shop
@@ -296,10 +301,12 @@ let productAddHandler = async (req, res) => {
         }
         //if (req.file) {console.log('File exists')} else {console.log('file doesnt exist')}
         //if (req.file !== 'undefined'){
-        if (req.file){
-            req.file.storage = 'db'
-            console.log(req.file)
-            p.image = req.file
+        if (req.files){
+            for (x of req.files){
+              x.storage = 'db'
+            }
+            console.log(req.files)
+            p.images = req.files
         }
         let specs = {}
         for (key in form){
@@ -577,8 +584,24 @@ shops.get('/', async (req, res) => {
     }
 })
 
-shops.post('/', upload.single('fullimage'),
-    async (req, res) => {
+shops.post('/', function (req, res) {
+  upload(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      console.error('A Multer error occurred when uploading.')
+      console.error(err.stack)
+      res.status(500)
+      res.render('error', { error: { status: 500, message: 'File Upload Error' }, name: '', user: req.user })
+      //return
+    } else if (err) {
+      console.error('An unknown error occurred when uploading.')
+      console.error(err.stack)
+      res.status(500)
+      res.render('error', { error: { status: 500, message: 'An Unknown Error occurred' }, name: '', user: req.user })
+      //return
+    } else {
+    //console.log('Second')
+    //console.log(req.body)
+    //console.log(req.files)
     try {
         if (validator.hasActiveSession(req)) {
             let form = req.body
@@ -595,8 +618,10 @@ shops.post('/', upload.single('fullimage'),
                     break
                 case 'np':
                     console.log(req.body)
-                    console.log(req.file)
+                    console.log(req.files)
                     await productAddHandler(req, res)
+                    //res.status(500)
+                    //res.render('error', { error: { status: 500, message: 'Testing' }, name: '', user: req.user })
                     break
                 case 'st':
                     console.log(req.body)
@@ -614,6 +639,8 @@ shops.post('/', upload.single('fullimage'),
         res.status(500)
         res.render('error', { error: { status: 500, message: 'Shop update error' }, name: '', user: req.user })
     }
+  }
+  })
 })
 
 module.exports = shops

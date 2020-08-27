@@ -34,8 +34,10 @@
                                         <% } %>
                                     </p>
                                     <p class="extra-info">
-                                        <% if (typeof(shops[i].image) !== 'undefined' ) { %>
-                                        <img class="storefront-image" alt="<%= shops[i].image.originalname %>" src="<%= shops[i].image.src %>" />
+                                        <% if (typeof(shops[i].images) !== 'undefined' ) { %>
+                                          <% for(let k=0;k<shops[i].images.length;k++) { %>
+                                        <img class="storefront-image" alt="<%= shops[i].images[k].originalname %>" src="<%= shops[i].images[k].src %>" />
+                                          <% } %>
                                         <% } %>
                                         <% if(typeof(shops[i].status !== 'undefined')) { %>
                                             Status: <b>
@@ -132,7 +134,7 @@
                                 <span class="input-group-text input-prepend-icon" id="add-storefront-fullimage-basic-addon" data-toggle="tooltip" data-placement="bottom" data-original-title="Shop Image" title="Shop Image"><%- include('assets/symbols/picture.svg') %></span>
                             </div>
                             <input id="add-address-fullimage" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullname.class %><% } %>" type="file" name="fullimage"
-                                aria-label="Image" aria-describedby="fullimage-basic-addon" accept=".jpg,.jpeg,.png">
+                                aria-label="Image" aria-describedby="fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple>
                             <div id="add-storefront-invalid-fullname" class="invalid-feedback">
                                 <% if(typeof(fullimage) !== 'undefined' && fullimage.class == 'is-invalid') { %><%= fullimage.message %><% } else { %>
                                 You must provide a valid image of type: jpg/jpeg/png.

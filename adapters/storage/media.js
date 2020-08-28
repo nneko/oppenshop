@@ -9,14 +9,15 @@ media.getBinaryDetails = (file) => {
     //console.log(typeof(file.buffer))
     //console.log(typeof(file.buffer.buffer))
 
+    let imageStringBlob = file && file.buffer && typeof(file.buffer.buffer) !== 'undefined' ? file.buffer.buffer : ''
+
     if (typeof(file.storage) !== 'undefined' && file.storage == 'db') {
-      var base64string = btoa([].reduce.call(new Uint8Array(file.buffer.buffer),function(p,c){return p+String.fromCharCode(c)},''))
+      let base64string = btoa([].reduce.call(new Uint8Array(imageStringBlob),function(p,c){return p+String.fromCharCode(c)},''))
       return 'data:'+file.mimetype+';base64,'+base64string
     } else if (typeof(file.storage) !== 'undefined' && file.storage == 's3') {
       return file.uri
     } else {
-      var base64string = btoa([].reduce.call(new Uint8Array(file.buffer.buffer),function(p,c){return p+String.fromCharCode(c)},''))
-      return 'data:'+file.mimetype+';base64,'+base64string
+      return ''
     }
 
 }

@@ -233,5 +233,9 @@ generator.removeAddressFields = (list, addr) => {
     return new_list
 }
 
+generator.roundNumber = (value, decimals) => {
+    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals).toFixed(decimals);
+}
+
 // Export the module
 module.exports = generator

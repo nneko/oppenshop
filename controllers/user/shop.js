@@ -72,15 +72,15 @@ let populateViewData = async (uid, status = 'active') => {
             if (s) {
                 if (Array.isArray(s)) {
                     for (const x of s) {
-                        if (Array.isArray(x.images)) {
+                        if (Array.isArray(x.images) && x.images.length > 0) {
                             for (const xx of x.images) {
                                 xx.src = media.getBinaryDetails(xx)
                             }
                         }
                         let p = await product.read({ shop: x._id.toString() })
                         for (const y of p) {
-                            if (Array.isArray(y.images)) {
-                                for (const yy of y) {
+                            if (Array.isArray(y.images) && y.images.length > 0) {
+                                for (const yy of y.images) {
                                   yy.src = media.getBinaryDetails(yy)
                                 }
                             }
@@ -289,12 +289,12 @@ let productAddHandler = async (req, res) => {
             return
         }
 
-        //u.uid = form.uid
         p.shop = form.sid
         p.name = form.fullname
         p.description = form.description
         p.status = 'active'
-        p.quantity = 0
+        p.quantity = form.quantity ? Number(form.quantity) : 0
+        p.price = generator.roundNumber( form.unit_dollar && form.unit_cents ? Number(form.unit_dollar + '.' + form.unit_cents): 0, 2)
         if (form.name !== 'undefined'){
           p.displayName = form.name
 

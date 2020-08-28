@@ -657,6 +657,12 @@ position: relative;
     width: 4rem;
 }
 
+.storefront-image svg {
+    height: 4rem !important;
+    margin: 0 !important;
+    width: 4rem !important;
+}
+
 .card-product-image {
     border-style: none;
     height: 4rem;
@@ -667,7 +673,7 @@ position: relative;
 .card-product-image svg {
     height: 4rem !important;
     width: 4rem !important;
-    margin: 0.5rem 1rem !important;
+    margin: 0 !important;
 }
 
 .item-card {

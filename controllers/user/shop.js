@@ -71,16 +71,16 @@ let populateViewData = async (uid, status = 'active') => {
             viewData.shops = []
             if (s) {
                 if (Array.isArray(s)) {
-                    for (x of s) {
-                        if (typeof (x.images) !== 'undefined') {
-                            for (xx of x){
-                            xx.src = media.getBinaryDetails(xx)
+                    for (const x of s) {
+                        if (Array.isArray(x.images)) {
+                            for (const xx of x.images) {
+                                xx.src = media.getBinaryDetails(xx)
                             }
                         }
                         let p = await product.read({ shop: x._id.toString() })
-                        for (y of p) {
-                            if (typeof (y.images) !== 'undefined') {
-                                for (yy of y) {
+                        for (const y of p) {
+                            if (Array.isArray(y.images)) {
+                                for (const yy of y) {
                                   yy.src = media.getBinaryDetails(yy)
                                 }
                             }
@@ -579,7 +579,7 @@ shops.get('/', async (req, res) => {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retrieving account data' }, name: '', user: req.user })
+        res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user })
 
     }
 })

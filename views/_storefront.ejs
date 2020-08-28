@@ -38,6 +38,10 @@
                                           <% for(let k=0;k<shops[i].images.length;k++) { %>
                                         <img class="storefront-image" alt="<%= shops[i].images[k].originalname %>" src="<%= shops[i].images[k].src %>" />
                                           <% } %>
+                                        <% } else { %>
+                                        <figure class="storefront-image">
+                                            <%- include('assets/symbols/shop.svg') %>
+                                        </figure>
                                         <% } %>
                                         <% if(typeof(shops[i].status !== 'undefined')) { %>
                                             Status: <b>

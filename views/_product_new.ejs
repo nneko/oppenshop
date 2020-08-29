@@ -101,7 +101,7 @@
                                 <div class="input-group-prepend small-input-control">
                                     <span class="input-group-text">Quantity</span>
                                 </div>
-                                <input class="form-control small-input-control" type="number" id="quantity" name="quantity" min="0" step="1" value="0" aria-label="" aria-describedby="" size="" required>
+                                <input class="form-control small-input-control" type="number" id="quantity" name="quantity" min="-1" step="1" value="0" aria-label="" aria-describedby="" size="" required>
                             </div>
                         </div>
                         <div class="input-group mb-3">
@@ -116,7 +116,7 @@
                                 <input class="form-control small-input-control"
                                     name = "unit_cents"
                                     type="number" aria-label=""
-                                    aria-describedby="" size="" placeholder="00" min="0" required>
+                                    aria-describedby="" size="" placeholder="00" min="0" max="99" required>
                                 <%- include('./_currency_dropdown.ejs') %>
                             </div>
                         </div>

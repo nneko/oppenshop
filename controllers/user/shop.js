@@ -209,6 +209,11 @@ let shopAddHandler = async (req, res) => {
         u.status = 'active'
         //if (typeof(req.file) !== 'undefined'){
         if (req.files){
+            if (validator.isUploadLimitExceeded(req.files)) {
+                await badRequest(req, res, 'pd-new', 403, 'Upload limits exceeded.')
+                return
+            }
+
             for (x of req.files){
               x.storage = 'db'
             }
@@ -302,10 +307,15 @@ let productAddHandler = async (req, res) => {
         //if (req.file) {console.log('File exists')} else {console.log('file doesnt exist')}
         //if (req.file !== 'undefined'){
         if (req.files){
+
+            if(validator.isUploadLimitExceeded(req.files)) {
+                await badRequest(req, res, 'pd-new', 403, 'Upload limits exceeded.')
+                return
+            }
+
             for (x of req.files){
               x.storage = 'db'
             }
-            console.log(req.files)
             p.images = req.files
         }
         let specs = {}
@@ -617,8 +627,6 @@ shops.post('/', function (req, res) {
                     await productUpdateHandler(req,res)
                     break
                 case 'np':
-                    console.log(req.body)
-                    console.log(req.files)
                     await productAddHandler(req, res)
                     //res.status(500)
                     //res.render('error', { error: { status: 500, message: 'Testing' }, name: '', user: req.user })

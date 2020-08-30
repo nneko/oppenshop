@@ -59,7 +59,7 @@
                                                         <p>
                                                             <% if(typeof(shops[j].products[i].quantity) !== 'undefined' &&  shops[j].products[i].quantity > 0 ) { %>
                                                             <%= shops[j].products[i].quantity %>
-                                                            <% } else if(shops[j].products[i].quantity == -1) { %>
+                                                            <% } else if(shops[j].products[i].quantity < 0) { %>
                                                                 &infin;
                                                             <% } else { %>
                                                                 <%= 'Out of Stock' %>

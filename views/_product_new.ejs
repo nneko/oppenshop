@@ -21,19 +21,16 @@
                             <% for(let i=0;i<shops.length;i++) { %>
                             <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
                             <% } %>
-                            <!-- <option selected="selected">home</option>
-                            <option>work</option>
-                            <option>other</option> -->
                         </select>
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="add-address-fullname-basic-addon">Name</span>
+                                <span class="input-group-text" id="add-product-fullname-basic-addon">Name</span>
                             </div>
-                            <input id="add-address-fullname" class="form-control <% if(typeof(fullname) !== 'undefined') { %><%= fullname.class %><% } %>" type="text" name="fullname" value="<% if(typeof(fullname) !== 'undefined' && fullname.value) { %><%= fullname.value %><% } %>"
-                                aria-label="Address" aria-describedby="fullname-basic-addon" size="25" required>
-                            <div id="add-address-invalid-fullname" class="invalid-feedback">
+                            <input id="add-product-fullname" class="form-control <% if(typeof(fullname) !== 'undefined') { %><%= fullname.class %><% } %>" type="text" name="fullname" value="<% if(typeof(fullname) !== 'undefined' && fullname.value) { %><%= fullname.value %><% } %>"
+                                aria-label="Product Name" aria-describedby="fullname-basic-addon" size="25" required>
+                            <div id="add-product-invalid-fullname" class="invalid-feedback">
                                 <% if(typeof(fullname) !== 'undefined' && fullname.class == 'is-invalid') { %><%= fullname.message %><% } else { %>
                                 You must a valid name.
                                 <% } %>
@@ -43,14 +40,12 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="add-address-fullname-basic-addon">Description</span>
+                                <span class="input-group-text" id="add-product-description-basic-addon">Description</span>
                             </div>
-                            <textarea class="form-control" rows="4" cols="25" name="description" form="new-product-form" placeholder="Product Description ..."></textarea>
-                            <!-- <input id="add-address-fullname" class="form-control <% if(typeof(fullname) !== 'undefined') { %><%= fullname.class %><% } %>" type="text" name="fullname" value="<% if(typeof(fullname) !== 'undefined' && fullname.value) { %><%= fullname.value %><% } %>"
-                                aria-label="Address" aria-describedby="fullname-basic-addon" size="25" required> -->
-                            <div id="add-address-invalid-fullname" class="invalid-feedback">
-                                <% if(typeof(fullname) !== 'undefined' && fullname.class == 'is-invalid') { %><%= fullname.message %><% } else { %>
-                                You must a valid name.
+                            <textarea class="form-control <% if(typeof(description) !== 'undefined') { %><%= description.class %><% } %>" rows="4" cols="25" name="description" form="new-product-form" placeholder="Product Description ..." value="<% if(typeof(description) !== 'undefined' && description.value) { %><%= description.value %><% } %>" aria-label="Product Description" aria-describedby="add-product-description-basic-addon" size="25" required></textarea>
+                            <div id="add-product-invalid-description" class="invalid-feedback">
+                                <% if(typeof(description) !== 'undefined' && description.class == 'is-invalid') { %><%= description.message %><% } else { %>
+                                You must a valid description.
                                 <% } %>
                             </div>
                         </div>
@@ -58,11 +53,11 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="add-address-fullname-basic-addon">Image(s)</span>
+                                <span class="input-group-text" id="add-product-images-basic-addon">Image(s)</span>
                             </div>
-                            <input id="add-address-fullimage" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullimage.class %><% } %>" type="file" name="fullimage"
-                                aria-label="Image" aria-describedby="fullname-basic-addon" accept=".jpg,.jpeg,.png" multiple>
-                            <div id="add-address-invalid-fullimage" class="invalid-feedback">
+                            <input id="add-product-images" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullimage.class %><% } %>" type="file" name="fullimage"
+                                aria-label="Image" aria-describedby="add-product-basic-addon" accept=".jpg,.jpeg,.png" multiple onchange="validateImageFiles()" onclick="clearImageValidation()">
+                            <div id="add-product-invalid-images" class="invalid-feedback">
                                 <% if(typeof(fullimage) !== 'undefined' && fullimage.class == 'is-invalid') { %><%= fullimage.message %><% } else { %>
                                 You must provide a valid image of type: jpg/jpeg/png.
                                 <% } %>
@@ -174,20 +169,42 @@
         let e = document.getElementById(itemID)
         if(e) e.remove()
     }
-    /*
-    function ImageLimit(){
-      console.log('-----');
-      console.log(document.getElementById("add-address-fullimage"));
-      console.log(document.getElementById('add-address-fullimage').files.length);
-      if (parseInt(document.getElementById("add-address-fullimage").files.length) > 10){
-        document.getElementById("add-address-invalid-fullimage").innerHTML = 'Maximum 10 images can be uploaded.';
-        alert('False');
-        return false;
-      } else {
-        alert('True');
-        return true;
-      }
-    }
-    */
 
+    function clearImageValidation() {
+        let imgInput = document.getElementById('add-product-images')
+        if(imgInput) {
+            imgInput.classList.remove('is-invalid')
+        }
+    }
+
+    function validateImageFiles() {        
+        let imgInput = document.getElementById('add-product-images')
+        let imgInputInvalidElem = document.getElementById('add-product-invalid-images')        
+        let imgFiles = imgInput.files
+        let uploadLimit = <%= typeof (uploadLimit) === 'number' ? uploadLimit : 10 %>
+        let uploadSize = <%= typeof (uploadSize) === 'number' ? uploadSize : 10485760 %>
+
+        if(imgInput) {
+            console.log('validating images...')
+            if(imgFiles.length > uploadLimit) {
+                imgInputInvalidElem.innerHTML = 'You cannot upload more than ' + uploadLimit.toString() + ' images.'
+                imgInput.value = null
+                imgInput.classList.add('is-invalid')
+                return
+            }
+            
+            let totalImgSize = 0
+
+            for(let i=0;i<imgFiles.length;i++) {
+                totalImgSize += imgFiles[i].size
+                console.log('Total image size: ' + totalImgSize.toString())
+                if(totalImgSize > uploadSize) {
+                    imgInputInvalidElem.innerHTML = 'Upload size limit of ' + uploadSize.toString() + ' exceeded.'
+                    imgInput.value = null
+                    imgInput.classList.add('is-invalid')
+                    return
+                }
+            }
+        }
+    }
 </script>

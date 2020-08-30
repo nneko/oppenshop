@@ -76,4 +76,24 @@ validator.isLocalUserAccount = (u) => {
     return false
 }
 
+// Validate file upload limit and file upload size
+validator.isUploadLimitExceeded = (files) => {
+    let uploadLimit = typeof (cfg.uploadLimit) === 'number' ? cfg.uploadLimit : 10
+
+    let uploadSize = typeof (cfg.uploadSize) === 'number' ? cfg.uploadSize : 10485760
+
+    if (Array.isArray(files) && files.length <= uploadLimit) {
+        let totalSize = 0
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].hasOwnProperty('size')) {
+                totalSize += Number(files[i].size)
+            }
+        }
+
+        return (totalSize > uploadSize ? true : false)
+    } else {
+        return true
+    }
+}
+
 module.exports = validator

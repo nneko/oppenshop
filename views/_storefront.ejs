@@ -113,11 +113,11 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="add-address-fullname-basic-addon">Shop Name</span>
+                                <span class="input-group-text" id="add-storefront-fullname-basic-addon">Shop Name</span>
                             </div>
                             <input id="add-storefront-fullname" class="form-control <% if(typeof(fullname) !== 'undefined') { %><%= fullname.class %><% } %>" type="text" name="fullname" value="<% if(typeof(fullname) !== 'undefined' && fullname.value) { %><%= fullname.value %><% } %>"
-                                aria-label="Address" aria-describedby="fullname-basic-addon" size="55" required>
-                            <div id="add-address-invalid-fullname" class="invalid-feedback">
+                                aria-label="Shop Name" aria-describedby="add-storefront-fullname-basic-addon" size="55" required>
+                            <div id="add-storefront-invalid-fullname" class="invalid-feedback">
                                 <% if(typeof(fullname) !== 'undefined' && fullname.class == 'is-invalid') { %><%= fullname.message %><% } else { %>
                                 You must provide a valid shop name.
                                 <% } %>
@@ -126,19 +126,19 @@
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="add-address-fullname-basic-addon">Description</span>
+                            <span class="input-group-text" id="add-storefront-description-basic-addon">Description</span>
                         </div>
                         <textarea class="form-control" rows="4" cols="25" name="description" form="new-storefront-form"
-                            placeholder="Store Description ..."></textarea>
+                            placeholder="Store Description ..." aria-label="Store Description" aria-describedby="add-storefront-description-basic-addon"></textarea>
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text input-prepend-icon" id="add-storefront-fullimage-basic-addon" data-toggle="tooltip" data-placement="bottom" data-original-title="Shop Image" title="Shop Image"><%- include('assets/symbols/picture.svg') %></span>
                             </div>
-                            <input id="add-address-fullimage" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullname.class %><% } %>" type="file" name="fullimage"
-                                aria-label="Image" aria-describedby="fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple>
-                            <div id="add-storefront-invalid-fullname" class="invalid-feedback">
+                            <input id="add-storefront-fullimage" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullname.class %><% } %>" type="file" name="fullimage"
+                                aria-label="Storefront Image" aria-describedby="add-storefront-fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple onchange="validateImageFiles()" onclick="clearImageValidation()">
+                            <div id="add-storefront-invalid-fullimage" class="invalid-feedback">
                                 <% if(typeof(fullimage) !== 'undefined' && fullimage.class == 'is-invalid') { %><%= fullimage.message %><% } else { %>
                                 You must provide a valid image of type: jpg/jpeg/png.
                                 <% } %>
@@ -223,6 +223,44 @@ function toggleAddressFields(){
 function closeNewStoreForm(){
     document.getElementById('newstore').setAttribute('hidden', true)
     document.getElementById('new-storefront-link').scrollIntoView(false)
+}
+
+function clearImageValidation() {
+    let imgInput = document.getElementById('add-storefront-fullimage')
+    if (imgInput) {
+        imgInput.classList.remove('is-invalid')
+    }
+}
+
+function validateImageFiles() {
+    let imgInput = document.getElementById('add-storefront-fullimage')
+    let imgInputInvalidElem = document.getElementById('add-storefront-invalid-fullimage')
+    let imgFiles = imgInput.files
+    let uploadLimit = <%= typeof (uploadLimit) === 'number' ? uploadLimit : 10 %>
+        let uploadSize = <%= typeof (uploadSize) === 'number' ? uploadSize : 10485760 %>
+
+    if (imgInput) {
+        console.log('validating images...')
+        if (imgFiles.length > uploadLimit) {
+            imgInputInvalidElem.innerHTML = 'You cannot upload more than ' + uploadLimit.toString() + ' images.'
+            imgInput.value = null
+            imgInput.classList.add('is-invalid')
+            return
+        }
+
+        let totalImgSize = 0
+
+        for (let i = 0; i < imgFiles.length; i++) {
+            totalImgSize += imgFiles[i].size
+            console.log('Total image size: ' + totalImgSize.toString())
+            if (totalImgSize > uploadSize) {
+                imgInputInvalidElem.innerHTML = 'Upload size limit of ' + uploadSize.toString() + ' exceeded.'
+                imgInput.value = null
+                imgInput.classList.add('is-invalid')
+                return
+            }
+        }
+    }
 }
 
 toggleStorefrontView()

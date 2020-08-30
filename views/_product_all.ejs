@@ -16,9 +16,9 @@
         </select>
         </div>
         <div class="form-group form-inline mb-3 card-filter-selector">
-            <label id="product-status-select-label" class="form-label" for="product-status-select">Filter: </label>
-            <select id="product-status-select" class="form-control" type="text" onchange="toggleShopSelector()" name="product-status-selector"
-                aria-label="product-status-select-label" aria-describedby="product-status-select-basic-addon">
+            <label id="product-filter-select-label" class="form-label" for="product-filter-select">Filter: </label>
+            <select id="product-filter-select" class="form-control" type="text" onchange="toggleShopSelector()" name="product-filter-selector"
+                aria-label="product-filter-select-label" aria-describedby="product-filter-select-basic-addon">
                 <option value="all-products-cards" selected>None</option>
                 <option value="all-active">Active</option>
                 <option value="all-inactive">Withdrawn</option>
@@ -32,7 +32,7 @@
                 <div class="shop-products-card" id="<%= shops[j]._id %>" name="<% shops[j].name %>" hidden="true">
                 <% if (typeof(shops[j].products) !== 'undefined' && Array.isArray(shops[j].products) && shops[j].products.length > 0) { %>
                     <% for(let i=0;i<shops[j].products.length;i++) { %>
-                        <div class="card">
+                    <div class="card <% if(shops[j].products[i].status) { %><%= shops[j]._id + '.' + shops[j].products[i].status %><% } %>">
                             <div class="card-body">
                                 <div class="actionable-card-pane">
                                     <div class="product-view-card-pane">
@@ -115,7 +115,7 @@
 <script>
 function toggleShopSelector(){
     let elem = document.getElementById('shop-select')
-    let elemFilter = document.getElementById('product-status-select')
+    let elemFilter = document.getElementById('product-filter-select')
     let x = document.getElementsByClassName('shop-products-card')
     let w = document.getElementsByClassName('no-products-card')
     if (elem && elem.value == 'all-products-cards') {
@@ -124,6 +124,36 @@ function toggleShopSelector(){
         }
         for (const z of x) {
             z.removeAttribute('hidden')
+            let zac = document.getElementsByClassName(z.id + '.' + 'active')
+            let zic = document.getElementsByClassName(z.id + '.' + 'inactive')
+            if (elemFilter) {
+                switch (elemFilter.value) {
+                    case 'all-active':
+                        for (const i_zac of zac) {
+                            i_zac.removeAttribute('hidden')
+                        }
+                        for (const hi_zic of zic) {
+                            hi_zic.setAttribute('hidden', true)
+                        }
+                        break
+                    case 'all-inactive':
+                        for (const i_zic of zic) {
+                            i_zic.removeAttribute('hidden')
+                        }
+                        for (const hi_zac of zac) {
+                            hi_zac.setAttribute('hidden', true)
+                        }
+                        break
+                    default:
+                        for (const ia_zac of zac) {
+                            ia_zac.removeAttribute('hidden')
+                        }
+                        for (const ia_zic of zic) {
+                            ia_zic.removeAttribute('hidden')
+                        }
+                        break
+                }
+            }
         }
     } else {
         for (const y of x) {
@@ -137,6 +167,50 @@ function toggleShopSelector(){
         let z = document.getElementById(elem.value);
         if(z) {
             z.removeAttribute('hidden');
+
+            let active_cards = document.getElementsByClassName(elem.value + '.' + 'active')
+            let inactive_cards = document.getElementsByClassName(elem.value + '.' + 'inactive')
+
+            if(elemFilter) {
+                switch (elemFilter.value) {
+                    case 'all-active':
+                        if(active_cards) {
+                            for (const c of active_cards) {
+                                c.removeAttribute('hidden')
+                            }
+                        }
+                        if(inactive_cards) {
+                            for (const ic of inactive_cards) {
+                                ic.setAttribute('hidden', true)
+                            }
+                        }
+                        break
+                    case 'all-inactive':
+                        if (active_cards) {
+                            for (const c of inactive_cards) {
+                                c.removeAttribute('hidden')
+                            }
+                        }
+                        if (inactive_cards) {
+                            for (const ic of active_cards) {
+                                ic.setAttribute('hidden', true)
+                            }
+                        }
+                        break
+                    default:
+                        if (active_cards) {
+                            for (const c of inactive_cards) {
+                                c.removeAttribute('hidden')
+                            }
+                        }
+                        if (inactive_cards) {
+                            for (const ic of active_cards) {
+                                ic.removeAttribute('hidden')
+                            }
+                        }
+                        break
+                }
+            }
         }
     }
 }

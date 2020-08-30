@@ -3,6 +3,10 @@
  * All methods return a boolean
  *
  */
+
+ // Dependencies
+const cfg = require('../configuration')
+
 let validator = {}
 
 validator.isNotNull = (obj) => {

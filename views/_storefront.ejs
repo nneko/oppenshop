@@ -63,9 +63,10 @@
                             <input type="hidden" name="sid" value="<% if(typeof(shops[i]._id) !== 'undefined') { %><%= shops[i]._id %><% } %>">
                             <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                             <% if (shops[i].status == 'inactive'){ %>
-                            <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Activate" name="update" value="activate">
+                                <a href="/user/shop/edit?s=<%= shops[i]._id %>">
+                            <button class=" action-icon-button  action-icon" type="button" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
                             <%- include('assets/symbols/edit.svg') %>
-                            </button>
+                            </button></a>
                             <button class=" action-icon-button reactivate-icon action-icon" type="submit" data-toggle="tooltip"
                                 data-placement="left" title="Re-activate" name="update" value="open">
                                 <%- include('assets/symbols/reload.svg') %>
@@ -75,9 +76,9 @@
                                 <%- include('assets/symbols/bin.svg') %>
                             </button>
                             <%  } else { %>
-                            <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
+                            <a href="/user/shop/edit?s=<%= shops[i]._id %>"><button class=" action-icon-button  action-icon" type="button" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
                             <%- include('assets/symbols/edit.svg') %>
-                            </button>
+                            </button></a>
                             <button class=" action-icon-button close-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Close" name="update" value="close">
                                 <%- include('assets/symbols/no.svg') %>
                             </button>

@@ -7,11 +7,15 @@ const userModel = require('../models/user')
 let router = express.Router()
 
 //routes
+
+//APIs
 router.use('/api', api)
+
+//Static Files
 router.use('/public', express.static(path.join(__dirname, '../views/public')))
-//Ignore cfg.template
-router.use('/view/assets', express.static(path.join(__dirname, '../views/' + '/assets')))
-router.use('/user/view/assets', express.static(path.join(__dirname, '../views/' + '/assets')))
+router.use('*/view/assets', express.static(path.join(__dirname, '../views/' + '/assets')))
+
+//controllers
 router.use('/market', require('./market'))
 router.use('/signin', require('./signin'))
 router.use('/signup', require('./signup'))
@@ -26,6 +30,7 @@ router.use('/auth/google', require('./auth/google_oauth'))
 router.use('/auth/windowslive', require('./auth/windowslive_oauth'))
 router.use('/auth/facebook', require('./auth/facebook_oauth'))
 
+//root
 router.get('/', async (req, res) => {
     let name = undefined
     let user = undefined

@@ -731,8 +731,18 @@ position: relative;
     margin-right: 1rem;
 }
 
+.edit-heading-span {
+    display: flex;
+    justify-content: space-between;
+}
+
 .menu-main-navigation {
     z-index: 9;
+}
+
+.save-button .icon path {
+    stroke: var(--sidebar-icon-highlight-color);
+    fill: var(--sidebar-icon-highlight-color);
 }
 
 @media screen and (max-width: 1028px) {

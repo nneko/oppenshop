@@ -555,6 +555,8 @@ let productUpdateHandler = async (req, res) => {
     }
 }
 
+shops.use('/edit', require('./shopeditor'))
+shops.use('/edit/*', require('./shopeditor'))
 
 shops.get('/', async (req, res) => {
     try {

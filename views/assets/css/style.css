@@ -13,6 +13,7 @@
   --signin-with-btn-border-color: #c4cdd5;
   --signin-with-btn-bg-color: #f9fafb;
   --signin-with-btn-text-color: #263237;
+  --main-nav-highlight-color: black;
   --nav-bg-color: white;
   --nav-btn-color: #eff1f4;
   --nav-btn-border-color: #ced4da;
@@ -45,6 +46,11 @@ nav h4 a:hover {
     color: var(--main-text-em-color);
 }
 
+nav a:hover .icon path {
+    fill: var(--main-nav-highlight-color);
+    stroke: var(--main-nav-highlight-color);
+}
+
 nav a:hover {
     border-bottom: var(--main-text-em-color) 2px solid;
     color: var(--main-text-em-color);
@@ -53,7 +59,7 @@ nav a:hover {
 
 nav a {
     font-size: 1rem;
-    padding-bottom: 0.3rem;
+    padding-bottom: 1rem;
     text-decoration: none;
 }
 
@@ -208,6 +214,7 @@ svg {
 
 #main-search-form {
     margin: 0 2rem 0 2rem;
+    width: 65%;
     z-index: 10;
 }
 
@@ -260,7 +267,7 @@ svg {
     align-items: center;
     display: flex;
     justify-content: left;
-    width: 40%;
+    width: 50%;
     z-index: 10;
 }
 
@@ -379,7 +386,7 @@ svg {
     justify-content: space-between;
     margin: 0;
     padding: 0;
-    width: 60%;
+    width: 50%;
     z-index: 1;
 }
 
@@ -452,6 +459,11 @@ svg {
 
 .menu-item-selected {
     border-bottom: var(--main-highlight-color) 2px solid;
+    color: var(--main-highlight-color);
+}
+
+.menu-item-selected .icon path {
+    fill: var(--main-highlight-color);
     color: var(--main-highlight-color);
 }
 

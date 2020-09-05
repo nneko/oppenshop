@@ -26,15 +26,15 @@
         </div>
     </div>
     <ul class="menu-main-navigation nav-links">
-        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && (reqData.path.split('/')[1] == 'market' || reqData.path.split('/')[1] == '')) { %>class="menu-item-selected" <% } %> href="/market">Marketplace</a></li>
-        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag') { %>class="menu-item-selected" <% } %> href="/user/bag">Buy</a></li>
-        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'shop') { %>class="menu-item-selected" <% } %> href="/user/shop">Sell</a></li>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && (reqData.path.split('/')[1] == 'market' || reqData.path.split('/')[1] == '')) { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Browse" href="/market"><%- include('assets/symbols/shop.svg') %></a></li>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Buy" href="/user/bag"><%- include('assets/symbols/shopbagbranded.svg') %></a></li>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'shop') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Sell" href="/user/shop"><%- include('assets/symbols/tags.svg') %></a></li>
         <% if(typeof(user) !== 'undefined') {%> 
-        <li class="menu-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'account') { %>class="menu-item-selected" <% } %> href="/user/account">Account</a></li>
-            <li class="menu-item"><a href="/signout">Sign Out</a></li>
+        <li class="menu-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'account') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Account" href="/user/account"><%- include('assets/symbols/person-outline.svg') %></a></li>
+            <li class="menu-item"><a data-toggle="tooltip" data-placement="bottom" title="Sign Out" href="/signout"><%- include('assets/symbols/exit.svg') %></a></li>
         <% } else { %>
-            <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'signin' || reqData.path.split('/')[1] == 'signup' || reqData.path.split('/')[1] == 'reset' || reqData.path.split('/')[1] == 'verify') { %>class="menu-item-selected" <% } %> href="/signin">Sign in</a></li>
+            <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'signin' || reqData.path.split('/')[1] == 'signup' || reqData.path.split('/')[1] == 'reset' || reqData.path.split('/')[1] == 'verify') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Sign in" href="/signin">Sign in</a></li>
         <% } %>
-        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'support') { %>class="menu-item-selected" <% } %> href="/support">Support</a></li>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'support') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Support" href="/support"><%- include('assets/symbols/help-thin-border.svg') %></a></li>
     </ul>
 </nav>

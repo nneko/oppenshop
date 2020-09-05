@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "start": "node ./bin/app"
+    "start": "node ./bin/app",
+    "dev": "nodemon bin/app"    
   },
   "repository": {
     "type": "git",
@@ -52,6 +53,7 @@
     "uuid": "^8.1.0"
   },
   "devDependencies": {
-    "jest": "^26.2.2"
+    "jest": "^26.2.2",
+    "nodemon": "^2.0.4"
   }
 }

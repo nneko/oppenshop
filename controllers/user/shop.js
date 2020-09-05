@@ -220,42 +220,32 @@ let shopAddHandler = async (req, res) => {
             console.log(req.files)
             u.images = req.files
         }
-        if (form.setPrimary != 'true'){
-            // TODO: add new address for Shop
-            let add = {}
-            u.addressType = form.addressType
-            u.addressStreet = form.addressStreet
-            u.addressRegion = form.addressRegion
-            u.addressPostcode = form.addressPostcode
-            u.addressCountry = form.country
-            //u.address = add
-            //if (debug) console.log('New to add Address fields for new Shop ' + form)
 
+        let addr = {}
+        addr.type = form.addressType
+        addr.streetAddress = form.addressStreet
+        addr.locality = form.addressLocality
+        addr.region = form.addressRegion
+        addr.postalCode = form.addressPostcode
+        addr.country = form.addressCountry
+        addr.formatted = generator.formattedAddress(addr)
+
+        if (form.setPrimary != 'true'){
+            u.addresses = usr.addresses
+            u.addresses.push(addr)
         } else {
+            addr.primary = true
             if (typeof(usr.addresses) !== 'undefined') {
-                let primaryAddr = getPrimaryField(usr.addresses)
-                if (primaryAddr) {
-                    u.addressStreet = primaryAddr.streetAddress
-                    //viewData.addressLocality = { value: primaryAddr.locality }
-                    u.addressRegion = primaryAddr.region
-                    //u.addressState = primaryAddr.addressState
-                    u.addressPostcode = primaryAddr.postalCode
-                    u.addressCountry = primaryAddr.country
-                    u.addressType = primaryAddr.type
-                }
+                u.addresses = generator.removePrimaryFields(usr.addresses)
+                u.addresses.push(addr)
             } else {
-                res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop, due to no address assigned to user.' } })
+                u.addresses = [addr]
             }
         }
 
         try {
-            //await user.update({ preferredUsername: u.preferredUsername }, u)
-            //console.log(usr)
-            //console.log(u)
             let t = await shop.create(u)
-            //console.log(t.ops)
             if (debug) console.log('Shop added for ' + u.owner)
-            //let viewData = await populateViewData('\''+u.uid+'\'')
             let viewData = await populateViewData(u.owner)
             viewData.user = req.user
             viewData.pane = 'sf'

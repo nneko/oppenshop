@@ -27,32 +27,40 @@
                         <ul>
                             <li>
                                 <span>
-                                    <p>
+                                    <p class="item-card-label">
                                         <b><% if(typeof(shops[i].displayName) !== 'undefined') {%><%= shops[i].displayName %><% } else { %><%= shops[i].name %><% } %></b>
-                                        <% if(typeof(shops[i].description) !== 'undefined') { %>
-                                            <%= shops[i].description %>
-                                        <% } %>
-                                    </p>
-                                    <p class="extra-info">
-                                        <% if (typeof(shops[i].images) !== 'undefined' && Array.isArray(shops[i].images) && shops[i].images.length > 0) { %>
-                                          <% for(let k=0;k<shops[i].images.length;k++) { %>
-                                        <img class="storefront-image" alt="<%= shops[i].images[k].originalname %>" src="<%= shops[i].images[k].src %>" />
-                                          <% } %>
-                                        <% } else { %>
-                                        <figure class="storefront-image">
-                                            <%- include('assets/symbols/shop.svg') %>
-                                        </figure>
-                                        <% } %>
-                                        <% if(typeof(shops[i].status !== 'undefined')) { %>
-                                            Status: <b>
-                                                <% if(shops[i].status == 'active') { %>
-                                                    Open
-                                                <% } else { %>
-                                                    Closed
+                                    </dipv>
+                                    <div class=" item-card">
+                                        <div class="item-card-left">
+                                            <% if (typeof(shops[i].images) !== 'undefined' && Array.isArray(shops[i].images) && shops[i].images.length > 0) { %>
+                                            <% for(let k=0;k<shops[i].images.length;k++) { %>
+                                            <img class="storefront-image" alt="<%= shops[i].images[k].originalname %>" src="<%= shops[i].images[k].src %>" />
+                                            <% } %>
+                                            <% } else { %>
+                                            <figure class="storefront-image">
+                                                <%- include('assets/symbols/shop.svg') %>
+                                            </figure>
+                                            <% } %>
+                                        </div>
+                                        <div class="item-card-right extra-info">
+                                                <% if(typeof(shops[i].status !== 'undefined')) { %>
+                                                    <h4>Status</h4>
+                                                    <p>
+                                                        <% if(shops[i].status == 'active') { %>
+                                                        Open
+                                                        <% } else { %>
+                                                        Closed
+                                                        <% } %>
+                                                    </p>
                                                 <% } %>
-                                            </b>
-                                        <% } %>
-                                    </p>
+                                                <% if(typeof(shops[i].description) !== 'undefined') { %>
+                                                    <h4>Description</h4>
+                                                    <p>
+                                                        <%= shops[i].description %>
+                                                    </p>
+                                                <% } %>
+                                        </div>
+                                    </div>
                                 </span>
                             </li>
                         </ul>

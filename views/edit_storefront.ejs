@@ -33,79 +33,90 @@
                         </span>
                         <hr>
                     </div>
-                    <div class="standard-form-section">
-                        <form id="edit-storefront-form" class="standard-form" autocomplete="off" action="/user/shop/edit" method="POST" oninput=""
-                            enctype="multipart/form-data" novalidate>
-                            <fieldset <% if(typeof(show) !== 'undefined' && show == 'disabled') { %> disabled="disabled"
-                                <% } %>>
-                                <input type="hidden" name="id" value="<% if(typeof(id) !== 'undefined') { %><%= id %><% } %>">
-                                <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-                                <div class="form-group">
-                                    <div class="input-group mb-3">
+                    <div class="row">
+                        <div class="col-3">
+                            <figure class="featured-image">
+                                <% if(typeof(image) !== 'undefined' && image.value) { %>
+                                <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
+                                <% } %>
+                                </figure>
+                                <p class="featured-image-legend">Storefront Image</p>
+                        </div>
+                        <div class="col-9">
+                            <form id="edit-storefront-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/edit" method="POST" oninput=""
+                                enctype="multipart/form-data" novalidate>
+                                <fieldset <% if(typeof(show) !== 'undefined' && show == 'disabled') { %> disabled="disabled"
+                                    <% } %>>
+                                    <input type="hidden" name="id" value="<% if(typeof(id) !== 'undefined') { %><%= id %><% } %>">
+                                    <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="edit-storefront-name-basic-addon">Shop Name</span>
+                                                </div>
+                                                <input id="edit-storefront-name"
+                                                    class="form-control <% if(typeof(name) !== 'undefined' && typeof(name.class) !== 'undefined') { %><%= name.class %><% } %>"
+                                                    type="text" name="name"
+                                                    value="<% if(typeof(name) !== 'undefined' && typeof(name.value) !== 'undefined') { %><%= name.value %><% } %>"
+                                                    aria-label="Shop Name" aria-describedby="edit-storefront-name-basic-addon" size="55"
+                                                    required>
+                                                <div id="add-storefront-invalid-fullname" class="invalid-feedback">
+                                                    <% if(typeof(name) !== 'undefined' && name.class == 'is-invalid') { %><%= name.message %><% } else { %>
+                                                    You must provide a valid shop name.
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text" id="edit-storefront-name-basic-addon">Shop Name</span>
+                                                <span class="input-group-text" id="edit-storefront-description-basic-addon">Description</span>
                                             </div>
-                                            <input id="edit-storefront-name"
-                                                class="form-control <% if(typeof(name) !== 'undefined' && typeof(name.class) !== 'undefined') { %><%= name.class %><% } %>"
-                                                type="text" name="name"
-                                                value="<% if(typeof(name) !== 'undefined' && typeof(name.value) !== 'undefined') { %><%= name.value %><% } %>"
-                                                aria-label="Shop Name" aria-describedby="edit-storefront-name-basic-addon" size="55"
-                                                required>
-                                            <div id="add-storefront-invalid-fullname" class="invalid-feedback">
-                                                <% if(typeof(name) !== 'undefined' && name.class == 'is-invalid') { %><%= name.message %><% } else { %>
-                                                You must provide a valid shop name.
-                                                <% } %>
-                                            </div>
+                                        <textarea id="edit-storefront-description" class="form-control <% if(typeof(description) !== 'undefined' && typeof(description.class) !== 'undefined') { %><%= description.class %><% } %>" rows="4" cols="25" name="description" form="edit-storefront-form"
+                                                placeholder="Store Description ..." aria-label="Store Description"
+                                            aria-describedby="edit-storefront-description-basic-addon"><% if(typeof(description) !== 'undefined' && typeof(description.value) !== 'undefined') { %><%= description.value %><% } %></textarea>
                                         </div>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="edit-storefront-description-basic-addon">Description</span>
-                                        </div>
-                                    <textarea id="edit-storefront-description" class="form-control <% if(typeof(description) !== 'undefined' && typeof(description.class) !== 'undefined') { %><%= description.class %><% } %>" rows="4" cols="25" name="description" form="edit-storefront-form"
-                                            placeholder="Store Description ..." aria-label="Store Description"
-                                        aria-describedby="edit-storefront-description-basic-addon"><% if(typeof(description) !== 'undefined' && typeof(description.value) !== 'undefined') { %><%= description.value %><% } %></textarea>
-                                    </div>
-                                    <div class="input-group mb-3">
                                         <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text input-prepend-icon" id="edit-storefront-fullimage-basic-addon"
-                                                    data-toggle="tooltip" data-placement="bottom" data-original-title="Shop Image"
-                                                    title="Shop Image"><%- include('assets/symbols/picture.svg') %></span>
-                                            </div>
-                                            <input id="edit-storefront-fullimage"
-                                                class="form-control <% if(typeof(image) !== 'undefined' && typeof(image.class) !== 'undefined') { %><%= image.class %><% } %>"
-                                                type="file" name="fullimage" aria-label="Storefront Image"
-                                                aria-describedby="edit-storefront-fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple
-                                                onchange="validateImageFiles()" onclick="clearImageValidation()">
-                                            <div id="edit-storefront-invalid-fullimage" class="invalid-feedback">
-                                                <% if(typeof(image) !== 'undefined' && typeof(image.class) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
-                                                You must provide a valid image of type: jpg/jpeg/png.
-                                                <% } %>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text input-prepend-icon" id="edit-storefront-fullimage-basic-addon"
+                                                        data-toggle="tooltip" data-placement="bottom" data-original-title="Shop Image"
+                                                        title="Shop Image"><%- include('assets/symbols/picture.svg') %></span>
+                                                </div>
+                                                <input id="edit-storefront-fullimage"
+                                                    class="form-control <% if(typeof(image) !== 'undefined' && typeof(image.class) !== 'undefined') { %><%= image.class %><% } %>"
+                                                    type="file" name="fullimage" aria-label="Storefront Image"
+                                                    aria-describedby="edit-storefront-fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple
+                                                    onchange="validateImageFiles()" onclick="clearImageValidation()">
+                                                <div id="edit-storefront-invalid-fullimage" class="invalid-feedback">
+                                                    <% if(typeof(image) !== 'undefined' && typeof(image.class) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
+                                                    You must provide a valid image of type: jpg/jpeg/png.
+                                                    <% } %>
+                                                </div>
                                             </div>
                                         </div>
+                                        <hr>
+                                        <div class="form-callout mb-3">
+                                            <p class="form-callout-legend">Update the shop's primary address below.
+                                            </p>
+                                        </div>
+                                        <hr>
+                                        <fieldset id="edit-store-address-fieldset">
+                                            <%- include('./_address_form_fields.ejs') %>
+                                        </fieldset>
+                                        <hr>
+                                        <div class="form-callout mb-3">
+                                            <p class="form-callout-legend">Update the primary contact number for the shop.</p>
+                                        </div>
+                                        <input type="hidden" name="phoneType" value="work">
+                                        <%- include('./_phoneNumber_form_fields') %>
+                                        <div id="storefront-save-button-container">
+                                            <button id="save-storefront-button" type="submit" class="btn btn-primary" onclick="">Save</button>
+                                        </div>
                                     </div>
-                                    <hr>
-                                    <div class="form-callout mb-3">
-                                        <p class="form-callout-legend">Update the shop's primary address below.
-                                        </p>
-                                    </div>
-                                    <hr>
-                                    <fieldset id="edit-store-address-fieldset">
-                                        <%- include('./_address_form_fields.ejs') %>
-                                    </fieldset>
-                                    <hr>
-                                    <div class="form-callout mb-3">
-                                        <p class="form-callout-legend">Update the primary contact number for the shop.</p>
-                                    </div>
-                                    <%- include('./_phoneNumber_form_fields') %>
-                                    <div id="storefront-save-button-container">
-                                        <button id="save-storefront-button" type="submit" class="btn btn-primary" onclick="">Save</button>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

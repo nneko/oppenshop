@@ -146,8 +146,6 @@ generator.formattedAddress = (addr) => {
             addressString += addressString.concat(streetAddress + '\n' + locality + ', ' + region + ' ' + postalCode + ' ' + country)
         }
     }
-    console.log('Formatted address to:')
-    console.log(addressString)
     return addressString
 }
 

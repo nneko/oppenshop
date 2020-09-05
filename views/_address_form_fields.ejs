@@ -3,49 +3,67 @@
                     <label class="form-label" for="adddressType">Type of Address</label>
                     <select class="form-control <% if(typeof(addressType) !== 'undefined') { %><%= addressType.class %><% } %>"
                         type="text" name="addressType" value="" aria-label="addressType" aria-describedby="addressType-basic-addon">
-                        <option selected="selected">home</option>
-                        <option>work</option>
-                        <option>other</option>
+                    <option <% if(typeof(addressType) !== 'undefined' && addressType.value == 'home') { %>selected="selected"<% } %>>home</option>
+                        <option <% if(typeof(addressType) !== 'undefined' && addressType.value == 'work') { %>selected="selected"<% } %>>work</option>
+                        <option <% if(typeof(addressType) !== 'undefined' && addressType.value == 'other') { %>selected="selected"<% } %>>other</option>
                     </select>
                 </div>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text">No. & Street</span>
                     </div>
-                    <input class="form-control <% if(typeof(locals.addressStreet) !== 'undefined') { %><%= addressStreet.class %>><% } %>" type="text" name="addressStreet" value="<% if(typeof(addressStreet) !== 'undefined' && addressStreet.class == 'is-valid') { %><%= addressStreet.value %><% } %>"
+                    <input class="form-control <% if(typeof(locals.addressStreet) !== 'undefined') { %><%= addressStreet.class %>><% } %>" type="text" name="addressStreet" value="<% if(typeof(addressStreet) !== 'undefined' && typeof(addressStreet.value) !== 'undefined') { %><%= addressStreet.value %><% } %>"
                         aria-label="Street Address" aria-describedby="addressStreet-basic-addon" size="25" required>
                     <div class="invalid-feedback">
                     <% if(typeof(addressStreet) !== 'undefined' && addressStreet.class == 'is-invalid') { %><%= addressStreet.message %><% } else { %>You must provide an address.<% } %>
                     </div>
                 </div>
                 <div class="input-group mb-3">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="addressLocality-basic-addon">Community / Town /
+                                City</span>
+                        </div>
+                        <input id="addressLocality"
+                            class="form-control <% if(typeof(addressLocality) !== 'undefined') { %><%= addressLocality.class %><% } %>"
+                            type="text" name="addressLocality"
+                            value="<% if(typeof(addressLocality) !== 'undefined' && typeof(addressLocality.value) !== 'undefined') { %><%= addressLocality.value %><% } %>"
+                            aria-label="Address" aria-describedby="addressLocality-basic-addon" size="25" required>
+                        <div id="invalid-street" class="invalid-feedback">
+                            <% if(typeof(addressLocality) !== 'undefined' && addressLocality.class == 'is-invalid') { %><%= addressLocality.message %><% } else { %>
+                            You must provide an address location.
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
                     <div class="form-group form-inline">
-                        <label class="form-label" for="addressState">Parish / State</label>
-                        <select class="form-control <% if(typeof(addressState) !== 'undefined') { %><%= addressState.class %><% } %>" type="text" name="AddressRegion" value=""
-                            aria-label="State Address" aria-describedby="AddressRegion-basic-addon">
-                            <option selected="selected">Kingston & St. Andrew</option>
-                            <option>St. Catherine</option>
-                            <option>Clarendon</option>
-                            <option>Manchester</option>
-                            <option>St. Elizabeth</option>
-                            <option>Westmoreland</option>
-                            <option>Hanover</option>
-                            <option>St. James</option>
-                            <option>Trelawny</option>
-                            <option>St. Ann</option>
-                            <option>St. Mary</option>
-                            <option>Portland</option>
-                            <option>St. Thomas</option>
+                        <label class="form-label" for="addressRegion">Parish / State</label>
+                        <select class="form-control <% if(typeof(addressRegion) !== 'undefined') { %><%= addressRegion.class %><% } %>" type="text" name="addressRegion" value=""
+                            aria-label="Address Region" aria-describedby="addressRegion-basic-addon">
+                        <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'Kingston & St. Andrew') { %>selected="selected"<% } %>>Kingston & St. Andrew</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'St. Catherine') { %>selected="selected"<% } %>>St. Catherine</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'Clarendon') { %>selected="selected"<% } %>>Clarendon</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'Manchester') { %>selected="selected"<% } %>>Manchester</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'St. Elizabeth') { %>selected="selected"<% } %>>St. Elizabeth</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'Westmoreland') { %>selected="selected"<% } %>>Westmoreland</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'Hanover') { %>selected="selected"<% } %>>Hanover</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'St. James') { %>selected="selected"<% } %>>St. James</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'Trelawny') { %>selected="selected"<% } %>>Trelawny</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'St. Ann') { %>selected="selected"<% } %>>St. Ann</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'St. Mary') { %>selected="selected"<% } %>>St. Mary</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'Portland') { %>selected="selected"<% } %>>Portland</option>
+                            <option <% if(typeof(addressRegion) !== 'undefined' && addressRegion.value == 'St. Thomas') { %>selected="selected"<% } %>>St. Thomas</option>
                         </select>
                         <div class="invalid-feedback">
-                        <% if(typeof(AddressRegion) !== 'undefined' && AddressRegion.class == 'is-invalid') { %><%= AddressRegion.message %><% } else { %>You must select a valid Parish / State. <% } %>
+                        <% if(typeof(addressRegion) !== 'undefined' && addressRegion.class == 'is-invalid') { %><%= addressRegion.message %><% } else { %>You must select a valid Parish / State. <% } %>
                         </div>
                     </div>
                 </div>
                 <div class="input-group mb-3">
                     <div class="form-group form-inline">
                         <label class="form-label" for="addressPostcode">Postcode</label>
-                        <input class="form-control <% if(typeof(locals.addressPostcode) !== 'undefined') { %><%= addressPostcode.class %><% } %>" type="text" name="addressPostcode" value="<% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.class == 'is-valid') { %><%= addressPostcode.value %><% } %>"
+                        <input class="form-control <% if(typeof(locals.addressPostcode) !== 'undefined') { %><%= addressPostcode.class %><% } %>" type="text" name="addressPostcode" value="<% if(typeof(addressPostcode) !== 'undefined' && typeof(addressPostcode.value) !== 'undefined') { %><%= addressPostcode.value %><% } %>"
                             aria-label="Postal Code" aria-describedby="addressPostcode-basic-addon" size="5" required>
                         <div class="invalid-feedback">
                         <% if(typeof(addressPostcode) !== 'undefined' && addressPostcode.class == 'is-invalid') { %><%= addressPostcode.message %><% } else { %>Please enter a valid postal code.<% } %>

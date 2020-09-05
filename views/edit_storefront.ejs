@@ -38,6 +38,8 @@
                             <figure class="featured-image">
                                 <% if(typeof(image) !== 'undefined' && image.value) { %>
                                 <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
+                                <% } else { %>
+                                    <%- include('assets/symbols/shop.svg') %>
                                 <% } %>
                                 </figure>
                                 <p class="featured-image-legend">Storefront Image</p>
@@ -84,12 +86,12 @@
                                                         title="Shop Image"><%- include('assets/symbols/picture.svg') %></span>
                                                 </div>
                                                 <input id="edit-storefront-fullimage"
-                                                    class="form-control <% if(typeof(image) !== 'undefined' && typeof(image.class) !== 'undefined') { %><%= image.class %><% } %>"
+                                                    class="form-control <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined') { %><%= image.class %><% } %>"
                                                     type="file" name="fullimage" aria-label="Storefront Image"
                                                     aria-describedby="edit-storefront-fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple
                                                     onchange="validateImageFiles()" onclick="clearImageValidation()">
                                                 <div id="edit-storefront-invalid-fullimage" class="invalid-feedback">
-                                                    <% if(typeof(image) !== 'undefined' && typeof(image.class) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
+                                                    <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
                                                     You must provide a valid image of type: jpg/jpeg/png.
                                                     <% } %>
                                                 </div>

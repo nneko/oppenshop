@@ -23,6 +23,8 @@ router.use('/signout', require('./signout'))
 router.use('/verify', require('./verify'))
 router.use('/sell', require('./sell'))
 router.use('/user/shop', require('./user/shop'))
+//router.use('/product/edit', require('./user/producteditor'))
+//router.use('/product/edit/*', require('./user/producteditor'))
 router.use('/user/account', require('./user/account'))
 router.use('/user/resetpassword', require('./user/resetpassword'))
 router.use('/reset', require('./reset'))
@@ -70,10 +72,10 @@ router.get('/', async (req, res) => {
 //Default to 404 handler
 router.use((req, res, next) => {
     res.status(404)
-    
+
     let status = 404
     let message = 'Not Found'
-    
+
     // respond with html page
     if (req.accepts('html')) {
         let name = undefined

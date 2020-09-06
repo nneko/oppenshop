@@ -79,9 +79,10 @@
 
                                             <input type="hidden" name="sid" value="<% if(typeof(shops[j].products[i].sid) !== 'undefined') { %><%= shops[j].products[i].sid %><% } %>">
                                             <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-                                            <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
+                                            <a href="/user/shop/product/edit?s=<%= shops[j].products[i]._id %>">
+                                            <button class=" action-icon-button  action-icon" type="button" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
                                             <%- include('assets/symbols/edit.svg') %>
-                                            </button>
+                                            </button></a>
                                             <% if(shops[j].products[i].status == 'inactive') { %>
                                                 <button class=" action-icon-button reactivate-icon action-icon" type="submit" data-toggle="tooltip" data-placement="left"
                                                     title="Re-activate" name="update" value="reactivate">

@@ -1,5 +1,5 @@
 <div class="input-group-append small-input-control">
-    <!-- 
+    <!--
     <button id="currency-selector" class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
         aria-expanded="false">Currency</button>
     <div class="dropdown-menu">
@@ -8,7 +8,7 @@
     </div>
 -->
     <select class="custom-select btn" name="currency">
-        <option value="jmd" selected>jmd</option>
-        <option value="usd">usd</option>
+        <option value="jmd" <% if(typeof(currency) !== 'undefined' && currency.value == 'jmd') { %>selected="selected"<% } %>>jmd</option>
+        <option value="usd" <% if(typeof(currency) !== 'undefined' && currency.value == 'usd') { %>selected="selected"<% } %>>usd</option>
     </select>
 </div>

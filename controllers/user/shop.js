@@ -351,6 +351,7 @@ let productAddHandler = async (req, res) => {
         for (key in form){
           if (!key.startsWith('spec_')) continue
           specs[key.replace('spec_', '')] = form[key]
+          //specs[key] = form[key]
           //p[key] = form[key]
           //console.log(key, form[key])
           //console.log(key.replace('spec_', ''), form[key])
@@ -573,6 +574,7 @@ let productUpdateHandler = async (req, res) => {
                     }
                     break
                 case 'edit':
+                    console.log('Not routing to Product Edit.')
                     return await badRequest(req, res, 'in', 501, 'Functionality not implemented', 'info')
                     break
                 default:
@@ -586,6 +588,8 @@ let productUpdateHandler = async (req, res) => {
 
 shops.use('/edit', require('./shopeditor'))
 shops.use('/edit/*', require('./shopeditor'))
+shops.use('/product/edit', require('./producteditor'))
+shops.use('/product/edit/*', require('./producteditor'))
 
 shops.get('/', async (req, res) => {
     try {

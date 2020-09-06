@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-3 flex-column flex-sm-row sidebar">
                 <div class="list-group flex-column" id="seller-tablist" role="tablist">
-                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'sf') { %>active<% } %>" id="storefronts-tab" data-toggle="list" role="tab" aria-controls="storefronts" aria-selected="false" href="#storefronts-pane"><%- include('assets/symbols/shop.svg') %>Storefronts</a>
+                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'sf') { %>active<% } %>" id="storefronts-tab" data-toggle="list" role="tab" aria-controls="storefronts" aria-selected="false" href="#storefronts-pane"><%- include('assets/symbols/shop.svg') %>Shops</a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pd' || pane == 'in' || pane == 'pd-new' || pane == 'cl') { %>active<% } %>" id="products-tab" data-toggle="list" role="tab" aria-controls="products" aria-selected="true" href="#products-pane"><%- include('assets/symbols/tags.svg') %>Products</a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'or') { %>active<% } %>" id="orders-tab" data-toggle="list" role="tab" aria-controls="orders" aria-selected="false" href="#orders-pane"><%- include('assets/symbols/order sheet.svg') %>Orders</a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pkg') { %>active<% } %>"

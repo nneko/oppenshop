@@ -40,7 +40,7 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
     mObj[mtype] = msg ? msg : 'Invalid request.'
 
     try {
-        let viewData = await populateViewData(req.user.id)
+        let viewData = await populateViewData(req.user.id.toString())
         viewData.user = req.user
         viewData.pane = typeof(show) == 'string' && show !== "" ? show : 'sf'
         viewData.messages = mObj
@@ -132,7 +132,7 @@ let catalogAddHander = async (req, res) => {
 
             let form = converter.objectFieldsToString(req.body)
 
-            if (form.uid != req.user.id) {
+            if (form.uid != req.user.id.toString()) {
                 _403redirect(req, res, '/user/shop/?show=cl', 'Permission denied.')
                 return
             }
@@ -190,7 +190,7 @@ let shopAddHandler = async (req, res) => {
 
         let form = converter.objectFieldsToString(req.body)
 
-        if (form.uid != req.user.id) {
+        if (form.uid != req.user.id.toString()) {
             _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
             return
         }
@@ -279,7 +279,7 @@ let productAddHandler = async (req, res) => {
 
         let form = converter.objectFieldsToString(req.body)
 
-        if (form.uid != req.user.id) {
+        if (form.uid != req.user.id.toString()) {
             _403redirect(req, res, '/user/shop/?show=pd-new', 'Permission denied.')
             return
         }
@@ -359,7 +359,7 @@ let shopUpdateHandler = async (req, res) => {
             console.log(s)
             switch (form.update) {
                 case 'open':
-                    if (form.uid != req.user.id) {
+                    if (form.uid != req.user.id.toString()) {
                         _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
                         return
                     }
@@ -380,7 +380,7 @@ let shopUpdateHandler = async (req, res) => {
                     }
                     break
                 case 'close':
-                    if (form.uid != req.user.id) {
+                    if (form.uid != req.user.id.toString()) {
                             _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
                             return
                     }
@@ -401,7 +401,7 @@ let shopUpdateHandler = async (req, res) => {
                     }
                     break
                 case 'delete':
-                    if (form.uid != req.user.id) {
+                    if (form.uid != req.user.id.toString()) {
                         _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
                         return
                     }
@@ -464,7 +464,7 @@ let productUpdateHandler = async (req, res) => {
 
             switch(form.update) {
                 case 'delete':
-                    if (form.uid != req.user.id) {
+                    if (form.uid != req.user.id.toString()) {
                             _403redirect(req, res, '/user/shop/?show=in', 'Permission denied.')
                             return
                     }
@@ -492,7 +492,7 @@ let productUpdateHandler = async (req, res) => {
                     }
                     break
                 case 'reactivate':
-                    if (form.uid != req.user.id) {
+                    if (form.uid != req.user.id.toString()) {
                         _403redirect(req, res, '/user/shop/?show=in', 'Permission denied.')
                         return
                     }
@@ -513,7 +513,7 @@ let productUpdateHandler = async (req, res) => {
                     }
                     break
                 case 'withdraw':
-                    if (form.uid != req.user.id) {
+                    if (form.uid != req.user.id.toString()) {
                         _403redirect(req, res, '/user/shop/?show=in', 'Permission denied.')
                         return
                     }
@@ -626,6 +626,10 @@ shops.post('/', function (req, res) {
                 case 'st':
                     console.log(req.body)
                     await shopAddHandler(req,res)
+                    break
+                case 'cl':
+                    console.log(req.body)
+                    await catalogAddHander(req, res)
                     break
                 default:
                    console.log(req)

@@ -1,8 +1,8 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'cl' ) { %>show active<% } %>"
     id="catalogs-pane" role="tabpanel" aria-labelledby="catalog-products-tab">
     <h2 class="tab-pane-h2">Browse Catalogs</h2>
-    <div>
-        <a class="right add-address-link" href="#new-catalog-form"><%- include('assets/symbols/plus.svg') %>Create Catalog</a>
+    <div class="add-action-button-section">
+        <a id="create-catalog-link" class="right add-address-link" href="#new-catalog-form" onclick="document.getElementById('create-catalog-section').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %>Create Catalog</a>
     </div>
     <div class="form-group form-inline mb-3">
        <label id="catalogs-select-label" class="form-label" for="catalogS;ect">Select a catalog</label>
@@ -59,5 +59,119 @@
         <p>No products associated with catalog.</p>
         <% } %>
     </section>
-    <hr>
+    <section class="standard-form-section" id="create-catalog-section"
+        <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0 ){ %>hidden<% } %>>
+        <hr>
+        <h3>Create catalog</h3>
+        <div>
+            <button class="right action-icon-button action-icon" type="submit" data-toggle="tooltip" data-placement="left"
+                href="#catalogs-pane" title="Cancel" name="update" value="cancel"
+                onclick="closeCreateCatalogForm()">
+                <%- include('assets/symbols/close.svg') %>
+            </button>
+        </div>
+        <form id="create-catalog-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST" oninput=""
+            enctype="multipart/form-data" novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.addresses) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="cl">
+    
+                <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="create-catalog-name-basic-addon">Catalog Name</span>
+                            </div>
+                            <input id="create-catalog-name"
+                                class="form-control <% if(typeof(name) !== 'undefined') { %><%= name.class %><% } %>"
+                                type="text" name="name"
+                                value="<% if(typeof(fullname) !== 'undefined' && name.value) { %><%= name.value %><% } %>"
+                                aria-label="Catalog Name" aria-describedby="create-catalog-name-basic-addon" size="55"
+                                required>
+                            <div id="create-catalog-invalid-name" class="invalid-feedback">
+                                <% if(typeof(fullname) !== 'undefined' && name.class == 'is-invalid') { %><%= name.message %><% } else { %>
+                                You must provide a valid catalog name.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="create-catalog-description-basic-addon">Description</span>
+                        </div>
+                        <textarea class="form-control" rows="4" cols="25" name="description" form="create-catalog-form"
+                            placeholder="Catalog description ..." aria-label="Catalog description"
+                            aria-describedby="create-catalog-description-basic-addon"></textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text input-prepend-icon" id="create-catalog-image-basic-addon"
+                                    data-toggle="tooltip" data-placement="bottom" data-original-title="Catalog Image"
+                                    title="Catalog Image"><%- include('assets/symbols/picture.svg') %></span>
+                            </div>
+                            <input id="create-catalog-image"
+                                class="form-control <% if(typeof(image) !== 'undefined') { %><%= image.class %><% } %>"
+                                type="file" name="image" aria-label="Catalog Image"
+                                aria-describedby="create-catalog-image-basic-addon" accept=".jpg,.jpeg,.png" multiple
+                                onchange="validateImageFiles()" onclick="clearImageValidation()">
+                            <div id="create-catalog-invalid-image" class="invalid-feedback">
+                                <% if(typeof(image) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
+                                You must provide a valid image of type: jpg/jpeg/png.
+                                <% } %>
+                            </div>
+                        </div>
+                        <div id="create-catalog-button-container">
+                            <button id="create-catalog-button" type="submit" class="btn btn-primary" onclick="">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
 </div>
+<script>
+    function closeCreateCatalogForm() {
+        document.getElementById('create-catalog-section').setAttribute('hidden', true)
+        document.getElementById('create-catalog-link').scrollIntoView(false)
+    }
+
+    function clearImageValidation() {
+        let imgInput = document.getElementById('create-catalog-image')
+        if (imgInput) {
+            imgInput.classList.remove('is-invalid')
+        }
+    }
+
+    function validateImageFiles() {
+        let imgInput = document.getElementById('create-catalog-image')
+        let imgInputInvalidElem = document.getElementById('create-catalog-invalid-image')
+        let imgFiles = imgInput.files
+        let uploadLimit = <%= typeof (uploadLimit) === 'number' ? uploadLimit : 10 %>
+            let uploadSize = <%= typeof (uploadSize) === 'number' ? uploadSize : 10485760 %>
+
+        if (imgInput) {
+            console.log('validating images...')
+            if (imgFiles.length > uploadLimit) {
+                imgInputInvalidElem.innerHTML = 'You cannot upload more than ' + uploadLimit.toString() + ' images.'
+                imgInput.value = null
+                imgInput.classList.add('is-invalid')
+                return
+            }
+
+            let totalImgSize = 0
+
+            for (let i = 0; i < imgFiles.length; i++) {
+                totalImgSize += imgFiles[i].size
+                console.log('Total image size: ' + totalImgSize.toString())
+                if (totalImgSize > uploadSize) {
+                    imgInputInvalidElem.innerHTML = 'Upload size limit of ' + uploadSize.toString() + ' exceeded.'
+                    imgInput.value = null
+                    imgInput.classList.add('is-invalid')
+                    return
+                }
+            }
+        }
+    }
+</script>

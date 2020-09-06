@@ -676,7 +676,7 @@ white-space: nowrap;
     width: 100%;
 }
 
-#catalog-select, #shop-select, #storefront-select, #product-status-select {
+#catalog-select, #shop-select, #storefront-select, #product-status-select, #product-filter-select {
     margin-left: 1rem;
     margin-right: 1rem;
 }

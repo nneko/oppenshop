@@ -3,12 +3,17 @@ const db = require('../adapters/storage/'+cfg.dbAdapter)
 const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
 const product = require('./product')
+const shop = require('./shop')
 
 let catalog = {}
 
 catalog.isValid = async (c) => {
     try {
-        if (validator.isNotNull(c) && (!validator.isEmpty(c)) && c.hasOwnProperty('name') && c.hasOwnProperty('description') && c.hasOwnProperty('shop') && typeof(c.name) == 'string' && validator.isNotNull(s.name) && typeof (c.description) == 'string' && validator.isNotNull(c.description) && c.hasOwnProperty('products') && Array.isArray(c.products)) {
+        let shopExists = null
+        if(validator.isNotNull(c) && typeof(c.owner) == 'string') {
+            shopExists = await shop.read(c.owner,{findBy: 'id'})
+        }
+        if (validator.isNotNull(c) && (!validator.isEmpty(c)) && shopExists && c.hasOwnProperty('name') && c.hasOwnProperty('description') && c.hasOwnProperty('owner') && typeof (c.name) == 'string' && validator.isNotNull(s.name) && typeof (c.owner) == 'string' && validator.isNotNull(c.owner) && typeof (c.description) == 'string' && validator.isNotNull(c.description) && c.hasOwnProperty('products') && Array.isArray(c.products)) {
             return true
         } else {
             return false

@@ -12,7 +12,7 @@ const debug = cfg.env == 'development' ? true : false
 //const passport = require('passport')
 const multer  = require('multer')
 const storage = multer.memoryStorage()
-var upload = multer({storage: storage,
+const fileUploader = multer({storage: storage,
                     onError : function(err, next) {
                       console.log('error', err);
                       next(err);
@@ -62,7 +62,7 @@ let _403redirect = (req, res, url, msg) => {
 let populateViewData = async (uid, status = 'active') => {
     return new Promise(async (resolve, reject) => {
         t = { owner: uid }
-        console.log(t)
+        console.log('Populating view for shop owner: ' + t.owner)
         try {
 
             s = await shop.read(t)
@@ -88,24 +88,59 @@ let populateViewData = async (uid, status = 'active') => {
                         x.products = p
                     }
                     viewData.shops = s
+                } else if(await shop.isValid(s)) {
+                    if (Array.isArray(s.images) && s.images.length > 0) {
+                        for (const sxx of s.images) {
+                            sxx.src = media.getBinaryDetails(sxx)
+                        }
+                    }
+                    let sp = await product.read({ shop: s._id.toString() })
+                    for (const sy of sp) {
+                        if (Array.isArray(sy.images) && sy.images.length > 0) {
+                            for (const syy of sy.images) {
+                                syy.src = media.getBinaryDetails(syy)
+                            }
+                        }
+                    }
+                    s.products = sp
+
+                    viewData.shops = [s]
                 }
             }
 
             viewData.catalogs = []
             for (let i = 0; i < viewData.shops.length; i++) {
                 try {
-                    if (shop.isValid(viewData.shops[i])) {
-                        let cList = await catalog.read({ shop: viewData.shops[i]._id })
+                    if (await shop.isValid(viewData.shops[i])) {
+                        let cFilter = { owner: viewData.shops[i]._id.toString() }
+                        if(debug) {
+                            console.log('Searching for catalogs using filter:')
+                            console.log(cFilter)
+                        }
+                        let cList = await catalog.read(cFilter)
                         if (Array.isArray(cList) && cList.length > 0) {
-                            for (let j = 0; j < cList.length; j++) {
-                                if (catalog.isValid(cList[j])) viewData.catalogs.push(c)
+                            if(debug) {
+                                console.log('Catalog list found: ')
+                                console.log(cList)
                             }
+                            for (let j = 0; j < cList.length; j++) {
+                                if (await catalog.isValid(cList[j])) viewData.catalogs.push(cList[j])
+                            }
+                        } else if (await catalog.isValid(cList)) {
+                            if(debug) {
+                                console.log(cList)
+                            }
+                            viewData.catalogs.push(cList)
                         }
                     }
                 } catch (e) {
                     console.error(e)
                     console.log('Error reading shop list skipping remainder.')
                 }
+            }
+            if(debug) {
+                console.log('View Data: ')
+                console.log(viewData)
             }
             resolve(viewData)
         } catch (e) {
@@ -142,22 +177,22 @@ let catalogAddHander = async (req, res) => {
                 return
             }
 
-            const shp = await shop.read(form.shop, {findBy: 'id'})
+            const shp = await shop.read(form.sid, {findBy: 'id'})
 
-            if (!shop.isValid(shp) && shp.status == 'active') {
+            if (! await shop.isValid(shp) && shp.status == 'active') {
                 await badRequest(req, res, 'cl', 400, 'Catalogs must be associated with a valid and active storefront.')
                 return
             }
 
             c.name = form.name
             c.description = form.description
-            c.shop = form.shop
+            c.owner = form.sid
             c.products = []
 
             let ctg = await catalog.create(c)
             if (debug) console.log('Catalog added for ' + shp.displayName)
             //let viewData = await populateViewData('\''+u.uid+'\'')
-            let viewData = await populateViewData(req.user.id)
+            let viewData = await populateViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'cl'
             viewData.messages = { success: 'Catalog created.' }
@@ -587,7 +622,7 @@ shops.get('/', async (req, res) => {
 })
 
 shops.post('/', function (req, res) {
-  upload(req, res, async function (err) {
+  fileUploader(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       console.error('A Multer error occurred when uploading.')
       console.error(err.stack)

@@ -97,6 +97,19 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
+                        <div class="form-group form-inline mb-3">
+                            <label id="catalogShopIDLabel" class="form-label" for="ShopID">Catalog Owner</label>
+                            <select id="catalogShopID"
+                                class="form-control <% if(typeof(shopList) !== 'undefined' && typeof(shopList.class) !== 'undefined') { %><%= shopList.class %><% } %>"
+                                type="text" name="sid" value="" aria-label="catalogShopIDLabel" aria-describedby="catalogShopIDLabel"
+                                ondurationchange="" onchange="">
+                                <% for(let i=0;i<shops.length;i++) { %>
+                                <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="create-catalog-description-basic-addon">Description</span>
                         </div>
@@ -112,12 +125,12 @@
                                     title="Catalog Image"><%- include('assets/symbols/picture.svg') %></span>
                             </div>
                             <input id="create-catalog-image"
-                                class="form-control <% if(typeof(image) !== 'undefined') { %><%= image.class %><% } %>"
-                                type="file" name="image" aria-label="Catalog Image"
+                                class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullimage.class %><% } %>"
+                                type="file" name="fullimage" aria-label="Catalog Image"
                                 aria-describedby="create-catalog-image-basic-addon" accept=".jpg,.jpeg,.png" multiple
                                 onchange="validateImageFiles()" onclick="clearImageValidation()">
                             <div id="create-catalog-invalid-image" class="invalid-feedback">
-                                <% if(typeof(image) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
+                                <% if(typeof(fullimage) !== 'undefined' && fullimage.class == 'is-invalid') { %><%= fullimage.message %><% } else { %>
                                 You must provide a valid image of type: jpg/jpeg/png.
                                 <% } %>
                             </div>

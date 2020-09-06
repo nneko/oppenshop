@@ -155,7 +155,7 @@ shopeditor.post('/', function (req, res) {
                         return
                     }
 
-                    if (form.uid != req.user.id) {
+                    if (form.uid != req.user.id.toString()) {
                         _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
                         return
                     }

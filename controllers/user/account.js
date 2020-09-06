@@ -25,7 +25,7 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
 
     try {
         if (req.user) {
-            let viewData = await populateUserViewData(req.user.id)
+            let viewData = await populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = show
             viewData.messages = mObj
@@ -152,7 +152,7 @@ let lsFormHandler = async (req, res) => {
                     const nwPwHash = await bcrypt.hash(String(req.body.nw_pwd), 10)
                     u.password = nwPwHash
                 } else {
-                    let viewData = await populateUserViewData(req.user.id)
+                    let viewData = await populateUserViewData(req.user.id.toString())
                     viewData.user = req.user
                     viewData.pane = 'ls'
                     viewData.messages = { error: 'Authentication failed. Incorrect password.' }
@@ -193,7 +193,7 @@ let lsFormHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
                 console.log(formFields)
             }
-            let viewData = await populateUserViewData(req.user.id)
+            let viewData = await populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'ls'
             viewData.messages = { info: 'Account could not be updated.' }
@@ -204,7 +204,7 @@ let lsFormHandler = async (req, res) => {
             try {
                 const result = await user.update({ preferredUsername: u.preferredUsername }, { password: u.password })
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id)
+                let viewData = await populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'ls'
                 viewData.messages = { success: 'Account updated.' }
@@ -241,7 +241,7 @@ let ciFormHandler = async (req, res) => {
 
     let form = converter.objectFieldsToString(req.body)
 
-    if (form.uid != req.user.id) {
+    if (form.uid != req.user.id.toString()) {
         _403redirect(req, res, '/user/account/?show=ci', 'Permission denied.')
         return
     }
@@ -335,7 +335,7 @@ let ciFormHandler = async (req, res) => {
             console.log('Invalid update account request received.')
             console.log(formFields)
         }
-        let viewData = await populateUserViewData(req.user.id)
+        let viewData = await populateUserViewData(req.user.id.toString())
         viewData.addressStreet = formFields.addressStreet
         viewData.addressLocality = formFields.addressLocality
         viewData.addressRegion = formFields.addressRegion
@@ -351,7 +351,7 @@ let ciFormHandler = async (req, res) => {
         try {
             await user.update({ preferredUsername: u.preferredUsername }, u)
             if (debug) console.log('User account updated for ' + u.preferredUsername)
-            let viewData = await populateUserViewData(req.user.id)
+            let viewData = await populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'ci'
             viewData.messages = { success: 'Account updated.' }
@@ -384,7 +384,7 @@ let naFormHandler = async (req, res) => {
 
         let form = converter.objectFieldsToString(req.body)
 
-        if (form.uid != req.user.id) {
+        if (form.uid != req.user.id.toString()) {
             _403redirect(req, res, '/user/account/?show=ad', 'Permission denied.')
             return
         }
@@ -477,7 +477,7 @@ let naFormHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
                 console.log(formFields)
             }
-            let viewData = await populateUserViewData(req.user.id)
+            let viewData = await populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'ad'
             viewData.messages = { error: 'One or more fields has invalid entries.' }
@@ -496,7 +496,7 @@ let naFormHandler = async (req, res) => {
             try {
                 await user.update({ preferredUsername: u.preferredUsername }, u)
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id)
+                let viewData = await populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'ad'
                 viewData.messages = { success: 'Account updated.' }
@@ -554,7 +554,7 @@ let addressUpdateHandler = async (req, res) => {
 
             switch(form.update) {
                 case 'delete':
-                    if (form.uid != req.user.id) {
+                    if (form.uid != req.user.id.toString()) {
                             _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
                             return
                     }
@@ -582,7 +582,7 @@ let addressUpdateHandler = async (req, res) => {
                         if (debug) {
                             console.log('Invalid account update request received.')
                         }
-                        let viewData = await populateUserViewData(req.user.id)
+                        let viewData = await populateUserViewData(req.user.id.toString())
                         viewData.user = req.user
                         viewData.pane = 'ad'
                         if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
@@ -604,7 +604,7 @@ let addressUpdateHandler = async (req, res) => {
                             }
                             await user.update({ preferredUsername: u.preferredUsername }, u)
                             if (debug) console.log('User account updated for ' + u.preferredUsername)
-                            let viewData = await populateUserViewData(req.user.id)
+                            let viewData = await populateUserViewData(req.user.id.toString())
                             viewData.user = req.user
                             viewData.pane = 'ad'
                             viewData.messages = { success: 'Account updated.' }
@@ -646,7 +646,7 @@ let emailAddHandler = async (req, res) => {
 
         let form = converter.objectFieldsToString(req.body)
 
-        if (form.uid != req.user.id) {
+        if (form.uid != req.user.id.toString()) {
             _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
             return
         }
@@ -680,7 +680,7 @@ let emailAddHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
             }
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
-            let viewData = await populateUserViewData(req.user.id)
+            let viewData = await populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'em'
             viewData.messages = formFields.messages
@@ -692,7 +692,7 @@ let emailAddHandler = async (req, res) => {
             try {
                 await user.update({ preferredUsername: u.preferredUsername }, u)
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id)
+                let viewData = await populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'em'
                 viewData.messages = { success: 'Account updated.' }
@@ -724,7 +724,7 @@ let emailDeleteHandler = async (req, res) => {
 
         let form = converter.objectFieldsToString(req.body)
 
-        if (form.uid != req.user.id) {
+        if (form.uid != req.user.id.toString()) {
             _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
             return
         }
@@ -757,7 +757,7 @@ let emailDeleteHandler = async (req, res) => {
             if (debug) {
                 console.log('Invalid account update request received.')
             }
-            let viewData = await populateUserViewData(req.user.id)
+            let viewData = await populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'em'
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
@@ -770,7 +770,7 @@ let emailDeleteHandler = async (req, res) => {
                 u.emails = removeFields(usr.emails, form.email)
                 await user.update({ preferredUsername: u.preferredUsername }, u)
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id)
+                let viewData = await populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'em'
                 viewData.messages = { success: 'Account updated.' }
@@ -802,7 +802,7 @@ let phoneAddHandler = async (req, res) => {
 
         let form = converter.objectFieldsToString(req.body)
 
-        if (form.uid != req.user.id) {
+        if (form.uid != req.user.id.toString()) {
             _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
             return
         }
@@ -837,7 +837,7 @@ let phoneAddHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
             }
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
-            let viewData = await populateUserViewData(req.user.id)
+            let viewData = await populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'pn'
             viewData.messages = formFields.messages
@@ -849,7 +849,7 @@ let phoneAddHandler = async (req, res) => {
             try {
                 await user.update({ preferredUsername: u.preferredUsername }, u)
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id)
+                let viewData = await populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'pn'
                 viewData.messages = { success: 'Account updated.' }
@@ -881,7 +881,7 @@ let phoneDeleteHandler = async (req, res) => {
 
         let form = converter.objectFieldsToString(req.body)
 
-        if (form.uid != req.user.id) {
+        if (form.uid != req.user.id.toString()) {
             _403redirect(req, res, '/user/account/?show=em', 'Permission denied.')
             return
         }
@@ -903,7 +903,7 @@ let phoneDeleteHandler = async (req, res) => {
             if (debug) {
                 console.log('Invalid account update request received.')
             }
-            let viewData = await populateUserViewData(req.user.id)
+            let viewData = await populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'pn'
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
@@ -916,7 +916,7 @@ let phoneDeleteHandler = async (req, res) => {
                 u.phoneNumbers = removeFields(usr.phoneNumbers, form.phoneNumber)
                 await user.update({ preferredUsername: u.preferredUsername }, u)
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id)
+                let viewData = await populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'pn'
                 viewData.messages = { success: 'Account updated.' }
@@ -961,7 +961,7 @@ let deleteHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            let viewData = await populateUserViewData(req.user.id)
+            let viewData = await populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'pr'
             viewData.messages = { error: 'Unable to delete account.' }
@@ -991,7 +991,7 @@ account.get('/', async (req, res) => {
                         panel = 'ci'
                 }
             }
-            let viewData = await populateUserViewData(req.user.id)     
+            let viewData = await populateUserViewData(req.user.id.toString())     
             viewData.user = req.user 
             viewData.pane = panel    
             res.render('account', viewData)

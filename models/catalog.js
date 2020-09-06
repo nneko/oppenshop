@@ -10,10 +10,15 @@ let catalog = {}
 catalog.isValid = async (c) => {
     try {
         let shopExists = null
-        if(validator.isNotNull(c) && typeof(c.owner) == 'string') {
+        if(validator.isNotNull(c) && typeof(c.owner) !== 'undefined') {
             shopExists = await shop.read(c.owner,{findBy: 'id'})
         }
-        if (validator.isNotNull(c) && (!validator.isEmpty(c)) && shopExists && c.hasOwnProperty('name') && c.hasOwnProperty('description') && c.hasOwnProperty('owner') && typeof (c.name) == 'string' && validator.isNotNull(s.name) && typeof (c.owner) == 'string' && validator.isNotNull(c.owner) && typeof (c.description) == 'string' && validator.isNotNull(c.description) && c.hasOwnProperty('products') && Array.isArray(c.products)) {
+        if(debug) {
+            console.log('Checking catalog shop validity')
+            console.log('Found shop: ')
+            console.log(shopExists)
+        }
+        if (validator.isNotNull(shopExists) && c.hasOwnProperty('name') && c.hasOwnProperty('description') && c.hasOwnProperty('products') && typeof(c.name) == 'string' && validator.isNotNull(c.name) && typeof(c.description) == 'string' && validator.isNotNull(c.description) && Array.isArray(c.products)) {
             return true
         } else {
             return false

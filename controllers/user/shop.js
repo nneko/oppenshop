@@ -124,10 +124,14 @@ let populateViewData = async (uid, status = 'active') => {
                                 console.log(cList)
                             }
                             for (let j = 0; j < cList.length; j++) {
-                                if (await catalog.isValid(cList[j])) viewData.catalogs.push(cList[j])
+                                if (await catalog.isValid(cList[j])) {
+                                    if(debug) console.log('Adding 1 item to catalog list')
+                                    viewData.catalogs.push(cList[j])
+                                } 
                             }
                         } else if (await catalog.isValid(cList)) {
-                            if(debug) {
+                            if (debug) {
+                                console.log('Single catalog found: ')
                                 console.log(cList)
                             }
                             viewData.catalogs.push(cList)

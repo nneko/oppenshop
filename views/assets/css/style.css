@@ -397,6 +397,13 @@ svg {
     z-index: 1;
 }
 
+.content-nav-right {
+    display: flex;
+    justify-content: flex-end;
+    margin: 1rem auto;
+    max-width: 80%;
+}
+
 .applogo {
     display: flex;
     margin: 0;

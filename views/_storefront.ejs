@@ -97,42 +97,42 @@
             </div>
         </div>
         <% } %>
-        <div>
-          <% if (typeof(shops_pages) !== 'undefined' && shops_pages > 0) { %>
-                <ul class="pagination text-center">
-                    <% if (typeof(shops_current) !== 'undefined' ) { %>
-                      <% if (shops_current == 1) { %>
-                          <li class="disabled"><a>First</a></li>
-                      <% } else { %>
-                          <li><a href="/user/shop/page/1">First</a></li>
-                      <% } %>
-                      <% var i = (Number(shops_current) > 5 ? Number(shops_current) - 4 : 1) %>
-                      <% if (i !== 1) { %>
-                          <li class="disabled"><a>...</a></li>
-                      <% } %>
-                      <% for (; i <= (Number(shops_current) + 4) && i <= shops_pages; i++) { %>
-                          <% if (i == shops_current) { %>
-                              <li class="active"><a><%= i %></a></li>
-                          <% } else { %>
-                              <li><a href="/user/shop/page/<%= i %>"><%= i %></a></li>
-                          <% } %>
-                          <% if (i == Number(shops_current) + 4 && i < shops_pages) { %>
-                              <li class="disabled"><a>...</a></li>
-                          <% } %>
-                      <% } %>
-                      <% if (shops_current == shops_pages) { %>
-                          <li class="disabled"><a>Last</a></li>
-                      <% } else { %>
-                          <li><a href="/user/shop/page/<%= shops_pages %>">Last</a></li>
-                      <% } %>
-                    <% } %>
-                </ul>
-            <% } %>
-        </div>
         <%  } else { %>
         <p>No stores associated with account.</p>
         <% } %>
     </section>
+    <nav class="content-nav-right" aria-label="Shop listing">
+        <% if (typeof(shops_pages) !== 'undefined' && shops_pages > 0) { %>
+        <ul class="pagination text-center">
+            <% if (typeof(shops_current) !== 'undefined' ) { %>
+            <% if (shops_current == 1) { %>
+            <li class="page-item disabled"><a class="page-link">First</a></li>
+            <% } else { %>
+            <li class="page-item"><a class="page-link" href="/user/shop/page/1">First</a></li>
+            <% } %>
+            <% var i = (Number(shops_current) > 5 ? Number(shops_current) - 4 : 1) %>
+            <% if (i !== 1) { %>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <% } %>
+            <% for (; i <= (Number(shops_current) + 4) && i <= shops_pages; i++) { %>
+            <% if (i == shops_current) { %>
+            <li class="page-item active"><a class="page-link"><%= i %></a></li>
+            <% } else { %>
+            <li class="page-item"><a class="page-link" href="/user/shop/page/<%= i %>"><%= i %></a></li>
+            <% } %>
+            <% if (i == Number(shops_current) + 4 && i < shops_pages) { %>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <% } %>
+            <% } %>
+            <% if (shops_current == shops_pages) { %>
+            <li class="page-item disabled"><a class="page-link">Last</a></li>
+            <% } else { %>
+            <li class="page-item"><a class="page-link" href="/user/shop/page/<%= shops_pages %>">Last</a></li>
+            <% } %>
+            <% } %>
+        </ul>
+        <% } %>
+    </nav>
     <section class="standard-form-section" id="newstore" <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0 ){ %>hidden<% } %> >
         <hr>
         <h3>Add a new store</h3>

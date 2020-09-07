@@ -662,7 +662,7 @@ white-space: nowrap;
     margin: 1rem;
 }
 
-#account-settings-tab-content, #seller-tab-content svg {
+#account-settings-tab-content svg, #seller-tab-content svg {
     margin-right: 1rem;
     width: 1rem;
 }

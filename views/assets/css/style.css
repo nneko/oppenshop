@@ -596,6 +596,7 @@ white-space: nowrap;
 
 .catalog-card {
     display: block;
+    margin-top: 1rem;
     position: relative;
     width: 100%;
 }
@@ -606,6 +607,7 @@ white-space: nowrap;
 }
 
 .catalog-card .row h3 {
+    margin: 1rem;
     text-align: center;
 }
 
@@ -705,7 +707,7 @@ white-space: nowrap;
     width: 100%;
 }
 
-#catalog-select, #shop-select, #storefront-select, #product-status-select, #product-filter-select {
+#catalog-select, #shop-select, #storefront-select, #product-status-select, #product-filter-select, #catalog-add-product-shop-select {
     margin-left: 1rem;
     margin-right: 1rem;
 }
@@ -722,9 +724,22 @@ position: relative;
     margin: 1rem 0;
 }
 
-.catalog-add-product-section {
+.catalog-selector {
     display: flex;
     justify-content: space-between;
+}
+
+.create-catalog-link {
+    margin: 0;
+}
+
+.catalog-select-shop-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.catalog-shop-product-select-section {
+    width: 100%;
 }
 
 .space-between {

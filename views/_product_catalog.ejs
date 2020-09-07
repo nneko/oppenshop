@@ -1,20 +1,23 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'cl' ) { %>show active<% } %>"
     id="catalogs-pane" role="tabpanel" aria-labelledby="catalog-tab">
     <h2 class="tab-pane-h2">Manage Catalogs</h2>
-    <div class="add-action-button-section">
-        <a id="create-catalog-link" class="right add-address-link" href="#create-catalog-form" onclick="document.getElementById('create-catalog-section').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %>Create Catalog</a>
-    </div>
-    <div class="form-group form-inline mb-3">
-       <label id="catalogs-select-label" class="form-label" for="catalogS;ect">Select a catalog</label>
-       <select id="catalog-select"
-            class="form-control" type="text"
-            name="catalogs" value="" aria-label="catalogs-select-label" aria-describedby="addressType-basic-addon">
-                 <% if(typeof(catalogs) !== 'undefined' && Array.isArray(catalogs) && catalogs.length > 0) { %>
-                    <% for(let i=0;i<catalogs.length;i++) { %>
-                        <option id="<%= catalogs[i]._id %>"><%= catalogs[i].name %></option>
-                    <% } %>
+    <div class="card-filter-selector catalog-selector">
+        <div class="form-group form-inline mb-3 card-filter-selector">
+            <label id="catalogs-select-label" class="form-label" for="catalogS;ect">Select a catalog</label>
+            <select id="catalog-select" class="form-control" type="text" name="catalogs" value=""
+                aria-label="catalogs-select-label" aria-describedby="addressType-basic-addon">
+                <% if(typeof(catalogs) !== 'undefined' && Array.isArray(catalogs) && catalogs.length > 0) { %>
+                <% for(let i=0;i<catalogs.length;i++) { %>
+                <option id="<%= catalogs[i]._id %>"><%= catalogs[i].name %></option>
                 <% } %>
-        </select>
+                <% } %>
+            </select>
+        </div>
+        <div class="add-action-button-section">
+            <a id="create-catalog-link" class="right add-address-link create-catalog-link" href="#create-catalog-form"
+                onclick="document.getElementById('create-catalog-section').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %>Create
+                Catalog</a>
+        </div>
     </div>
     <hr>
     <section id="catalog-product-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
@@ -49,28 +52,35 @@
                 <h3>Add product to catalog</h3>
             </div>
             <div>
-                <div class="catalog-add-product-section">
-                    <div class="form-group form-inline mb-3 card-filter-selector">
-                        <label id="catalog-add-shop-select-label" class="form-label" for="catalog-add-shop-select">From: </label>
-                        <select id="catalog-add-shop-select" class="form-control" type="text" onchange="toggleShopSelector()"
-                            name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
-                            <option value="all-products-cards" selected>All</option>
-                            <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
-                            <% for(let i=0;i<shops.length;i++) { %>
-                            <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
-                            <% } %>
-                            <% } %>
-                        </select>
+                <form>
+                    <div class="catalog-select-shop-section">
+                        <div class="form-group form-inline mb-3 card-filter-selector">
+                            <label id="catalog-add-shop-select-label" class="form-label" for="catalog-add-shop-select">From: </label>
+                            <select id="catalog-add-product-shop-select" class="form-control" type="text" onchange="toggleShopSelector()"
+                                name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
+                                <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
+                                <% for(let i=0;i<shops.length;i++) { %>
+                                <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
+                                <% } %>
+                                <% } %>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group form-inline mb-3 card-filter-selector">
-                        <label id="product-filter-select-label" class="form-label" for="product-filter-select">Product: </label>
-                        <select id="product-filter-select" class="form-control" type="text" onchange="toggleShopSelector()"
-                            name="product-filter-selector" aria-label="product-filter-select-label"
-                            aria-describedby="product-filter-select-basic-addon">
-                        </select>
-                        <button class="btn btn-primary" type="submit">Add items</button>
+                    <div class="catalog-shop-product-select-section">
+                        <h4>Available products</h4>
+                        <% if(typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) {
+                            for(let s=0;s<shops.length;s++) { %>
+                        <div class="catalog-shop-product-listing form-group mb-3">
+                            <% if(typeof(shops[s].products) !== 'undefined' && Array.isArray(shops[s].products)) { %>
+                            <% } %>
+                        </div>
+                            <% }
+                        } %>
+                        <div class="form-group form-inline mb-3 card-filter-selector">
+                            <button class="btn btn-secondary" type="submit">Add items</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
             <hr>
             <% if (typeof(catalogs[i].products) !== 'undefined' && Array.isArray(catalogs[i].products) && catalogs[i].products.length > 0) { %>

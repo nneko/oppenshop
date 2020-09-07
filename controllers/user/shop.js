@@ -59,13 +59,26 @@ let _403redirect = (req, res, url, msg) => {
     res.render('signin', { url: url, messages: { error: msg ? msg : 'You must be signed in.' }, verifiedUser: verifiedUser })
 }
 
-let populateViewData = async (uid, status = 'active') => {
+let populateViewData = async (uid, status = 'active', shop_page = 1, product_page = 1, catalog_page = 1) => {
     return new Promise(async (resolve, reject) => {
         t = { owner: uid }
+        let perPage = 3
+        pagination = true
+        o_shop = null
+        console.log('Page: ' +shop_page)
+        if (pagination) {
+          o_shop = { pagination_skip: shop_page, pagination_limit: perPage}
+        }
+
         console.log('Populating view for shop owner: ' + t.owner)
+        console.log(t)
+        console.log(o_shop)
         try {
 
-            s = await shop.read(t)
+            s = await shop.read(t,o_shop)
+            s_count = await shop.count(t,o_shop)
+            //console.log(s)
+            console.log(s_count)
             let viewData = {}
 
             viewData.shops = []
@@ -127,7 +140,7 @@ let populateViewData = async (uid, status = 'active') => {
                                 if (await catalog.isValid(cList[j])) {
                                     if(debug) console.log('Adding 1 item to catalog list')
                                     viewData.catalogs.push(cList[j])
-                                } 
+                                }
                             }
                         } else if (await catalog.isValid(cList)) {
                             if (debug) {
@@ -141,6 +154,12 @@ let populateViewData = async (uid, status = 'active') => {
                     console.error(e)
                     console.log('Error reading shop list skipping remainder.')
                 }
+            }
+            // Pagination details
+            if (pagination){
+              viewData.shops_pages = Math.ceil(s_count / perPage)
+              viewData.shops_current = shop_page
+
             }
             if(debug) {
                 console.log('View Data: ')
@@ -601,7 +620,49 @@ shops.use('/edit', require('./shopeditor'))
 shops.use('/edit/*', require('./shopeditor'))
 shops.use('/product/edit', require('./producteditor'))
 shops.use('/product/edit/*', require('./producteditor'))
+shops.use('/page/:page', async function(req, res, next) {
+  try {
 
+      if (validator.hasActiveSession(req)) {
+          let page = req.params.page || 1
+          let qd = req.query
+          let status = 'active'
+          console.log(page)
+          console.log(qd)
+          let panel = 'sf'
+          if(qd) {
+              switch(qd.show){
+                  case 'in':
+                  case 'pd':
+                  case 'cl':
+                  case 'pd-new':
+                  case 'or':
+                  case 'pkg':
+                  case 'py':
+                      panel = qd.show
+                      break
+                  default:
+                      panel = 'sf'
+              }
+          }
+          let viewData = {}
+          console.log('Page: ' +page)
+          viewData = await populateViewData(req.user.id.toString(), status = 'active', shop_page = parseInt(page))
+          viewData.user = req.user
+          viewData.pane = panel
+          res.render('sell', viewData)
+      } else {
+          messages = {error: "You need to be signed in."}
+          res.status(403)
+          res.render('signin', {messages: messages})
+      }
+  } catch (e) {
+      console.error(e)
+      res.status(500)
+      res.render('error', { error: { status: 500, message: 'Error retrieving shop pagination data' }, name: '', user: req.user })
+
+  }
+})
 shops.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {

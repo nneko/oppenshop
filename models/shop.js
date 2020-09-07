@@ -97,7 +97,41 @@ shop.read = (properties, options) => {
                             resolve(cursor.toArray())
                             break
                     }
-                } else {
+                  } else if(typeof(options.pagination_skip) !== 'undefined') {
+                      if (Number.isInteger(options.pagination_skip)) {
+                        if (typeof(options.pagination_limit) !== 'undefined'){
+                          if (Number.isInteger(options.pagination_skip)) {
+                            const cursor = await shopCollection.find(properties)
+                                                              .skip((options.pagination_limit * options.pagination_skip) - options.pagination_limit)
+                                                              .limit(options.pagination_limit)
+                            resolve(cursor.toArray())
+                          } else {
+                            // TODO
+                            console.log('Shop Model: Read - need to add condition.'+options.pagination_skip+' '+options.pagination_limit)
+                          }
+                        } else {
+                          // TODO
+                          console.log('Shop Model: Read - need to add condition.'+options.pagination_skip+' '+options.pagination_limit)
+                        }
+                      } else {
+                        // TODO
+                        console.log('Shop Model: Read - need to add condition.'+options.pagination_skip)
+                      }
+                      switch(options.findBy){
+                          case 'id':
+                              const result = await shopCollection.findOne({'_id': db.getObjectId(properties)})
+                              resolve(result)
+                              break
+                          case 'owner':
+                              const ownerShops = await shopCollection.findOne({ owner: properties})
+                              resolve(ownerShops)
+                              break
+                          default:
+                              const cursor = await shopCollection.find(properties).limit(1)
+                              resolve(cursor.toArray())
+                              break
+                      }
+                  } else {
                     let e = new Error('Invalid options to find operator')
                     e.name = 'ShopError'
                     e.type = 'Find Operation'
@@ -151,6 +185,88 @@ shop.delete = (filters) => {
             const shopCollection = db.get().collection('shops')
             const result = await shopCollection.deleteMany(filters)
             resolve(result)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+shop.count = (properties, options) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const shopCollection = db.get().collection('shops')
+            if(validator.isNotNull(options)) {
+                if(typeof(options.limit) !== 'undefined') {
+                    switch(options.limit) {
+                        case 1:
+                            const result = await shopCollection.count(properties)
+                            resolve(result)
+                            break
+                        default:
+                            const cursor = await shopCollection.count(properties).limit(options.limit)
+                            resolve(cursor.toArray())
+                            break
+                    }
+                } else if(typeof(options.findBy) !== 'undefined') {
+                    switch(options.findBy){
+                        case 'id':
+                            const result = await shopCollection.count({'_id': db.getObjectId(properties)})
+                            resolve(result)
+                            break
+                        case 'owner':
+                            const ownerShops = await shopCollection.count({ owner: properties})
+                            resolve(ownerShops)
+                            break
+                        default:
+                            const cursor = await shopCollection.count(properties).limit(1)
+                            resolve(cursor.toArray())
+                            break
+                    }
+                  } else if(typeof(options.pagination_skip) !== 'undefined') {
+                      if (Number.isInteger(options.pagination_skip)) {
+                        if (typeof(options.pagination_limit) !== 'undefined'){
+                          if (Number.isInteger(options.pagination_skip)) {
+                            const cursor = await shopCollection.count(properties)
+                                                              //.skip((options.pagination_limit * options.pagination_skip) - options.pagination_limit)
+                                                              //.limit(options.pagination_limit)
+                            //resolve(cursor.toArray())
+                            resolve(cursor)
+                          } else {
+                            // TODO
+                            console.log('Shop Model: Count - need to add condition.'+options.pagination_skip+' '+options.pagination_limit)
+                          }
+                        } else {
+                          // TODO
+                          console.log('Shop Model: Count - need to add condition.'+options.pagination_skip+' '+options.pagination_limit)
+                        }
+                      } else {
+                        // TODO
+                        console.log('Shop Model: Count - need to add condition.'+options.pagination_skip)
+                      }
+                      switch(options.findBy){
+                          case 'id':
+                              const result = await shopCollection.count({'_id': db.getObjectId(properties)})
+                              resolve(result)
+                              break
+                          case 'owner':
+                              const ownerShops = await shopCollection.count({ owner: properties})
+                              resolve(ownerShops)
+                              break
+                          default:
+                              const cursor = await shopCollection.count(properties).limit(1)
+                              resolve(cursor.toArray())
+                              break
+                      }
+                  } else {
+                    let e = new Error('Invalid options to find operator')
+                    e.name = 'ShopError'
+                    e.type = 'Find Operation'
+                    throw e
+                }
+            } else {
+                const cursor = await shopCollection.count(properties)
+                resolve(cursor.toArray())
+            }
         } catch (e) {
             reject(e)
         }

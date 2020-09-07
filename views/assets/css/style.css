@@ -595,15 +595,25 @@ white-space: nowrap;
 }
 
 .catalog-card {
-    display: flex;
+    display: block;
     position: relative;
     width: 100%;
 }
 
-.catalog-card-header {
-    width: 100%;
-    display: flex;
+.catalog-card .row {
+    justify-content: space-around;
     margin: 0;
+}
+
+.catalog-card .row h3 {
+    text-align: center;
+}
+
+.catalog-card-header {
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    width: 100%;
 }
 
 .sidebar svg {
@@ -711,6 +721,11 @@ position: relative;
 
 .card-filter-selector {
     margin: 1rem 0;
+}
+
+.catalog-add-product-section {
+    display: flex;
+    justify-content: space-between;
 }
 
 .space-between {

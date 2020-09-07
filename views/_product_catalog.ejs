@@ -9,7 +9,6 @@
        <select id="catalog-select"
             class="form-control" type="text"
             name="catalogs" value="" aria-label="catalogs-select-label" aria-describedby="addressType-basic-addon">
-                 <option>All</option>
                  <% if(typeof(catalogs) !== 'undefined' && Array.isArray(catalogs) && catalogs.length > 0) { %>
                     <% for(let i=0;i<catalogs.length;i++) { %>
                         <option id="<%= catalogs[i]._id %>"><%= catalogs[i].name %></option>
@@ -23,6 +22,7 @@
         <% for(let i=0;i<catalogs.length;i++) { %>
         <div class="catalog-card">
             <div class="catalog-card-header row">
+                <h3><%= catalogs[i].name %></h3>
                 <div class="col-6">
                     <figure class="featured-image">
                         <% if(typeof(catalogs[i].image) !== 'undefined' && typeof(catalogs[i].image.src) !== 'undefined') { %>
@@ -43,14 +43,43 @@
                         <button class="btn btn-primary">Edit description</button>
                     </a>
                 </div>
+            </div>
+            <hr>
+            <div class="row">
+                <h3>Add product to catalog</h3>
+            </div>
             <div>
+                <div class="catalog-add-product-section">
+                    <div class="form-group form-inline mb-3 card-filter-selector">
+                        <label id="catalog-add-shop-select-label" class="form-label" for="catalog-add-shop-select">From: </label>
+                        <select id="catalog-add-shop-select" class="form-control" type="text" onchange="toggleShopSelector()"
+                            name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
+                            <option value="all-products-cards" selected>All</option>
+                            <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
+                            <% for(let i=0;i<shops.length;i++) { %>
+                            <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
+                            <% } %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group form-inline mb-3 card-filter-selector">
+                        <label id="product-filter-select-label" class="form-label" for="product-filter-select">Product: </label>
+                        <select id="product-filter-select" class="form-control" type="text" onchange="toggleShopSelector()"
+                            name="product-filter-selector" aria-label="product-filter-select-label"
+                            aria-describedby="product-filter-select-basic-addon">
+                        </select>
+                        <button class="btn btn-primary" type="submit">Add items</button>
+                    </div>
+                </div>
+            </div>
             <hr>
             <% if (typeof(catalogs[i].products) !== 'undefined' && Array.isArray(catalogs[i].products) && catalogs[i].products.length > 0) { %>
                 <% for(let j=0;j<catalogs[i].products.length;j++) { %>
                     <div class="card">
                         <div class="card-body">
+                            <h3>Catalog Items</h3>
                             <div class="actionable-card-pane">
-                                <div class="address-view-card-pane">
+                                <div class="catalog-view-card-pane">
                                     <ul>
                                     <li><span><p>
                                             <b><%= catalogs[i].products[j].name %></b><br>

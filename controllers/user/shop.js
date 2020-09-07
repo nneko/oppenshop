@@ -192,7 +192,18 @@ let catalogAddHander = async (req, res) => {
             c.description = form.description
             c.owner = form.sid
             c.products = []
+            if (req.files) {
+                if (validator.isUploadLimitExceeded(req.files)) {
+                    await badRequest(req, res, 'cl', 403, 'Upload limits exceeded.')
+                    return
+                }
 
+                for (x of req.files) {
+                    x.storage = 'db'
+                }
+                console.log(req.files)
+                if(Array.isArray(req.files) && req.files.length >= 1) c.image = req.files[0]
+            }
             let ctg = await catalog.create(c)
             if (debug) console.log('Catalog added for ' + shp.displayName)
             //let viewData = await populateViewData('\''+u.uid+'\'')

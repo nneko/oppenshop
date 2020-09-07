@@ -594,6 +594,18 @@ svg {
 white-space: nowrap;
 }
 
+.catalog-card {
+    display: flex;
+    position: relative;
+    width: 100%;
+}
+
+.catalog-card-header {
+    width: 100%;
+    display: flex;
+    margin: 0;
+}
+
 .sidebar svg {
     margin-right: 1rem;
 }
@@ -602,19 +614,19 @@ white-space: nowrap;
     background-color: var(--nav-btn-color);
     border-radius: 0.25rem;
     display: block;
-    height: 16rem;
+    height: 16rem !important;
     margin: 1rem;
     overflow: hidden;
     position: relative;
-    width: 16rem;
+    width: 16rem !important;
 }
 
 .featured-image img{
     clip-path: inset(0);
-    height: 16rem;
+    height: 16rem !important;
     margin: 0;
     max-height: 16rem;
-    max-width: 16rem;
+    max-width: 16rem !important;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -623,23 +635,24 @@ white-space: nowrap;
 }
 
 .featured-image svg {
-    height: 12rem;
+    height: 12rem !important;
     margin: 0;
     position: absolute;
     top: 50%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+    width: auto !important;
 }
 
 .featured-image-legend {
     color: var(--main-text-color);
     font-size: 0.8rem;
-    text-align: center;
+    text-align: center !important;
     margin: 1rem;
 }
 
-#account-settings-tab-content svg {
+#account-settings-tab-content, #seller-tab-content svg {
     margin-right: 1rem;
     width: 1rem;
 }

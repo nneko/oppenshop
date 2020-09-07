@@ -19,42 +19,69 @@
     </div>
     <hr>
     <section id="catalog-product-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
-        <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
-        <% for(let i=0;i<products.length;i++) { %>
-        <div class="card">
-            <div class="card-body">
-                <div class="actionable-card-pane">
-                    <div class="address-view-card-pane">
-                        <ul>
-                        <li><span><p>
-                                <b><%= products[i].name %></b><br>
-                                <%= products[i].status %>
-                                <% if (typeof(products[i].image) !== 'undefined' ) { %>
-                                <img alt="<%= products[i].image.originalname %>" width="50" height="60" src="data:<%= shops[i].image.mimetype %>;base64,<%= products[i].image.base64 %>"/>
-                                <% } %>
-                            </p>
-                            </span></li>
-                        </ul>
-                    </div>
-                    <div class="action-button-section">
-                        <form class="edit-delete-action-form" method="POST" action="/user/shop">
-                            <input type="hidden" name="id" value="upproduct">
-                            <input type="hidden" name="pid" value="<% if(typeof(products[i]._id) !== 'undefined') { %><%= products[i]._id %><% } %>">
-                            
-                            <input type="hidden" name="sid" value="<% if(typeof(products[i].sid) !== 'undefined') { %><%= products[i].sid %><% } %>">
-                            <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-                            <button class=" action-icon-button  action-icon" type="submit" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
-                            <%- include('assets/symbols/edit.svg') %>
-                            </button>
-                            <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
-                                <%- include('assets/symbols/bin.svg') %>
-                            </button>
-                        </form>
-                    </div>
+        <% if (typeof(catalogs) !== 'undefined' && Array.isArray(catalogs) && catalogs.length > 0) { %>
+        <% for(let i=0;i<catalogs.length;i++) { %>
+        <div class="catalog-card">
+            <div class="catalog-card-header row">
+                <div class="col-6">
+                    <figure class="featured-image">
+                        <% if(typeof(catalogs[i].image) !== 'undefined' && typeof(catalogs[i].image.src) !== 'undefined') { %>
+                        <img src="<%= catalogs[i].image.src %>">
+                        <% } else { %>
+                        <%- include('assets/symbols/tags.svg') %>
+                        <% } %>
+                    </figure>
+                    <p class="featured-image-legend">Catalog Image</p>
                 </div>
-            </div>
-        </div>
+                <div class="col-6">
+                    <p>
+                        <% if(typeof(catalogs[i].description) == 'string') { %>
+                        <%= catalogs[i].description %>
+                        <% } %>
+                    </p>
+                    <a href="/user/shop/catalog/edit?c=<%= catalogs[i]._id %>">
+                        <button class="btn btn-primary">Edit description</button>
+                    </a>
+                </div>
+            <div>
+            <hr>
+            <% if (typeof(catalogs[i].products) !== 'undefined' && Array.isArray(catalogs[i].products) && catalogs[i].products.length > 0) { %>
+                <% for(let j=0;j<catalogs[i].products.length;j++) { %>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="actionable-card-pane">
+                                <div class="address-view-card-pane">
+                                    <ul>
+                                    <li><span><p>
+                                            <b><%= catalogs[i].products[j].name %></b><br>
+                                            <%= catalogs[i].products[j].status %>
+                                            <% if (typeof(catalogs[i].products[j].image) !== 'undefined' ) { %>
+                                            <img alt="<%= catalogs[i].products[j].image.originalname %>" width="50" height="60" src="data:<%= catalogs[i].products[j].image.mimetype %>;base64,<%= catalogs[i].products[j].image.base64 %>"/>
+                                            <% } %>
+                                        </p>
+                                        </span></li>
+                                    </ul>
+                                </div>
+                                <div class="action-button-section">
+                                    <form class="edit-delete-action-form" method="POST" action="/user/shop">
+                                        <input type="hidden" name="id" value="catalog">
+
+                                        <input type="hidden" name="pid" value="<% if(typeof(catalogs[i].products[j]._id) !== 'undefined') { %><%= catalogs[i].products[j]._id %><% } %>">
+                                        
+                                        <input type="hidden" name="cid" value="<% if(typeof(catalogs[i]._id) !== 'undefined') { %><%= catalogs[i]._id %><% } %>">
+                                        
+                                        <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
+                                            <%- include('assets/symbols/bin.svg') %>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            <% } %>
         <% } %>
+        </div>
         <%  } else { %>
         <p>No products associated with catalog.</p>
         <% } %>

@@ -39,7 +39,7 @@
                                 <% if(typeof(image) !== 'undefined' && image.value) { %>
                                 <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
                                 <% } else { %>
-                                    <%- include('assets/symbols/shop.svg') %>
+                                    <%- include('assets/symbols/tags.svg') %>
                                 <% } %>
                                 </figure>
                                 <p class="featured-image-legend">Product Image</p>
@@ -60,7 +60,7 @@
                                                 <input id="edit-product-name"
                                                     class="form-control <% if(typeof(name) !== 'undefined' && typeof(name.class) !== 'undefined') { %><%= name.class %><% } %>"
                                                     type="text" name="name"
-                                                    value="<% if(typeof(name) !== 'undefined' && typeof(name.value) !== 'undefined') { %><%= name.value %><% } %>"
+                                            value="<% if(typeof(displayName) !== 'undefined' && typeof(displayName.value) !== 'undefined') { %><%= displayName.value %><% } else if(typeof(name) !== 'undefined' && typeof(name.value) !== 'undefined') {  %><%= name.value %><% } %>"
                                                     aria-label="Shop Name" aria-describedby="edit-product-name-basic-addon" size="55"
                                                     required>
                                                 <div id="add-product-invalid-fullname" class="invalid-feedback">

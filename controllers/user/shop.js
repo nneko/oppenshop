@@ -594,7 +594,7 @@ shops.use('/product/edit/*', require('./producteditor'))
 shops.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
-            let qd = req.query.data
+            let qd = req.query
             let panel = 'sf'
             if(qd) {
                 switch(qd.show){

@@ -64,7 +64,8 @@ let populateViewData = async (id) => {
 
             if (p) {
                 viewData.id = p._id
-                viewData.name = {value: p.name}
+                viewData.name = { value: p.name }
+                viewData.displayName = { value: p.displayName }
                 viewData.description = p.description ? { value: p.description } : undefined
                 viewData.image = { value: generator.getPrimaryField(p.images) }
                 if (!viewData.image.value && p.images && Array.isArray(p.images) && p.images.length > 0) {

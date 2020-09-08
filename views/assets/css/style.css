@@ -725,6 +725,11 @@ white-space: nowrap;
     margin-right: 1rem;
 }
 
+.catalog-add-product-shop-select {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
 .card-filter-section {
     display: flex;
     margin: 0 auto;

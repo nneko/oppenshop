@@ -1,6 +1,7 @@
 /* Global style variables */
 :root {
   --main-highlight-color: #007bff;
+  --main-border-color: rgba(0,0,0,.1);
   --main-sub-border-color: rgba(0,0,0,.125);
   --main-bg-color: #f4f4f4;
   --main-text-color: #444;
@@ -625,6 +626,11 @@ white-space: nowrap;
     width: 100%;
 }
 
+.catalog-shop-product-listing {
+    padding: 1rem;
+    /* border-top: 1px solid var(--main-sub-border-color); */
+}
+
 .sidebar svg {
     margin-right: 1rem;
 }
@@ -747,6 +753,10 @@ position: relative;
 
 .catalog-shop-product-select-section {
     width: 100%;
+}
+
+.catalog-shop-product-select-section h4 {
+    margin: 1rem;
 }
 
 .space-between {

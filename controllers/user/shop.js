@@ -138,6 +138,9 @@ let populateViewData = async (uid, status = 'active', shop_page = 1, product_pag
                             }
                             for (let j = 0; j < cList.length; j++) {
                                 if (await catalog.isValid(cList[j])) {
+                                    if(typeof(cList[j].image) !== 'undefined') {
+                                        cList[j].image.src = media.getBinaryDetails(cList[j].image)
+                                    }
                                     if(debug) console.log('Adding 1 item to catalog list')
                                     viewData.catalogs.push(cList[j])
                                 }
@@ -146,6 +149,9 @@ let populateViewData = async (uid, status = 'active', shop_page = 1, product_pag
                             if (debug) {
                                 console.log('Single catalog found: ')
                                 console.log(cList)
+                            }
+                            if (typeof (cList.image) !== 'undefined') {
+                                cList.image.src = media.getBinaryDetails(cList.image)
                             }
                             viewData.catalogs.push(cList)
                         }

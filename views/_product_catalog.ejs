@@ -54,7 +54,7 @@
             <div>
                     <div class="catalog-select-shop-section">
                         <div class="form-group form-inline mb-3 card-filter-selector">
-                            <label id="catalog-add-shop-select-label" class="form-label" for="catalog-<%= catalogs[i]._id %>-add-shop-select">From: </label>
+                            <label class="form-label catalog-add-shop-select-label" for="catalog-<%= catalogs[i]._id %>-add-shop-select">From: </label>
                             <select id="catalog-<%= catalogs[i]._id %>-add-product-shop-select" class="form-control" type="text" onchange="toggleCatalogShopSelector('<%= catalogs[i]._id.toString() %>')"
                                 name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
                                 <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
@@ -69,7 +69,7 @@
                         <h4>Products</h4>
                         <% if(typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { for(let s=0;s<shops.length;s++) { %>
                             <form class="catalog-add-action-form" method="POST" action="/user/shop">
-                                <input type="hidden" name="id" value="catalog-add-product">
+                                <input type="hidden" name="id" value="cl-add-pd">
                             
                                 <input type="hidden" name="cid"
                                 value="<% if(typeof(catalogs[i]._id) !== 'undefined') { %><%= catalogs[i]._id %><% } %>">
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="action-button-section">
                                     <form class="edit-delete-action-form" method="POST" action="/user/shop">
-                                        <input type="hidden" name="id" value="catalog">
+                                        <input type="hidden" name="id" value="cl-del-pd">
 
                                         <input type="hidden" name="pid" value="<% if(typeof(catalogs[i].products[j]._id) !== 'undefined') { %><%= catalogs[i].products[j]._id %><% } %>">
                                         
@@ -186,7 +186,7 @@
         </div>
         <form id="create-catalog-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST" oninput=""
             enctype="multipart/form-data" novalidate>
-            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.addresses) { %> disabled="disabled"
+            <fieldset <% if((typeof(disabledForms) !== 'undefined' && disabledForms.catalog) || (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length < 1)) { %> disabled="disabled"
                 <% } %>>
                 <input type="hidden" name="id" value="cl">
     

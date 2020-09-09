@@ -3,13 +3,11 @@ const validator = require('../../utilities/validator')
 const user = require('../../models/user')
 const shop = require('../../models/shop')
 const product = require('../../models/product')
-const bcrypt = require('bcryptjs')
 const express = require('express')
 const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
 const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
-//const passport = require('passport')
 const multer  = require('multer')
 const storage = multer.memoryStorage()
 const fileUploader = multer({storage: storage,
@@ -208,6 +206,127 @@ let catalogAddHander = async (req, res) => {
 
             const shp = await shop.read(form.sid, {findBy: 'id'})
 
+            if (!((await shop.isValid(shp)) && shp.status == 'active')) {
+                await badRequest(req, res, 'cl', 400, 'Catalogs must be associated with a valid and active shop.')
+                return
+            }
+
+            c.name = form.name
+            c.description = form.description
+            c.owner = form.sid
+            c.products = []
+            if (req.files) {
+                if (validator.isUploadLimitExceeded(req.files)) {
+                    await badRequest(req, res, 'cl', 403, 'Upload limits exceeded.')
+                    return
+                }
+
+                for (x of req.files) {
+                    x.storage = 'db'
+                }
+                console.log(req.files)
+                if(Array.isArray(req.files) && req.files.length >= 1) c.image = req.files[0]
+            }
+            let ctg = await catalog.create(c)
+            if (debug) console.log('Catalog added for ' + shp.displayName)
+            //let viewData = await populateViewData('\''+u.uid+'\'')
+            let viewData = await populateViewData(req.user.id.toString())
+            viewData.user = req.user
+            viewData.pane = 'cl'
+            viewData.messages = { success: 'Catalog created.' }
+            res.render('sell', viewData)
+            return
+        } catch (e) {
+            console.error(e)
+            res.status(500)
+            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a catalog.' } })
+            return
+        }
+    }
+}
+
+let catalogAddProductHander = async (req, res) => {
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/shop/?show=cl', 'You must be signed in.')
+        return
+    } else {
+        try {
+            let c = {}
+
+            let formValidated = false
+            let formFields = {}
+
+            if (!req.body) {
+                await badRequest(req, res, 'cl', 400, 'Invalid request.')
+                return
+            }
+
+            let form = converter.objectFieldsToString(req.body)
+
+            if (form.uid != req.user.id.toString()) {
+                _403redirect(req, res, '/user/shop/?show=cl', 'Permission denied.')
+                return
+            }
+
+            if (!validator.isNotNull(form.cid)) {
+                await badRequest(req, res, 'cl', 400, 'No catalog id specified.')
+                return
+            }
+
+            const ctg = await catalog.read(form.cid, { findBy: 'id' })
+
+            if (! await catalog.isValid(ctg)) {
+                await badRequest(req, res, 'cl', 400, 'No valid catalog found for '+form.cid+'.')
+                return
+            }
+
+            let updated_ctg = await catalog.update({_id: ctg._id},c)
+            if (debug) console.log('Catalog ' + ctg._id.toString() +' updated.')
+            let viewData = await populateViewData(req.user.id.toString())
+            viewData.user = req.user
+            viewData.pane = 'cl'
+            viewData.messages = { success: 'Catalog updated.' }
+            res.render('sell', viewData)
+            return
+        } catch (e) {
+            console.error(e)
+            res.status(500)
+            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested product addition to catalog.' } })
+            return
+        }
+    }
+}
+
+let catalogDeleteProductHander = async (req, res) => {
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/shop/?show=cl', 'You must be signed in.')
+        return
+    } else {
+        try {
+            let c = {}
+
+            let formValidated = false
+            let formFields = {}
+
+            if (!req.body) {
+                await badRequest(req, res, 'cl', 400, 'Invalid request.')
+                return
+            }
+
+            let form = converter.objectFieldsToString(req.body)
+
+            if (form.uid != req.user.id.toString()) {
+                _403redirect(req, res, '/user/shop/?show=cl', 'Permission denied.')
+                return
+            }
+
+            if (!validator.isNotNull(form.name)) {
+                await badRequest(req, res, 'cl', 400, 'Catalogs must have a name.')
+                return
+            }
+
+            const shp = await shop.read(form.sid, { findBy: 'id' })
+
             if (! await shop.isValid(shp) && shp.status == 'active') {
                 await badRequest(req, res, 'cl', 400, 'Catalogs must be associated with a valid and active storefront.')
                 return
@@ -227,7 +346,7 @@ let catalogAddHander = async (req, res) => {
                     x.storage = 'db'
                 }
                 console.log(req.files)
-                if(Array.isArray(req.files) && req.files.length >= 1) c.image = req.files[0]
+                if (Array.isArray(req.files) && req.files.length >= 1) c.image = req.files[0]
             }
             let ctg = await catalog.create(c)
             if (debug) console.log('Catalog added for ' + shp.displayName)
@@ -394,6 +513,11 @@ let productAddHandler = async (req, res) => {
         }
         p.specifications = specs
         try {
+            let s = await shop.read(p.shop,{findBy: 'id'})
+            if(!await shop.isValid(s)) {
+                badRequest(req, res, 'pd-new', 400, 'Products must be associated with a valid shop.')
+                return
+            }
             let t = await product.create(p)
             if (debug) {
                 console.log('Added product: ')
@@ -744,8 +868,6 @@ shops.post('/', function (req, res) {
                     break
                 case 'np':
                     await productAddHandler(req, res)
-                    //res.status(500)
-                    //res.render('error', { error: { status: 500, message: 'Testing' }, name: '', user: req.user })
                     break
                 case 'st':
                     console.log(req.body)
@@ -754,6 +876,14 @@ shops.post('/', function (req, res) {
                 case 'cl':
                     console.log(req.body)
                     await catalogAddHander(req, res)
+                    break
+                case 'cl-add-pd':
+                    if(debug) console.log(req.body)
+                    await catalogAddProductHandler(req,res)
+                    break
+                case 'cl-del-pd':
+                    if (debug) console.log(req.body)
+                    await catalogDeleteProductHandler(req, res)
                     break
                 default:
                    console.log(req)

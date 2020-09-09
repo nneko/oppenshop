@@ -5,7 +5,7 @@
         <h3>Add a new product</h3>
         <form id="new-product-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
             oninput=""  enctype="multipart/form-data" novalidate>
-            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.addresses) { %> disabled="disabled"
+            <fieldset <% if((typeof(disabledForms) !== 'undefined' && disabledForms.product) || (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length < 1)) { %> disabled="disabled"
                 <% } %>>
                 <input type="hidden" name="id" value="np">
 

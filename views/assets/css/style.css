@@ -730,6 +730,10 @@ white-space: nowrap;
     margin-right: 1rem;
 }
 
+.catalog-add-shop-select-label {
+    margin-right: 1rem;
+}
+
 .card-filter-section {
     display: flex;
     margin: 0 auto;

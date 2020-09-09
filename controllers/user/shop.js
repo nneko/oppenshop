@@ -139,6 +139,16 @@ let populateViewData = async (uid, status = 'active', shop_page = 1, product_pag
                                     if(typeof(cList[j].image) !== 'undefined') {
                                         cList[j].image.src = media.getBinaryDetails(cList[j].image)
                                     }
+                                    if(cList[j].products.length > 0) {
+                                        let pList = []
+                                        for (const item of cList[j].products) {
+                                            let p = await product.read(item,{findBy: 'id'})
+                                            if(await product.isValid(p)) {
+                                                pList.push(p)
+                                            }
+                                        }
+                                        cList[j].products = pList
+                                    }
                                     if(debug) console.log('Adding 1 item to catalog list')
                                     viewData.catalogs.push(cList[j])
                                 }
@@ -150,6 +160,16 @@ let populateViewData = async (uid, status = 'active', shop_page = 1, product_pag
                             }
                             if (typeof (cList.image) !== 'undefined') {
                                 cList.image.src = media.getBinaryDetails(cList.image)
+                            }
+                            if (cList.products.length > 0) {
+                                let pList = []
+                                for (const item of cList.products) {
+                                    let p = await product.read(item, { findBy: 'id' })
+                                    if (await product.isValid(p)) {
+                                        pList.push(p)
+                                    }
+                                }
+                                cList.products = pList
                             }
                             viewData.catalogs.push(cList)
                         }
@@ -252,6 +272,7 @@ let catalogAddProductHander = async (req, res) => {
     } else {
         try {
             let c = {}
+            c.products = []
 
             let formValidated = false
             let formFields = {}
@@ -278,6 +299,22 @@ let catalogAddProductHander = async (req, res) => {
             if (! await catalog.isValid(ctg)) {
                 await badRequest(req, res, 'cl', 400, 'No valid catalog found for '+form.cid+'.')
                 return
+            }
+            c.products = ctg.products
+            for (const f of Object.keys(form)) {
+                let fParts = f.split('-')
+                if(fParts.length == 2) {
+                    let cid = fParts[0]
+                    let pid = fParts[1]
+                    if(cid == form.cid) {
+                        if(debug) console.log('Looking up details for product ' + pid)
+                        let p = await product.read(pid, { findBy: 'id' })
+                        if (await product.isValid(p)) {
+                            if(debug) console.log('Adding product ' + pid + ' to catalog product listing for ' + cid)
+                            c.products.push(p)
+                        }
+                    }
+                }
             }
 
             let updated_ctg = await catalog.update({_id: ctg._id},c)
@@ -879,7 +916,7 @@ shops.post('/', function (req, res) {
                     break
                 case 'cl-add-pd':
                     if(debug) console.log(req.body)
-                    await catalogAddProductHandler(req,res)
+                    await catalogAddProductHander(req,res)
                     break
                 case 'cl-del-pd':
                     if (debug) console.log(req.body)

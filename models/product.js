@@ -23,7 +23,7 @@ product.isValid = async (p) => {
             }*/
         }
 
-        if (shopExists && validator.isNotNull(p) && typeof (p.shop) == 'string' && typeof (p.name) == 'string' && validator.isNotNull(s.name) && typeof (s.description) == 'string' && validator.isNotNull(s.description) && p.hasOwnProperty('image') && p.hasOwnProperty('specification') && p.hasOwnProperty('price') && p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')) {
+        if (shopExists && validator.isNotNull(p) && typeof (p.shop) == 'string' && typeof (p.name) == 'string' && validator.isNotNull(p.name) && typeof (p.description) == 'string' && validator.isNotNull(p.description) && p.hasOwnProperty('image') && p.hasOwnProperty('specification') && p.hasOwnProperty('price') && hasOwnProperty('quantity') /*&& p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')*/) {
             return true
         } else {
             return false

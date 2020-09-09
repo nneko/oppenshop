@@ -52,45 +52,46 @@
                 <h3>Add products to catalog</h3>
             </div>
             <div>
-                    <div class="catalog-select-shop-section">
-                        <div class="form-group form-inline mb-3 card-filter-selector">
-                            <label class="form-label catalog-add-shop-select-label" for="catalog-<%= catalogs[i]._id %>-add-shop-select">From: </label>
-                            <select id="catalog-<%= catalogs[i]._id %>-add-product-shop-select" class="form-control" type="text" onchange="toggleCatalogShopSelector('<%= catalogs[i]._id.toString() %>')"
-                                name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
-                                <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
-                                <% for(let si=0;si<shops.length;si++) { %>
-                                <option value="<%= catalogs[i]._id + '-' + shops[si]._id %>"><%= shops[si].displayName %></option>
-                                <% } %>
-                                <% } %>
-                            </select>
-                        </div>
+                <div class="catalog-select-shop-section">
+                    <div class="form-group form-inline mb-3 card-filter-selector">
+                        <label class="form-label catalog-add-shop-select-label" for="catalog-<%= catalogs[i]._id %>-add-shop-select">From: </label>
+                        <select id="catalog-<%= catalogs[i]._id %>-add-product-shop-select" class="form-control" type="text" onchange="toggleCatalogShopSelector('<%= catalogs[i]._id.toString() %>')"
+                            name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
+                            <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
+                            <% for(let si=0;si<shops.length;si++) { %>
+                            <option value="<%= catalogs[i]._id + '-' + shops[si]._id %>"><%= shops[si].displayName %></option>
+                            <% } %>
+                            <% } %>
+                        </select>
                     </div>
-                    <div class="catalog-shop-product-select-section">
-                        <h4>Products</h4>
-                        <% if(typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { for(let s=0;s<shops.length;s++) { %>
-                            <form class="catalog-add-action-form" method="POST" action="/user/shop">
-                                <input type="hidden" name="id" value="cl-add-pd">
-                            
-                                <input type="hidden" name="cid"
-                                value="<% if(typeof(catalogs[i]._id) !== 'undefined') { %><%= catalogs[i]._id %><% } %>">
+                </div>
+                <div class="catalog-shop-product-select-section">
+                    <h4>Products</h4>
+                    <% if(typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { for(let s=0;s<shops.length;s++) { %>
+                        <form class="catalog-add-action-form" method="POST" action="/user/shop">
+                            <input type="hidden" name="id" value="cl-add-pd">
+                        
+                            <input type="hidden" name="cid"
+                            value="<% if(typeof(catalogs[i]._id) !== 'undefined') { %><%= catalogs[i]._id %><% } %>">
+
+                            <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
 
                             <div id="catalog-<%= catalogs[i]._id %>-shop-listing-<%= shops[s]._id %>" class="catalog-shop-product-listing form-group mb-3" <% if(s!=0) { %>hidden<% } %>>
                                 <% if(typeof(shops[s].products) !== 'undefined' && Array.isArray(shops[s].products)) { %>
                                     <% for(let p=0;p<shops[s].products.length;p++) { %>
                                         <div class="shop-product-listing form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox" name="<%= catalogs[i]._id %>-<%= shops[s]._id %>" value="<%= shops[s].products[p]._id %>">
+                                            <input class="form-check-input" type="checkbox" id="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox" name="<%= catalogs[i]._id %>-<%= shops[s].products[p]._id %>">
                                             <label class="form-check-label" for="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox"><%= shops[s].products[p].displayName %></label>
                                         </div>
                                     <% } %>
                                 <% } %>
+                                <div class="form-group form-inline mb-3 card-filter-selector">
+                                    <button class="btn btn-primary" type="submit">Add checked items</button>
+                                </div>
                             </div>
-                            <% }
-                        } %>
-                        <div class="form-group form-inline mb-3 card-filter-selector">
-                            <button class="btn btn-primary" type="submit">Add checked items</button>
-                        </div>
-                    </div>
-                </form>
+                        </form>
+                    <% }} %>
+                </div>
             </div>
             <hr>
             <div class="row">

@@ -61,6 +61,9 @@ catalog.create = (c) => {
                 throw e
             }
 
+            if (!validator.isNotNull(c.displayName)) c.displayName = c.name
+            c.name = c.name.toLowerCase()
+
             const result = await db.get().collection('catalogs').insertOne(c)
             resolve(result)
         } catch (e) {
@@ -135,6 +138,9 @@ catalog.update = (filters, values, options, operator) => {
             }
             const catalogCollection = db.get().collection('catalogs')
             let operation = {}
+            if (validator.isNotNull(values) && typeof (values.name) == 'string') {
+                values.name = values.name.toLowerCase()
+            }
             operation[opr] = values
             const result = await catalogCollection.updateMany(filters,operation,options)
             resolve(result)

@@ -626,6 +626,8 @@ shops.use('/edit', require('./shopeditor'))
 shops.use('/edit/*', require('./shopeditor'))
 shops.use('/product/edit', require('./producteditor'))
 shops.use('/product/edit/*', require('./producteditor'))
+shops.use('/catalog/edit', require('./catalogeditor'))
+shops.use('/catalog/edit/*', require('./catalogeditor'))
 shops.use('/page/:page', async function(req, res, next) {
   try {
 
@@ -669,6 +671,7 @@ shops.use('/page/:page', async function(req, res, next) {
 
   }
 })
+
 shops.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {

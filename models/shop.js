@@ -170,6 +170,9 @@ shop.update = (filters, values, options, operator) => {
             }
             const shopCollection = db.get().collection('shops')
             let operation = {}
+            if(validator.isNotNull(values) && typeof(values.name) == 'string') {
+                values.name = values.name.toLowerCase()
+            }
             operation[opr] = values
             const result = await shopCollection.updateMany(filters,operation,options)
             resolve(result)

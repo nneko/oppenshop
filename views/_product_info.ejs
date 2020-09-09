@@ -1,7 +1,7 @@
-<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && (pane == 'pd' || pane == 'pd-new' || pane == 'cl' || pane == 'in')) { %>show active<% } %>" id="products-pane" role="tabpanel" aria-labelledby="products-tab">
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && (pane == 'pd' || pane == 'pd-new' || pane == 'in')) { %>show active<% } %>" id="products-pane" role="tabpanel" aria-labelledby="products-tab">
     <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="productsTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pd-new' || pane == 'sf') { %>active<% } %>" id="new-products-tab"
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane != 'in') { %>active<% } %>" id="new-products-tab"
                 data-toggle="tab" href="#add-product-pane" role="tab" aria-controls="new"
                 aria-selected="false"><%- include('assets/symbols/add.svg') %>Registration</a>
         </li>

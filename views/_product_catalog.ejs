@@ -8,7 +8,7 @@
                 aria-label="catalogs-select-label" aria-describedby="addressType-basic-addon" onchange="toggleCatalog()">
                 <% if(typeof(catalogs) !== 'undefined' && Array.isArray(catalogs) && catalogs.length > 0) { %>
                 <% for(let c=0;c<catalogs.length;c++) { %>
-                <option id="catalog-option-<%= catalogs[c]._id %>" value="<%= catalogs[c]._id %>"><%= catalogs[c].name %></option>
+                <option id="catalog-option-<%= catalogs[c]._id %>" value="<%= catalogs[c]._id %>"><%= catalogs[c].displayName ? catalogs[c].displayName : catalogs[c].name %></option>
                 <% } %>
                 <% } %>
             </select>
@@ -25,7 +25,7 @@
         <% for(let i=0;i<catalogs.length;i++) { %>
         <div id="catalog-card-<%= catalogs[i]._id %>" class="catalog-card" <% if(i!=0) { %>hidden<% } %>>
             <div class="catalog-card-header row">
-                <h3><%= catalogs[i].name %></h3>
+                <h3><%= catalogs[i].displayName ? catalogs[i].displayName : catalogs[i].name %></h3>
                 <div class="col-6">
                     <figure class="featured-image">
                         <% if(typeof(catalogs[i].image) !== 'undefined' && typeof(catalogs[i].image.src) !== 'undefined') { %>

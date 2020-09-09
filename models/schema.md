@@ -150,6 +150,7 @@
     {
         "_id":, ObjectId("2342345235"),
         "name": "",
+        "displayName": "",
         "owner": "",
         "description": "",
         "products": [""]

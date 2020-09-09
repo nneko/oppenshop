@@ -143,6 +143,9 @@ product.update = (filters, values, options, operator) => {
             }
             const productCollection = db.get().collection('products')
             let operation = {}
+            if (validator.isNotNull(values) && typeof (values.name) == 'string') {
+                values.name = values.name.toLowerCase()
+            }
             operation[opr] = values
             const result = await productCollection.updateMany(filters,operation,options)
             resolve(result)

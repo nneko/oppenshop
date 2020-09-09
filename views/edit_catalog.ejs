@@ -1,0 +1,113 @@
+<main class="container">
+    <section class="main-panel">
+        <div class="row">
+            <div class="col-12 main-content">
+                <div class="content-pane" id="edit-catalog-content">
+                    <% if(typeof(messages.success) !== 'undefined') { %>
+                    <div id="main-alert-success" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= messages.success %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    <% } %>
+                    <% if(typeof(messages.info) !== 'undefined') { %>
+                    <div id="main-alert-info" class="alert alert-primary alert-dismissible fade show" role="alert">
+                        <%= messages.info %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    <% } %>
+                    <% if(typeof(messages.error) !== 'undefined') { %>
+                    <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= messages.error %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    <% } %>
+                    <div>
+                        <span class="edit-heading-span">
+                            <h2>Edit Catalog</h2>
+                            <a href="/user/shop?show=cl">
+                                <button class="btn btn-primary">Back to catalogs</button>
+                            </a>
+                        </span>
+                        <hr>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <figure class="featured-image">
+                                <% if(typeof(image) !== 'undefined' && image.value) { %>
+                                <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
+                                <% } else { %>
+                                    <%- include('assets/symbols/library.svg') %>
+                                <% } %>
+                                </figure>
+                                <p class="featured-image-legend">Catalog Image</p>
+                        </div>
+                        <div class="col-9">
+                            <form id="edit-catalog-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/catalog/edit" method="POST" oninput=""
+                                enctype="multipart/form-data" novalidate>
+                                <fieldset <% if(typeof(show) !== 'undefined' && show == 'disabled') { %> disabled="disabled"
+                                    <% } %>>
+                                    <input type="hidden" name="id" value="<% if(typeof(id) !== 'undefined') { %><%= id %><% } %>">
+                                    <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="edit-catalog-name-basic-addon">Catalog Name</span>
+                                                </div>
+                                                <input id="edit-catalog-name"
+                                                    class="form-control <% if(typeof(name) !== 'undefined' && typeof(name.class) !== 'undefined') { %><%= name.class %><% } %>"
+                                                    type="text" name="name"
+                                                    value="<% if(typeof(name) !== 'undefined' && typeof(name.value) !== 'undefined') { %><%= name.value %><% } %>"
+                                                    aria-label="Catalog Name" aria-describedby="edit-catalog-name-basic-addon" size="55" required>
+                                                <div id="add-catalog-invalid-fullname" class="invalid-feedback">
+                                                    <% if(typeof(name) !== 'undefined' && name.class == 'is-invalid') { %><%= name.message %><% } else { %>
+                                                    You must provide a valid catalog name.
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="edit-storefront-description-basic-addon">Description</span>
+                                            </div>
+                                            <textarea id="edit-catalog-description" class="form-control <% if(typeof(description) !== 'undefined' && typeof(description.class) !== 'undefined') { %><%= description.class %><% } %>" rows="4" cols="25" name="description" form="edit-catalog-form"
+                                                    placeholder="Catalog Description ..." aria-label="Catalog Description"
+                                                aria-describedby="edit-catalog-description-basic-addon"><% if(typeof(description) !== 'undefined' && typeof(description.value) !== 'undefined') { %><%= description.value %><% } %></textarea>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text input-prepend-icon" id="edit-storefront-fullimage-basic-addon"
+                                                        data-toggle="tooltip" data-placement="bottom" data-original-title="Catalog Image"
+                                                        title="Catalog Image"><%- include('assets/symbols/picture.svg') %></span>
+                                                </div>
+                                                <input id="edit-catalog-fullimage"
+                                                    class="form-control <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined') { %><%= image.class %><% } %>"
+                                                    type="file" name="fullimage" aria-label="Catalog Image"
+                                                    aria-describedby="edit-catalog-fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple
+                                                    onchange="validateImageFiles()" onclick="clearImageValidation()">
+                                                <div id="edit-catalog-invalid-fullimage" class="invalid-feedback">
+                                                    <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
+                                                    You must provide a valid image of type: jpg/jpeg/png.
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div id="catalog-save-button-container">
+                                                <button id="save-catalog-button" type="submit" class="btn btn-primary" onclick="">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

@@ -121,6 +121,8 @@
                                         <input type="hidden" name="pid" value="<% if(typeof(catalogs[i].products[j]._id) !== 'undefined') { %><%= catalogs[i].products[j]._id %><% } %>">
                                         
                                         <input type="hidden" name="cid" value="<% if(typeof(catalogs[i]._id) !== 'undefined') { %><%= catalogs[i]._id %><% } %>">
+
+                                        <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                                         
                                         <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
                                             <%- include('assets/symbols/bin.svg') %>

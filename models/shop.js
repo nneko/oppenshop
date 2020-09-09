@@ -8,11 +8,16 @@ let shop = {}
 
 shop.isValid = async (s) => {
     try {
-        let userExists = null
+        let ownerExists = null
         if (validator.isNotNull(s) && typeof (s.owner) == 'string') {
-            userExists = await user.read(s.owner, { findBy: 'id' })
+            ownerExists = await user.read(s.owner, { findBy: 'id' })
+            if (user.isValid(ownerExists)) {
+                ownerExists = true
+            } else {
+                ownerExists = false
+            }
         }
-        if (validator.isNotNull(s) && typeof (s.owner) == 'string' && userExists && typeof (s.name) == 'string' && validator.isNotNull(s.name) && s.hasOwnProperty('status')) {
+        if (ownerExists && typeof(s.name) == 'string' && s.hasOwnProperty('status')) {
             return true
         } else {
             return false

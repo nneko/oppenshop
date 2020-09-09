@@ -295,7 +295,6 @@ let catalogAddProductHander = async (req, res) => {
             }
 
             const ctg = await catalog.read(form.cid, { findBy: 'id' })
-
             if (! await catalog.isValid(ctg)) {
                 await badRequest(req, res, 'cl', 400, 'No valid catalog found for '+form.cid+'.')
                 return
@@ -311,7 +310,7 @@ let catalogAddProductHander = async (req, res) => {
                         let p = await product.read(pid, { findBy: 'id' })
                         if (await product.isValid(p)) {
                             if(debug) console.log('Adding product ' + pid + ' to catalog product listing for ' + cid)
-                            c.products.push(p)
+                            c.products.push(p._id.toString())
                         }
                     }
                 }
@@ -334,13 +333,14 @@ let catalogAddProductHander = async (req, res) => {
     }
 }
 
-let catalogDeleteProductHander = async (req, res) => {
+let catalogDeleteProductHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
         _403redirect(req, res, '/user/shop/?show=cl', 'You must be signed in.')
         return
     } else {
         try {
             let c = {}
+            c.products = []
 
             let formValidated = false
             let formFields = {}
@@ -357,47 +357,39 @@ let catalogDeleteProductHander = async (req, res) => {
                 return
             }
 
-            if (!validator.isNotNull(form.name)) {
-                await badRequest(req, res, 'cl', 400, 'Catalogs must have a name.')
+            if (!validator.isNotNull(form.cid)) {
+                await badRequest(req, res, 'cl', 400, 'No catalog id specified.')
                 return
             }
 
-            const shp = await shop.read(form.sid, { findBy: 'id' })
-
-            if (! await shop.isValid(shp) && shp.status == 'active') {
-                await badRequest(req, res, 'cl', 400, 'Catalogs must be associated with a valid and active storefront.')
+            const ctg = await catalog.read(form.cid, { findBy: 'id' })
+            if (! await catalog.isValid(ctg)) {
+                await badRequest(req, res, 'cl', 400, 'No valid catalog found for ' + form.cid + '.')
                 return
             }
-
-            c.name = form.name
-            c.description = form.description
-            c.owner = form.sid
-            c.products = []
-            if (req.files) {
-                if (validator.isUploadLimitExceeded(req.files)) {
-                    await badRequest(req, res, 'cl', 403, 'Upload limits exceeded.')
-                    return
+            
+            let cid = form.cid
+            let pid = form.pid
+            let p = await product.read(pid, { findBy: 'id' })
+            if (await product.isValid(p)) {
+                if (debug) console.log('Removing product entries for ' + pid + ' in catalog ' + cid)
+                for (const item of ctg.products) {
+                    if(item !== pid) c.products.push(item)
                 }
-
-                for (x of req.files) {
-                    x.storage = 'db'
-                }
-                console.log(req.files)
-                if (Array.isArray(req.files) && req.files.length >= 1) c.image = req.files[0]
             }
-            let ctg = await catalog.create(c)
-            if (debug) console.log('Catalog added for ' + shp.displayName)
-            //let viewData = await populateViewData('\''+u.uid+'\'')
+
+            let updated_ctg = await catalog.update({ _id: ctg._id }, c)
+            if (debug) console.log('Catalog ' + ctg._id.toString() + ' updated.')
             let viewData = await populateViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'cl'
-            viewData.messages = { success: 'Catalog created.' }
+            viewData.messages = { success: 'Product removed from catalog.' }
             res.render('sell', viewData)
             return
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a catalog.' } })
+            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested product addition to catalog.' } })
             return
         }
     }
@@ -521,6 +513,7 @@ let productAddHandler = async (req, res) => {
         p.status = 'active'
         p.quantity = form.quantity ? Number(form.quantity) : 0
         p.price = generator.roundNumber( form.unit_dollar && form.unit_cents ? Number(form.unit_dollar + '.' + form.unit_cents): 0, 2)
+        p.currency = form.currency ? form.currency : 'jmd'
         if (form.name !== 'undefined'){
           p.displayName = form.name
 

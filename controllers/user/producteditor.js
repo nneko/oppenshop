@@ -77,6 +77,7 @@ let populateViewData = async (id) => {
                   amount = p.price.split(".")
                   viewData.unit_dollar = {value: amount[0]}
                   viewData.unit_cents = {value: amount[1]}
+                  viewData.currency = {value: p.currency}
                 }
                 let specs = {}
                 if (typeof(p.specifications) !== 'undefined' ){
@@ -236,9 +237,9 @@ producteditor.post('/', function (req, res) {
 
                     }
                     let specs = {}
-                    for (key in form){
-                      if (!key.startsWith('spec_')) continue
-                      specs[key.replace('spec_', '')] = form[key]
+                    for (const ky of Object.keys(form)){
+                      if (!ky.startsWith('spec_')) continue
+                      specs[ky.replace('spec_', '')] = form[ky]
                       //p[key] = form[key]
                       //console.log(key, form[key])
                       //console.log(key.replace('spec_', ''), form[key])

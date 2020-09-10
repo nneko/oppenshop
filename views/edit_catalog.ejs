@@ -104,6 +104,49 @@
                                     </div>
                                 </fieldset>
                             </form>
+                            <form class="standard-form standard-edit-form" action="/user/shop" method="POST">
+                                <input type="hidden" name="id" value="cl-del">
+                                
+                                <input type="hidden" name="cid" value="<% if(typeof(id) !== 'undefined') { %><%= id %><% } %>">
+                                
+                                <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+
+                                <div class="form-group catalog-delete-section">
+                                    <div class="catalog-delete-section-header">
+                                        <h3>Delete Catalog</h3>
+                                    </div>
+                                    <p class="text-legend">
+                                        Remove catalog and stop showing associated product listings. Note, individual product items
+                                        will remain available from their respective storefronts.
+                                    </p>
+                                    <div id="delete-catalog-button-container">
+                                        <button id="delete-catalog-button" type="button" class="btn btn-secondary" data-toggle="modal"
+                                            data-target="#delete-catalog-modal">Delete</button>
+                                    </div>
+
+                                    <!-- Delete Account Modal -->
+                                    <div class="modal fade" id="delete-catalog-modal" tabindex="-1" role="dialog"
+                                        aria-labelledby="delete-catalog-modal-title" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="delete-catalog-modal-long-title">Catalog Delete Confirmation</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p class="delete-modal-legend"> Are you sure?
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

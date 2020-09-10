@@ -232,6 +232,7 @@ producteditor.post('/', function (req, res) {
                     }
                     productUpdate.quantity = form.quantity ? Number(form.quantity) : 0
                     productUpdate.price = generator.roundNumber( form.unit_dollar && form.unit_cents ? Number(form.unit_dollar + '.' + form.unit_cents): 0, 2)
+                    productUpdate.currency = form.currency ? form.currency : 'JMD'
                     if (form.name !== 'undefined'){
                       productUpdate.displayName = form.name
 

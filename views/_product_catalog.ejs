@@ -45,7 +45,7 @@
             </div>
             <hr>
             <a href="/user/shop/catalog/edit?c=<%= catalogs[i]._id %>">
-                <button class="btn btn-primary">Edit description</button>
+                <button class="btn btn-primary">Edit</button>
             </a>
             <hr>
             <div class="row">
@@ -67,7 +67,8 @@
                 </div>
                 <div class="catalog-shop-product-select-section">
                     <h4>Products</h4>
-                    <% if(typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { for(let s=0;s<shops.length;s++) { %>
+                    <% if(typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
+                        <% for(let s=0;s<shops.length;s++) { %>
                         <form class="catalog-add-action-form" method="POST" action="/user/shop">
                             <input type="hidden" name="id" value="cl-add-pd">
                         
@@ -77,20 +78,24 @@
                             <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
 
                             <div id="catalog-<%= catalogs[i]._id %>-shop-listing-<%= shops[s]._id %>" class="catalog-shop-product-listing form-group mb-3" <% if(s!=0) { %>hidden<% } %>>
-                                <% if(typeof(shops[s].products) !== 'undefined' && Array.isArray(shops[s].products)) { %>
-                                    <% for(let p=0;p<shops[s].products.length;p++) { %>
-                                        <div class="shop-product-listing form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox" name="<%= catalogs[i]._id %>-<%= shops[s].products[p]._id %>">
-                                            <label class="form-check-label" for="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox"><%= shops[s].products[p].displayName %></label>
-                                        </div>
+                                <div class="mb-3 catalog-shop-product-listing-container">
+                                    <% if(typeof(shops[s].products) !== 'undefined' && Array.isArray(shops[s].products)) { %>
+                                        <% for(let p=0;p<shops[s].products.length;p++) { %>
+                                            <div class="shop-product-listing form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox" name="<%= catalogs[i]._id %>-<%= shops[s].products[p]._id %>">
+
+                                                <label class="form-check-label" for="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox"><%= shops[s].products[p].displayName %></label>
+                                            </div>
+                                        <% } %>
                                     <% } %>
-                                <% } %>
-                                <div class="form-group form-inline mb-3 card-filter-selector">
-                                    <button class="btn btn-primary" type="submit">Add checked items</button>
+                                    <div class="form-group form-inline mb-3 card-filter-selector">
+                                        <button class="btn btn-primary" type="submit">Add checked items</button>
+                                    </div>
                                 </div>
                             </div>
                         </form>
-                    <% }} %>
+                        <% } %>
+                    <% } %>
                 </div>
             </div>
             <hr>
@@ -98,47 +103,83 @@
                 <h3>Catalog items</h3>
             </div>
             <% if (typeof(catalogs[i].products) !== 'undefined' && Array.isArray(catalogs[i].products) && catalogs[i].products.length > 0) { %>
-                <% for(let j=0;j<catalogs[i].products.length;j++) { %>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="actionable-card-pane">
-                                <div class="catalog-view-card-pane">
-                                    <ul>
-                                    <li><span><p>
-                                            <b><%= catalogs[i].products[j].name %></b><br>
-                                            <%= catalogs[i].products[j].status %>
-                                            <% if (typeof(catalogs[i].products[j].image) !== 'undefined' ) { %>
-                                            <img alt="<%= catalogs[i].products[j].image.originalname %>" width="50" height="60" src="data:<%= catalogs[i].products[j].image.mimetype %>;base64,<%= catalogs[i].products[j].image.base64 %>"/>
-                                            <% } %>
-                                        </p>
-                                        </span></li>
-                                    </ul>
-                                </div>
-                                <div class="action-button-section">
-                                    <form class="edit-delete-action-form" method="POST" action="/user/shop">
-                                        <input type="hidden" name="id" value="cl-del-pd">
-
-                                        <input type="hidden" name="pid" value="<% if(typeof(catalogs[i].products[j]._id) !== 'undefined') { %><%= catalogs[i].products[j]._id %><% } %>">
-                                        
-                                        <input type="hidden" name="cid" value="<% if(typeof(catalogs[i]._id) !== 'undefined') { %><%= catalogs[i]._id %><% } %>">
-
-                                        <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-                                        
-                                        <button class=" action-icon-button delete-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Delete" name="update" value="delete">
-                                            <%- include('assets/symbols/bin.svg') %>
-                                        </button>
-                                    </form>
-                                </div>
+            <div class="catalog-item-container">
+            <% for(let j=0;j<catalogs[i].products.length;j++) { %>
+                <div class="card catalog-item-card">
+                    <div class="card-body">
+                        <div class="actionable-card-pane">
+                            <div class="catalog-view-card-pane">
+                                <ul>
+                                    <li>
+                                        <span>
+                                            <p class="item-card-label">
+                                                <b><%= catalogs[i].products[j].displayName %></b>
+                                            </p>
+                                            <div class="item-card-label">
+                                                <div class="catalog-item-card-section">
+                                                    <% if(typeof(catalogs[i].products[j].images) !== 'undefined' && Array.isArray(catalogs[i].products[j].images) && catalogs[i].products[j].images.length > 0) { %>
+                                                    <img alt="<%= catalogs[i].products[j].images[0].originalname %>" class="catalog-item-image"
+                                                        src="<%= catalogs[i].products[j].images[0].src %>" />
+                                                    <% } else { %>
+                                                    <figure class="catalog-item-image">
+                                                        <%- include('assets/symbols/tags.svg') %>
+                                                    </figure>
+                                                    <% } %>
+                                                </div>
+                                                <div class="item-card-left catalog-item-card-section extra-info">
+                                                    <h4>Availability</h4>
+                                                    <p>
+                                                        <% if(typeof(catalogs[i]) !== 'undefined' && typeof(catalogs[i].products[j].quantity) !== 'undefined' &&  catalogs[i].products[j].quantity > 0 ) { %>
+                                                        <%= catalogs[i].products[j].quantity %>
+                                                        <% } else if(catalogs[j].products[j].quantity < 0) { %>
+                                                        &infin;
+                                                        <% } else { %>
+                                                        <%= 'Out of Stock' %>
+                                                        <% } %>
+                                                    </p>
+                                                    <% if(typeof(catalogs[i].products[j].price) == 'string' && typeof(catalogs[i].products[j].currency) == 'string') { %>
+                                                    <h4>Price</h4>
+                                                    <p>
+                                                        <%= catalogs[i].products[j].price + ' ' + catalogs[i].products[j].currency.toUpperCase() %>
+                                                    </p>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                            <div class="action-button-section">
+                                                <form class="edit-delete-action-form" method="POST" action="/user/shop">
+                                                    <input type="hidden" name="id" value="cl-del-pd">
+                                            
+                                                    <input type="hidden" name="pid"
+                                                        value="<% if(typeof(catalogs[i].products[j]._id) !== 'undefined') { %><%= catalogs[i].products[j]._id %><% } %>">
+                                            
+                                                    <input type="hidden" name="cid"
+                                                        value="<% if(typeof(catalogs[i]._id) !== 'undefined') { %><%= catalogs[i]._id %><% } %>">
+                                            
+                                                    <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                                            
+                                                    <button class=" action-icon-button delete-icon action-icon" type="submit" data-toggle="tooltip"
+                                                        data-placement="bottom" title="Delete" name="update" value="delete">
+                                                        <%- include('assets/symbols/bin.svg') %>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                <% } %>
-            <% } else { %>
-                <div class="catalog-no-items-card">
-                    <p>No items in catalog.</p>
                 </div>
             <% } %>
             </div>
+            <% } else { %>
+            <div class="catalog-item-container">
+                <div class="catalog-no-items-card">
+                    <p>No items in catalog.</p>
+                </div>
+            </div>
+            <% } %>
+        </div>
         <% } %>
         <%  } else { %>
         <p>You have no catalogs.</p>
@@ -148,30 +189,35 @@
         <% if (typeof(catalog_pages) !== 'undefined' && catalog_pages > 0) { %>
         <ul class="pagination text-center">
             <% if (typeof(catalog_current_page) !== 'undefined' ) { %>
-            <% if (catalog_current_page == 1) { %>
-            <li class="page-item disabled"><a class="page-link">First</a></li>
-            <% } else { %>
-            <li class="page-item"><a class="page-link" href="/user/shop/page/1">First</a></li>
-            <% } %>
-            <% let i = (Number(catalog_current_page) > 5 ? Number(catalog_current_page) - 4 : 1) %>
-            <% if (i !== 1) { %>
-            <li class="page-item disabled"><a class="page-link">...</a></li>
-            <% } %>
-            <% for (; i <= (Number(catalog_current_page) + 4) && i <= catalog_pages; i++) { %>
-            <% if (i == catalog_current_page) { %>
-            <li class="page-item active"><a class="page-link"><%= i %></a></li>
-            <% } else { %>
-            <li class="page-item"><a class="page-link" href="/user/shop/page/<%= i %>"><%= i %></a></li>
-            <% } %>
-            <% if (i == Number(catalog_current_page) + 4 && i < catalog_pages) { %>
-            <li class="page-item disabled"><a class="page-link">...</a></li>
-            <% } %>
-            <% } %>
-            <% if (catalog_current_page == catalog_pages) { %>
-            <li class="page-item disabled"><a class="page-link">Last</a></li>
-            <% } else { %>
-            <li class="page-item"><a class="page-link" href="/user/shop/page/<%= catalog_pages %>">Last</a></li>
-            <% } %>
+                <% if (catalog_current_page == 1) { %>
+                    <li class="page-item disabled"><a class="page-link">First</a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="/user/shop/page/1">First</a></li>
+                <% } %>
+
+                <% let i = (Number(catalog_current_page) > 5 ? Number(catalog_current_page) - 4 : 1) %>
+                
+                <% if (i !== 1) { %>
+                    <li class="page-item disabled"><a class="page-link">...</a></li>
+                <% } %>
+
+                <% for (; i <= (Number(catalog_current_page) + 4) && i <= catalog_pages; i++) { %>
+                    <% if (i == catalog_current_page) { %>
+                        <li class="page-item active"><a class="page-link"><%= i %></a></li>
+                    <% } else { %>
+                        <li class="page-item"><a class="page-link" href="/user/shop/page/<%= i %>"><%= i %></a></li>
+                    <% } %>
+
+                    <% if (i == Number(catalog_current_page) + 4 && i < catalog_pages) { %>
+                        <li class="page-item disabled"><a class="page-link">...</a></li>
+                    <% } %>
+                <% } %>
+
+                <% if (catalog_current_page == catalog_pages) { %>
+                    <li class="page-item disabled"><a class="page-link">Last</a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="/user/shop/page/<%= catalog_pages %>">Last</a></li>
+                <% } %>
             <% } %>
         </ul>
         <% } %>
@@ -232,14 +278,16 @@
                         </div>
                         <textarea class="form-control" rows="4" cols="25" name="description" form="create-catalog-form"
                             placeholder="Catalog description ..." aria-label="Catalog description"
-                            aria-describedby="create-catalog-description-basic-addon"></textarea>
+                            aria-describedby="create-catalog-description-basic-addon">
+                        </textarea>
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text input-prepend-icon" id="create-catalog-image-basic-addon"
                                     data-toggle="tooltip" data-placement="bottom" data-original-title="Catalog Image"
-                                    title="Catalog Image"><%- include('assets/symbols/picture.svg') %></span>
+                                    title="Catalog Image"><%- include('assets/symbols/picture.svg') %>
+                                </span>
                             </div>
                             <input id="create-catalog-image"
                                 class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullimage.class %><% } %>"

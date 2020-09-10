@@ -144,6 +144,11 @@ let populateViewData = async (uid, status = 'active', shop_page = 1, product_pag
                                         for (const item of cList[j].products) {
                                             let p = await product.read(item,{findBy: 'id'})
                                             if(await product.isValid(p)) {
+                                                if (typeof (p.images) !== 'undefined' && Array.isArray(p.images)) {
+                                                    for (const pImg of p.images) {
+                                                        pImg.src = media.getBinaryDetails(pImg)
+                                                    }
+                                                }
                                                 pList.push(p)
                                             }
                                         }
@@ -161,16 +166,21 @@ let populateViewData = async (uid, status = 'active', shop_page = 1, product_pag
                             if (typeof (cList.image) !== 'undefined') {
                                 cList.image.src = media.getBinaryDetails(cList.image)
                             }
+                            let pList = []
                             if (cList.products.length > 0) {
-                                let pList = []
                                 for (const item of cList.products) {
                                     let p = await product.read(item, { findBy: 'id' })
                                     if (await product.isValid(p)) {
+                                        if (typeof (p.images) !== 'undefined' && Array.isArray(p.images)) {
+                                            for (const pImg of p.images) {
+                                                pImg.src = media.getBinaryDetails(pImg)
+                                            }
+                                        }
                                         pList.push(p)
                                     }
                                 }
-                                cList.products = pList
                             }
+                            cList.products = pList
                             viewData.catalogs.push(cList)
                         }
                     }
@@ -256,6 +266,56 @@ let catalogAddHander = async (req, res) => {
             viewData.messages = { success: 'Catalog created.' }
             res.render('sell', viewData)
             return
+        } catch (e) {
+            console.error(e)
+            res.status(500)
+            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a catalog.' } })
+            return
+        }
+    }
+}
+
+let catalogDeleteHander = async (req, res) => {
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/shop/?show=cl', 'You must be signed in.')
+        return
+    } else {
+        try {
+            let formValidated = false
+            let formFields = {}
+
+            if (!req.body) {
+                await badRequest(req, res, 'cl', 400, 'Invalid request.')
+                return
+            }
+
+            let form = converter.objectFieldsToString(req.body)
+
+            if (form.uid != req.user.id.toString()) {
+                _403redirect(req, res, '/user/shop/?show=cl', 'Permission denied.')
+                return
+            }
+
+            if (!validator.isNotNull(form.cid)) {
+                await badRequest(req, res, 'cl', 400, 'Invalid request.')
+                return
+            }
+
+            let ctg = await catalog.read(form.cid,{findBy: 'id'})
+
+            if (! await catalog.isValid(ctg)) {
+                await badRequest(req, res, 'cl', 404, 'Invalid request. Catalog not found.')
+                return
+            } else {
+                let delete_result = catalog.delete(ctg)
+
+                let viewData = await populateViewData(req.user.id.toString())
+                viewData.user = req.user
+                viewData.pane = 'cl'
+                viewData.messages = { success: 'Catalog deleted.' }
+                res.render('sell', viewData)
+                return
+            }
         } catch (e) {
             console.error(e)
             res.status(500)
@@ -906,6 +966,10 @@ shops.post('/', function (req, res) {
                 case 'cl':
                     console.log(req.body)
                     await catalogAddHander(req, res)
+                    break
+                case 'cl-del':
+                    console.log(req.body)
+                    await catalogDeleteHander(req, res)
                     break
                 case 'cl-add-pd':
                     if(debug) console.log(req.body)

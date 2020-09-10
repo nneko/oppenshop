@@ -89,7 +89,7 @@
                                                     class="form-control <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined') { %><%= image.class %><% } %>"
                                                     type="file" name="fullimage" aria-label="Product Image"
                                                     aria-describedby="edit-product-fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple
-                                                    onchange="validateImageFiles()" onclick="clearImageValidation()">
+                                                    onchange="productValidateImageFiles()" onclick="productClearImageValidation()">
                                                 <div id="edit-product-invalid-fullimage" class="invalid-feedback">
                                                     <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
                                                     You must provide a valid image of type: jpg/jpeg/png.
@@ -234,16 +234,16 @@
             if(e) e.remove()
         }
 
-        function clearImageValidation() {
-            let imgInput = document.getElementById('add-product-images')
+        function productClearImageValidation() {
+            let imgInput = document.getElementById('edit-product-fullimage')
             if(imgInput) {
                 imgInput.classList.remove('is-invalid')
             }
         }
 
-        function validateImageFiles() {
-            let imgInput = document.getElementById('add-product-images')
-            let imgInputInvalidElem = document.getElementById('add-product-invalid-images')
+        function productValidateImageFiles() {
+            let imgInput = document.getElementById('edit-product-fullimage')
+            let imgInputInvalidElem = document.getElementById('edit-product-invalid-fullimage')
             let imgFiles = imgInput.files
             let uploadLimit = <%= typeof (uploadLimit) === 'number' ? uploadLimit : 10 %>
             let uploadSize = <%= typeof (uploadSize) === 'number' ? uploadSize : 10485760 %>

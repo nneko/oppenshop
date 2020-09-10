@@ -294,7 +294,7 @@
                                 class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullimage.class %><% } %>"
                                 type="file" name="fullimage" aria-label="Catalog Image"
                                 aria-describedby="create-catalog-image-basic-addon" accept=".jpg,.jpeg,.png" multiple
-                                onchange="validateImageFiles()" onclick="clearImageValidation()">
+                                onchange="catalogCreateValidateImageFiles()" onclick="catalogCreateClearImageValidation()">
                             <div id="create-catalog-invalid-image" class="invalid-feedback">
                                 <% if(typeof(fullimage) !== 'undefined' && fullimage.class == 'is-invalid') { %><%= fullimage.message %><% } else { %>
                                 You must provide a valid image of type: jpg/jpeg/png.
@@ -316,14 +316,14 @@
         document.getElementById('create-catalog-link').scrollIntoView(false)
     }
 
-    function clearImageValidation() {
+    function catalogCreateClearImageValidation() {
         let imgInput = document.getElementById('create-catalog-image')
         if (imgInput) {
             imgInput.classList.remove('is-invalid')
         }
     }
 
-    function validateImageFiles() {
+    function catalogCreateValidateImageFiles() {
         let imgInput = document.getElementById('create-catalog-image')
         let imgInputInvalidElem = document.getElementById('create-catalog-invalid-image')
         let imgFiles = imgInput.files
@@ -355,10 +355,8 @@
     }
 
     function toggleCatalogShopSelector(cid) {
-        console.log(cid)
         let elem = document.getElementById('catalog-' + cid.toString() + '-add-product-shop-select')
         let x = document.getElementsByClassName('catalog-shop-product-listing')
-        console.log(elem)
         if (elem) {
             for (const y of x) {
                 y.setAttribute('hidden', true);

@@ -88,7 +88,7 @@
                                                     class="form-control <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined') { %><%= image.class %><% } %>"
                                                     type="file" name="fullimage" aria-label="Catalog Image"
                                                     aria-describedby="edit-catalog-fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple
-                                                    onchange="validateImageFiles()" onclick="clearImageValidation()">
+                                                    onchange="catalogValidateImageFiles()" onclick="catalogClearImageValidation()">
                                                 <div id="edit-catalog-invalid-fullimage" class="invalid-feedback">
                                                     <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
                                                     You must provide a valid image of type: jpg/jpeg/png.
@@ -154,3 +154,42 @@
         </div>
     </section>
 </main>
+<script>
+    function catalogClearImageValidation() {
+        let imgInput = document.getElementById('edit-catalog-fullimage')
+        if (imgInput) {
+            imgInput.classList.remove('is-invalid')
+        }
+    }
+
+    function catalogValidateImageFiles() {
+        let imgInput = document.getElementById('edit-catalog-fullimage')
+        let imgInputInvalidElem = document.getElementById('edit-catalog-invalid-fullimage')
+        let imgFiles = imgInput.files
+        let uploadLimit = <%= typeof (uploadLimit) === 'number' ? uploadLimit : 10 %>
+            let uploadSize = <%= typeof (uploadSize) === 'number' ? uploadSize : 10485760 %>
+
+        if (imgInput) {
+            console.log('validating images...')
+            if (imgFiles.length > uploadLimit) {
+                imgInputInvalidElem.innerHTML = 'You cannot upload more than ' + uploadLimit.toString() + ' images.'
+                imgInput.value = null
+                imgInput.classList.add('is-invalid')
+                return
+            }
+
+            let totalImgSize = 0
+
+            for (let i = 0; i < imgFiles.length; i++) {
+                totalImgSize += imgFiles[i].size
+                console.log('Total image size: ' + totalImgSize.toString())
+                if (totalImgSize > uploadSize) {
+                    imgInputInvalidElem.innerHTML = 'Upload size limit of ' + uploadSize.toString() + ' exceeded.'
+                    imgInput.value = null
+                    imgInput.classList.add('is-invalid')
+                    return
+                }
+            }
+        }
+    }
+</script>

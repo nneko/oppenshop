@@ -78,16 +78,18 @@
                             <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
 
                             <div id="catalog-<%= catalogs[i]._id %>-shop-listing-<%= shops[s]._id %>" class="catalog-shop-product-listing form-group mb-3" <% if(s!=0) { %>hidden<% } %>>
-                                <div class="mb-3 catalog-shop-product-listing-container">
-                                    <% if(typeof(shops[s].products) !== 'undefined' && Array.isArray(shops[s].products)) { %>
-                                        <% for(let p=0;p<shops[s].products.length;p++) { %>
-                                            <div class="shop-product-listing form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox" name="<%= catalogs[i]._id %>-<%= shops[s].products[p]._id %>">
+                                <div class="form-group mb-3 ">
+                                    <div class="mb-3 catalog-shop-product-listing-container">
+                                        <% if(typeof(shops[s].products) !== 'undefined' && Array.isArray(shops[s].products)) { %>
+                                            <% for(let p=0;p<shops[s].products.length;p++) { %>
+                                                <div class="shop-product-listing form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox" name="<%= catalogs[i]._id %>-<%= shops[s].products[p]._id %>">
 
-                                                <label class="form-check-label" for="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox"><%= shops[s].products[p].displayName %></label>
-                                            </div>
+                                                    <label class="form-check-label" for="catalog-<%= catalogs[i]._id %>-shop-<%= shops[s]._id %>-product-<%= shops[s].products[p]._id %>-checkbox"><%= shops[s].products[p].displayName %></label>
+                                                </div>
+                                            <% } %>
                                         <% } %>
-                                    <% } %>
+                                    </div>
                                     <div class="form-group form-inline mb-3 card-filter-selector">
                                         <button class="btn btn-primary" type="submit">Add checked items</button>
                                     </div>
@@ -278,8 +280,7 @@
                         </div>
                         <textarea class="form-control" rows="4" cols="25" name="description" form="create-catalog-form"
                             placeholder="Catalog description ..." aria-label="Catalog description"
-                            aria-describedby="create-catalog-description-basic-addon">
-                        </textarea>
+                            aria-describedby="create-catalog-description-basic-addon"></textarea>
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">

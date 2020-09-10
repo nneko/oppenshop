@@ -617,6 +617,7 @@ white-space: nowrap;
 .catalog-card .row h3 {
     margin: 1rem;
     text-align: center;
+    width: 100%;
 }
 
 .catalog-card-header {
@@ -671,6 +672,11 @@ white-space: nowrap;
     margin: 0;
     margin-bottom: 0.5rem;
     width: 100%;
+}
+.catalog-item-image svg {
+    height: auto;
+    margin: 0;
+    width: 100% !important; 
 }
 
 .catalog-delete-section {

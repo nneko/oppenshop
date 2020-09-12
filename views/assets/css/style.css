@@ -633,6 +633,7 @@ white-space: nowrap;
 
 .catalog-shop-product-listing-container {
     display: flex;
+    flex-flow: wrap;
     padding: 1rem;
     /* border-top: 1px solid var(--main-sub-border-color); */
 }

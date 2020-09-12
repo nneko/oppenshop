@@ -131,9 +131,9 @@
                                                 <div class="item-card-left catalog-item-card-section extra-info">
                                                     <h4>Availability</h4>
                                                     <p>
-                                                        <% if(typeof(catalogs[i]) !== 'undefined' && typeof(catalogs[i].products[j].quantity) !== 'undefined' &&  catalogs[i].products[j].quantity > 0 ) { %>
+                                                        <% if(typeof(catalogs[i]) !== 'undefined' && typeof(catalogs[i].products[j]) !== 'undefined' &&  catalogs[i].products[j].quantity > 0 ) { %>
                                                         <%= catalogs[i].products[j].quantity %>
-                                                        <% } else if(catalogs[j].products[j].quantity < 0) { %>
+                                                        <% } else if(catalogs[i].products[j].quantity < 0) { %>
                                                         &infin;
                                                         <% } else { %>
                                                         <%= 'Out of Stock' %>

@@ -273,6 +273,10 @@ svg {
     z-index: 10;
 }
 
+.menu-main-navigation .icon {
+    height: 1.75rem !important;
+}
+
 .form-group {
     margin: 0;
 }

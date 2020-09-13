@@ -1,0 +1,190 @@
+<main class="container">
+    <section class="main-panel">
+            <div class="col-12 main-content">
+                <div class="content-pane" id="edit-product-content">
+                    <% if(typeof(messages.success) !== 'undefined') { %>
+                    <div id="main-alert-success" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= messages.success %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    <% } %>
+                    <% if(typeof(messages.info) !== 'undefined') { %>
+                    <div id="main-alert-info" class="alert alert-primary alert-dismissible fade show" role="alert">
+                        <%= messages.info %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    <% } %>
+                    <% if(typeof(messages.error) !== 'undefined') { %>
+                    <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= messages.error %>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                    <% } %>
+                    <div>
+                        <span class="edit-heading-span">
+                            <h2>Edit Product</h2>
+                            <a href="/user/shop?show=in">
+                                <button class="btn btn-primary">Back to products</button>
+                            </a>
+                        </span>
+                        <hr>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <figure class="featured-image">
+                                <% if(typeof(image) !== 'undefined' && image.value) { %>
+                                <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
+                                <% } else { %>
+                                    <%- include('assets/symbols/tags.svg') %>
+                                <% } %>
+                                </figure>
+                                <p class="featured-image-legend">Product Image</p>
+                        </div>
+                        <div class="col-9">
+                            <form id="edit-product-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/product/edit" method="POST" oninput=""
+                                enctype="multipart/form-data" novalidate>
+                                <fieldset <% if(typeof(show) !== 'undefined' && show == 'disabled') { %> disabled="disabled"
+                                    <% } %>>
+                                    <input type="hidden" name="id" value="<% if(typeof(id) !== 'undefined') { %><%= id %><% } %>">
+                                    <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="edit-product-name-basic-addon">Product Name</span>
+                                                </div>
+                                                <input id="edit-product-name"
+                                                    class="form-control <% if(typeof(name) !== 'undefined' && typeof(name.class) !== 'undefined') { %><%= name.class %><% } %>"
+                                                    type="text" name="name"
+                                            value="<% if(typeof(displayName) !== 'undefined' && typeof(displayName.value) !== 'undefined') { %><%= displayName.value %><% } else if(typeof(name) !== 'undefined' && typeof(name.value) !== 'undefined') {  %><%= name.value %><% } %>"
+                                                    aria-label="Shop Name" aria-describedby="edit-product-name-basic-addon" size="55"
+                                                    required>
+                                                <div id="add-product-invalid-fullname" class="invalid-feedback">
+                                                    <% if(typeof(name) !== 'undefined' && name.class == 'is-invalid') { %><%= name.message %><% } else { %>
+                                                    You must provide a valid shop name.
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="edit-product-description-basic-addon">Description</span>
+                                            </div>
+                                        <textarea id="edit-product-description" class="form-control <% if(typeof(description) !== 'undefined' && typeof(description.class) !== 'undefined') { %><%= description.class %><% } %>" rows="4" cols="25" name="description" form="edit-product-form"
+                                                placeholder="Product Description ..." aria-label="Product Description"
+                                            aria-describedby="edit-product-description-basic-addon"><% if(typeof(description) !== 'undefined' && typeof(description.value) !== 'undefined') { %><%= description.value %><% } %></textarea>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text input-prepend-icon" id="edit-product-fullimage-basic-addon"
+                                                        data-toggle="tooltip" data-placement="bottom" data-original-title="Product Image"
+                                                        title="Product Image"><%- include('assets/symbols/picture.svg') %></span>
+                                                </div>
+                                                <input id="edit-product-fullimage"
+                                                    class="form-control <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined') { %><%= image.class %><% } %>"
+                                                    type="file" name="fullimage" aria-label="Product Image"
+                                                    aria-describedby="edit-product-fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple
+                                                    onchange="productValidateImageFiles()" onclick="productClearImageValidation()">
+                                                <div id="edit-product-invalid-fullimage" class="invalid-feedback">
+                                                    <% if(typeof(image) !== 'undefined' && image && typeof(image.class) !== 'undefined' && image.class == 'is-invalid') { %><%= image.message %><% } else { %>
+                                                    You must provide a valid image of type: jpg/jpeg/png.
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div>
+                                            <h3>Specifications</h3>
+                                            <div class="speclist-section">
+                                            <%  if( typeof(specifications)!== 'undefined' && Object.keys(specifications).length > 0) {  %>
+                                            <% Object.entries(specifications).forEach(([key, value], index) => { %>
+                                              <div id="spec-item-<%= index %>" class="spec-item-container">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group form-inline">
+                                                        <div class="input-group-prepend small-input-control spec-input">
+                                                            <span class="input-group-text"><%= key %></span>
+                                                        </div>
+                                                        <input class="form-control spec-input" type="text"
+                                                            name="spec_<%= key %>" value="<% if(typeof(value) !== 'undefined') { %><%= value.value %><% } %>"
+                                                            aria-label="specval" aria-describedby="speckey-basic-addon" size="" required>
+                                                        <div class="input-group-append">
+                                                            <button class="action-icon-button action-icon close-highlight-onhover-icon" type="button" data-toggle="tooltip" data-placement="left" data-original-title="remove"
+                                                                    title="remove" name="removespec" value="remove" onclick="removeSpec('spec-item-<%= index %>')">
+                                                            <%- include('assets/symbols/close.svg') %>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                              </div>
+                                            <% }) %>
+                                            <% } %>
+                                            </div>
+                                            <div id="specifications-add-button-container">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group form-inline">
+                                                        <div class="input-group-prepend small-input-control">
+                                                            <span class="input-group-text">Name</span>
+                                                        </div>
+                                                        <input id="speckey-input"  class="form-control small-input-control <% if(typeof(speckey) !== 'undefined') { %><%= speckey.class %><% } %>" type="text"
+                                                            name="speckey" value="<% if(typeof(speckey) !== 'undefined' && speckey.value) { %><%= speckey.value %><% } %>"
+                                                            aria-label="Spec" aria-describedby="speckey-basic-addon" size="" required>
+                                                        <div class="input-group-prepend small-input-control">
+                                                            <span class="input-group-text">Value</span>
+                                                        </div>
+                                                        <input id="specval-input" class="form-control small-input-control <% if(typeof(specval) !== 'undefined') { %><%= specval.class %><% } %>" type="text"
+                                                            name="specval" value="<% if(typeof(specval) !== 'undefined' && specval.value) { %><%= specval.value %><% } %>"
+                                                            aria-label="specval" aria-describedby="specval-basic-addon" size="" required>
+                                                        <button id="product-specification-button" type="button" class="btn btn-secondary small-input-control" onclick="addSpec()">Add Spec
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group form-inline">
+                                                <div class="input-group-prepend small-input-control">
+                                                    <span class="input-group-text">Quantity</span>
+                                                </div>
+                                                <input class="form-control small-input-control" type="number" id="quantity" name="quantity" min="-1" step="1"
+                                                value="<% if(typeof(quantity) !== 'undefined' && typeof(quantity) !== 'undefined') { %><%= quantity.value %><% } else { %>0<% } %>"
+                                                aria-label="" aria-describedby="" size="" required>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group form-inline">
+                                                <div class="input-group-prepend small-input-control">
+                                                    <span class="input-group-text">Unit Price</span>
+                                                </div>
+                                                <input class="form-control small-input-control"
+                                                    name = "unit_dollar"
+                                                    value="<% if(typeof(unit_dollar) !== 'undefined' && typeof(unit_dollar) !== 'undefined') { %><%= unit_dollar.value %><% } %>"
+                                                    type="number" aria-label="" aria-describedby="" size="" placeholder="0" min="" required>
+                                                <h6 class="price-label">.</h6>
+                                                <input class="form-control small-input-control"
+                                                    name = "unit_cents"
+                                                    value="<% if(typeof(unit_cents) !== 'undefined' && typeof(unit_cents) !== 'undefined') { %><%= unit_cents.value %><% } %>"
+                                                    type="number" aria-label=""
+                                                    aria-describedby="" size="" placeholder="00" min="0" max="99" required>
+                                                <%- include('./_currency_dropdown.ejs') %>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div id="product-save-button-container">
+                                            <button id="save-product-button" type="submit" class="btn btn-primary" onclick="">Save</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+</main>

@@ -409,6 +409,15 @@ svg {
     max-width: 80%;
 }
 
+.market-pagenav {
+    display: flex;
+    background: none;
+    justify-content: flex-end;
+    margin: 1rem auto;
+    max-width: 100%;
+    padding: 1rem;
+}
+
 .applogo {
     display: flex;
     margin: 0;
@@ -518,6 +527,11 @@ svg {
 
 .content-pane {
     background-color: var(--main-content-bg-color);
+    border-radius: 0.25rem;
+    padding: 1rem;
+}
+
+.marketplace-content-pane {
     border-radius: 0.25rem;
     padding: 1rem;
 }
@@ -702,6 +716,60 @@ white-space: nowrap;
 .catalog-delete-section-header h2 {
     color: var(--icon-delete-color);
     font-weight: bold;
+}
+
+.product-card-container {
+    justify-content: space-around;
+}
+
+.product-card {
+    border: none;
+    flex-basis: 20%;
+    margin: 1rem;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    max-width: 20%;
+    overflow: hidden;
+    width: 20%;
+}
+
+.product-card:hover {
+    background-color: var(--nav-btn-color);
+    cursor: pointer;
+    transition: ease-in 0.25s;
+}
+
+.product-card:hover .item-card-label {
+    color: var(--main-highlight-color);
+}
+
+.product-card-image {
+    display: block;
+    height: 16rem !important;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    position: relative;
+    width: calc(100%) !important;
+}
+
+.product-card img {
+    height: auto;
+    left: 50%;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    max-height: 16rem !important;
+    max-width: 100% !important;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: auto;
+}
+.product-card svg {
+    height: auto;
+    margin: 0;
+    width: 100% !important; 
 }
 
 .sidebar svg {

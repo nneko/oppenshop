@@ -1,29 +1,118 @@
-<% if(typeof(messages.success) !== 'undefined') { %>
-<div id="main-alert-success" class="alert alert-success alert-dismissible fade show main-alert" role="alert">
-    <%= messages.success %>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-</div>
-<% } %>
-<% if(typeof(messages.info) !== 'undefined') { %>
-<div id="main-alert-info" class="alert alert-primary alert-dismissible fade show main-alert" role="alert">
-    <%= messages.info %>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-</div>
-<% } %>
-<% if(typeof(messages.error) !== 'undefined') { %>
-<div id="main-alert" class="alert alert-danger alert-dismissible fade show main-alert" role="alert">
-    <%= messages.error %>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-</div>
-<% } %>
 <main class="container">
     <section class="main-panel">
-        <section class="main-center-section error-msg">
-            <p>A <b>totally awesome way</b> of connecting buyers with sellers</p>
-            <p>We're still in development but check back soon<% if(typeof(name) !== 'undefined') {%>&nbsp;<%=name%><% } %>.</p>
-        </section>
+        <div class="col-12 main-content">
+            <div class="marketplace-content-pane" id="edit-storefront-content">
+                <% if(typeof(messages.success) !== 'undefined') { %>
+                <div id="main-alert-success" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <%= messages.success %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <% } %>
+                <% if(typeof(messages.info) !== 'undefined') { %>
+                <div id="main-alert-info" class="alert alert-primary alert-dismissible fade show" role="alert">
+                    <%= messages.info %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <% } %>
+                <% if(typeof(messages.error) !== 'undefined') { %>
+                <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= messages.error %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <% } %>
+                <div class="row">
+                </div>
+            </div>
+            <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
+            <div class="content-pane-scroll-cards-section catalog-item-container product-card-container">
+                <% for(let j=0;j<products.length;j++) { %>
+                <div class="card catalog-item-card product-card">
+                    <div class="card-body">
+                        <div class="actionable-card-pane">
+                            <div class="catalog-view-card-pane">
+                                <ul>
+                                    <li>
+                                        <span>
+                                            <p class="item-card-label">
+                                                <b><%= products[j].displayName %></b>
+                                            </p>
+                                            <div class="item-card-label">
+                                                <div class="catalog-item-card-section">
+                                                    <% if(typeof(products[j].images) !== 'undefined' && Array.isArray(products[j].images) && products[j].images.length > 0) { %>
+                                                        <figure class="product-card-image">
+                                                            <img alt="<%= products[j].images[0].originalname %>"
+                                                        src="<%= products[j].images[0].src %>" />
+                                                        </figure>
+                                                    <% } else { %>
+                                                    <figure class="product-card-image">
+                                                        <%- include('assets/symbols/tags.svg') %>
+                                                    </figure>
+                                                    <% } %>
+                                                </div>
+                                                <div class="item-card-left catalog-item-card-section extra-info">
+                                                    <% if(typeof(products[j].price) == 'string' && typeof(products[j].currency) == 'string') { %>
+                                                    <p>
+                                                        <%= products[j].price + ' ' + products[j].currency.toUpperCase() %>
+                                                    </p>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+            <% } else { %>
+            <div class="catalog-item-container">
+                <div class="catalog-no-items-card">
+                    <p>No products available.</p>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <nav class="market-pagenav" aria-label="Catalog Listing">
+            <% if (typeof(product_pages) !== 'undefined' && product_pages > 0) { %>
+            <ul class="pagination text-center">
+                <% if (typeof(current_page) !== 'undefined' ) { %>
+                <% if (current_page == 1) { %>
+                <li class="page-item disabled"><a class="page-link">First</a></li>
+                <% } else { %>
+                <li class="page-item"><a class="page-link" href="/market/page/1">First</a></li>
+                <% } %>
+        
+                <% let i = (Number(current_page) > 5 ? Number(current_page) - 4 : 1) %>
+        
+                <% if (i !== 1) { %>
+                <li class="page-item disabled"><a class="page-link">...</a></li>
+                <% } %>
+        
+                <% for (; i <= (Number(current_page) + 4) && i <= product_pages; i++) { %>
+                <% if (i == current_page) { %>
+                <li class="page-item active"><a class="page-link"><%= i %></a></li>
+                <% } else { %>
+                <li class="page-item"><a class="page-link" href="/market/page/<%= i %>"><%= i %></a></li>
+                <% } %>
+        
+                <% if (i == Number(current_page) + 4 && i < product_pages) { %>
+                <li class="page-item disabled"><a class="page-link">...</a></li>
+                <% } %>
+                <% } %>
+        
+                <% if (current_page == product_pages) { %>
+                <li class="page-item disabled"><a class="page-link">Last</a></li>
+                <% } else { %>
+                <li class="page-item"><a class="page-link" href="/market/page/<%= product_pages %>">Last</a></li>
+                <% } %>
+                <% } %>
+            </ul>
+            <% } %>
+        </nav>
     </section>
 </main>

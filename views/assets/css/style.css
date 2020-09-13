@@ -410,7 +410,7 @@ svg {
     max-width: 80%;
 }
 
-.market-container {
+.market-container, .shopping-bag-container {
     padding: 0;
 }
 
@@ -540,9 +540,29 @@ svg {
     padding: 0
 }
 
+.shopping-bag-content {
+    padding: 0;
+}
+
 .marketplace-content-pane {
     border-radius: 0.25rem;
     padding: 1rem;
+}
+
+.shopping-bag-content-pane {
+    padding: 1rem;
+}
+
+.shopping-bag-header {
+    border-bottom: 1px solid var(--main-sub-border-color);
+    padding-bottom: 4rem;
+    padding-top: 1rem;
+    text-align: center;
+}
+
+.shopping-bag-checkout {
+    margin-top: 1.6rem;
+    width: 25%;
 }
 
 .pane-h2 {

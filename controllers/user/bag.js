@@ -1,11 +1,16 @@
-const cfg = require('../configuration/index.js')
+const cfg = require('../../configuration')
+const validator = require('../../utilities/validator')
+const converter = require('../../utilities/converter')
+const generator = require('../../utilities/generator')
+const media = require('../../adapters/storage/media')
+const user = require('../../models/user')
+const shop = require('../../models/shop')
+const product = require('../../models/product')
+const catalog = require('../../models/catalog')
 const express = require('express')
-const product = require('../models/product')
-const media = require('../adapters/storage/media')
-const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
 
-let market = express.Router()
+let bag = express.Router()
 
 let populateViewData = async (uid, product_page = 1) => {
     return new Promise(async (resolve, reject) => {
@@ -21,7 +26,7 @@ let populateViewData = async (uid, product_page = 1) => {
             products = await product.read({}, product_range)
             product_index = await product.count({}, product_range)
 
-            if(validator.isNotNull(products)) {
+            if (validator.isNotNull(products)) {
                 viewData.products = Array.isArray(products) ? products : [products]
             } else {
                 viewData.products = []
@@ -53,37 +58,11 @@ let populateViewData = async (uid, product_page = 1) => {
     })
 }
 
-market.use('/page/:page', async function (req, res, next) {
-    try {
-
-        if (validator.hasActiveSession(req)) {
-            let page = req.params.page || 1
-            let qd = req.query
-            console.log(page)
-            console.log(qd)
-            let viewData = {}
-            console.log('Page: ' + page)
-            viewData = await populateViewData(req.user.id.toString(), product_page = parseInt(page))
-            viewData.user = req.user
-            res.render('market', viewData)
-        } else {
-            messages = { error: "You need to be signed in." }
-            res.status(403)
-            res.render('signin', { messages: messages })
-        }
-    } catch (e) {
-        console.error(e)
-        res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retrieving shop pagination data' }, name: '', user: req.user })
-
-    }
-})
-
-market.get('/', async (req, res) => {
+bag.get('/', async (req, res) => {
     try {
         let viewData = await populateViewData(validator.isNotNull(req.user) ? req.user.id : null)
         viewData.user = req.user
-        res.render('market', viewData)
+        res.render('shopping_bag', viewData)
 
     } catch (e) {
         console.error(e)
@@ -92,4 +71,4 @@ market.get('/', async (req, res) => {
     }
 })
 
-module.exports = market
+module.exports = bag

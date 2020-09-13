@@ -1,7 +1,7 @@
-<main class="container">
+<main class="container shopping-bag-container">
     <section class="main-panel">
-        <div class="col-12 main-content">
-            <div class="content-pane">
+        <div class="col-12 main-content shopping-bag-content">
+            <div class="content-pane shopping-bag-content-pane">
                 <% if(typeof(messages.success) !== 'undefined') { %>
                 <div id="main-alert-success" class="alert alert-success alert-dismissible fade show" role="alert">
                     <%= messages.success %>
@@ -32,12 +32,17 @@
                     </span>
                     <hr>
                 </div>
-                <div>
-                <h3>Total is <% if(typeof(user.bag) !== 'undefined') { %>
-                    <% } else { %>
-                        0.00
-                    <% } %>
-                </h3>
+                <div class="shopping-bag-header">
+                    <h2>
+                        <b>Total is <% if(typeof(user.bag) !== 'undefined') { %>
+                        <% } else { %>
+                            <% if(typeof(currency_symbol) == 'string') { %><%= currency_symbol %>
+                            <% } else { %>$<% } %> 0.00 <% if(typeof(currency) == 'string') { %><%= currency + '.' %>
+                            <% } else { %>USD.<% } %><% } %></b>
+                    </h2>
+                    <a href="/checkout">
+                        <button class="btn btn-primary shopping-bag-checkout">Checkout</button>
+                    </a>
                 </div>
             </div>
         </div>

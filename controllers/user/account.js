@@ -7,6 +7,7 @@ const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
 const debug = cfg.env == 'development' ? true : false
 //const passport = require('passport')
+const accounthandler = require('../handlers/account')
 
 let account = express.Router()
 
@@ -21,11 +22,11 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
     typeof (msgType) === 'undefined' ? mtype = 'error' : mtype = msgType;
 
     let mObj = {}
-    mObj[mtype] = msg ? msg : 'Invalid account update request.' 
+    mObj[mtype] = msg ? msg : 'Invalid account update request.'
 
     try {
         if (req.user) {
-            let viewData = await populateUserViewData(req.user.id.toString())
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = show
             viewData.messages = mObj
@@ -57,7 +58,7 @@ let removePrimaryFields = generator.removePrimaryFields
 let removeFields = generator.removeFields
 
 let removeAddressFields = generator.removeAddressFields
-
+/*
 let populateUserViewData = async (uid) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -104,6 +105,7 @@ let populateUserViewData = async (uid) => {
         }
     })
 }
+*/
 
 // Login & Security updates form handler
 let lsFormHandler = async (req, res) => {
@@ -152,7 +154,7 @@ let lsFormHandler = async (req, res) => {
                     const nwPwHash = await bcrypt.hash(String(req.body.nw_pwd), 10)
                     u.password = nwPwHash
                 } else {
-                    let viewData = await populateUserViewData(req.user.id.toString())
+                    let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                     viewData.user = req.user
                     viewData.pane = 'ls'
                     viewData.messages = { error: 'Authentication failed. Incorrect password.' }
@@ -193,7 +195,7 @@ let lsFormHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
                 console.log(formFields)
             }
-            let viewData = await populateUserViewData(req.user.id.toString())
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'ls'
             viewData.messages = { info: 'Account could not be updated.' }
@@ -202,9 +204,12 @@ let lsFormHandler = async (req, res) => {
             return
         } else {
             try {
-                const result = await user.update({ preferredUsername: u.preferredUsername }, { password: u.password })
+                //const result = await user.update({ preferredUsername: u.preferredUsername }, { password: u.password })
+                let u_lsformhandler = await accounthandler.lsFormHandler(u.preferredUsername,u.password)
+                // TODO: validation check on 'u_lsformhandler' response to show response if updated or not
+
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id.toString())
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'ls'
                 viewData.messages = { success: 'Account updated.' }
@@ -253,10 +258,12 @@ let ciFormHandler = async (req, res) => {
 
     //Validate name
     if (validator.isNotNull(form.givenName) && validator.isNotNull(form.familyName)) {
+        /*
         u.name = {
-            givenName: String(form.givenName), 
+            givenName: String(form.givenName),
             familyName: String(form.familyName)
         }
+        */
         formFields.givenName = { class: 'valid', value: form.givenName }
         formFields.familyName = { class: 'valid', value: form.familyName }
     } else {
@@ -266,7 +273,7 @@ let ciFormHandler = async (req, res) => {
 
     //Validate phone
     if (validator.isNotNull(form.phone) && validator.isPhoneNumber(form.phone)) {
-        
+        /*
         usr.phoneNumbers ? u.phoneNumbers = usr.phoneNumbers : u.phoneNumbers = [];
 
         let primaryPhone  = {
@@ -277,13 +284,13 @@ let ciFormHandler = async (req, res) => {
 
         u.phoneNumbers = removePrimaryFields(u.phoneNumbers)
         u.phoneNumbers.push(primaryPhone)
-
+        */
         formFields.phone = { class: 'valid', value: form.phone}
     }
 
     //Validate address
     if (validator.isNotNull(form.addressStreet) && validator.isNotNull(form.addressLocality) && validator.isNotNull(form.addressRegion) && validator.isNotNull(form.addressPostcode) && validator.isNotNull(form.addressCountry)) {
-
+        /*
         usr.addresses ? u.addresses = usr.addresses : u.addresses = [];
 
         let primaryAddr = {
@@ -304,7 +311,7 @@ let ciFormHandler = async (req, res) => {
         if(!primaryAddr.formatted) delete primaryAddr.formatted
         u.addresses = removePrimaryFields(u.addresses)
         u.addresses.push(primaryAddr)
-
+        */
         formFields.addressStreet = { class: 'valid', value: form.addressStreet}
         formFields.addressLocality = { class: 'valid', value: form.addressLocality}
         formFields.addressRegion = { class: 'valid', value: form.addressRegion}
@@ -335,7 +342,7 @@ let ciFormHandler = async (req, res) => {
             console.log('Invalid update account request received.')
             console.log(formFields)
         }
-        let viewData = await populateUserViewData(req.user.id.toString())
+        let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
         viewData.addressStreet = formFields.addressStreet
         viewData.addressLocality = formFields.addressLocality
         viewData.addressRegion = formFields.addressRegion
@@ -349,9 +356,12 @@ let ciFormHandler = async (req, res) => {
         return
     } else {
         try {
-            await user.update({ preferredUsername: u.preferredUsername }, u)
+            //await user.update({ preferredUsername: u.preferredUsername }, u)
+            let u_ciformhandler = await accounthandler.ciFormHandler(form)
+            // TODO: validation check on 'u_lsformhandler' response to show response if updated or not
+
             if (debug) console.log('User account updated for ' + u.preferredUsername)
-            let viewData = await populateUserViewData(req.user.id.toString())
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'ci'
             viewData.messages = { success: 'Account updated.' }
@@ -396,7 +406,7 @@ let naFormHandler = async (req, res) => {
 
         //Validate address
         if (validator.isNotNull(form.addressStreet) && validator.isNotNull(form.addressLocality) && validator.isNotNull(form.addressRegion) && validator.isNotNull(form.addressPostcode) && validator.isNotNull(form.addressCountry)) {
-
+            /*
             usr.addresses ? u.addresses = usr.addresses : u.addresses = [];
 
             let addr = {
@@ -427,13 +437,15 @@ let naFormHandler = async (req, res) => {
                 let addrName = {formatted: form.fullname}
                 addr.name = addrName
             }
-
+            */
             // Add phone number to the address
             if(validator.isPhoneNumber(form.phone)) {
+                /*
                 let phone = {value: form.phone}
                 phone.type = form.phoneType || 'home'
 
                 addr.phoneNumbers = [phone]
+                */
                 formFields.new_Phone = {value: phone.value, class: 'valid'}
                 formFields.new_PhoneType = {value: phone.type, class: 'unchecked'}
             } else {
@@ -441,7 +453,7 @@ let naFormHandler = async (req, res) => {
                 formFields.new_PhoneType = { value: form.phoneType, class: 'unchecked' }
             }
 
-            u.addresses.push(addr)
+            //u.addresses.push(addr)
 
             formFields.new_addressStreet = { class: 'valid', value: form.addressStreet }
             formFields.new_addressLocality = { class: 'valid', value: form.addressLocality }
@@ -477,7 +489,7 @@ let naFormHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
                 console.log(formFields)
             }
-            let viewData = await populateUserViewData(req.user.id.toString())
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'ad'
             viewData.messages = { error: 'One or more fields has invalid entries.' }
@@ -494,9 +506,12 @@ let naFormHandler = async (req, res) => {
             return
         } else {
             try {
-                await user.update({ preferredUsername: u.preferredUsername }, u)
+                //await user.update({ preferredUsername: u.preferredUsername }, u)
+                let u_naformhandler = await accounthandler.naFormHandler(form)
+                // TODO: validation check on 'u_naformhandler' response to show response if updated or not
+
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id.toString())
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'ad'
                 viewData.messages = { success: 'Account updated.' }
@@ -566,10 +581,10 @@ let addressUpdateHandler = async (req, res) => {
 
                     //Validate address
                     if (validator.isAddress({
-                        streetAddress: form.street, 
-                        locality: form.locality, 
-                        region: form.region, 
-                        postalCode: form.postalCode, 
+                        streetAddress: form.street,
+                        locality: form.locality,
+                        region: form.region,
+                        postalCode: form.postalCode,
                         country: form.country
                     })) {
                         formValidated = true
@@ -582,7 +597,7 @@ let addressUpdateHandler = async (req, res) => {
                         if (debug) {
                             console.log('Invalid account update request received.')
                         }
-                        let viewData = await populateUserViewData(req.user.id.toString())
+                        let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                         viewData.user = req.user
                         viewData.pane = 'ad'
                         if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
@@ -592,6 +607,7 @@ let addressUpdateHandler = async (req, res) => {
                         return
                     } else {
                         try {
+                            /*
                             u.addresses = removeAddressFields(usr.addresses, {
                                 streetAddress: form.streetAddress,
                                 locality: form.locality,
@@ -602,9 +618,13 @@ let addressUpdateHandler = async (req, res) => {
                             if(!(u.addresses.length < usr.addresses.length)) {
                                 throw new Error('Unable to remove address')
                             }
-                            await user.update({ preferredUsername: u.preferredUsername }, u)
+                            */
+                            //await user.update({ preferredUsername: u.preferredUsername }, u)
+                            let u_addressupdatehandler = await accounthandler.addressUpdateHandler(form)
+                            // TODO: validation check on 'u_addressupdatehandler' response to show response if updated or not
+
                             if (debug) console.log('User account updated for ' + u.preferredUsername)
-                            let viewData = await populateUserViewData(req.user.id.toString())
+                            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                             viewData.user = req.user
                             viewData.pane = 'ad'
                             viewData.messages = { success: 'Account updated.' }
@@ -664,8 +684,10 @@ let emailAddHandler = async (req, res) => {
                 formFields.messages = { error: 'Cannot add duplicate email address.' }
                 formFields.status = 400
             } else {
+                /*
                 u.emails = usr.emails
                 u.emails ? u.emails.push({ value: form.email }) : u.emails = [{ value: form.email, primary: true }]
+                */
                 formValidated = true
             }
         } else {
@@ -680,7 +702,7 @@ let emailAddHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
             }
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
-            let viewData = await populateUserViewData(req.user.id.toString())
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'em'
             viewData.messages = formFields.messages
@@ -690,9 +712,11 @@ let emailAddHandler = async (req, res) => {
             return
         } else {
             try {
-                await user.update({ preferredUsername: u.preferredUsername }, u)
+                //await user.update({ preferredUsername: u.preferredUsername }, u)
+                let u_emailaddhandler = await accounthandler.emailAddHandler(form)
+                // TODO: validation check on 'u_emailaddhandler' response to show response if added or not
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id.toString())
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'em'
                 viewData.messages = { success: 'Account updated.' }
@@ -757,7 +781,7 @@ let emailDeleteHandler = async (req, res) => {
             if (debug) {
                 console.log('Invalid account update request received.')
             }
-            let viewData = await populateUserViewData(req.user.id.toString())
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'em'
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
@@ -767,10 +791,13 @@ let emailDeleteHandler = async (req, res) => {
             return
         } else {
             try {
-                u.emails = removeFields(usr.emails, form.email)
-                await user.update({ preferredUsername: u.preferredUsername }, u)
+                //u.emails = removeFields(usr.emails, form.email)
+                //await user.update({ preferredUsername: u.preferredUsername }, u)
+                let u_emaildeletehandler = await accounthandler.emailDeleteHandler(form)
+                // TODO: validation check on 'u_emaildeletehandler' response to show response if deleted or not
+
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id.toString())
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'em'
                 viewData.messages = { success: 'Account updated.' }
@@ -837,7 +864,7 @@ let phoneAddHandler = async (req, res) => {
                 console.log('Invalid update account request received.')
             }
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
-            let viewData = await populateUserViewData(req.user.id.toString())
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'pn'
             viewData.messages = formFields.messages
@@ -847,9 +874,12 @@ let phoneAddHandler = async (req, res) => {
             return
         } else {
             try {
-                await user.update({ preferredUsername: u.preferredUsername }, u)
+                //await user.update({ preferredUsername: u.preferredUsername }, u)
+                let u_phoneaddhandler = await accounthandler.phoneAddHandler(form)
+                // TODO: validation check on 'u_phoneaddhandler' response to show response if added or not
+
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id.toString())
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'pn'
                 viewData.messages = { success: 'Account updated.' }
@@ -903,7 +933,7 @@ let phoneDeleteHandler = async (req, res) => {
             if (debug) {
                 console.log('Invalid account update request received.')
             }
-            let viewData = await populateUserViewData(req.user.id.toString())
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'pn'
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
@@ -913,10 +943,13 @@ let phoneDeleteHandler = async (req, res) => {
             return
         } else {
             try {
-                u.phoneNumbers = removeFields(usr.phoneNumbers, form.phoneNumber)
-                await user.update({ preferredUsername: u.preferredUsername }, u)
+                //u.phoneNumbers = removeFields(usr.phoneNumbers, form.phoneNumber)
+                //await user.update({ preferredUsername: u.preferredUsername }, u)
+                let u_phonedeletehandler = await accounthandler.phoneDeleteHandler(form)
+                // TODO: validation check on 'u_phonedeletehandler' response to show response if delete or not
+
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
-                let viewData = await populateUserViewData(req.user.id.toString())
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'pn'
                 viewData.messages = { success: 'Account updated.' }
@@ -947,10 +980,14 @@ let deleteHandler = async (req, res) => {
                 await badRequest(req, res, 'pr', 403, 'Bad request. Permission denied.')
                 return
             }
-            let u = await user.read(req.body.uid,{findBy: 'id'})
-            req.logout()
-            const deleted = await user.delete({preferredUsername: u.preferredUsername})
-            if(deleted.deletedCount > 0){
+            //let u = await user.read(req.body.uid,{findBy: 'id'})
+            //const deleted = await user.delete({preferredUsername: u.preferredUsername})
+            let u_deletehandler = await accounthandler.deleteHandler(req.body.uid)
+            // TODO: validation check on 'u_deletehandler' response to show response if delete or not
+
+            //req.logout()
+            if(u_deletehandler.deletedCount > 0){
+                req.logout()
                 res.render('index', { name: undefined, user: undefined,  messages: { success: 'Account deleted.' } })
             } else {
                 let e = new Error('Deletion failed')
@@ -961,7 +998,7 @@ let deleteHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            let viewData = await populateUserViewData(req.user.id.toString())
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'pr'
             viewData.messages = { error: 'Unable to delete account.' }
@@ -991,9 +1028,9 @@ account.get('/', async (req, res) => {
                         panel = 'ci'
                 }
             }
-            let viewData = await populateUserViewData(req.user.id.toString())     
-            viewData.user = req.user 
-            viewData.pane = panel    
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
+            viewData.user = req.user
+            viewData.pane = panel
             res.render('account', viewData)
         } else {
             messages = {error: "You need to be signed in."}

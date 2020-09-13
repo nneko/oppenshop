@@ -21,6 +21,7 @@
   --sidebar-icon-highlight-color: white;
   --green-light-color: #28a745;
   --icon-delete-color: #cb2431;
+  --product-card-highlight-color: #f9fafb;
 }
 
 * {
@@ -409,13 +410,17 @@ svg {
     max-width: 80%;
 }
 
+.market-container {
+    padding: 0;
+}
+
 .market-pagenav {
     display: flex;
     background: none;
     justify-content: flex-end;
     margin: 1rem auto;
-    max-width: 100%;
-    padding: 1rem;
+    padding: 0;
+    width: calc(100% - 2em);
 }
 
 .applogo {
@@ -529,6 +534,10 @@ svg {
     background-color: var(--main-content-bg-color);
     border-radius: 0.25rem;
     padding: 1rem;
+}
+
+.marketplace {
+    padding: 0
 }
 
 .marketplace-content-pane {
@@ -719,7 +728,9 @@ white-space: nowrap;
 }
 
 .product-card-container {
-    justify-content: space-around;
+    justify-content: flex-start;
+    left: -1rem;
+    width: calc(100% + 2rem);
 }
 
 .product-card {
@@ -734,13 +745,19 @@ white-space: nowrap;
 }
 
 .product-card:hover {
-    background-color: var(--nav-btn-color);
+    background-color: var(--product-card-highlight-color);
+    box-shadow: rgba(210, 215, 219, 0.08) 8px 14px 38px, rgba(39, 44, 49, 0.05) 1px 3px 8px;
     cursor: pointer;
     transition: ease-in 0.25s;
 }
 
 .product-card:hover .item-card-label {
     color: var(--main-highlight-color);
+}
+
+.product-card:hover .product-card-image {
+    transition: ease-in 0.25s;
+    opacity: 0.65;
 }
 
 .product-card-image {

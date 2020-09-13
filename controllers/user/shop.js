@@ -60,7 +60,7 @@ let _403redirect = (req, res, url, msg) => {
 let populateViewData = async (uid, status = 'active', shop_page = 1, product_page = 1, catalog_page = 1) => {
     return new Promise(async (resolve, reject) => {
         t = { owner: uid }
-        let perPage = cfg.items_per_page ? cfg.items_per_page : 10
+        let perPage = cfg.items_per_page ? cfg.items_per_page : 12
         pagination = true
         o_shop = null
         console.log('Page: ' +shop_page)

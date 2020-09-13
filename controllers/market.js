@@ -9,7 +9,7 @@ let market = express.Router()
 
 let populateViewData = async (uid, product_page = 1) => {
     return new Promise(async (resolve, reject) => {
-        let perPage = cfg.items_per_page ? cfg.items_per_page : 10
+        let perPage = cfg.items_per_page ? cfg.items_per_page : 12
         pagination = true
         product_range = null
         console.log('Page: ' + product_page)
@@ -39,7 +39,7 @@ let populateViewData = async (uid, product_page = 1) => {
             // Pagination details
             if (pagination) {
                 viewData.product_pages = Math.ceil(product_index / perPage)
-                viewData.product_current = product_page
+                viewData.current_page = product_page
 
             }
             if (debug) {
@@ -53,6 +53,31 @@ let populateViewData = async (uid, product_page = 1) => {
     })
 }
 
+market.use('/page/:page', async function (req, res, next) {
+    try {
+
+        if (validator.hasActiveSession(req)) {
+            let page = req.params.page || 1
+            let qd = req.query
+            console.log(page)
+            console.log(qd)
+            let viewData = {}
+            console.log('Page: ' + page)
+            viewData = await populateViewData(req.user.id.toString(), product_page = parseInt(page))
+            viewData.user = req.user
+            res.render('market', viewData)
+        } else {
+            messages = { error: "You need to be signed in." }
+            res.status(403)
+            res.render('signin', { messages: messages })
+        }
+    } catch (e) {
+        console.error(e)
+        res.status(500)
+        res.render('error', { error: { status: 500, message: 'Error retrieving shop pagination data' }, name: '', user: req.user })
+
+    }
+})
 market.get('/', async (req, res) => {
     try {
         let viewData = await populateViewData(validator.isNotNull(req.user) ? req.user.id : null)

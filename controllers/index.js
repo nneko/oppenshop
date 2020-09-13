@@ -56,7 +56,7 @@ router.get('/', async (req, res) => {
                 res.render('verify', { name: undefined, user: undefined, messages: {error: 'Account verification is required.'} })
                 return
             } else {
-                res.render('index', {  name: name, user: user })
+                res.redirect('/market')
             }
         } catch (e) {
             console.error(e)
@@ -65,7 +65,7 @@ router.get('/', async (req, res) => {
         }
     }
     else {
-        res.render('index', { name: name, user: user})
+        res.redirect('/market')
     }
 })
 

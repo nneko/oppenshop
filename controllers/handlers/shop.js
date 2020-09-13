@@ -172,5 +172,173 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
     })
 }
 
+shophandler.catalogAddHander = async (form, files) => {
+  try {
+    let c = {}
+    c.name = form.name
+    c.description = form.description
+    c.owner = form.sid
+    c.products = []
+    if (files) {
+        for (x of files) {
+            x.storage = 'db'
+        }
+        console.log(files)
+        if(Array.isArray(files) && files.length >= 1) c.image = files[0]
+    }
+    return await catalog.create(c)
+  } catch (e) {
+      console.error(e)
+      throw e
+  }
+}
+
+shophandler.catalogDeleteHander = async (form) => {
+  try {
+    let ctg = await catalog.read(form.cid,{findBy: 'id'})
+
+    return await catalog.delete(ctg)
+  } catch (e) {
+      console.error(e)
+      throw e
+  }
+}
+
+shophandler.catalogAddProductHander = async (form) => {
+  try {
+    const ctg = await catalog.read(form.cid, { findBy: 'id' })
+    let c = {}
+    c.products = []
+    c.products = ctg.products
+    for (const f of Object.keys(form)) {
+        let fParts = f.split('-')
+        if(fParts.length == 2) {
+            let cid = fParts[0]
+            let pid = fParts[1]
+            if(cid == form.cid) {
+                if(debug) console.log('Looking up details for product ' + pid)
+                let p = await product.read(pid, { findBy: 'id' })
+                if (await product.isValid(p)) {
+                    if(debug) console.log('Adding product ' + pid + ' to catalog product listing for ' + cid)
+                    c.products.push(p._id.toString())
+                }
+            }
+        }
+    }
+
+    //let updated_ctg = await catalog.update({_id: ctg._id},c)
+    return await catalog.update({_id: ctg._id},c)
+  } catch (e) {
+      console.error(e)
+      throw e
+  }
+}
+
+shophanlder.catalogDeleteProductHandler = async (form) => {
+  try {
+    const ctg = await catalog.read(form.cid, { findBy: 'id' })
+    let c = {}
+    c.products = []
+
+    let cid = form.cid
+    let pid = form.pid
+    let p = await product.read(pid, { findBy: 'id' })
+    if (await product.isValid(p)) {
+        if (debug) console.log('Removing product entries for ' + pid + ' in catalog ' + cid)
+        for (const item of ctg.products) {
+            if(item !== pid) c.products.push(item)
+        }
+    }
+
+    //let updated_ctg = await catalog.update({ _id: ctg._id }, c)
+
+    return await catalog.update({ _id: ctg._id }, c)
+  } catch (e) {
+      console.error(e)
+      throw e
+  }
+}
+
+shophandler.shopAddHandler = async (form, files) => {
+  try {
+    let u = {}
+    // Read existing stored user details
+    const usr = await user.read(form.uid, { findBy: 'id' })
+
+    u.owner = form.uid
+    u.name = form.fullname
+    u.displayName = form.fullname
+    u.status = 'active'
+    //if (typeof(req.file) !== 'undefined'){
+    if (files){
+        for (x of files){
+          x.storage = 'db'
+        }
+        console.log(files)
+        u.images = files
+    }
+
+    let addr = {}
+    addr.type = form.addressType
+    addr.streetAddress = form.addressStreet
+    addr.locality = form.addressLocality
+    addr.region = form.addressRegion
+    addr.postalCode = form.addressPostcode
+    addr.country = form.addressCountry
+    addr.formatted = generator.formattedAddress(addr)
+
+    if (form.setPrimary != 'true'){
+        u.addresses = usr.addresses
+        u.addresses.push(addr)
+    } else {
+        addr.primary = true
+        if (typeof(usr.addresses) !== 'undefined') {
+            u.addresses = generator.removePrimaryFields(usr.addresses)
+            u.addresses.push(addr)
+        } else {
+            u.addresses = [addr]
+        }
+    }
+    return await shop.create(u)
+  } catch (e) {
+      console.error(e)
+      throw e
+  }
+}
+
+shophandler.productAddHandler = async (form, files) => {
+  try {
+    let p = {}
+    p.shop = form.sid
+    p.name = form.fullname
+    p.description = form.description
+    p.status = 'active'
+    p.quantity = form.quantity ? Number(form.quantity) : 0
+    p.price = generator.roundNumber( form.unit_dollar && form.unit_cents ? Number(form.unit_dollar + '.' + form.unit_cents): 0, 2)
+    p.currency = form.currency ? form.currency : 'jmd'
+    if (form.name !== 'undefined'){
+      p.displayName = form.name
+
+    }
+
+    if (req.files){
+        for (x of req.files){
+          x.storage = 'db'
+        }
+        p.images = req.files
+    }
+    let specs = {}
+    for (key in form){
+      if (!key.startsWith('spec_')) continue
+      specs[key.replace('spec_', '')] = form[key]
+    }
+    p.specifications = specs
+    return await shop.read(p.shop,{findBy: 'id'})
+  } catch (e) {
+      console.error(e)
+      throw e
+  }
+}
+
 
 module.exports = shophandler

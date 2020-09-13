@@ -94,23 +94,13 @@ let catalogAddHander = async (req, res) => {
                 return
             }
 
-            c.name = form.name
-            c.description = form.description
-            c.owner = form.sid
-            c.products = []
-            if (req.files) {
-                if (validator.isUploadLimitExceeded(req.files)) {
-                    await badRequest(req, res, 'cl', 403, 'Upload limits exceeded.')
-                    return
-                }
-
-                for (x of req.files) {
-                    x.storage = 'db'
-                }
-                console.log(req.files)
-                if(Array.isArray(req.files) && req.files.length >= 1) c.image = req.files[0]
+            if (req.files && validator.isUploadLimitExceeded(req.files)) {
+                await badRequest(req, res, 'cl', 403, 'Upload limits exceeded.')
+                return
             }
-            let ctg = await catalog.create(c)
+
+            let c_addhandler = await shophandler.catalogAddHander(form,req.files)
+            // TODO: validation check on 'c_addhandler' response to show response if created or not
             if (debug) console.log('Catalog added for ' + shp.displayName)
             //let viewData = await shophandler.populateViewData('\''+u.uid+'\'')
             let viewData = await shophandler.populateViewData(req.user.id.toString())
@@ -160,7 +150,8 @@ let catalogDeleteHander = async (req, res) => {
                 await badRequest(req, res, 'cl', 404, 'Invalid request. Catalog not found.')
                 return
             } else {
-                let delete_result = catalog.delete(ctg)
+                let c_deletehandler = await shophandler.catalogDeleteHander(form)
+                // TODO: validation check on 'c_deletehandler' response to show response if deleted or not
 
                 let viewData = await shophandler.populateViewData(req.user.id.toString())
                 viewData.user = req.user
@@ -212,24 +203,9 @@ let catalogAddProductHander = async (req, res) => {
                 await badRequest(req, res, 'cl', 400, 'No valid catalog found for '+form.cid+'.')
                 return
             }
-            c.products = ctg.products
-            for (const f of Object.keys(form)) {
-                let fParts = f.split('-')
-                if(fParts.length == 2) {
-                    let cid = fParts[0]
-                    let pid = fParts[1]
-                    if(cid == form.cid) {
-                        if(debug) console.log('Looking up details for product ' + pid)
-                        let p = await product.read(pid, { findBy: 'id' })
-                        if (await product.isValid(p)) {
-                            if(debug) console.log('Adding product ' + pid + ' to catalog product listing for ' + cid)
-                            c.products.push(p._id.toString())
-                        }
-                    }
-                }
-            }
 
-            let updated_ctg = await catalog.update({_id: ctg._id},c)
+            let c_addproducthandler = await shophandler.catalogAddProductHandler(form)
+            // TODO: validation check on 'c_addproducthandler' response to show response if deleted or not
             if (debug) console.log('Catalog ' + ctg._id.toString() +' updated.')
             let viewData = await shophandler.populateViewData(req.user.id.toString())
             viewData.user = req.user
@@ -281,17 +257,10 @@ let catalogDeleteProductHandler = async (req, res) => {
                 return
             }
 
-            let cid = form.cid
-            let pid = form.pid
-            let p = await product.read(pid, { findBy: 'id' })
-            if (await product.isValid(p)) {
-                if (debug) console.log('Removing product entries for ' + pid + ' in catalog ' + cid)
-                for (const item of ctg.products) {
-                    if(item !== pid) c.products.push(item)
-                }
-            }
 
-            let updated_ctg = await catalog.update({ _id: ctg._id }, c)
+            let c_deleteproducthandler = await shophandler.catalogDeleteProductHandler(form)
+            // TODO: validation check on 'c_deleteproducthandler' response to show response if deleted or not
+
             if (debug) console.log('Catalog ' + ctg._id.toString() + ' updated.')
             let viewData = await shophandler.populateViewData(req.user.id.toString())
             viewData.user = req.user
@@ -336,51 +305,16 @@ let shopAddHandler = async (req, res) => {
             return
         }
 
-        // Read existing stored user details
-        const usr = await user.read(form.uid, { findBy: 'id' })
-
-        u.owner = form.uid
-        u.name = form.fullname
-        u.displayName = form.fullname
-        u.status = 'active'
-        //if (typeof(req.file) !== 'undefined'){
-        if (req.files){
-            if (validator.isUploadLimitExceeded(req.files)) {
-                await badRequest(req, res, 'pd-new', 403, 'Upload limits exceeded.')
-                return
-            }
-
-            for (x of req.files){
-              x.storage = 'db'
-            }
-            console.log(req.files)
-            u.images = req.files
-        }
-
-        let addr = {}
-        addr.type = form.addressType
-        addr.streetAddress = form.addressStreet
-        addr.locality = form.addressLocality
-        addr.region = form.addressRegion
-        addr.postalCode = form.addressPostcode
-        addr.country = form.addressCountry
-        addr.formatted = generator.formattedAddress(addr)
-
-        if (form.setPrimary != 'true'){
-            u.addresses = usr.addresses
-            u.addresses.push(addr)
-        } else {
-            addr.primary = true
-            if (typeof(usr.addresses) !== 'undefined') {
-                u.addresses = generator.removePrimaryFields(usr.addresses)
-                u.addresses.push(addr)
-            } else {
-                u.addresses = [addr]
-            }
+        if (req.files && validator.isUploadLimitExceeded(req.files)){
+            await badRequest(req, res, 'pd-new', 403, 'Upload limits exceeded.')
+            return
         }
 
         try {
-            let t = await shop.create(u)
+            //let t = await shop.create(u)
+            let s_addhandler = await shophandler.shopAddHander(form,req.files)
+            // TODO: validation check on 's_addhandler' response to show response if created or not
+
             if (debug) console.log('Shop added for ' + u.owner)
             let viewData = await shophandler.populateViewData(u.owner)
             viewData.user = req.user
@@ -420,48 +354,23 @@ let productAddHandler = async (req, res) => {
             return
         }
 
-        p.shop = form.sid
-        p.name = form.fullname
-        p.description = form.description
-        p.status = 'active'
-        p.quantity = form.quantity ? Number(form.quantity) : 0
-        p.price = generator.roundNumber( form.unit_dollar && form.unit_cents ? Number(form.unit_dollar + '.' + form.unit_cents): 0, 2)
-        p.currency = form.currency ? form.currency : 'jmd'
-        if (form.name !== 'undefined'){
-          p.displayName = form.name
-
+        if (req.files && validator.isUploadLimitExceeded(req.files)){
+            await badRequest(req, res, 'pd-new', 403, 'Upload limits exceeded.')
+            return
         }
-        //if (req.file) {console.log('File exists')} else {console.log('file doesnt exist')}
-        //if (req.file !== 'undefined'){
-        if (req.files){
 
-            if(validator.isUploadLimitExceeded(req.files)) {
-                await badRequest(req, res, 'pd-new', 403, 'Upload limits exceeded.')
-                return
-            }
-
-            for (x of req.files){
-              x.storage = 'db'
-            }
-            p.images = req.files
-        }
-        let specs = {}
-        for (key in form){
-          if (!key.startsWith('spec_')) continue
-          specs[key.replace('spec_', '')] = form[key]
-          //specs[key] = form[key]
-          //p[key] = form[key]
-          //console.log(key, form[key])
-          //console.log(key.replace('spec_', ''), form[key])
-        }
-        p.specifications = specs
         try {
-            let s = await shop.read(p.shop,{findBy: 'id'})
+            //let s = await shop.read(p.shop,{findBy: 'id'})
+            let s = await shop.read(form.sid,{findBy: 'id'})
+
             if(!await shop.isValid(s)) {
                 badRequest(req, res, 'pd-new', 400, 'Products must be associated with a valid shop.')
                 return
             }
             let t = await product.create(p)
+            let p_addhandler = await shophandler.productAddHander(form,req.files)
+            // TODO: validation check on 'p_addhandler' response to show response if created or not
+
             if (debug) {
                 console.log('Added product: ')
                 console.log(p)

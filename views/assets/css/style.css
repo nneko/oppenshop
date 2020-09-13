@@ -538,6 +538,10 @@ svg {
     padding-right: 1rem;
 }
 
+.product-details-content {
+    padding: 0;
+}
+
 .content-pane {
     background-color: var(--main-content-bg-color);
     border-radius: 0.25rem;
@@ -827,6 +831,54 @@ white-space: nowrap;
     width: 100% !important; 
 }
 
+.product-carousel {
+    padding: 0;
+    width: 100%;
+}
+
+.product-carousel-images-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    margin-top: -1rem;
+}
+
+.product-carousel .featured-image {
+    height: auto !important;
+    min-height: 16rem;
+    min-width: 16rem;
+    width: 100% !important;
+}
+
+.product-details-card {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: 0;
+    padding: 2rem;
+}
+
+.product-details-card li {
+    display: flex;
+    list-style: none;
+    margin: 1rem;
+}
+
+.product-quantity-input {
+    margin-right: 1rem !important;
+    width: 6rem !important;
+}
+
+.product-specifications-table {
+    margin: 1rem;
+    max-width: 100%;
+    position: relative;
+}
+
+.add-to-bag-button {
+    margin-right: 1rem;
+}
+
 .sidebar svg {
     margin-right: 1rem;
 }
@@ -856,6 +908,44 @@ white-space: nowrap;
 
 .featured-image svg {
     height: 12rem !important;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: auto !important;
+}
+
+.featured-mini-image {
+    background-color: var(--nav-btn-color);
+    border-radius: 0.25rem;
+    display: block;
+    height: 2rem !important;
+    margin: 0;
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    position: relative;
+    width: 2rem !important;
+}
+
+.featured-mini-image img {
+    clip-path: inset(0);
+    height: 2rem !important;
+    margin: 0;
+    max-height: 2rem !important;
+    max-width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: auto !important;
+}
+
+.featured-mini-image svg {
+    height: 2rem !important;
     margin: 0;
     position: absolute;
     top: 50%;
@@ -947,9 +1037,9 @@ white-space: nowrap;
 .card-filter-section {
     display: flex;
     margin: 0 auto;
-max-width: 80%;
-overflow-x: scroll;
-position: relative;
+    max-width: 80%;
+    overflow-x: scroll;
+    position: relative;
 }
 
 .card-filter-selector {

@@ -1,37 +1,36 @@
-const cfg = require('../../configuration/index.js')
-const validator = require('../../utilities/validator')
-const product = require('../../models/product')
-const media = require('../../adapters/storage/media')
+const cfg = require('../../../configuration/index.js')
+const validator = require('../../../utilities/validator')
+const product = require('../../../models/product')
+const media = require('../../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
 
 let marketProductHandler = {}
 
-marketProductHandler.populateViewData = async (uid, product_page = 1) => {
+marketProductHandler.populateViewData = async (pid) => {
     return new Promise(async (resolve, reject) => {
         try {
             let viewData = {}
 
-            if (validator.isNotNull(products)) {
-                viewData.products = Array.isArray(products) ? products : [products]
-            } else {
-                viewData.products = []
+            if (validator.isNotNull(pid)) {
+                let fetchResult = await product.read(pid,{findBy: 'id'})
+                if(product.isValid(fetchResult)) {
+                    viewData.product = fetchResult
+                }
+            } 
+
+            if(!viewData.product) {
+                let e = new Error('No product found with id: ' + pid)
+                e.name = 'ProductRetrievalError'
+                e.type = 'Find Operation'
+                throw e
             }
 
-            for (const p of viewData.products) {
-                if (Array.isArray(p.images) && p.images.length > 0) {
-                    for (const img of p.images) {
-                        img.src = media.getBinaryDetails(img)
-                    }
+            if (Array.isArray(viewData.product.images) && viewData.product.images.length > 0) {
+                for (const img of viewData.product.images) {
+                    img.src = media.getBinaryDetails(img)
                 }
             }
 
-            console.log(product_index)
-            // Pagination details
-            if (pagination) {
-                viewData.product_pages = Math.ceil(product_index / perPage)
-                viewData.current_page = product_page
-
-            }
             if (debug) {
                 console.log('View Data: ')
                 console.log(viewData)

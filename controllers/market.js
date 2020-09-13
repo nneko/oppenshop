@@ -6,6 +6,7 @@ const debug = cfg.env == 'development' ? true : false
 
 let market = express.Router()
 
+market.use('/product/*', require('./market/product'))
 market.use('/page/:page', async function (req, res, next) {
     try {
 

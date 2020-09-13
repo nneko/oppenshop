@@ -1,14 +1,15 @@
-const cfg = require('../configuration/index.js')
+const cfg = require('../../configuration')
 const express = require('express')
-const validator = require('../utilities/validator')
-const handler = require('./handlers/market/product')
+const validator = require('../../utilities/validator')
+const handler = require('../handlers/market/product')
 const debug = cfg.env == 'development' ? true : false
 
 let marketProduct = express.Router()
 
 marketProduct.get('/', async (req, res) => {
     try {
-        let viewData = await handler.populateViewData(validator.isNotNull(req.user) ? req.user.id : null)
+        let qd = req.query
+        let viewData = await handler.populateViewData(qd.p)
         viewData.user = req.user
         res.render('product', viewData)
 

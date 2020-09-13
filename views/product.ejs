@@ -25,15 +25,15 @@
                     <% } %>
                     <div>
                         <span class="edit-heading-span">
-                            <h2>Edit Product</h2>
-                            <a href="/user/shop?show=in">
-                                <button class="btn btn-primary">Back to products</button>
+                            <h2><%= product.displayName %></h2>
+                            <a href="<% if(typeof(ref) == 'string' && ref.length > 0) { %><%= ref %><% } else { %>/market<% } %>">
+                                <button class="btn btn-primary">Back to Marketplace</button>
                             </a>
                         </span>
                         <hr>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-4">
                             <figure class="featured-image">
                                 <% if(typeof(image) !== 'undefined' && image.value) { %>
                                 <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
@@ -43,7 +43,7 @@
                                 </figure>
                                 <p class="featured-image-legend">Product Image</p>
                         </div>
-                        <div class="col-9">
+                        <div class="col-8">
                             <form id="edit-product-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/product/edit" method="POST" oninput=""
                                 enctype="multipart/form-data" novalidate>
                                 <fieldset <% if(typeof(show) !== 'undefined' && show == 'disabled') { %> disabled="disabled"

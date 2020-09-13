@@ -741,7 +741,19 @@ white-space: nowrap;
     margin-right: calc(((100% - 2rem) - 80%) / 8);
     max-width: 20%;
     overflow: hidden;
-    width: 20%;
+    max-width: 20%;
+}
+
+.product-card-double {
+    flex-basis: 45%;
+    max-width: 45%;
+    max-width: 45%;
+}
+
+.product-card-single {
+    flex-basis: 95%;
+    max-width: 95%;
+    max-width: 95%;
 }
 
 .product-card:hover {

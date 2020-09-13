@@ -256,7 +256,7 @@ svg {
 .container {
     max-width: 100%;
     overflow-y: scroll;
-    width: calc(100% - 2rem);
+    width: calc(100% - 4rem);
     z-index: 1;
 }
 
@@ -420,7 +420,7 @@ svg {
     justify-content: flex-end;
     margin: 1rem auto;
     padding: 0;
-    width: calc(100% - 2em);
+    width: 100%;
 }
 
 .applogo {
@@ -728,20 +728,29 @@ white-space: nowrap;
 }
 
 .product-card-container {
-    justify-content: flex-start;
-    left: -1rem;
-    width: calc(100% + 2rem);
+    justify-content: space-between;
+    left: -2rem;
+    width: calc(100% + 4rem);
 }
 
 .product-card {
     border: none;
-    flex-basis: 20%;
+    flex-basis: calc(25% - 4rem);
     margin: 1rem;
-    margin-left: 2.5%;
-    margin-right: 2.5%;
-    max-width: 20%;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    max-width: calc(25% - 4rem);
     overflow: hidden;
-    width: 20%;
+}
+
+.product-card-double {
+    flex-basis: calc(50% - 4rem);
+    max-width: calc(50% - 4rem);
+}
+
+.product-card-single {
+    flex-basis: calc(100% - 4rem);
+    max-width: calc(100% - 4rem);
 }
 
 .product-card:hover {
@@ -1120,6 +1129,23 @@ position: relative;
     #product-specification-button {
         margin: 1rem;
     }
+
+    .product-card {
+        border: none;
+        flex-basis: calc(30% - 4rem);
+        max-width: calc(30% - 4rem);
+        overflow: hidden;
+    }
+
+    .product-card-double {
+        flex-basis: calc(50% - 4rem);
+        max-width: calc(50% - 4rem);
+    }
+
+    .product-card-single {
+        flex-basis: calc(100% - 4rem);
+        max-width: calc(100% - 4rem);
+    }
 }
 
 @media screen and (max-width: 640px) {
@@ -1156,6 +1182,11 @@ position: relative;
     .nav-link.active .icon path {
         fill: var(--sidebar-icon-highlight-color);
         stroke: var(--sidebar-icon-highlight-color);
+    }
+
+    .product-card {
+        flex-basis: calc(100% - 4rem);
+        max-width: calc(100% - 4rem);
     }
 }
 

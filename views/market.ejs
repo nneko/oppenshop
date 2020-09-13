@@ -29,7 +29,7 @@
             <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
             <div class="content-pane-scroll-cards-section catalog-item-container product-card-container">
                 <% for(let j=0;j<products.length;j++) { %>
-                <div class="card catalog-item-card product-card">
+                <div class="card catalog-item-card product-card <% if(products.length == 2) { %>product-card-double<% } else if(products.length == 1) { %>product-card-single<% } %>">
                     <div class="card-body">
                         <div class="actionable-card-pane">
                             <div class="catalog-view-card-pane">

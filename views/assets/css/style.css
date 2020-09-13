@@ -420,7 +420,7 @@ svg {
     justify-content: flex-end;
     margin: 1rem auto;
     padding: 0;
-    width: calc(100% - 2em);
+    width: 100%;
 }
 
 .applogo {

@@ -1,0 +1,45 @@
+<main class="container">
+    <section class="main-panel">
+        <div class="col-12 main-content">
+            <div class="content-pane">
+                <% if(typeof(messages.success) !== 'undefined') { %>
+                <div id="main-alert-success" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <%= messages.success %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <% } %>
+                <% if(typeof(messages.info) !== 'undefined') { %>
+                <div id="main-alert-info" class="alert alert-primary alert-dismissible fade show" role="alert">
+                    <%= messages.info %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <% } %>
+                <% if(typeof(messages.error) !== 'undefined') { %>
+                <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= messages.error %>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <% } %>
+                <div>
+                    <span class="edit-heading-span">
+                    <h2><% if(typeof(user) !== 'undefined' && typeof(user.name) !== 'undefined' && user.name.givenName) { %><%= user.name.givenName + "'s" %><% } else { %>Your<% } %> Shopping Bag</h2>
+                    <a href="<% if(typeof(ref) == 'string' && ref.length > 0) { %><%= ref %><% } else { %>/market<% } %>">
+                            <button class="btn btn-primary">Back to Marketplace</button>
+                        </a>
+                    </span>
+                    <hr>
+                </div>
+                <div>
+                <h3>Total is <% if(typeof(user.bag) !== 'undefined') { %>
+                    <% } else { %>
+                        0.00
+                    <% } %>
+                </h3>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

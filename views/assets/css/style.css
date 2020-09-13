@@ -255,6 +255,7 @@ svg {
 
 .container {
     max-width: 100%;
+    padding: 0;
     overflow-y: scroll;
     width: calc(100% - 4rem);
     z-index: 1;
@@ -528,6 +529,13 @@ svg {
 
 .main-panel {
     margin: 2rem auto;
+    padding: 0;
+}
+
+.main-content {
+    padding: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .content-pane {
@@ -546,7 +554,7 @@ svg {
 
 .marketplace-content-pane {
     border-radius: 0.25rem;
-    padding: 1rem;
+    padding: 0;
 }
 
 .shopping-bag-content-pane {
@@ -750,6 +758,7 @@ white-space: nowrap;
 .product-card-container {
     justify-content: space-between;
     left: -2rem;
+    top: -1rem;
     width: calc(100% + 4rem);
 }
 

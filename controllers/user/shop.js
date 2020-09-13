@@ -19,6 +19,7 @@ const fileUploader = multer({storage: storage,
 //const upload = multer({ dest: 'uploads/' })
 const btoa = require('btoa')
 const catalog = require('../../models/catalog')
+const shophandler = require('../handlers/shop')
 
 let shops = express.Router()
 
@@ -38,7 +39,7 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
     mObj[mtype] = msg ? msg : 'Invalid request.'
 
     try {
-        let viewData = await populateViewData(req.user.id.toString())
+        let viewData = await shophandler.populateViewData(req.user.id.toString())
         viewData.user = req.user
         viewData.pane = typeof(show) == 'string' && show !== "" ? show : 'sf'
         viewData.messages = mObj
@@ -57,154 +58,6 @@ let _403redirect = (req, res, url, msg) => {
     res.render('signin', { url: url, messages: { error: msg ? msg : 'You must be signed in.' }, verifiedUser: verifiedUser })
 }
 
-let populateViewData = async (uid, status = 'active', shop_page = 1, product_page = 1, catalog_page = 1) => {
-    return new Promise(async (resolve, reject) => {
-        t = { owner: uid }
-        let perPage = cfg.items_per_page ? cfg.items_per_page : 12
-        pagination = true
-        o_shop = null
-        console.log('Page: ' +shop_page)
-        if (pagination) {
-          o_shop = { pagination_skip: shop_page, pagination_limit: perPage}
-        }
-
-        console.log('Populating view for shop owner: ' + t.owner)
-        console.log(t)
-        console.log(o_shop)
-        try {
-
-            s = await shop.read(t,o_shop)
-            s_count = await shop.count(t,o_shop)
-            //console.log(s)
-            console.log(s_count)
-            let viewData = {}
-
-            viewData.shops = []
-            if (s) {
-                if (Array.isArray(s)) {
-                    for (const x of s) {
-                        if (Array.isArray(x.images) && x.images.length > 0) {
-                            for (const xx of x.images) {
-                                xx.src = media.getBinaryDetails(xx)
-                            }
-                        }
-                        let p = await product.read({ shop: x._id.toString() })
-                        for (const y of p) {
-                            if (Array.isArray(y.images) && y.images.length > 0) {
-                                for (const yy of y.images) {
-                                  yy.src = media.getBinaryDetails(yy)
-                                }
-                            }
-                        }
-                        x.products = p
-                    }
-                    viewData.shops = s
-                } else if(await shop.isValid(s)) {
-                    if (Array.isArray(s.images) && s.images.length > 0) {
-                        for (const sxx of s.images) {
-                            sxx.src = media.getBinaryDetails(sxx)
-                        }
-                    }
-                    let sp = await product.read({ shop: s._id.toString() })
-                    for (const sy of sp) {
-                        if (Array.isArray(sy.images) && sy.images.length > 0) {
-                            for (const syy of sy.images) {
-                                syy.src = media.getBinaryDetails(syy)
-                            }
-                        }
-                    }
-                    s.products = sp
-
-                    viewData.shops = [s]
-                }
-            }
-
-            viewData.catalogs = []
-            for (let i = 0; i < viewData.shops.length; i++) {
-                try {
-                    if (await shop.isValid(viewData.shops[i])) {
-                        let cFilter = { owner: viewData.shops[i]._id.toString() }
-                        if(debug) {
-                            console.log('Searching for catalogs using filter:')
-                            console.log(cFilter)
-                        }
-                        let cList = await catalog.read(cFilter)
-                        if (Array.isArray(cList) && cList.length > 0) {
-                            if(debug) {
-                                console.log('Catalog list found: ')
-                                console.log(cList)
-                            }
-                            for (let j = 0; j < cList.length; j++) {
-                                if (await catalog.isValid(cList[j])) {
-                                    if(typeof(cList[j].image) !== 'undefined') {
-                                        cList[j].image.src = media.getBinaryDetails(cList[j].image)
-                                    }
-                                    if(cList[j].products.length > 0) {
-                                        let pList = []
-                                        for (const item of cList[j].products) {
-                                            let p = await product.read(item,{findBy: 'id'})
-                                            if(await product.isValid(p)) {
-                                                if (typeof (p.images) !== 'undefined' && Array.isArray(p.images)) {
-                                                    for (const pImg of p.images) {
-                                                        pImg.src = media.getBinaryDetails(pImg)
-                                                    }
-                                                }
-                                                pList.push(p)
-                                            }
-                                        }
-                                        cList[j].products = pList
-                                    }
-                                    if(debug) console.log('Adding 1 item to catalog list')
-                                    viewData.catalogs.push(cList[j])
-                                }
-                            }
-                        } else if (await catalog.isValid(cList)) {
-                            if (debug) {
-                                console.log('Single catalog found: ')
-                                console.log(cList)
-                            }
-                            if (typeof (cList.image) !== 'undefined') {
-                                cList.image.src = media.getBinaryDetails(cList.image)
-                            }
-                            let pList = []
-                            if (cList.products.length > 0) {
-                                for (const item of cList.products) {
-                                    let p = await product.read(item, { findBy: 'id' })
-                                    if (await product.isValid(p)) {
-                                        if (typeof (p.images) !== 'undefined' && Array.isArray(p.images)) {
-                                            for (const pImg of p.images) {
-                                                pImg.src = media.getBinaryDetails(pImg)
-                                            }
-                                        }
-                                        pList.push(p)
-                                    }
-                                }
-                            }
-                            cList.products = pList
-                            viewData.catalogs.push(cList)
-                        }
-                    }
-                } catch (e) {
-                    console.error(e)
-                    console.log('Error reading shop list skipping remainder.')
-                }
-            }
-            // Pagination details
-            if (pagination){
-              viewData.shops_pages = Math.ceil(s_count / perPage)
-              viewData.shops_current = shop_page
-
-            }
-            if(debug) {
-                console.log('View Data: ')
-                console.log(viewData)
-            }
-            resolve(viewData)
-        } catch (e) {
-            reject(e)
-        }
-    })
-}
 
 let catalogAddHander = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
@@ -259,8 +112,8 @@ let catalogAddHander = async (req, res) => {
             }
             let ctg = await catalog.create(c)
             if (debug) console.log('Catalog added for ' + shp.displayName)
-            //let viewData = await populateViewData('\''+u.uid+'\'')
-            let viewData = await populateViewData(req.user.id.toString())
+            //let viewData = await shophandler.populateViewData('\''+u.uid+'\'')
+            let viewData = await shophandler.populateViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'cl'
             viewData.messages = { success: 'Catalog created.' }
@@ -309,7 +162,7 @@ let catalogDeleteHander = async (req, res) => {
             } else {
                 let delete_result = catalog.delete(ctg)
 
-                let viewData = await populateViewData(req.user.id.toString())
+                let viewData = await shophandler.populateViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'cl'
                 viewData.messages = { success: 'Catalog deleted.' }
@@ -378,7 +231,7 @@ let catalogAddProductHander = async (req, res) => {
 
             let updated_ctg = await catalog.update({_id: ctg._id},c)
             if (debug) console.log('Catalog ' + ctg._id.toString() +' updated.')
-            let viewData = await populateViewData(req.user.id.toString())
+            let viewData = await shophandler.populateViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'cl'
             viewData.messages = { success: 'Catalog updated.' }
@@ -427,7 +280,7 @@ let catalogDeleteProductHandler = async (req, res) => {
                 await badRequest(req, res, 'cl', 400, 'No valid catalog found for ' + form.cid + '.')
                 return
             }
-            
+
             let cid = form.cid
             let pid = form.pid
             let p = await product.read(pid, { findBy: 'id' })
@@ -440,7 +293,7 @@ let catalogDeleteProductHandler = async (req, res) => {
 
             let updated_ctg = await catalog.update({ _id: ctg._id }, c)
             if (debug) console.log('Catalog ' + ctg._id.toString() + ' updated.')
-            let viewData = await populateViewData(req.user.id.toString())
+            let viewData = await shophandler.populateViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = 'cl'
             viewData.messages = { success: 'Product removed from catalog.' }
@@ -529,7 +382,7 @@ let shopAddHandler = async (req, res) => {
         try {
             let t = await shop.create(u)
             if (debug) console.log('Shop added for ' + u.owner)
-            let viewData = await populateViewData(u.owner)
+            let viewData = await shophandler.populateViewData(u.owner)
             viewData.user = req.user
             viewData.pane = 'sf'
             viewData.messages = { success: 'Shop added.' }
@@ -614,7 +467,7 @@ let productAddHandler = async (req, res) => {
                 console.log(p)
                 console.log('Product added for Shop:' + p.shop)
             }
-            let viewData = await populateViewData(form.uid.toString(),p.shop.toString())
+            let viewData = await shophandler.populateViewData(form.uid.toString(),p.shop.toString())
             viewData.user = req.user
             //viewData.pane = 'in'
             viewData.pane = 'pd-new'
@@ -658,7 +511,7 @@ let shopUpdateHandler = async (req, res) => {
                         let t = await shop.update({ _id: s._id }, { status: 'active' })
                         console.log(t)
                         if (debug) console.log('Shop status made \'active\' for ' + form.uid)
-                        let viewData = await populateViewData(form.uid.toString())
+                        let viewData = await shophandler.populateViewData(form.uid.toString())
                         viewData.user = req.user
                         viewData.pane = 'sf'
                         viewData.messages = { success: 'Shop opened.' }
@@ -679,7 +532,7 @@ let shopUpdateHandler = async (req, res) => {
                         let t = await shop.update({_id: s._id}, {status: 'inactive'})
                         console.log(t)
                         if (debug) console.log('Shop status made \'inactive\' for ' + form.uid)
-                        let viewData = await populateViewData(form.uid.toString())
+                        let viewData = await shophandler.populateViewData(form.uid.toString())
                         viewData.user = req.user
                         viewData.pane = 'sf'
                         viewData.messages = { success: 'Shop closed.' }
@@ -701,13 +554,13 @@ let shopUpdateHandler = async (req, res) => {
                             let t = await shop.delete({ _id: s._id })
                             console.log(t)
                             if (debug) console.log('Shop deleted for ' + form.uid)
-                            let viewData = await populateViewData(form.uid.toString())
+                            let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user
                             viewData.pane = 'sf'
                             viewData.messages = { success: 'Shop deleted.' }
                             res.render('sell', viewData)
                         } else {
-                            let viewData = await populateViewData(form.uid.toString())
+                            let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user
                             viewData.pane = 'sf'
                             viewData.messages = { error: 'Permission denied. Only closed shops can be deleted.' }
@@ -763,13 +616,13 @@ let productUpdateHandler = async (req, res) => {
                         if(p.status == 'inactive') {
                             let t = await product.delete({_id: p._id}, p)
                             console.log(t)
-                            let viewData = await populateViewData(form.uid.toString())
+                            let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user
                             viewData.pane = 'in'
                             viewData.messages = { success: 'Product deleted.' }
                             res.render('sell', viewData)
                         } else {
-                            let viewData = await populateViewData(form.uid.toString())
+                            let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user
                             viewData.pane = 'in'
                             viewData.messages = { error: 'Permission denied. Only withdrawn products can be deleted.' }
@@ -791,7 +644,7 @@ let productUpdateHandler = async (req, res) => {
                         let t = await product.update({ _id: p._id }, { status: 'active' })
                         console.log(t)
                         if (debug) console.log('Product status made \'active\' for ' + form.pid)
-                        let viewData = await populateViewData(form.uid.toString())
+                        let viewData = await shophandler.populateViewData(form.uid.toString())
                         viewData.user = req.user
                         viewData.pane = 'in'
                         viewData.messages = { success: 'Product re-activated.' }
@@ -812,7 +665,7 @@ let productUpdateHandler = async (req, res) => {
                         let t = await product.update({ _id: p._id }, {status: 'inactive'})
                         console.log(t)
                         if (debug) console.log('Product status made \'inactive\' for ' + form.pid)
-                        let viewData = await populateViewData(form.uid.toString())
+                        let viewData = await shophandler.populateViewData(form.uid.toString())
                         viewData.user = req.user
                         viewData.pane = 'in'
                         viewData.messages = { success: 'Product withdrawn.' }
@@ -869,7 +722,7 @@ shops.use('/page/:page', async function(req, res, next) {
           }
           let viewData = {}
           console.log('Page: ' +page)
-          viewData = await populateViewData(req.user.id.toString(), status = 'active', shop_page = parseInt(page))
+          viewData = await shophandler.populateViewData(req.user.id.toString(), status = 'active', shop_page = parseInt(page))
           viewData.user = req.user
           viewData.pane = panel
           res.render('sell', viewData)
@@ -907,7 +760,7 @@ shops.get('/', async (req, res) => {
                 }
             }
             let viewData = {}
-            viewData = await populateViewData(req.user.id.toString())
+            viewData = await shophandler.populateViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = panel
             res.render('sell', viewData)

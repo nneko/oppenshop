@@ -1,7 +1,7 @@
 <main class="container">
     <section class="main-panel">
         <div class="row">
-            <div class="col-12 main-content">
+            <div class="col-sm-12 main-content">
                 <div class="content-pane" id="edit-storefront-content">
                     <% if(typeof(messages.success) !== 'undefined') { %>
                     <div id="main-alert-success" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -34,7 +34,7 @@
                         <hr>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-sm-3">
                             <figure class="featured-image">
                                 <% if(typeof(image) !== 'undefined' && image.value) { %>
                                 <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
@@ -44,7 +44,7 @@
                                 </figure>
                                 <p class="featured-image-legend">Storefront Image</p>
                         </div>
-                        <div class="col-9">
+                        <div class="col-sm-9">
                             <form id="edit-storefront-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/edit" method="POST" oninput=""
                                 enctype="multipart/form-data" novalidate>
                                 <fieldset <% if(typeof(show) !== 'undefined' && show == 'disabled') { %> disabled="disabled"

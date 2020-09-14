@@ -367,16 +367,17 @@ let productAddHandler = async (req, res) => {
                 badRequest(req, res, 'pd-new', 400, 'Products must be associated with a valid shop.')
                 return
             }
-            let t = await product.create(p)
-            let p_addhandler = await shophandler.productAddHander(form,req.files)
+
+            // Returns a promise so reject should trigger the catch block
+            await shophandler.productAddHandler(form,req.files)
             // TODO: validation check on 'p_addhandler' response to show response if created or not
 
             if (debug) {
                 console.log('Added product: ')
                 console.log(p)
-                console.log('Product added for Shop:' + p.shop)
+                console.log('Product added for Shop:' + form.sid)
             }
-            let viewData = await shophandler.populateViewData(form.uid.toString(),p.shop.toString())
+            let viewData = await shophandler.populateViewData(form.uid.toString())
             viewData.user = req.user
             //viewData.pane = 'in'
             viewData.pane = 'pd-new'
@@ -384,6 +385,7 @@ let productAddHandler = async (req, res) => {
             res.render('sell', viewData)
         } catch (e) {
             console.error(e)
+            e.stack ? console.error(e.stack) : console.error('No stack trace.')
             res.status(500)
             res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a product.' } })
         }

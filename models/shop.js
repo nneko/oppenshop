@@ -11,7 +11,7 @@ shop.isValid = async (s) => {
         let ownerExists = null
         if (validator.isNotNull(s) && typeof (s.owner) == 'string') {
             ownerExists = await user.read(s.owner, { findBy: 'id' })
-            if (user.isValid(ownerExists)) {
+            if (await user.isValid(ownerExists)) {
                 ownerExists = true
             } else {
                 ownerExists = false
@@ -46,7 +46,7 @@ shop.exists = async (s) => {
 shop.create = (s) => {
     return new Promise(async (resolve,reject) => {
         try {
-            if(!shop.isValid(s)){
+            if(!await shop.isValid(s)){
                 let e = new Error('Invalid shop object')
                 e.name = 'ShopError'
                 e.type = 'Invalid'

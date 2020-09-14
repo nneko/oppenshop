@@ -52,7 +52,7 @@ catalog.exists = async (c) => {
 catalog.create = (c) => {
     return new Promise(async (resolve,reject) => {
         try {
-            if(!catalog.isValid(c)){
+            if(!await catalog.isValid(c)){
                 let e = new Error('Invalid catalog object')
                 e.name = 'CatalogError'
                 e.type = 'Invalid'

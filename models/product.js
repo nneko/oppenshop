@@ -55,7 +55,7 @@ product.exists = async (p) => {
 product.create = (p) => {
     return new Promise(async (resolve,reject) => {
         try {
-            if(!product.isValid(p)){
+            if(!await product.isValid(p)){
                 let e = new Error('Invalid product object')
                 e.name = 'ProductError'
                 e.type = 'Invalid'

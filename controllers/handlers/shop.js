@@ -321,11 +321,11 @@ shophandler.productAddHandler = async (form, files) => {
 
     }
 
-    if (req.files){
-        for (x of req.files){
+    if (files){
+        for (x of files){
           x.storage = 'db'
         }
-        p.images = req.files
+        p.images = files
     }
     let specs = {}
     for (key in form){
@@ -333,7 +333,7 @@ shophandler.productAddHandler = async (form, files) => {
       specs[key.replace('spec_', '')] = form[key]
     }
     p.specifications = specs
-    return await shop.read(p.shop,{findBy: 'id'})
+    return await product.create(p)
   } catch (e) {
       console.error(e)
       throw e

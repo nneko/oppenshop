@@ -2,6 +2,7 @@ const cfg = require('../../../configuration/index.js')
 const validator = require('../../../utilities/validator')
 const product = require('../../../models/product')
 const media = require('../../../adapters/storage/media')
+const shop = require('../../../models/shop.js')
 const debug = cfg.env == 'development' ? true : false
 
 let marketProductHandler = {}
@@ -13,8 +14,12 @@ marketProductHandler.populateViewData = async (pid) => {
 
             if (validator.isNotNull(pid)) {
                 let fetchResult = await product.read(pid,{findBy: 'id'})
-                if(product.isValid(fetchResult)) {
+                if(await product.isValid(fetchResult)) {
                     viewData.product = fetchResult
+                    let shopInfo = await shop.read(fetchResult.shop,{findBy: 'id'})
+                    if(await shop.isValid(shopInfo)) {
+                        viewData.product.shopName = shopInfo.displayName
+                    }
                 }
             } 
 

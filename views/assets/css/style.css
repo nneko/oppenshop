@@ -959,14 +959,16 @@ white-space: nowrap;
 
 .featured-image img{
     clip-path: inset(0);
-    height: 16rem !important;
+    height: auto !important;
     margin: 0;
     max-height: 16rem !important;
+    max-width: 100% !important;
     position: absolute;
     top: 50%;
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+    width: auto !important;
 }
 
 .featured-image svg {

@@ -114,6 +114,10 @@ svg {
     border: none;
 }
 
+.spc-top-1 {
+    margin-top: 1rem;
+}
+
 .right {
     float: right;
     text-align: right;
@@ -791,6 +795,7 @@ white-space: nowrap;
     background-color: var(--product-card-highlight-color);
     box-shadow: rgba(210, 215, 219, 0.08) 8px 14px 38px, rgba(39, 44, 49, 0.05) 1px 3px 8px;
     cursor: pointer;
+    text-decoration: none;
     transition: ease-in 0.25s;
 }
 

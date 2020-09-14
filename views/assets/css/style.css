@@ -769,7 +769,7 @@ white-space: nowrap;
 }
 
 .product-card-container {
-    justify-content: space-between;
+    justify-content: flex-start;
     left: -2rem;
     top: -1rem;
     width: calc(100% + 4rem);
@@ -1294,8 +1294,8 @@ white-space: nowrap;
 
     .product-card {
         border: none;
-        flex-basis: calc(30% - 4rem);
-        max-width: calc(30% - 4rem);
+        flex-basis: calc(33.33% - 4rem);
+        max-width: calc(33.33% - 4rem);
         overflow: hidden;
     }
 

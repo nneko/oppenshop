@@ -37,7 +37,12 @@ environment.development = {
    windowsliveClientID: 'xxxxxxxxxx',
    windowsliveClientSecret: 'xxxxxx',
    facebookAppID: 'xxxxxxx',
-   facebookAppSecret: 'xxxxx'
+   facebookAppSecret: 'xxxxx',
+   uploadLimit: 10,
+   uploadSize: 10485760,
+   items_per_page: 25,
+   minimum_price: 10,
+   minimum_price_currency: usd
 };
 
 // Determine which environment was passed as a command-line argument

@@ -1,7 +1,7 @@
 {
   "name": "oppenshop",
   "version": "1.0.0",
-  "description": "Online marketplace app and api service to support commerce in goods and services across multiple vendors, payment and logistics providers",
+  "description": "Marketplace app and api service to support commerce in goods and services across multiple vendors, payment and logistics providers",
   "main": "app.js",
   "private": true,
   "scripts": {

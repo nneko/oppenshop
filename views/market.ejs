@@ -37,7 +37,7 @@
                                     <li>
                                         <span>
                                             <p class="item-card-label">
-                                                <b><%= products[j].displayName %></b>
+                                            <b><% if(products[j].displayName.length <= 20) { %><%= products[j].displayName.slice(0,20) %><% } else { %><%= products[j].displayName.slice(0,20) + '...' %><% } %></b>
                                             </p>
                                             <div class="item-card-label">
                                                 <div class="catalog-item-card-section">

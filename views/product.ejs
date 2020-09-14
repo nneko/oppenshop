@@ -94,6 +94,12 @@
                                                 <%= 'Out of Stock' %>
                                                 <% } %>
                                             </p>
+                                            <h4>Unit Price</h4>
+                                            <p>
+                                                <% if(typeof(product.price) !== 'undefined') { %>
+                                                <%= product.price %><% } if(typeof(product.currency) !== 'undefined') { %><%= ' ' + product.currency.toUpperCase() %>
+                                                <% } %>
+                                            </p>
                                         </div>
                                         <div class="add-to-bag-button-container">
                                             <form class="add-to-bag-form" method="POST" action="/market/product">

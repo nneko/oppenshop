@@ -28,16 +28,16 @@
             </div>
             <ul class="nav marketnav">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Products</a>
+                    <a class="nav-link" href="/market">Products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/market/shops">Shops</a>
+                    <a class="nav-link active" href="#">Shops</a>
                 </li>
             </ul>
-            <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
+            <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
             <div class="content-pane-scroll-cards-section catalog-item-container product-card-container">
-                <% for(let j=0;j<products.length;j++) { %>
-                <a href="/market/product/?p=<%= products[j]._id %>" class="card catalog-item-card product-card <% if(products.length == 2) { %>product-card-double<% } else if(products.length == 1) { %>product-card-single<% } %>">
+                <% for(let j=0;j<shops.length;j++) { %>
+                <a href="/market/seller/?s=<%= shops[j]._id %>" class="card catalog-item-card product-card <% if(shops.length == 2) { %>product-card-double<% } else if(shops.length == 1) { %>product-card-single<% } %>">
                     <div class="card-body">
                         <div class="actionable-card-pane">
                             <div class="catalog-view-card-pane">
@@ -45,26 +45,19 @@
                                     <li>
                                         <span>
                                             <p class="item-card-label">
-                                            <b><% if(products[j].displayName.length <= 20) { %><%= products[j].displayName.slice(0,20) %><% } else { %><%= products[j].displayName.slice(0,20) + '...' %><% } %></b>
+                                            <b><% if(shops[j].displayName.length <= 20) { %><%= shops[j].displayName.slice(0,20) %><% } else { %><%= shops[j].displayName.slice(0,20) + '...' %><% } %></b>
                                             </p>
                                             <div class="item-card-label">
                                                 <div class="catalog-item-card-section">
-                                                    <% if(typeof(products[j].images) !== 'undefined' && Array.isArray(products[j].images) && products[j].images.length > 0) { %>
+                                                    <% if(typeof(shops[j].images) !== 'undefined' && Array.isArray(shops[j].images) && shops[j].images.length > 0) { %>
                                                         <figure class="product-card-image">
-                                                            <img alt="<%= products[j].images[0].originalname %>"
-                                                        src="<%= products[j].images[0].src %>" />
+                                                            <img alt="<%= shops[j].images[0].originalname %>"
+                                                        src="<%= shops[j].images[0].src %>" />
                                                         </figure>
                                                     <% } else { %>
                                                     <figure class="product-card-image">
                                                         <%- include('assets/symbols/tags.svg') %>
                                                     </figure>
-                                                    <% } %>
-                                                </div>
-                                                <div class="item-card-left catalog-item-card-section extra-info">
-                                                    <% if(typeof(products[j].price) == 'string' && typeof(products[j].currency) == 'string') { %>
-                                                    <p>
-                                                        <%= products[j].price + ' ' + products[j].currency.toUpperCase() %>
-                                                    </p>
                                                     <% } %>
                                                 </div>
                                             </div>
@@ -80,19 +73,19 @@
             <% } else { %>
             <div class="catalog-item-container">
                 <div class="catalog-no-items-card">
-                    <p>No products available.</p>
+                    <p>No shops available.</p>
                 </div>
             </div>
             <% } %>
         </div>
         <nav class="market-pagenav" aria-label="Catalog Listing">
-            <% if (typeof(product_pages) !== 'undefined' && product_pages > 0) { %>
+            <% if (typeof(shop_pages) !== 'undefined' && shop_pages > 0) { %>
             <ul class="pagination text-center">
                 <% if (typeof(current_page) !== 'undefined' ) { %>
                 <% if (current_page == 1) { %>
                 <li class="page-item disabled"><a class="page-link">First</a></li>
                 <% } else { %>
-                <li class="page-item"><a class="page-link" href="/market/page/1">First</a></li>
+                <li class="page-item"><a class="page-link" href="/market/shops/1">First</a></li>
                 <% } %>
         
                 <% let i = (Number(current_page) > 5 ? Number(current_page) - 4 : 1) %>
@@ -101,22 +94,22 @@
                 <li class="page-item disabled"><a class="page-link">...</a></li>
                 <% } %>
         
-                <% for (; i <= (Number(current_page) + 4) && i <= product_pages; i++) { %>
+                <% for (; i <= (Number(current_page) + 4) && i <= shop_pages; i++) { %>
                 <% if (i == current_page) { %>
                 <li class="page-item active"><a class="page-link"><%= i %></a></li>
                 <% } else { %>
-                <li class="page-item"><a class="page-link" href="/market/page/<%= i %>"><%= i %></a></li>
+                <li class="page-item"><a class="page-link" href="/market/shops/<%= i %>"><%= i %></a></li>
                 <% } %>
         
-                <% if (i == Number(current_page) + 4 && i < product_pages) { %>
+                <% if (i == Number(current_page) + 4 && i < shop_pages) { %>
                 <li class="page-item disabled"><a class="page-link">...</a></li>
                 <% } %>
                 <% } %>
         
-                <% if (current_page == product_pages) { %>
+                <% if (current_page == shop_pages) { %>
                 <li class="page-item disabled"><a class="page-link">Last</a></li>
                 <% } else { %>
-                <li class="page-item"><a class="page-link" href="/market/page/<%= product_pages %>">Last</a></li>
+                <li class="page-item"><a class="page-link" href="/market/shops/<%= shop_pages %>">Last</a></li>
                 <% } %>
                 <% } %>
             </ul>

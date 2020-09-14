@@ -413,6 +413,36 @@ svg {
     z-index: 1;
 }
 
+.marketnav {
+    justify-content: flex-start;
+    margin: 1rem;
+}
+
+.marketnav .nav-link.active {
+    color: var(--main-highlight-color);
+    font-weight: bold;
+}
+
+.marketnav .nav-link.active {
+    border-bottom: var(--main-highlight-color) 2px solid;
+    color: var(--main-highlight-color);
+}
+
+.marketnav a {
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+    padding-bottom: 0.5rem;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.marketnav a:hover {
+    border-bottom: var(--main-text-em-color) 2px solid;
+    color: var(--main-text-em-color);
+    text-decoration: none;
+}
+
+
 .content-nav-right {
     display: flex;
     justify-content: flex-end;

@@ -2,6 +2,7 @@ const cfg = require('../configuration/index.js')
 const express = require('express')
 const validator = require('../utilities/validator')
 const handler = require('./handlers/market')
+const shopsHandler = require('./handlers/market/shops')
 const debug = cfg.env == 'development' ? true : false
 
 let market = express.Router()
@@ -31,6 +32,19 @@ market.use('/page/:page', async function (req, res, next) {
         res.status(500)
         res.render('error', { error: { status: 500, message: 'Error retrieving shop pagination data' }, name: '', user: req.user })
 
+    }
+})
+
+market.get('/shops', async (req, res) => {
+    try {
+        let viewData = await shopsHandler.populateViewData(validator.isNotNull(req.user) ? req.user.id : null)
+        viewData.user = req.user
+        res.render('shops', viewData)
+
+    } catch (e) {
+        console.error(e)
+        res.status(500)
+        res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user })
     }
 })
 

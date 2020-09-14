@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "start": "node ./bin/app",
-    "dev": "nodemon bin/app"    
+    "dev": "nodemon bin/app"
   },
   "repository": {
     "type": "git",

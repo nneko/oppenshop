@@ -27,7 +27,7 @@
                         <span class="edit-heading-span">
                             <h2><%= product.displayName %></h2>
                             <a href="<% if(typeof(ref) == 'string' && ref.length > 0) { %><%= ref %><% } else { %>/market<% } %>">
-                                <button class="btn btn-primary">Back to Marketplace</button>
+                                <button class="btn btn-primary spc-left-1">Back to Marketplace</button>
                             </a>
                         </span>
                         <hr>
@@ -37,17 +37,17 @@
                             <% if(typeof(product.images) !== 'undefined' && Array.isArray(product.images) && product.images.length > 0) { %>
                                 <figure class="featured-image">
                                     <% if(typeof(product.images[0]) !== 'undefined') { %>
-                                        <img src="<% if(product.images[0].src) { %><%= product.images[0].src %><% } %>">
+                                        <img id="product-hero-img" src="<% if(product.images[0].src) { %><%= product.images[0].src %><% } %>">
                                     <% } else { %>
                                         <%- include('assets/symbols/tags.svg') %>
                                     <% } %>
                                 </figure>
                                 <% if(product.images.length > 1) { %>
                                     <div class="product-carousel-images-row">
-                                        <% for (let imgIdx=1;imgIdx<product.images.length;imgIdx++) { %>
-                                            <figure class="featured-mini-image">
+                                        <% for (let imgIdx=0;imgIdx<product.images.length;imgIdx++) { %>
+                                        <figure class="featured-mini-image <% if(imgIdx == 0) { %>featured-mini-image-selected<% } %>">
                                                 <% if(typeof(product.images[0]) !== 'undefined') { %>
-                                                <img src="<% if(product.images[imgIdx].src) { %><%= product.images[imgIdx].src %><% } %>">
+                                                <img class="product-image" src="<% if(product.images[imgIdx].src) { %><%= product.images[imgIdx].src %><% } %>">
                                                 <% } else { %>
                                                 <%- include('assets/symbols/tags.svg') %>
                                                 <% } %>
@@ -128,3 +128,24 @@
             </div>
     </section>
 </main>
+<script>
+    (() => {
+        let productImgs = document.getElementsByClassName('product-image')
+        for (const img of productImgs) {
+            img.addEventListener('click',() => {
+                let productHero = document.getElementById('product-hero-img')
+                if(productHero) {
+                    let productImageFigs = document.getElementsByClassName('featured-mini-image')
+
+                    if(productImageFigs) {
+                        for (const i of productImageFigs) {
+                            i.classList.remove('featured-mini-image-selected')
+                        }
+                    }
+                    img.parentElement.classList.add('featured-mini-image-selected')
+                    productHero.src = img.src
+                }
+            })
+        }
+    })()
+</script>

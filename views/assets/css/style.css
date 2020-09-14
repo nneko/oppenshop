@@ -118,6 +118,10 @@ svg {
     margin-top: 1rem;
 }
 
+.spc-left-1 {
+    margin-left: 1rem;
+}
+
 .right {
     float: right;
     text-align: right;
@@ -854,6 +858,7 @@ white-space: nowrap;
     max-width: calc(100% - 2rem) !important;
     min-height: 16rem;
     min-width: 16rem;
+    transition: ease 0.25s;
     width: calc(100% - 2rem) !important;
 }
 
@@ -955,6 +960,17 @@ white-space: nowrap;
     overflow: hidden;
     position: relative;
     width: 2rem !important;
+}
+
+.featured-mini-image:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.featured-mini-image-selected {
+    border: 2px solid var(--main-highlight-color);
+    cursor: pointer;
+    opacity: 0.6;
 }
 
 .featured-mini-image img {

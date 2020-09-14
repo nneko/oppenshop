@@ -266,6 +266,7 @@ svg {
     max-width: 100%;
     padding: 0;
     overflow-y: scroll;
+    transition: ease-in 0.25s;;
     width: calc(100% - 4rem);
     z-index: 1;
 }

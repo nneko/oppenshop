@@ -110,9 +110,9 @@ accounthandler.populateUserViewData = async (uid) => {
   })
 }
 
-accounthandler.lsFormHandler = async (user, pass) => {
+accounthandler.lsFormHandler = async (username, pass) => {
   try {
-    return await user.update({ preferredUsername: user }, { password: pass })
+    return await user.update({ preferredUsername: username }, { password: pass })
   } catch (e) {
       console.error(e)
       throw e

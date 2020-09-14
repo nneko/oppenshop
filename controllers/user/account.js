@@ -150,16 +150,20 @@ let lsFormHandler = async (req, res) => {
             return
         } else {
             try {
-                const result = await user.update({ preferredUsername: u.preferredUsername }, { password: u.password })
-                if (debug) console.log('User update password response: ' + result)
-                //let u_lsformhandler = await accounthandler.lsFormHandler(u.preferredUsername,u.password)
+                //const result = await user.update({ preferredUsername: u.preferredUsername }, { password: u.password })
+                //if (debug) console.log('User update password response: ' + result)
+                let u_lsformhandler = await accounthandler.lsFormHandler(u.preferredUsername,u.password)
                 // TODO: validation check on 'u_lsformhandler' response to show response if updated or not
-                //if (debug) console.log('User update password response: ' + u_lsformhandler)
+                if (debug) console.log('User update password response: ' + u_lsformhandler)
                 if (debug) console.log('User account updated for ' + u.preferredUsername)
                 let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
                 viewData.pane = 'ls'
-                viewData.messages = { success: 'Account updated.' }
+                if (u_lsformhandler.modifiedCount > 0) {
+                  viewData.messages = { success: 'Account updated.' }
+                } else {
+                  viewData.messages = { error: 'Account could not be updated.' }
+                }
                 res.render('account', viewData)
             } catch (e) {
                 console.error(e)

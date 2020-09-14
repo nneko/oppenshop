@@ -875,6 +875,10 @@ white-space: nowrap;
     position: relative;
 }
 
+.product-specifications-table td {
+    word-wrap: break-word;
+}
+
 .add-to-bag-button {
     margin-right: 1rem;
 }

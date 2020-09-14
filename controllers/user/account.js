@@ -53,60 +53,6 @@ let getField = generator.getField
 
 let getPrimaryField = generator.getPrimaryField
 
-let removePrimaryFields = generator.removePrimaryFields
-
-let removeFields = generator.removeFields
-
-let removeAddressFields = generator.removeAddressFields
-/*
-let populateUserViewData = async (uid) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let u = await user.read(uid, { findBy: 'id' })
-            let viewData = {}
-            viewData.addresses = u.addresses
-            let primaryAddr = getPrimaryField(viewData.addresses)
-            if (primaryAddr) {
-                viewData.addressStreet = { value: primaryAddr.streetAddress }
-                viewData.addressLocality = { value: primaryAddr.locality }
-                viewData.addressRegion = { value: primaryAddr.region }
-                viewData.addressPostcode = { value: primaryAddr.postalCode }
-                viewData.addressCountry = { value: primaryAddr.country }
-                viewData.addressType = { value: primaryAddr.type }
-            }
-            viewData.emails = u.emails
-            viewData.phoneNumbers = u.phoneNumbers
-            let phone = getPrimaryField(viewData.phoneNumbers)
-            if (phone) {
-                viewData.phone ={
-                    value: phone.value,
-                    type: phone.type
-                }
-            }
-            viewData.verifiedUser = u.verified
-
-            let dForms = {
-                security: false,
-                contact: false,
-                addresses: false,
-                orders: false,
-                payments: false,
-                settings: false
-            }
-
-            // Disable security credentials update for external accounts
-            if (!validator.isLocalUserAccount(u)) {
-                dForms.security = true
-            }
-            viewData.disabledForms = dForms
-            resolve(viewData)
-        } catch (e) {
-            reject(e)
-        }
-    })
-}
-*/
-
 // Login & Security updates form handler
 let lsFormHandler = async (req, res) => {
     try {

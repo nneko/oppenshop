@@ -26,41 +26,41 @@
                     <div>
                         <span class="edit-heading-span">
                             <h2><%= shop.displayName %></h2>
-                            <a href="<% if(typeof(ref) == 'string' && ref.length > 0) { %><%= ref %><% } else { %>/market<% } %>">
-                                <button class="btn btn-primary spc-left-1">Back to Marketplace</button>
+                            <a href="<% if(typeof(ref) == 'string' && ref.length > 0) { %><%= ref %><% } else { %>/market/shops<% } %>">
+                                <button class="btn btn-primary spc-left-1">Back to Shops</button>
                             </a>
                         </span>
                         <hr>
                     </div>
+                    <% if(typeof(shop.images) !== 'undefined' && Array.isArray(shop.images) && shop.images.length > 0) { %>
+                    <figure class="featured-image shop-hero">
+                        <% if(typeof(shop.images[0]) !== 'undefined') { %>
+                        <img id="product-hero-img" src="<% if(shop.images[0].src) { %><%= shop.images[0].src %><% } %>">
+                        <% } else { %>
+                        <%- include('assets/symbols/shop.svg') %>
+                        <% } %>
+                    </figure>
+                    <% if(shop.images.length > 1) { %>
+                    <div class="product-carousel-images-row">
+                        <% for (let imgIdx=0;imgIdx<shop.images.length;imgIdx++) { %>
+                        <figure class="featured-mini-image <% if(imgIdx == 0) { %>featured-mini-image-selected<% } %>">
+                            <% if(typeof(shop.images[0]) !== 'undefined') { %>
+                            <img class="product-image" src="<% if(shop.images[imgIdx].src) { %><%= shop.images[imgIdx].src %><% } %>">
+                            <% } else { %>
+                            <%- include('assets/symbols/shop.svg') %>
+                            <% } %>
+                        </figure>
+                        <% } %>
+                    </div>
+                    <% } %>
+                    <% } else { %>
+                    <figure class="featured-image shop-hero">
+                        <%- include('assets/symbols/shop.svg') %>
+                    </figure>
+                    <% } %>
+                    <p class="featured-image-legend shop-hero-legend">Shop Images</p>
                     <div class="row">
                         <div id="product-images-carousel" class="product-carousel col-sm-6">
-                            <% if(typeof(shop.images) !== 'undefined' && Array.isArray(shop.images) && shop.images.length > 0) { %>
-                                <figure class="featured-image">
-                                    <% if(typeof(shop.images[0]) !== 'undefined') { %>
-                                        <img id="product-hero-img" src="<% if(shop.images[0].src) { %><%= shop.images[0].src %><% } %>">
-                                    <% } else { %>
-                                        <%- include('assets/symbols/tags.svg') %>
-                                    <% } %>
-                                </figure>
-                                <% if(shop.images.length > 1) { %>
-                                    <div class="product-carousel-images-row">
-                                        <% for (let imgIdx=0;imgIdx<shop.images.length;imgIdx++) { %>
-                                        <figure class="featured-mini-image <% if(imgIdx == 0) { %>featured-mini-image-selected<% } %>">
-                                                <% if(typeof(shop.images[0]) !== 'undefined') { %>
-                                                <img class="product-image" src="<% if(shop.images[imgIdx].src) { %><%= shop.images[imgIdx].src %><% } %>">
-                                                <% } else { %>
-                                                <%- include('assets/symbols/tags.svg') %>
-                                                <% } %>
-                                            </figure>
-                                        <% } %>
-                                    </div>
-                                <% } %>
-                            <% } else { %>
-                                <figure class="featured-image">
-                                    <%- include('assets/symbols/tags.svg') %>
-                                </figure>
-                            <% } %>
-                            <p class="featured-image-legend">Shop Images</p>
                             <% if (typeof(shop.addresses) !== 'undefined' && Array.isArray(shop.addresses) && shop.addresses.length > 0 ) { %>
                                 <%
                                     let addr = generator.getPrimaryField(shop.addresses)

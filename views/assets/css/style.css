@@ -1040,6 +1040,22 @@ white-space: nowrap;
     margin: 1rem;
 }
 
+.shop-hero {
+    margin: 0 !important;
+    overflow: hidden;
+    width: 100% !important;
+}
+
+.shop-hero img {
+    height: max-auto !important;
+    max-height: unset !important;
+    width: 100% !important;
+}
+
+.shop-hero-legend {
+    margin: 0.5rem;
+}
+
 .text-legend {
     color: var(--main-text-color);
     font-size: 0.8rem;

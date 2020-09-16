@@ -106,20 +106,21 @@
                                         <div class="add-to-bag-button-container">
                                             <form class="add-to-bag-form" method="POST" action="/market/product">
                                             <fieldset <% if(product.quantity == 0) { %>disabled="disabled<% } %>>
-                                                    <input type="hidden" name="action" value="add_or_buy">
+                                                    <input type="hidden" name="action" value="add_to_bag">
                                                     <input type="hidden" name="pid"
-                                                        value="<% if(typeof(products._id) !== 'undefined') { %><%= products._id %><% } %>">
+                                                        value="<% if(typeof(product._id) !== 'undefined') { %><%= product._id %><% } %>">
 
                                                     <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                                                     <div class="input-group mb-3">
                                                         <div class="form-group form-inline">
-                                                            <input class="form-control small-input-control product-quantity-input spc-top-1" type="number" name="quantity" min="1" step="1" size="3" value="1">
+                                                            <input 
+                                                            id="product-quantity-input" class="form-control small-input-control product-quantity-input spc-top-1" type="number" name="quantity" min="1" step="1" size="3" value="1">
                                                             <button class="btn btn-secondary add-to-bag-button spc-top-1" type="submit" data-toggle="tooltip"
-                                                                data-placement="bottom" title="Add item to bag" name="addtobag" value="Add">
+                                                                data-placement="bottom" title="Add item to shopping bag" name="addtobag" value="Add">
                                                                 Add to Shopping Bag
                                                             </button>
-                                                            <button class="btn btn-primary spc-top-1" type="submit" data-toggle="tooltip" data-placement="bottom" title="Order this item"
-                                                                name="buy" value="Buy">
+                                                            <button class="btn btn-primary spc-top-1 buy-now" type="button" data-toggle="tooltip" data-placement="bottom" title="Order this item"
+                                                        name="buy" value="Buy" data-product-id="<%= product._id %>" data-user-id="<% if(typeof(user) !== 'undefined') { %><%= user.id %><% } else { %><%= 'GUEST' %><% } %>">
                                                                 Buy Now
                                                             </button>
                                                         </div>
@@ -137,6 +138,7 @@
     </section>
 </main>
 <script>
+    //Add event listeners for the mini images in the carousel to switch the displayed hero image
     (() => {
         let productImgs = document.getElementsByClassName('product-image')
         for (const img of productImgs) {
@@ -155,5 +157,50 @@
                 }
             })
         }
-    })()
+    })();
+
+    //Add event listener for buy-now buttons to post to checkout
+    (() => {
+        let buyNowButtons = document.getElementsByClassName('buy-now')
+        for (const btn of buyNowButtons) {
+            if(btn && btn.nodeName == 'BUTTON' && btn.dataset.userId && btn.dataset.productId) {
+                btn.addEventListener('click', () => {
+                    console.log('Creating buy-now event listener...')
+                    const form = document.createElement('form')
+                    form.method = 'post'
+                    form.action = '/user/bag/checkout'
+
+                    const hiddenUserInputField = document.createElement('input')
+                    hiddenUserInputField.type = 'hidden'
+                    hiddenUserInputField.name = 'uid'
+                    hiddenUserInputField.value = btn.dataset.userId
+
+                    const hiddenProductInputField = document.createElement('input')
+                    hiddenProductInputField.type = 'hidden'
+                    hiddenProductInputField.name = 'pid'
+                    hiddenProductInputField.value = btn.dataset.productId
+
+                    const quantityInput = document.getElementById('product-quantity-input')
+
+                    const hiddenQuantityInputField = document.createElement('input')
+                    hiddenQuantityInputField.type = 'hidden'
+                    hiddenQuantityInputField.name = 'quantity'
+                    hiddenQuantityInputField.value = typeof(quantityInput) !== 'undefined' ? quantityInput.value : 1
+
+                    const hiddenActionInputField = document.createElement('input')
+                    hiddenActionInputField.type = 'hidden'
+                    hiddenActionInputField.name = 'action'
+                    hiddenActionInputField.value = 'order'
+
+                    form.appendChild(hiddenActionInputField)
+                    form.appendChild(hiddenUserInputField)
+                    form.appendChild(hiddenProductInputField)
+                    form.appendChild(hiddenQuantityInputField)
+
+                    document.body.appendChild(form)
+                    form.submit()
+                })
+            }
+        }
+    })();
 </script>

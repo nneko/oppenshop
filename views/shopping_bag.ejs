@@ -34,7 +34,7 @@
                 </div>
                 <div class="shopping-bag-header">
                     <h2>
-                        <b>Total is <% if(typeof(user.bag) !== 'undefined') { %>
+                        <b>Total is <% if(typeof(user) !== 'undefined' && typeof(user.bag) !== 'undefined') { %>
                         <% } else { %>
                             <% if(typeof(currency_symbol) == 'string') { %><%= currency_symbol %>
                             <% } else { %>$<% } %> 0.00 <% if(typeof(currency) == 'string') { %><%= currency + '.' %>

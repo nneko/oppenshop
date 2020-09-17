@@ -108,9 +108,9 @@
                                             <fieldset <% if(product.quantity == 0) { %>disabled="disabled<% } %>>
                                                     <input type="hidden" name="action" value="add_to_bag">
                                                     <input type="hidden" name="pid"
-                                                        value="<% if(typeof(product._id) !== 'undefined') { %><%= product._id %><% } %>">
+                                                        value="<% if(typeof(product) !== 'undefined') { %><%= product._id %><% } %>">
 
-                                                    <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                                                    <input type="hidden" name="uid" value="<% if(typeof(user) !== 'undefined') { %><%= user.id %><% } %>">
                                                     <div class="input-group mb-3">
                                                         <div class="form-group form-inline">
                                                             <input 

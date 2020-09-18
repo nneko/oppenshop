@@ -1,16 +1,16 @@
 module.exports = function ShoppingBag(shoppingBag){
     this.items = typeof(shoppingBag !== 'undefined') && shoppingBag && shoppingBag.items ? shoppingBag.items : {}
     this.totalQuantity = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalQuantity ? shoppingBag.totalQuantity : 0
-    this.totalPrice = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalPrice ? shoppingBag.totalPrice : {}
+    this.totalPrice = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalPrice ? shoppingBag.totalPrice : 0
 
     this.add = function(product,quantity) {
         if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof (quantity) == 'number' && quantity > 0) {
             let item = this.items[product._id]
             if (!item) {
-                item = this.items[product._id] = { item: product, qty: 0, price: product.price }
+                item = this.items[product._id] = { item: product, qty: 0, price: Number(product.price) }
             }
-            item.qty += quantity
-            item.price = product.price * item.qty
+            item.qty += Number(quantity)
+            item.price = Number(product.price) * item.qty
             this.items[product._id] = item
             this.totalQuantity += Number(quantity)
             this.totalPrice += Number(item.price)
@@ -40,11 +40,11 @@ module.exports = function ShoppingBag(shoppingBag){
                 e.type = 'InvalidItem'
                 throw e
             }
-            item.qty = item.qty > quantity ? item.qty - quantity : 0
-            item.price = product.price * item.qty
-            this.totalQuantity -= quantity
+            item.qty = item.qty > quantity ? item.qty - Number(quantity) : 0
+            item.price = Number(product.price) * item.qty
+            this.totalQuantity -= Number(quantity)
             if(this.totalQuantity < 0) this.totalQuantity = 0
-            this.totalPrice -= item.price
+            this.totalPrice -= Number(item.price)
             if (item.qty <= 0) {
                 delete this.items[product._id]
             }

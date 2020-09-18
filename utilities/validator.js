@@ -65,7 +65,7 @@ validator.isAuthProvider = (provider) => {
 }
 
 validator.hasActiveSession = (r) => {
-    if(r.session && r.user){
+    if(r.isAuthenticated() && r.session && r.user){
         if(r.session.passport) {
             return (r.session.passport.user == r.user.id)
         }

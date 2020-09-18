@@ -3,6 +3,8 @@ const validator = require('../../../utilities/validator')
 const product = require('../../../models/product')
 const media = require('../../../adapters/storage/media')
 const shop = require('../../../models/shop.js')
+const ShoppingBag = require('./../../../models/shoppingbag')
+const marketProduct = require('../../market/product.js')
 const debug = cfg.env == 'development' ? true : false
 
 let marketProductHandler = {}

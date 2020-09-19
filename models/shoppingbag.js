@@ -7,7 +7,7 @@ module.exports = function ShoppingBag(shoppingBag){
     this.totalQuantity = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalQuantity ? shoppingBag.totalQuantity : 0
     this.totalPrice = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalPrice ? shoppingBag.totalPrice : 0
 
-    this.add = (product,quantity) => {
+    this.add = function(product,quantity) {
         if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof (quantity) == 'number' && quantity > 0) {
             let item = this.items[product._id]
             if (!item) {
@@ -35,7 +35,7 @@ module.exports = function ShoppingBag(shoppingBag){
         }
     }
 
-    this.remove = (product, quantity) => {
+    this.remove = function(product, quantity) {
         if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof(quantity) == 'number' && quantity > 0) {
             let item = this.items[product._id]
             if (!item) {
@@ -69,7 +69,7 @@ module.exports = function ShoppingBag(shoppingBag){
         }
     }
 
-    this.delete = (product) => {
+    this.delete = function(product) {
         let item = this.items[product._id]
         if (!item) {
             let e = new Error("Item doesn't exist")
@@ -80,15 +80,15 @@ module.exports = function ShoppingBag(shoppingBag){
         this.remove(item.item, item.qty)
     }
 
-    this.total = () => {
+    this.total = function() {
         return this.totalPrice
     }
 
-    this.quantity = () => {
+    this.quantity = function() {
         return this.totalQuantity
     }
 
-    this.save = async (u) => {
+    this.save = async function(u) {
         try {
             if (await user.isValid(u)) {
                 u.bag = {

@@ -3,6 +3,7 @@ const express = require('express')
 const validator = require('../../utilities/validator')
 const converter = require('../../utilities/converter')
 const handler = require('../handlers/market/product')
+const user = require('../../models/user')
 const product = require('../../models/product')
 const ShoppingBag = require('../../models/shoppingbag')
 const debug = cfg.env == 'development' ? true : false
@@ -30,6 +31,10 @@ marketProduct.post('/', async (req, res) => {
             let p = await product.read(form.pid,{findBy: 'id'})
             let bag = new ShoppingBag(req.session.bag)
             bag.add(p,Number(form.quantity))
+            if(req.user) {
+                let u = await user.read(req.user.id,{findBy: 'id'})
+                await bag.save(u)
+            }
             if(debug) console.log(bag)
             req.session.bag = bag
             let viewData = await handler.populateViewData(form.pid)

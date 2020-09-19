@@ -7,6 +7,7 @@ const user = require('../../models/user')
 const shop = require('../../models/shop')
 const product = require('../../models/product')
 const catalog = require('../../models/catalog')
+const ShoppingBag = require('../../models/shoppingbag')
 const express = require('express')
 const debug = cfg.env == 'development' ? true : false
 
@@ -61,6 +62,7 @@ let populateViewData = async (uid, product_page = 1) => {
 bag.get('/', async (req, res) => {
     try {
         let viewData = await populateViewData(validator.isNotNull(req.user) ? req.user.id : null)
+        viewData.bag = new ShoppingBag(req.session.bag)
         viewData.user = req.user
         res.render('shopping_bag', viewData)
 

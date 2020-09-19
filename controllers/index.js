@@ -12,7 +12,7 @@ let router = express.Router()
 //routes
 
 //Create shopping bag
-router.user(async (req,res) => {
+router.use(async (req,res,next) => {
     try {
         if (req.session && !req.session.bag) {
             if (req.user) {
@@ -34,6 +34,8 @@ router.user(async (req,res) => {
             }
         }
     }
+
+    next()
 })
 
 //APIs

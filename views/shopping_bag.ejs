@@ -34,11 +34,13 @@
                 </div>
                 <div class="shopping-bag-header">
                     <h2>
-                        <b>Total is <% if(typeof(user) !== 'undefined' && typeof(user.bag) !== 'undefined') { %>
+                        <% if(typeof(bag) !== 'undefined') { %>
+                            <b>Total is <% if(typeof(currency_symbol) == 'string') { %><%= currency_symbol %>
+                            <% } else { %>$<% } %><%= bag.total() %><% if(typeof(currency) == 'string') { %><%= currency + '.' %>
+                            <% } else { %>USD.<% } %></b>
                         <% } else { %>
-                            <% if(typeof(currency_symbol) == 'string') { %><%= currency_symbol %>
-                            <% } else { %>$<% } %> 0.00 <% if(typeof(currency) == 'string') { %><%= currency + '.' %>
-                            <% } else { %>USD.<% } %><% } %></b>
+                            Your bag is empty.
+                        <% } %>
                     </h2>
                     <a href="/checkout">
                         <button class="btn btn-primary shopping-bag-checkout">Checkout</button>

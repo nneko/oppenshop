@@ -1,9 +1,13 @@
+const cfg = require('../configuration')
+const user = require('./user')
+const debug = cfg.env == 'development' ? true : false
+
 module.exports = function ShoppingBag(shoppingBag){
     this.items = typeof(shoppingBag !== 'undefined') && shoppingBag && shoppingBag.items ? shoppingBag.items : {}
     this.totalQuantity = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalQuantity ? shoppingBag.totalQuantity : 0
     this.totalPrice = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalPrice ? shoppingBag.totalPrice : 0
 
-    this.add = function(product,quantity) {
+    this.add = (product,quantity) => {
         if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof (quantity) == 'number' && quantity > 0) {
             let item = this.items[product._id]
             if (!item) {
@@ -31,7 +35,7 @@ module.exports = function ShoppingBag(shoppingBag){
         }
     }
 
-    this.remove = function (product, quantity) {
+    this.remove = (product, quantity) => {
         if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof(quantity) == 'number' && quantity > 0) {
             let item = this.items[product._id]
             if (!item) {
@@ -65,7 +69,7 @@ module.exports = function ShoppingBag(shoppingBag){
         }
     }
 
-    this.delete = function (product) {
+    this.delete = (product) => {
         let item = this.items[product._id]
         if (!item) {
             let e = new Error("Item doesn't exist")
@@ -74,5 +78,31 @@ module.exports = function ShoppingBag(shoppingBag){
             throw e
         }
         this.remove(item.item, item.qty)
+    }
+
+    this.total = () => {
+        return this.totalPrice
+    }
+
+    this.quantity = () => {
+        return this.totalQuantity
+    }
+
+    this.save = async (u) => {
+        try {
+            if (await user.isValid(u)) {
+                u.bag = {
+                    items: this.items,
+                    totalPrice: this.totalPrice,
+                    totalQuantity: this.totalQuantity
+                }
+
+                return await user.update({_id: u._id},u)
+            }
+        } catch (e) {
+            if(debug && e) {
+                console.error(e.stack)
+            }
+        }
     }
 }

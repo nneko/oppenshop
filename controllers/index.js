@@ -4,9 +4,37 @@ const path = require('path')
 const api = require('../api')
 const validator = require('../utilities/validator')
 const userModel = require('../models/user')
+const ShoppingBag = require('../models/shoppingbag')
+const user = require('../models/user')
+const debug = cfg.env == 'development' ? true : false
 let router = express.Router()
 
 //routes
+
+//Create shopping bag
+router.user(async (req,res) => {
+    try {
+        if (req.session && !req.session.bag) {
+            if (req.user) {
+                let u = await user.read(req.user.id, { findBy: 'id' })
+                if (await user.isValid(u) && !u.bag) {
+                    req.session.bag = new ShoppingBag(u.bag)
+                } else {
+                    req.session.bag = new ShoppingBag()
+                }
+            } else {
+                req.session.bag = new ShoppingBag()
+            }
+        }
+    } catch (e) {
+        if(debug) {
+            if(e) {
+                console.error(e.stack)
+                throw e
+            }
+        }
+    }
+})
 
 //APIs
 router.use('/api', api)

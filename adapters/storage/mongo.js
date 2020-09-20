@@ -9,6 +9,9 @@ const dbPwd = cfg.dbPwd
 const dbAuthSource = cfg.dbAuthSource
 const dbURI = dbType + '://' + dbHost + ':' + dbPort.toString() + '/'
 const debug = cfg.env == 'development' ? true : false
+//const { MongoMemoryServer } = require('mongodb-memory-server')
+//const {MongoClient} = require('mongodb')
+const t = require('../../tests/memory_mongodb_server_model')
 
 let database = {}
 
@@ -18,7 +21,7 @@ let dbClient = dbType !== 'mongodb' ? false : dbDriver.MongoClient(dbURI, {
     authSource: dbAuthSource,
     auth: {
         user: dbUser,
-        password: dbPwd 
+        password: dbPwd
     }
 })
 
@@ -41,7 +44,7 @@ database.connect = () => {
     })
 }
 
-database.get = () => dbo
+database.get = () => process.env.NODE_ENV == 'test' ? t.get() : dbo
 
 database.getDriverClient = () => dbClient
 

@@ -116,10 +116,14 @@
                                                             <input 
                                                             id="product-quantity-input" class="form-control small-input-control product-quantity-input spc-top-1" type="number" name="quantity" min="1" step="1" size="3" value="1">
                                                             <button class="btn btn-secondary add-to-bag-button spc-top-1" type="submit" data-toggle="tooltip"
-                                                                data-placement="bottom" title="Add item to shopping bag" name="addtobag" value="Add">
-                                                                Add to Shopping Bag
+                                                                data-placement="bottom" title="Add item quantity to shopping bag" name="addtobag" value="Add">
+                                                                Add
                                                             </button>
-                                                            <button class="btn btn-primary spc-top-1 buy-now" type="button" data-toggle="tooltip" data-placement="bottom" title="Order this item"
+                                                            <button class="btn btn-secondary add-to-bag-button spc-top-1 remove-item" type="button" data-toggle="tooltip" data-placement="bottom"
+                                                                title="Remove item quantity from bag" name="Remove" value="Remove" data-product-id="<%= product._id %>"
+                                                                data-user-id="<% if(typeof(user) !== 'undefined') { %><%= user.id %><% } else { %><%= 'GUEST' %><% } %>">Remove
+                                                            </button>
+                                                            <button class="btn btn-primary spc-top-1 buy-now" type="button" data-toggle="tooltip" data-placement="bottom" title="Buy/Checkout only this item"
                                                         name="buy" value="Buy" data-product-id="<%= product._id %>" data-user-id="<% if(typeof(user) !== 'undefined') { %><%= user.id %><% } else { %><%= 'GUEST' %><% } %>">
                                                                 Buy Now
                                                             </button>
@@ -191,6 +195,49 @@
                     hiddenActionInputField.type = 'hidden'
                     hiddenActionInputField.name = 'action'
                     hiddenActionInputField.value = 'buy-now'
+
+                    form.appendChild(hiddenActionInputField)
+                    form.appendChild(hiddenUserInputField)
+                    form.appendChild(hiddenProductInputField)
+                    form.appendChild(hiddenQuantityInputField)
+
+                    document.body.appendChild(form)
+                    form.submit()
+                })
+            }
+        }
+
+
+        let removeItemButtons = document.getElementsByClassName('remove-item')
+        for (const btn of removeItemButtons) {
+            if (btn && btn.nodeName == 'BUTTON' && btn.dataset.userId && btn.dataset.productId) {
+                btn.addEventListener('click', () => {
+                    console.log('Creating remove-item event listener...')
+                    const form = document.createElement('form')
+                    form.method = 'post'
+                    form.action = '/market/product'
+
+                    const hiddenUserInputField = document.createElement('input')
+                    hiddenUserInputField.type = 'hidden'
+                    hiddenUserInputField.name = 'uid'
+                    hiddenUserInputField.value = btn.dataset.userId
+
+                    const hiddenProductInputField = document.createElement('input')
+                    hiddenProductInputField.type = 'hidden'
+                    hiddenProductInputField.name = 'pid'
+                    hiddenProductInputField.value = btn.dataset.productId
+
+                    const quantityInput = document.getElementById('product-quantity-input')
+
+                    const hiddenQuantityInputField = document.createElement('input')
+                    hiddenQuantityInputField.type = 'hidden'
+                    hiddenQuantityInputField.name = 'quantity'
+                    hiddenQuantityInputField.value = typeof (quantityInput) !== 'undefined' ? quantityInput.value : 1
+
+                    const hiddenActionInputField = document.createElement('input')
+                    hiddenActionInputField.type = 'hidden'
+                    hiddenActionInputField.name = 'action'
+                    hiddenActionInputField.value = 'remove'
 
                     form.appendChild(hiddenActionInputField)
                     form.appendChild(hiddenUserInputField)

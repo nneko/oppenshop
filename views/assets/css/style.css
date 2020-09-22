@@ -3,6 +3,7 @@
   --main-highlight-color: #007bff;
   --main-border-color: rgba(0,0,0,.1);
   --main-sub-border-color: rgba(0,0,0,.125);
+  --main-table-row-highlight-color: rgba(0,0,0,.075);
   --main-bg-color: #f4f4f4;
   --main-text-color: #444;
   --main-text-em-color: black;
@@ -612,6 +613,12 @@ svg {
     text-align: center;
 }
 
+.shopping-bag-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 2rem;
+}
+
 .shopping-bag-checkout {
     margin-top: 1.6rem;
     width: 25%;
@@ -1054,6 +1061,71 @@ white-space: nowrap;
 
 .shop-hero-legend {
     margin: 0.5rem;
+}
+
+.shopping-bag-item-card {
+    border-bottom: 1px solid var(--main-border-color);
+}
+/*
+.shopping-bag-item-card:hover {
+    border-bottom: 1px solid var(--main-highlight-color);
+}
+*/
+.shopping-bag-item-card-divider {
+    width: 100%;
+}
+
+.shopping-bag-item-product-link:hover {
+    text-decoration: none !important;
+}
+
+.shopping-bag-item-image {
+    margin: 0.5rem;
+}
+
+.shopping-bag-item-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    transition: ease 0.25s;
+}
+
+.shopping-bag-item-row:hover {
+    /*background-color: var(--main-table-row-highlight-color);*/
+    color: var(--main-highlight-color);
+    cursor: pointer;
+    transition: ease 0.25s;
+    text-decoration: none !important;
+}
+
+.shopping-bag-item-row:hover figure {
+    opacity: 0.6;
+}
+
+.shopping-bag-item-name {
+    max-width: 25%;
+    width: 25%;
+}
+
+.remove-from-bag-button-container {
+    margin-bottom: 1rem;
+}
+
+.remove-from-bag-button {
+    float: right;
+}
+
+.shopping-bag-product-image img, .shopping-bag-product-image svg {
+    display: block;
+    height: 8rem !important;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+    position: relative;
+    width: auto;
 }
 
 .text-legend {

@@ -36,8 +36,8 @@
                     <h2>
                         <% if(typeof(bag) !== 'undefined') { %>
                             <b>Total is <% if(typeof(currency_symbol) == 'string') { %><%= currency_symbol %>
-                            <% } else { %>$<% } %><%= bag.total() %><% if(typeof(currency) == 'string') { %><%= currency + '.' %>
-                            <% } else { %>USD.<% } %></b>
+                            <% } else { %>$<% } %><%= bag.total() %><% if(typeof(currency) == 'string') { %><%= ' ' + currency + '.' %>
+                            <% } else { %> USD.<% } %></b>
                         <% } else { %>
                             Your bag is empty.
                         <% } %>
@@ -46,6 +46,58 @@
                         <button class="btn btn-primary shopping-bag-checkout">Checkout</button>
                     </a>
                 </div>
+                <% if(typeof(bag) !== 'undefined') { %>
+                    <div class="shopping-bag-itemslist">
+                        <% for (const product of Object.keys(bag.items)) { %>
+                            <div>
+                                <span>
+                                    <div class="item-card shopping-bag-item-card" data-product-id="<%= product %>">
+                                        <div class="shopping-bag-item-card-divider">
+                                            <a class="shopping-bag-item-product-link" href="/market/product/?p=<%= product %>">
+                                                <span class="shopping-bag-item-row extra-info">
+                                                    <h3 class="shopping-bag-item-name spc-top-1"><%= bag.items[product].displayName %></h3>
+                                                    <div class="item-card-left shopping-bag-item-image">
+                                                        <% if(bag.items[product] && typeof(bag.items[product].image) !== 'undefined' && bag.items[product].image) { %>
+                                                            <figure class=" shopping-bag-product-image">
+                                                                <img alt="<%= bag.items[product].image.originalname %>" class=""
+                                                                    src="<%= bag.items[product].image.src %>" />
+                                                            </figure>
+                                                        <% } else { %>
+                                                        <figure class=" shopping-bag-product-image">
+                                                            <%- include('assets/symbols/tags.svg') %>
+                                                        </figure>
+                                                        <% } %>
+                                                    </div>
+                                                    <h4 class="spc-top-1"><%= bag.items[product].qty + ' x ' %></h4>
+                                                    <h4 class="spc-top-1"><%= bag.items[product].price %></h4>
+                                                </span>
+                                            </a>
+                                            <div class="remove-from-bag-button-container">
+                                                <form class="remove-from-bag-form" method="POST" action="/user/bag">
+                                                    <fieldset>
+                                                        <input type="hidden" name="action" value="delete_from_bag">
+                                                        <input type="hidden" name="pid" value="<% if(typeof(product) !== 'undefined') { %><%= product %><% } %>">
+                                                        <input type="hidden" name="uid" value="<% if(typeof(user) !== 'undefined') { %><%= user.id %><% } %>">
+                                                        <input type="hidden" name="quantity" value="<%= bag.items[product].price %>">
+                                                        <button class="btn btn-primary remove-from-bag-button" type="submit" data-toggle="tooltip"
+                                                            data-placement="bottom" title="Remove item from shopping bag" name="removefrombag" value="Remove">
+                                                            Remove
+                                                        </button>
+                                                    </fieldset>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div class="shopping-bag-footer">
+                        <a href="/checkout">
+                            <button class="btn btn-primary">Proceed to checkout</button>
+                        </a>
+                    </div>
+                <% } %>
             </div>
         </div>
     </section>

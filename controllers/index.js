@@ -14,16 +14,18 @@ let router = express.Router()
 //Create shopping bag
 router.use(async (req,res,next) => {
     try {
-        if (req.session && !req.session.bag) {
+        if (req.session) {
             if (req.user) {
                 let u = await user.read(req.user.id, { findBy: 'id' })
-                if (await user.isValid(u) && !u.bag) {
+                if (await user.isValid(u) && u.bag) {
                     req.session.bag = new ShoppingBag(u.bag)
                 } else {
                     req.session.bag = new ShoppingBag()
                 }
             } else {
-                req.session.bag = new ShoppingBag()
+                if(!req.session.bag) {
+                    req.session.bag = new ShoppingBag()
+                }
             }
         }
     } catch (e) {

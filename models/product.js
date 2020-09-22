@@ -213,7 +213,7 @@ product.count = (properties, options) => {
                             break
                         default:
                             const cursor = await productCollection.count(properties).limit(options.limit)
-                            resolve(cursor.toArray())
+                            resolve(cursor)
                             break
                     }
                 } else if (typeof (options.findBy) !== 'undefined') {
@@ -224,7 +224,7 @@ product.count = (properties, options) => {
                             break
                         default:
                             const cursor = await productCollection.count(properties)
-                            resolve(cursor.toArray())
+                            resolve(cursor)
                             break
                     }
                 } else if (typeof (options.pagination_skip) !== 'undefined') {
@@ -255,7 +255,7 @@ product.count = (properties, options) => {
                             break
                         default:
                             const cursor = await productCollection.count(properties)
-                            resolve(cursor.toArray())
+                            resolve(cursor)
                             break
                     }
                 } else {
@@ -266,7 +266,7 @@ product.count = (properties, options) => {
                 }
             } else {
                 const cursor = await productCollection.count(properties)
-                resolve(cursor.toArray())
+                resolve(cursor)
             }
         } catch (e) {
             reject(e)

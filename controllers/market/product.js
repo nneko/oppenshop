@@ -30,16 +30,35 @@ marketProduct.post('/', async (req, res) => {
         if (validator.isNotNull(form)) {
             let p = await product.read(form.pid,{findBy: 'id'})
             let bag = new ShoppingBag(req.session.bag)
-            bag.add(p,Number(form.quantity))
-            if(req.user) {
-                let u = await user.read(req.user.id,{findBy: 'id'})
-                await bag.save(u)
-            }
-            if(debug) console.log(bag)
-            req.session.bag = bag
             let viewData = await handler.populateViewData(form.pid)
             viewData.user = req.user
-            viewData.messages = {success: 'Product added to shopping bag.'}
+            switch(form.action) {
+                case 'add_to_bag':
+                    bag.add(p, Number(form.quantity))
+                    if (req.user) {
+                        let u = await user.read(req.user.id, { findBy: 'id' })
+                        await bag.save(u)
+                    }
+                    if (debug) console.log(bag)
+                    req.session.bag = bag
+                    viewData.messages = { success: 'Product added to shopping bag.' }
+                    break
+                case 'remove':
+                    bag.remove(p, Number(form.quantity))
+                    if (req.user) {
+                        let u = await user.read(req.user.id, { findBy: 'id' })
+                        await bag.save(u)
+                    }
+                    if (debug) console.log(bag)
+                    req.session.bag = bag
+                    viewData.messages = { success: 'Product removed from shopping bag.' }
+                    break
+                default:
+                    viewData.messages = { info: 'Unsupported operation.' }
+                    res.status(400)
+                    break
+
+            }
             res.render('product', viewData)
         } else {
             res.status(400)
@@ -50,7 +69,6 @@ marketProduct.post('/', async (req, res) => {
         res.status(500)
         res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user })
     }
-
 })
 
 module.exports = marketProduct

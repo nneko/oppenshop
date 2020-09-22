@@ -7,17 +7,29 @@ module.exports = function ShoppingBag(shoppingBag){
     this.totalQuantity = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalQuantity ? shoppingBag.totalQuantity : 0
     this.totalPrice = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalPrice ? shoppingBag.totalPrice : 0
 
+    this.sum = function() {
+        let qty = 0
+        let price = 0
+        for (const i of Object.keys(this.items)) {
+            if(typeof(this.items[i].price) == 'number' && typeof(this.items[i].qty) == 'number') {
+                qty += Number(this.items[i].qty)
+                price += (Number(this.items[i].qty) * Number(this.items[i].price))
+            }
+        }
+        this.totalPrice = price
+        this.totalQuantity = qty
+    }
+
     this.add = function(product,quantity) {
         if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof (quantity) == 'number' && quantity > 0) {
             let item = this.items[product._id]
             if (!item) {
-                item = this.items[product._id] = { item: product, qty: 0, price: Number(product.price) }
+                item = this.items[product._id] = { displayName: product.displayName, image: Array.isArray(product.images) ? product.images[0] : undefined, qty: 0, price: Number(product.price) }
             }
             item.qty += Number(quantity)
             item.price = Number(product.price) * item.qty
             this.items[product._id] = item
-            this.totalQuantity += Number(quantity)
-            this.totalPrice += Number(item.price)
+            this.sum()
         } else {
             if (!(product && product.hasOwnProperty('_id') && product.hasOwnProperty('price'))) {
                 let e = new Error('Invalid item')
@@ -36,7 +48,7 @@ module.exports = function ShoppingBag(shoppingBag){
     }
 
     this.remove = function(product, quantity) {
-        if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof(quantity) == 'number' && quantity > 0) {
+        if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof(quantity) == 'number' && quantity >= 0) {
             let item = this.items[product._id]
             if (!item) {
                 let e = new Error("Item doesn't exist")
@@ -44,14 +56,18 @@ module.exports = function ShoppingBag(shoppingBag){
                 e.type = 'InvalidItem'
                 throw e
             }
-            item.qty = item.qty > quantity ? item.qty - Number(quantity) : 0
+            if (item.qty <= Number(quantity)) {
+                item.qty = 0
+            } else {
+                item.qty -= Number(quantity)
+            }
             item.price = Number(product.price) * item.qty
-            this.totalQuantity -= Number(quantity)
-            if(this.totalQuantity < 0) this.totalQuantity = 0
-            this.totalPrice -= Number(item.price)
             if (item.qty <= 0) {
                 delete this.items[product._id]
+            } else {
+                this.items[product._id] = item
             }
+            this.sum()
         } else {
             if (!(product && product.hasOwnProperty('_id') && product.hasOwnProperty('price'))) {
                 let e = new Error('Invalid item')
@@ -77,7 +93,7 @@ module.exports = function ShoppingBag(shoppingBag){
             e.type = 'InvalidItem'
             throw e
         }
-        this.remove(item.item, item.qty)
+        this.remove(product, item.qty)
     }
 
     this.total = function() {
@@ -105,4 +121,6 @@ module.exports = function ShoppingBag(shoppingBag){
             }
         }
     }
+
+    this.sum()
 }

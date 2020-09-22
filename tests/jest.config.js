@@ -188,4 +188,15 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+
+  mongodbMemoryServerOptions: {
+    binary: {
+      version: '4.0.3',
+      skipMD5: true
+    },
+    instance: {
+      dbName: 'jest'
+    },
+    autoStart: false
+  }
 };

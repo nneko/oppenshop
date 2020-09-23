@@ -27,7 +27,6 @@ module.exports = function ShoppingBag(shoppingBag){
                 item = this.items[product._id] = { displayName: product.displayName, image: Array.isArray(product.images) ? product.images[0] : undefined, qty: 0, price: Number(product.price) }
             }
             item.qty += Number(quantity)
-            item.price = Number(product.price) * item.qty
             this.items[product._id] = item
             this.sum()
         } else {
@@ -61,7 +60,6 @@ module.exports = function ShoppingBag(shoppingBag){
             } else {
                 item.qty -= Number(quantity)
             }
-            item.price = Number(product.price) * item.qty
             if (item.qty <= 0) {
                 delete this.items[product._id]
             } else {

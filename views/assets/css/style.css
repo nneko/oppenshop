@@ -12,6 +12,7 @@
   --main-alert-err-em-color: red;
   --main-content-bg-color: white;
   --main-content-btn-hover-color: #e9ecef;
+  --main-symbol-stroke-color: #6A737D;
   --signin-with-btn-border-color: #c4cdd5;
   --signin-with-btn-bg-color: #f9fafb;
   --signin-with-btn-text-color: #263237;
@@ -1061,6 +1062,30 @@ white-space: nowrap;
 
 .shop-hero-legend {
     margin: 0.5rem;
+}
+
+.shopping-bag-counter {
+    background-color: var(--main-symbol-stroke-color);
+    border-radius: 50%;
+    color: var(--main-content-btn-hover-color);
+    font-size: 0.7rem;
+    left: -25%;
+    padding: 0.05rem 0.2rem 0.05rem;
+    position: relative;
+    top: 50%;
+    z-index: 11;
+}
+
+.shopping-bag-counter:hover {
+    background-color: var(--main-nav-highlight-color);
+}
+
+.nav-menu-item-selected .shopping-bag-counter {
+    background-color: var(--main-highlight-color);
+}
+
+.nav-link-item:hover .shopping-bag-counter, .nav-menu-item-selected:hover .shopping-bag-counter {
+    background-color: var(--main-nav-highlight-color);
 }
 
 .shopping-bag-item-card {

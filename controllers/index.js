@@ -25,9 +25,13 @@ router.use(async (req,res,next) => {
             } else {
                 if(!req.session.bag) {
                     req.session.bag = new ShoppingBag()
+                } else {
+                    req.session.bag = new ShoppingBag(req.session.bag)
                 }
             }
             res.locals.bag = req.session.bag
+        } else {
+            res.locals.bag = new ShoppingBag()
         }
     } catch (e) {
         if(debug) {

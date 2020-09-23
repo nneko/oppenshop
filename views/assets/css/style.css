@@ -616,7 +616,7 @@ svg {
 .shopping-bag-footer {
     display: flex;
     justify-content: flex-end;
-    padding-top: 2rem;
+    padding: 2rem 1rem 1rem;
 }
 
 .shopping-bag-checkout {
@@ -1064,13 +1064,14 @@ white-space: nowrap;
 }
 
 .shopping-bag-item-card {
+    padding: 1rem;
     border-bottom: 1px solid var(--main-border-color);
 }
-/*
+
 .shopping-bag-item-card:hover {
-    border-bottom: 1px solid var(--main-highlight-color);
+    background: var(--main-table-row-highlight-color);
 }
-*/
+
 .shopping-bag-item-card-divider {
     width: 100%;
 }
@@ -1095,7 +1096,7 @@ white-space: nowrap;
 
 .shopping-bag-item-row:hover {
     /*background-color: var(--main-table-row-highlight-color);*/
-    color: var(--main-highlight-color);
+    color: var(--main-nav-highlight-color);
     cursor: pointer;
     transition: ease 0.25s;
     text-decoration: none !important;

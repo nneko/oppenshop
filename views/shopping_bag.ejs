@@ -79,7 +79,7 @@
                                                         <input type="hidden" name="pid" value="<% if(typeof(product) !== 'undefined') { %><%= product %><% } %>">
                                                         <input type="hidden" name="uid" value="<% if(typeof(user) !== 'undefined') { %><%= user.id %><% } %>">
                                                         <input type="hidden" name="quantity" value="<%= bag.items[product].price %>">
-                                                        <button class="btn btn-primary remove-from-bag-button" type="submit" data-toggle="tooltip"
+                                                        <button class="btn btn-secondary remove-from-bag-button" type="submit" data-toggle="tooltip"
                                                             data-placement="bottom" title="Remove item from shopping bag" name="removefrombag" value="Remove">
                                                             Remove
                                                         </button>
@@ -94,7 +94,7 @@
                     </div>
                     <div class="shopping-bag-footer">
                         <a href="/checkout">
-                            <button class="btn btn-primary">Proceed to checkout</button>
+                            <button class="btn btn-primary">Checkout</button>
                         </a>
                     </div>
                 <% } %>

@@ -1,4 +1,4 @@
-const cfg = require('../configuration/index.js')
+const cfg = require('../../configuration/index.js')
 const express = require('express')
 const path = require('path')
 const debug = cfg.env == 'development' ? true : false

@@ -9,6 +9,7 @@ signout.get('/', (req, res) => {
     req.logout()
     if(req.session) {
         req.session.bag = new ShoppingBag()
+        res.locals.bag = req.session.bag
     }
     res.render('signin',{messages: {success: 'You have been signed out.'}})
 })

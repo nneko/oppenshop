@@ -13,7 +13,11 @@ const generator = require('../utilities/generator')
 let reset = express.Router()
 
 reset.get('/', (req, res) => {
-    res.render('reset')
+    if(req.user) {
+        res.redirect('/user/account?show=ls')
+    } else {
+        res.render('reset')
+    }
 })
 /*
 reset.post('/', passport.authenticate('local', {

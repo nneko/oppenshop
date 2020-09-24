@@ -962,7 +962,7 @@ let deleteHandler = async (req, res) => {
 account.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
-            let qd = req.query.data
+            let qd = req.query
             let panel = 'ci'
             if(qd) {
                 switch(qd.show){

@@ -1069,11 +1069,17 @@ white-space: nowrap;
     color: var(--main-content-btn-hover-color);
     cursor: pointer;
     font-size: 0.7rem;
+    /*font-weight: 700;*/
+    line-height: 1;
     left: -25%;
     padding: 0.05rem 0.2rem 0.05rem;
     position: relative;
     top: 50%;
     z-index: 11;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out, border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
 }
 
 .shopping-bag-counter:hover {

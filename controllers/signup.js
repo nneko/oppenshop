@@ -28,7 +28,11 @@ signupEmailer.sendEmailVerification = async _data => {
 }
 
 signup.get('/', (req, res) => {
-    res.render('signup')
+    if (validator.hasActiveSession(req)) {
+        res.redirect('/user/account')
+    } else {
+        res.render('signup')
+    }
 })
 
 signup.post('/', async (req,res) => {

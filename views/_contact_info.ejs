@@ -2,7 +2,7 @@
     id="contact-pane" role="tabpanel" aria-labelledby="contact-tab">
     <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="contactTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'ci') { %>active<% } %>" id="primary-tab"
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane != 'ad' && pane != 'em' && pane != 'pn') { %>active<% } %>" id="primary-tab"
                 data-toggle="tab" href="#primaryTab" role="tab" aria-controls="primaryTab"
                 aria-selected="true"><%- include('assets/symbols/contact.svg') %>Basic Info</a>
         </li>

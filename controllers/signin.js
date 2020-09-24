@@ -7,7 +7,7 @@ let signin = express.Router()
 
 signin.get('/', (req, res) => {
     if(validator.hasActiveSession(req)){
-        res.redirect('/')
+        res.redirect('/user/account')
     } else {
         res.render('signin')
     }

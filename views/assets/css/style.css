@@ -1401,7 +1401,6 @@ white-space: nowrap;
         animation-fill-mode: both;
         animation-iteration-count: 1;
         text-align: center;
-        width: 100%;
     }
 
     .nav-link-item:hover {

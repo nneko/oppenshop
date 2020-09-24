@@ -115,15 +115,15 @@
                                                         <div class="form-group form-inline">
                                                             <input 
                                                             id="product-quantity-input" class="form-control small-input-control product-quantity-input spc-top-1" type="number" name="quantity" min="1" step="1" size="3" value="1">
-                                                            <button class="btn btn-secondary add-to-bag-button spc-top-1" type="submit" data-toggle="tooltip"
+                                                            <button class="btn btn-secondary add-to-bag-button small-input-control spc-top-1" type="submit" data-toggle="tooltip"
                                                                 data-placement="bottom" title="Add item quantity to shopping bag" name="addtobag" value="Add">
                                                                 Add
                                                             </button>
-                                                            <button class="btn btn-secondary add-to-bag-button spc-top-1 remove-item" type="button" data-toggle="tooltip" data-placement="bottom"
+                                                            <button class="btn btn-secondary add-to-bag-button small-input-control spc-top-1 remove-item" type="button" data-toggle="tooltip" data-placement="bottom"
                                                                 title="Remove item quantity from bag" name="Remove" value="Remove" data-product-id="<%= product._id %>"
                                                                 data-user-id="<% if(typeof(user) !== 'undefined') { %><%= user.id %><% } else { %><%= 'GUEST' %><% } %>">Remove
                                                             </button>
-                                                            <button class="btn btn-primary spc-top-1 buy-now" type="button" data-toggle="tooltip" data-placement="bottom" title="Buy/Checkout only this item"
+                                                            <button class="btn btn-primary small-input-control spc-top-1 buy-now" type="button" data-toggle="tooltip" data-placement="bottom" title="Buy/Checkout only this item"
                                                         name="buy" value="Buy" data-product-id="<%= product._id %>" data-user-id="<% if(typeof(user) !== 'undefined') { %><%= user.id %><% } else { %><%= 'GUEST' %><% } %>">
                                                                 Buy Now
                                                             </button>

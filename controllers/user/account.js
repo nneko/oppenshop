@@ -939,7 +939,11 @@ let deleteHandler = async (req, res) => {
             //req.logout()
             if(u_deletehandler.deletedCount > 0){
                 req.logout()
-                res.render('index', { name: undefined, user: undefined,  messages: { success: 'Account deleted.' } })
+                if (req.session) {
+                    req.session.bag = new ShoppingBag()
+                    res.locals.bag = req.session.bag
+                }
+                res.render('market', { name: undefined, user: undefined,  messages: { success: 'Account deleted.' } })
             } else {
                 let e = new Error('Deletion failed')
                 e.name = 'UserError'

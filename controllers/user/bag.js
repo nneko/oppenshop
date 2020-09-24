@@ -13,7 +13,7 @@ let bag = express.Router()
 
 bag.get('/', async (req, res) => {
     try {
-        let viewData = await handler.populateViewData(validator.isNotNull(req.user) ? req.user.id : null, req.session ? req.session.bag : null)
+        let viewData = await handler.populateViewData(validator.isNotNull(req.user) ? req.user.id : null, validator.isNotNull(req.session) ? req.session.bag : null)
         viewData.user = req.user
         res.render('shopping_bag', viewData)
 

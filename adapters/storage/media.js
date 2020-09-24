@@ -11,6 +11,8 @@ media.getBinaryDetails = (file) => {
 
     let imageStringBlob = file && file.buffer && typeof(file.buffer.buffer) !== 'undefined' ? file.buffer.buffer : ''
 
+    if(debug) console.log(imageStringBlob)
+
     if (typeof(file.storage) !== 'undefined' && file.storage == 'db') {
       let base64string = btoa([].reduce.call(new Uint8Array(imageStringBlob),function(p,c){return p+String.fromCharCode(c)},''))
       return 'data:'+file.mimetype+';base64,'+base64string

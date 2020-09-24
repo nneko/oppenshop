@@ -59,6 +59,7 @@ marketProduct.post('/', async (req, res) => {
                     break
 
             }
+            res.locals.bag = bag
             res.render('product', viewData)
         } else {
             res.status(400)

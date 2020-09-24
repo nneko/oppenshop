@@ -622,7 +622,6 @@ svg {
 
 .shopping-bag-checkout {
     margin-top: 1.6rem;
-    width: 25%;
 }
 
 .pane-h2 {
@@ -1066,7 +1065,7 @@ white-space: nowrap;
 
 .shopping-bag-counter {
     background-color: var(--main-symbol-stroke-color);
-    border-radius: 50%;
+    border-radius: 0.5rem;
     color: var(--main-content-btn-hover-color);
     cursor: pointer;
     font-size: 0.7rem;

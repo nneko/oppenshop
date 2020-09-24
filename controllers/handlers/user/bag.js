@@ -4,6 +4,7 @@ const user = require('../../../models/user')
 const product = require('../../../models/product')
 const media = require('../../../adapters/storage/media')
 const ShoppingBag = require('./../../../models/shoppingbag')
+const generator = require('../../../utilities/generator')
 const debug = cfg.env == 'development' ? true : false
 
 let bagHandler = {}
@@ -13,13 +14,14 @@ bagHandler.populateViewData = async (uid, bag, product_page = 1) => {
         let perPage = cfg.items_per_page ? cfg.items_per_page : 12
         pagination = true
         product_range = null
-        console.log('Page: ' + product_page)
+
         if (pagination) {
             product_range = { pagination_skip: product_page, pagination_limit: perPage }
         }
         try {
             let viewData = {}
 
+            viewData.formatter = generator
             viewData.bag = new ShoppingBag(bag)
 
             for (const key of Object.keys(viewData.bag.items)) {

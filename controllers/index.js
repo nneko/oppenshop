@@ -1,7 +1,7 @@
 const cfg = require('../configuration/index.js')
 const express = require('express')
 const path = require('path')
-const api = require('../api')
+const api = require('./api')
 const validator = require('../utilities/validator')
 const userModel = require('../models/user')
 const ShoppingBag = require('../models/shoppingbag')
@@ -46,7 +46,7 @@ router.use(async (req,res,next) => {
 })
 
 //APIs
-router.use('/api', api)
+router.use('/api*', api)
 
 //Static Files
 router.use('/public', express.static(path.join(__dirname, '../views/public')))
@@ -63,8 +63,6 @@ router.use('/checkout', require('./user/bag/checkout'))
 router.use('/user/bag', require('./user/bag'))
 router.use('/user/shop', require('./user/shop'))
 router.use('/user/bag/checkout', require('./user/bag/checkout'))
-//router.use('/product/edit', require('./user/producteditor'))
-//router.use('/product/edit/*', require('./user/producteditor'))
 router.use('/user/account', require('./user/account'))
 router.use('/user/resetpassword', require('./user/resetpassword'))
 router.use('/reset', require('./reset'))

@@ -312,7 +312,7 @@ let shopAddHandler = async (req, res) => {
 
         try {
             //let t = await shop.create(u)
-            let s_addhandler = await shophandler.shopAddHander(form,req.files)
+            let s_addhandler = await shophandler.shopAddHandler(form,req.files)
             // TODO: validation check on 's_addhandler' response to show response if created or not
 
             if (debug) console.log('Shop added for ' + u.owner)

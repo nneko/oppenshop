@@ -1017,7 +1017,7 @@ white-space: nowrap;
 
 .featured-mini-image img {
     clip-path: inset(0);
-    height: 2rem !important;
+    height: auto !important;
     margin: 0;
     max-height: 2rem !important;
     max-width: 100%;
@@ -1152,12 +1152,18 @@ white-space: nowrap;
 
 .shopping-bag-product-image img, .shopping-bag-product-image svg {
     display: block;
-    height: 8rem !important;
+    height: auto;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    max-height: 8rem !important;
+    max-width: 8rem !important;
     overflow: hidden;
     position: relative;
     width: auto;
+}
+
+.shopping-bag-product-image svg {
+    height: 8rem;
 }
 
 .text-legend {

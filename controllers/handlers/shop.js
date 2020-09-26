@@ -314,7 +314,7 @@ shophandler.productAddHandler = async (form, files) => {
     p.description = form.description
     p.status = 'active'
     p.quantity = form.quantity ? Number(form.quantity) : 0
-    p.price = generator.roundNumber( form.unit_dollar && form.unit_cents ? Number(form.unit_dollar + '.' + form.unit_cents): 0, 2)
+    p.price = generator.roundNumber( form.unit_dollar ? Number(form.unit_dollar + '.' + (form.unit_cents ? form.unit_cents : '00')): 0, 2)
     p.currency = form.currency ? form.currency : 'jmd'
     if (form.name !== 'undefined'){
       p.displayName = form.name

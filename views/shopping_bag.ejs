@@ -27,7 +27,7 @@
                     <span class="edit-heading-span">
                     <h2><% if(typeof(user) !== 'undefined' && typeof(user.name) !== 'undefined' && user.name.givenName) { %><%= user.name.givenName + "'s" %><% } else { %>Your<% } %> Shopping Bag</h2>
                     <a href="<% if(typeof(ref) == 'string' && ref.length > 0) { %><%= ref %><% } else { %>/market<% } %>">
-                            <button class="btn btn-primary">Back to Marketplace</button>
+                            <button class="btn btn-primary">Back to Market</button>
                         </a>
                     </span>
                     <hr>

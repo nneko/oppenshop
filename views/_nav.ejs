@@ -12,7 +12,7 @@
                         aria-label="find" aria-describedby="find-basic-addon" size="25" required>
                     <div class="input-group-append">
                         <button class="search-button" type="submit"
-                                data-toggle="tooltip" data-placement="bottom" title="Search Marketplace"><%- include('assets/symbols/search.svg') %></button>
+                                data-toggle="tooltip" data-placement="bottom" title="Find in Market"><%- include('assets/symbols/looking-glass.svg') %></button>
                     </div>
                     <div id="invalid-find" class="invalid-feedback">
                         Invalid search query.
@@ -20,6 +20,15 @@
                 </div>
             </div>
         </form>
+        <div class="search-button-container">
+            <ul class="search-button-navigation">
+                <li class="nav-link-item search-button-item">
+                    <a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'market' && reqData.path.split('/')[2] == 'find') { %>class="menu-item-selected"
+                        <% } %> data-toggle="tooltip" data-placement="bottom" title="Find in Market"
+                        href="/market/find"><%- include('assets/symbols/looking-glass.svg') %></a>
+                </li>
+            </ul>
+        </div>
         <div class="menu-button">
             <div class="menu-line1"></div>
             <div class="menu-line2"></div>

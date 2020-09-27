@@ -35,6 +35,7 @@
 
 body {
     background-color: var(--main-bg-color);
+    line-height: 1.6rem;
 }
 
 nav h4  {
@@ -230,6 +231,18 @@ svg {
     margin: 0 2rem 0 2rem;
     width: 65%;
     z-index: 10;
+}
+
+.search-button-container {
+    display: none;
+    margin: 0;
+    padding: 0;
+    visibility: hidden;
+}
+
+.search-button-container ul {
+    margin: 0;
+    padding: 0;
 }
 
 #find {
@@ -507,7 +520,7 @@ svg {
 }
 
 .menu-button div {
-    background-color: var(--main-text-color);
+    background-color: var(--main-symbol-stroke-color);
     height: 2px;
     margin: 5px;
     width: 20px;
@@ -1471,6 +1484,17 @@ white-space: nowrap;
 }
 
 @media screen and (max-width: 640px) {
+
+    #main-search-form {
+        display: none;
+        visibility: hidden;
+    }
+
+    .search-button-container {
+        display: block;
+        visibility: visible;
+    }
+
     .signup-form, .signin-form, .standard-form {
         margin: auto;
         max-width: 98%;
@@ -1509,6 +1533,24 @@ white-space: nowrap;
     .product-card {
         flex-basis: calc(100% - 4rem);
         max-width: calc(100% - 4rem);
+    }
+
+    .search-button-item {
+        animation-name: none;
+    }
+}
+
+@keyframes anim-fade-in {
+    from, to {
+        animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+    }
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
     }
 }
 

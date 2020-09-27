@@ -53,7 +53,8 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="add-product-images-basic-addon">Image(s)</span>
+                                <span class="input-group-text input-prepend-icon" id="add-product-images-basic-addon" data-toggle="tooltip" data-placement="bottom" data-original-title="Product Images"
+                                                        title="Product Images"><%- include('assets/symbols/picture.svg') %></span>
                             </div>
                             <input id="add-product-images" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullimage.class %><% } %>" type="file" name="fullimage"
                                 aria-label="Image" aria-describedby="add-product-basic-addon" accept=".jpg,.jpeg,.png" multiple onchange="validateImageFiles()" onclick="clearImageValidation()">

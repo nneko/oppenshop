@@ -1,3 +1,15 @@
+# Sample Role Model (JSON):
+```
+{
+     name: "manageOpRole",
+     privileges: [
+       { resource: { cluster: true }, actions: [ "killop", "inprog" ] },
+       { resource: { db: "", collection: "" }, actions: [ "killCursors" ] }
+     ],
+     roles: []
+   }
+```
+
 # Sample User Model (JSON):
 ```
     {
@@ -84,7 +96,16 @@
             "userid": "2706"
             }
         ],
-        "roles": [],
+        "roles" : [
+                {
+                        "role" : "userAdminAnyDatabase",
+                        "db" : "admin"
+                },
+                {
+                        "role" : "readWriteAnyDatabase",
+                        "db" : "admin"
+                }
+        ],
         "verificationToken": "ombhe65mfv31c1ugk2xxchnwmq0weksv",
         "verified": true
     }

@@ -18,7 +18,7 @@
                                 <em><%=  addresses[i].type %></em><br><% } %>
                                 <% if(typeof(addresses[i].name) !== 'undefined' && addresses[i].name.formatted) { %>Contact: <em><%=  addresses[i].name.formatted %></em><br><% } %>
                                 <% if(typeof(addresses[i].phoneNumbers) !== 'undefined' && Array.isArray(addresses[i].phoneNumbers)) { for(let j=0;j<addresses[i].phoneNumbers.length;j++) {%>
-                                    Phone number: <em><%= addresses[i].phoneNumbers[j].value %></em><br> Phone Type: 
+                                    Phone number: <em><%= addresses[i].phoneNumbers[j].value %></em><br> Phone Type:
                                     <em><%= addresses[i].phoneNumbers[j].type %></em><br>
                                 <% }} %>
                             </p>
@@ -98,7 +98,7 @@
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="add-address-phone-basic-addon">Phone</span>
-                                
+
                             </div>
                             <input id="add-address-phone" class="form-control <% if(typeof(new_Phone) !== 'undefined') { %><%= new_Phone.class %><% } %>" type="text" name="phone" value="<% if(typeof(new_Phone) !== 'undefined' && new_Phone.value) { %><%= new_Phone.value %><% } %>"
                                 aria-label="Address" aria-describedby="phone-basic-addon" size="25" required>
@@ -134,8 +134,7 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="add-address-streetaddress-basic-addon">Street &
-                                    No.</span>
+                                <span class="input-group-text" id="add-address-streetaddress-basic-addon">No. & Street</span>
                             </div>
                             <input id="add-address-addressStreet" class="form-control <% if(typeof(new_addressStreet) !== 'undefined') { %><%= new_addressStreet.class %><% } %>" type="text" name="addressStreet"
                                 value="<% if(typeof(new_addressStreet) !== 'undefined' && new_addressStreet.value) { %><%= new_addressStreet.value %><% } %>" aria-label="Address" aria-describedby="add-address-streetaddress-basic-addon" size="25"
@@ -143,6 +142,21 @@
                             <div id="add-address-invalid-street" class="invalid-feedback">
                                 <% if(typeof(new_addressStreet) !== 'undefined' && new_addressStreet.class == 'is-invalid') { %><%= new_addressStreet.message %><% } else { %>
                                 You must provide an address.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="add-address-secondstreetaddress-basic-addon">Unit/Apt/Suite #</span>
+                            </div>
+                            <input id="add-address-secondAddressStreet" class="form-control <% if(typeof(new_secondAddressStreet) !== 'undefined') { %><%= new_secondAddressStreet.class %><% } %>" type="text" name="secondAddressStreet"
+                                value="<% if(typeof(new_secondAddressStreet) !== 'undefined' && new_secondAddressStreet.value) { %><%= new_secondAddressStreet.value %><% } %>" aria-label="Address" aria-describedby="add-address-secondstreetaddress-basic-addon" size="25"
+                                required>
+                            <div id="add-address-invalid-street" class="invalid-feedback">
+                                <% if(typeof(new_secondAddressStreet) !== 'undefined' && new_secondAddressStreet.class == 'is-invalid') { %><%= new_secondAddressStreet.message %><% } else { %>
+                                You must provide an unit/apt/suite.
                                 <% } %>
                             </div>
                         </div>

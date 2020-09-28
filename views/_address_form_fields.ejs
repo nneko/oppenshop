@@ -19,6 +19,16 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Unit/Apt/Suite #</span>
+                    </div>
+                    <input class="form-control <% if(typeof(locals.secondaddressStreet) !== 'undefined') { %><%= secondaddressStreet.class %>><% } %>" type="text" name="secondaddressStreet" value="<% if(typeof(secondaddressStreet) !== 'undefined' && typeof(secondaddressStreet.value) !== 'undefined') { %><%= secondaddressStreet.value %><% } %>"
+                        aria-label="Street Address" aria-describedby="addressStreet-basic-addon" size="25" required>
+                    <div class="invalid-feedback">
+                    <% if(typeof(secondaddressStreet) !== 'undefined' && secondaddressStreet.class == 'is-invalid') { %><%= secondaddressStreet.message %><% } else { %>You must provide an unit/apt/suite.<% } %>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="addressLocality-basic-addon">Community / Town /

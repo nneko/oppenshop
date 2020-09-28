@@ -138,12 +138,17 @@ generator.formattedAddress = (addr) => {
     console.log(addr)
     if(addr) {
         let streetAddress = addr.streetAddress
+        let secondStreetAddress = addr.secondStreetAddress
         let locality = addr.locality
         let region = addr.region
         let postalCode = addr.postalCode
         let country = addr.country
         if(streetAddress && locality && region && postalCode && country) {
-            addressString += addressString.concat(streetAddress + '\n' + locality + ', ' + region + ' ' + postalCode + ' ' + country)
+            if (validator.isNotNull(secondStreetAddress)) {
+              addressString += addressString.concat(streetAddress + '\n' + secondStreetAddress + '\n' + locality + ', ' + region + ' ' + postalCode + ' ' + country)
+            } else {
+              addressString += addressString.concat(streetAddress + '\n' + locality + ', ' + region + ' ' + postalCode + ' ' + country)
+            }
         }
     }
     return addressString

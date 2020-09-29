@@ -264,12 +264,14 @@ let ciFormHandler = async (req, res) => {
         u.addresses.push(primaryAddr)
         */
         formFields.addressStreet = { class: 'valid', value: form.addressStreet}
+        formFields.secondAddressStreet = { class: 'valid', value: form.secondAddressStreet}
         formFields.addressLocality = { class: 'valid', value: form.addressLocality}
         formFields.addressRegion = { class: 'valid', value: form.addressRegion}
         formFields.addressPostcode = { class: 'valid', value: form.addressPostcode}
         formFields.addressCountry = { class: 'valid', value: form.addressCountry}
     } else if(form.addressStreet || form.addressLocality || form.addressRegion || form.addressPostcode || form.addressCountry) {
         formFields.addressStreet = { class: 'is-invalid', value: form.addressStreet }
+        formFields.secondAddressStreet = { class: 'is-valid', value: form.secondAddressStreet}
         formFields.addressLocality = { class: 'is-invalid', value: form.addressLocality }
         formFields.addressRegion = { class: 'is-invalid', value: form.addressRegion }
         formFields.addressPostcode = { class: 'is-invalid', value: form.addressPostcode }
@@ -295,6 +297,7 @@ let ciFormHandler = async (req, res) => {
         }
         let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
         viewData.addressStreet = formFields.addressStreet
+        viewData.secondAddressStreet = formFields.secondAddressStreet
         viewData.addressLocality = formFields.addressLocality
         viewData.addressRegion = formFields.addressRegion
         viewData.addressPostcode = formFields.addressPostcode
@@ -407,6 +410,7 @@ let naFormHandler = async (req, res) => {
             //u.addresses.push(addr)
 
             formFields.new_addressStreet = { class: 'valid', value: form.addressStreet }
+            formFields.new_secondAddressStreet = { class: 'valid', value: form.secondAddressStreet }
             formFields.new_addressLocality = { class: 'valid', value: form.addressLocality }
             formFields.new_addressRegion = { class: 'valid', value: form.addressRegion }
             formFields.new_addressPostcode = { class: 'valid', value: form.addressPostcode }
@@ -414,6 +418,7 @@ let naFormHandler = async (req, res) => {
             formFields.new_addressType = { class: 'unchecked', value: form.addressType }
         } else if (form.addressStreet || form.addressLocality || form.addressRegion || form.addressPostcode || form.addressCountry) {
             formFields.new_addressStreet = { class: 'is-invalid', value: form.addressStreet }
+            formFields.new_secondAddressStreet = { class: 'is-invalid', value: form.secondAddressStreet }
             formFields.new_addressLocality = { class: 'is-invalid', value: form.addressLocality }
             formFields.new_addressRegion = { class: 'is-invalid', value: form.addressRegion }
             formFields.new_addressPostcode = { class: 'is-invalid', value: form.addressPostcode }
@@ -445,6 +450,7 @@ let naFormHandler = async (req, res) => {
             viewData.pane = 'ad'
             viewData.messages = { error: 'One or more fields has invalid entries.' }
             viewData.new_addressStreet = formFields.new_addressStreet
+            viewData.new_secondAddressStreet = formFields.new_secondAddressStreet
             viewData.new_addressLocality = formFields.new_addressLocality
             viewData.new_addressRegion = formFields.new_addressRegion
             viewData.new_addressPostcode = formFields.new_addressPostcode

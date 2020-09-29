@@ -25,6 +25,7 @@ accounthandler.populateViewData = async (uid) => {
             let primaryAddr = generator.getPrimaryField(viewData.addresses)
             if (primaryAddr) {
                 viewData.addressStreet = { value: primaryAddr.streetAddress }
+                viewData.secondAddressStreet = { value: primaryAddr.secondStreetAddress }
                 viewData.addressLocality = { value: primaryAddr.locality }
                 viewData.addressRegion = { value: primaryAddr.region }
                 viewData.addressPostcode = { value: primaryAddr.postalCode }
@@ -72,6 +73,7 @@ accounthandler.populateUserViewData = async (uid) => {
       let primaryAddr = getPrimaryField(viewData.addresses)
       if (primaryAddr) {
         viewData.addressStreet = { value: primaryAddr.streetAddress }
+        viewData.secondAddressStreet = { value: primaryAddr.secondStreetAddress }
         viewData.addressLocality = { value: primaryAddr.locality }
         viewData.addressRegion = { value: primaryAddr.region }
         viewData.addressPostcode = { value: primaryAddr.postalCode }
@@ -159,12 +161,14 @@ accounthandler.ciFormHandler = async (form) => {
         let primaryAddr = {
             type: form.addressType || "home",
             streetAddress: form.addressStreet,
+            secondStreetAddress: form.secondAddressStreet,
             locality: form.addressLocality,
             region: form.addressRegion,
             postalCode: form.addressPostcode,
             country: form.addressCountry,
             formatted: generator.formattedAddress({
                 streetAddress: form.addressStreet,
+                secondStreetAddress: form.secondAddressStreet,
                 locality: form.addressLocality,
                 region: form.addressRegion,
                 postalCode: form.addressPostcode,
@@ -201,12 +205,14 @@ accounthandler.naFormHandler = async (form) => {
         let addr = {
             type: form.addressType || "home",
             streetAddress: form.addressStreet,
+            secondStreetAddress: form.secondAddressStreet,
             locality: form.addressLocality,
             region: form.addressRegion,
             postalCode: form.addressPostcode,
             country: form.addressCountry,
             formatted: generator.formattedAddress({
                 streetAddress: form.addressStreet,
+                secondStreetAddress: form.secondAddressStreet,
                 locality: form.addressLocality,
                 region: form.addressRegion,
                 postalCode: form.addressPostcode,
@@ -256,6 +262,7 @@ accounthandler.addressUpdateHandler = async (form) => {
         case 'delete':
           u.addresses = removeAddressFields(usr.addresses, {
               streetAddress: form.streetAddress,
+              secondStreetAddress: form.secondStreetAddress,
               locality: form.locality,
               region: form.region,
               postalCode: form.postalCode,

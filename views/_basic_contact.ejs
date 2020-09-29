@@ -85,7 +85,7 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="streetaddress-basic-addon">Street & No.</span>
+                                <span class="input-group-text" id="streetaddress-basic-addon">No. & Street</span>
                             </div>
                             <input id="addressStreet"
                                 class="form-control <% if(typeof(addressStreet) !== 'undefined') { %><%= addressStreet.class %><% } %>"
@@ -96,6 +96,24 @@
                             <div id="invalid-street" class="invalid-feedback">
                                 <% if(typeof(addressStreet) !== 'undefined' && addressStreet.class == 'is-invalid') { %><%= addressStreet.message %><% } else { %>
                                 You must provide an address.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="secondstreetaddress-basic-addon">Unit/Apt/Suite #</span>
+                            </div>
+                            <input id="secondAddressStreet"
+                                class="form-control <% if(typeof(secondAddressStreet) !== 'undefined') { %><%= secondAddressStreet.class %><% } %>"
+                                type="text" name="secondAddressStreet"
+                                value="<% if(typeof(secondAddressStreet) !== 'undefined' && secondAddressStreet.value) { %><%= secondAddressStreet.value %><% } %>"
+                                aria-label="Address" aria-describedby="secondstreetaddress-basic-addon" size="25"
+                                required>
+                            <div id="invalid-street" class="invalid-feedback">
+                                <% if(typeof(secondAddressStreet) !== 'undefined' && secondAddressStreet.class == 'is-invalid') { %><%= secondAddressStreet.message %><% } else { %>
+                                You must provide an unit/apt/suite.
                                 <% } %>
                             </div>
                         </div>

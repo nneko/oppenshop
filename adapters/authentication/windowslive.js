@@ -74,6 +74,8 @@ windowslive.authenticate = async (accessToken, refreshToken, profile, done) => {
                     }
                 }
             }
+
+            if (validator.isNotNull(user.roles)) u.roles = user.roles
             return done(null,u)
         } else {
             let new_profile = profile
@@ -124,6 +126,8 @@ windowslive.authenticate = async (accessToken, refreshToken, profile, done) => {
                     }
                 }
             }
+
+            if (validator.isNotNull(user.roles)) u.roles = user.roles
             return done(null, u)
         }
     } catch(e) {
@@ -162,6 +166,8 @@ windowslive.deserialize = async (uid,done) => {
                 }
             }
         }
+
+        if (validator.isNotNull(user.roles)) u.roles = user.roles
     return done(null, u)
     } catch(e) {
         return done(e)

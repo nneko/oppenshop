@@ -71,6 +71,8 @@ google.authenticate = async (accessToken, refreshToken, profile, done) => {
                     }
                 }
             }
+
+            if (validator.isNotNull(user.roles)) u.roles = user.roles
             return done(null,u)
         } else {
             let new_profile = profile
@@ -120,6 +122,8 @@ google.authenticate = async (accessToken, refreshToken, profile, done) => {
                     }
                 }
             }
+
+            if (validator.isNotNull(user.roles)) u.roles = user.roles
             return done(null, u)
         }
     } catch(e) {
@@ -158,6 +162,8 @@ google.deserialize = async (uid,done) => {
                 }
             }
         }
+
+        if (validator.isNotNull(user.roles)) u.roles = user.roles
     return done(null, u)
     } catch(e) {
         return done(e)

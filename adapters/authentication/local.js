@@ -58,6 +58,7 @@ local.authenticate = async (uid, pwd, done) => {
                         }
                     }
                 }
+                if(validator.isNotNull(user.roles)) u.roles = user.roles
                 return done(null,u)
             } else {
                 return done(null,false,{message: 'Incorrect password.'})                
@@ -101,6 +102,8 @@ local.deserialize = async (uid,done) => {
                 }
             }
         }
+
+        if (validator.isNotNull(user.roles)) u.roles = user.roles
     return done(null, u)
     } catch(e) {
         return done(e)

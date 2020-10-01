@@ -42,6 +42,17 @@
         <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'shop') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Sell" href="/user/shop"><%- include('assets/symbols/tags.svg') %></a></li>
         <% if(typeof(user) !== 'undefined') {%> 
         <li class="menu-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'account') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Account" href="/user/account"><%- include('assets/symbols/person-outline.svg') %></a></li>
+
+            <% if(Array.isArray(user.roles)) { %>
+                <% for (const r of user.roles) { %>
+                    <% if(typeof(r.role) !== 'undefined' && r.role == 'superuser') { %>
+                        <li class="menu-item"><a
+                                <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'admin') { %>class="menu-item-selected"
+                                <% } %> data-toggle="tooltip" data-placement="bottom" title="Administration"
+                                href="/admin"><%- include('assets/symbols/admin-wrench.svg') %></a></li>
+                    <% break; } %>
+                <% } %>
+            <% } %>
             <li class="menu-item"><a data-toggle="tooltip" data-placement="bottom" title="Sign Out" href="/signout"><%- include('assets/symbols/exit.svg') %></a></li>
         <% } else { %>
             <li class="nav-link-item"><a data-toggle="tooltip" data-placement="bottom" title="Sign In" <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'signin' || reqData.path.split('/')[1] == 'signup' || reqData.path.split('/')[1] == 'reset' || reqData.path.split('/')[1] == 'verify') { %>class="menu-item-selected" <% } %> href="/signin"><%- include('assets/symbols/login.svg') %></a></li>

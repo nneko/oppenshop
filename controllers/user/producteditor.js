@@ -262,11 +262,11 @@ producteditor.post('/', function (req, res) {
                     if (formValidated) {
                         if(debug) //console.log(productUpdate)
                         //await shop.update({name: s.name},shopUpdate)
-                        let updated = await product.update({name: p.name},productUpdate)
-                        if(updated) {
+                        await product.update({name: p.name},productUpdate)
+
+                        try {
                             let updatedProduct = await product.read(p._id,{findBy: 'id'})
                             if(await product.isValid(updatedProduct)) {
-                                try {
                                     let idx_res = await idx.updateMatches(productIdx, {
                                         ref: p._id
                                     }, {
@@ -283,16 +283,15 @@ producteditor.post('/', function (req, res) {
                                     if (debug) {
                                         console.log('Indexer response ' + idx_res)
                                     }
-                                } catch (err) {
-                                    console.log('Error on index update.')
-                                    console.error(err)
-                                    err.stack ? console.error(err.stack) : console.error('No stack trace.')
-                                }
                             } else {
                                 if(debug) {
                                     console.error('Skipping index update for invalid product entry ' + p._id)
                                 }
                             }
+                        } catch (err) {
+                            console.log('Error on index update.')
+                            console.error(err)
+                            err.stack ? console.error(err.stack) : console.error('No stack trace.')
                         }
                         let viewData = {}
                         viewData = await populateViewData(p._id)

@@ -20,6 +20,7 @@ const fileUploader = multer({storage: storage,
 const btoa = require('btoa')
 const catalog = require('../../models/catalog')
 const shophandler = require('../handlers/shop')
+const { update } = require('../../models/user')
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 
@@ -371,30 +372,38 @@ let productAddHandler = async (req, res) => {
             }
 
             // Returns a promise so reject should trigger the catch block
-            await shophandler.productAddHandler(form,req.files)
-            let newProd = await product.read({name: String(form.fullname).toLowerCase()}, {limit: 1})
-            
-            if(await product.isValid(newProd)) {
-                if(debug) {
-                    console.log('Attempting to index new product')
-                }
-                idx.index(productIdx, {
-                    ref: newProd._id,
-                    name: newProd.name,
-                    description: newProd.description,
-                    specifications: newProd.specifications,
-                    quantity: newProd.quantity,
-                    price: Number(newProd.price),
-                    currency: newProd.currency
-                })
-            } else {
-                console.error(newProd)
-                let e = new Error('Invalid product object')
-                e.name = 'ProductError'
-                e.type = 'Invalid'
-                throw e
-            }
+            let result = await shophandler.productAddHandler(form,req.files)
+            try {
+                let newProd = await product.read({ name: String(form.fullname).toLowerCase() }, { limit: 1 })
 
+                if (result && await product.isValid(newProd)) {
+                    if (debug) {
+                        console.log('Attempting to index new product ' + newProd._id + '.')
+                    }
+                    let idx_res = await idx.index(productIdx, {
+                        ref: newProd._id,
+                        name: newProd.name,
+                        description: newProd.description,
+                        specifications: newProd.specifications,
+                        quantity: newProd.quantity,
+                        price: Number(newProd.price),
+                        currency: newProd.currency
+                    })
+                    if (debug) {
+                        console.log('Indexer response ' + idx_res)
+                    }
+                } else {
+                    console.error(newProd)
+                    let e = new Error('Invalid product object')
+                    e.name = 'ProductError'
+                    e.type = 'Invalid'
+                    throw e
+                }
+            } catch (err) {
+                console.log('Error during index update.')
+                console.error(err)
+                err.stack ? console.error(err.stack) : console.error('No stack trace.')
+            }
             if (debug) {
                 console.log('Added product: ')
                 console.log(p)
@@ -549,12 +558,26 @@ let productUpdateHandler = async (req, res) => {
                     try {
                         if(p.status == 'inactive') {
                             let t = await product.delete({_id: p._id}, p)
-                            console.log(t)
                             let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user
                             viewData.pane = 'in'
                             viewData.messages = { success: 'Product deleted.' }
                             res.render('sell', viewData)
+                            try {
+                                if (debug) {
+                                    console.log('Removing product ref ' + p._id + 'from to index')
+                                }
+                                let idx_res = await idx.deleteMatches(productIdx, {
+                                    ref: p._id
+                                })
+                                if (debug) {
+                                    console.log('Indexer response ' + idx_res)
+                                }
+                            } catch (err) {
+                                console.log('Error on index update.')
+                                console.error(err)
+                                err.stack ? console.error(err.stack) : console.error('No stack trace.')
+                            }
                         } else {
                             let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user
@@ -576,8 +599,23 @@ let productUpdateHandler = async (req, res) => {
 
                     try {
                         let t = await product.update({ _id: p._id }, { status: 'active' })
-                        console.log(t)
-                        if (debug) console.log('Product status made \'active\' for ' + form.pid)
+                        try {
+                            if (debug) console.log('Product status made \'active\' for ' + form.pid)
+                            let idx_res = await idx.updateMatches(productIdx, {
+                                ref: p._id
+                            }, {
+                                'replacement-values': {
+                                    status: updatedProduct.status
+                                }
+                            })
+                            if (debug) {
+                                console.log('Indexer response ' + idx_res)
+                            }
+                        } catch (err) {
+                            console.log('Error on index update.')
+                            console.error(err)
+                            err.stack ? console.error(err.stack) : console.error('No stack trace.')
+                        }
                         let viewData = await shophandler.populateViewData(form.uid.toString())
                         viewData.user = req.user
                         viewData.pane = 'in'
@@ -597,8 +635,23 @@ let productUpdateHandler = async (req, res) => {
 
                     try {
                         let t = await product.update({ _id: p._id }, {status: 'inactive'})
-                        console.log(t)
-                        if (debug) console.log('Product status made \'inactive\' for ' + form.pid)
+                        try {
+                            if (debug) console.log('Product status made \'inactive\' for ' + form.pid)
+                            let idx_res = await idx.updateMatches(productIdx, {
+                                ref: p._id
+                            }, {
+                                'replacement-values': {
+                                    status: updatedProduct.status
+                                }
+                            })
+                            if (debug) {
+                                console.log('Indexer response ' + idx_res)
+                            }
+                        } catch (err) {
+                            console.log('Error on index update.')
+                            console.error(err)
+                            err.stack ? console.error(err.stack) : console.error('No stack trace.')
+                        }
                         let viewData = await shophandler.populateViewData(form.uid.toString())
                         viewData.user = req.user
                         viewData.pane = 'in'
@@ -609,10 +662,6 @@ let productUpdateHandler = async (req, res) => {
                         res.status(500)
                         res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
                     }
-                    break
-                case 'edit':
-                    console.log('Not routing to Product Edit.')
-                    return await badRequest(req, res, 'in', 501, 'Functionality not implemented', 'info')
                     break
                 default:
                     return await badRequest(req, res, 'in', 501, 'Functionality not implemented', 'info')

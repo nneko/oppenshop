@@ -1,7 +1,7 @@
 {
 	"query": {
 		"match": {
-			"name": "Belkin"
+			"ref": "5f79f6a229a8741165dbdbe8"
 		}
 	}
 }

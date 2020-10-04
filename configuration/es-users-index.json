@@ -26,27 +26,22 @@
         "users": {
             "properties": {
                 "preferredUsername": {
-                    "type": "text",
-                    "analyzer": "autocomplete"
+                    "analyzer": "standard"
                 },
                 "name": {
                     "properties": {
                         "givenName": {
-                            "type": "text",
                             "analyzer": "autocomplete"
                         },
                         "familyName": {
-                            "type": "text",
                             "analyzer": "autocomplete"
                         }
                     }
                 },
                 "displayName": {
-                    "type": "text",
                     "analyzer": "autocomplete"
                 },
                 "gender": {
-                    "type": "text"
                 }
             }
         }

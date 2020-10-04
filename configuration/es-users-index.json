@@ -23,27 +23,28 @@
         }
     },
     "mappings": {
-        "users": {
-            "properties": {
-                "ref": {},
-                "preferredUsername": {
-                    "analyzer": "standard"
-                },
-                "name": {
-                    "properties": {
-                        "givenName": {
-                            "analyzer": "autocomplete"
-                        },
-                        "familyName": {
-                            "analyzer": "autocomplete"
-                        }
+        "properties": {
+            "ref": {
+                "index": false
+            },
+            "preferredUsername": {
+                "analyzer": "standard",
+                "index": false
+            },
+            "name": {
+                "properties": {
+                    "givenName": {
+                        "analyzer": "autocomplete"
+                    },
+                    "familyName": {
+                        "analyzer": "autocomplete"
                     }
-                },
-                "displayName": {
-                    "analyzer": "autocomplete"
-                },
-                "gender": {
                 }
+            },
+            "displayName": {
+                "index": false
+            },
+            "gender": {
             }
         }
     }

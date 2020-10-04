@@ -23,21 +23,21 @@
         }
     },
     "mappings": {
-        "shops": {
-            "properties": {
-                "ref": {
-                    
-                },
-                "name": {
-                    "analyzer": "autocomplete"
-                },
-                "displayName": {
-                    "analyzer": "autocomplete"
-                },
-                "description": {
-                    "analyzer": "standard"
-                },
-                "status" : {}
+        "properties": {
+            "ref": {
+                "index": false
+            },
+            "name": {
+                "analyzer": "autocomplete"
+            },
+            "displayName": {
+                "index": false
+            },
+            "description": {
+                "analyzer": "standard"
+            },
+            "status" : {
+                "index": false
             }
         }
     }

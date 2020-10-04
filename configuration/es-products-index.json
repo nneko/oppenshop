@@ -6,7 +6,7 @@
             "filter": {
                 "autocomplete_filter": {
                     "type": "edge_ngram",
-                    "min_gram": 3,
+                    "min_gram": 1,
                     "max_gram": 25
                 }
             },
@@ -23,32 +23,51 @@
         }
     },
     "mappings": {
-        "products": {
-            "properties": {
-                "ref": {
-                    
+        "properties": {
+            "ref": {
+                "type": "text",
+                "index": false
+            },
+            "name": {
+                "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
                 },
-                "name": {
-                    "analyzer": "autocomplete"
-                },
-                "displayName": {
-                    "analyzer": "autocomplete"
-                },
-                "description": {
-                    "analyzer": "standard"
-                },
-                "specifications": {
-                    "analyzer": "standard"
-                },
-                "price": {
-                    "type": "scaled_float",
-                    "scaling_factor": 100
-                },
-                "currency": {
-                },
-                "quantity": {
-                },
-                "status": {}
+                "analyzer": "autocomplete"
+            },
+            "displayName": {
+                "type": "text",
+                "index": false
+            },
+            "description": {
+                "type": "text",
+                "analyzer": "autocomplete"
+            },
+            "specifications": {
+                "type": "object"
+            },
+            "price": {
+                "type": "scaled_float",
+                "scaling_factor": 100
+            },
+            "currency": {
+                "type": "text",
+                "index": false
+            },
+            "quantity": {
+                "type": "long",
+                "index": false
+            },
+            "status": {
+                "type": "text",
+                "index": false,
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
             }
         }
     }

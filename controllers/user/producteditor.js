@@ -262,9 +262,8 @@ producteditor.post('/', function (req, res) {
                     hasInvalids ? formValidated = false : formValidated = true
 
                     if (formValidated) {
-                        if(debug) //console.log(productUpdate)
-                        //await shop.update({name: s.name},shopUpdate)
-                        await product.update({name: p.name},productUpdate)
+                        
+                        let updated = await product.update({name: p.name},productUpdate)
 
                         try {
                             let updatedProduct = await product.read(p._id,{findBy: 'id'})

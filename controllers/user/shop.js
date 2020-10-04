@@ -565,7 +565,7 @@ let productUpdateHandler = async (req, res) => {
                             res.render('sell', viewData)
                             try {
                                 if (debug) {
-                                    console.log('Removing product ref ' + p._id + 'from to index')
+                                    console.log('Removing product ref ' + p._id + ' from search index')
                                 }
                                 let idx_res = await idx.deleteMatches(productIdx, {
                                     ref: p._id

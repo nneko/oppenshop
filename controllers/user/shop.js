@@ -20,6 +20,8 @@ const fileUploader = multer({storage: storage,
 const btoa = require('btoa')
 const catalog = require('../../models/catalog')
 const shophandler = require('../handlers/shop')
+const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
+const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 
 let shops = express.Router()
 
@@ -370,7 +372,28 @@ let productAddHandler = async (req, res) => {
 
             // Returns a promise so reject should trigger the catch block
             await shophandler.productAddHandler(form,req.files)
-            // TODO: validation check on 'p_addhandler' response to show response if created or not
+            let newProd = await product.read({name: String(form.fullname).toLowerCase()}, {limit: 1})
+            
+            if(await product.isValid(newProd)) {
+                if(debug) {
+                    console.log('Attempting to index new product')
+                }
+                idx.index(productIdx, {
+                    ref: newProd._id,
+                    name: newProd.name,
+                    description: newProd.description,
+                    specifications: newProd.specifications,
+                    quantity: newProd.quantity,
+                    price: Number(newProd.price),
+                    currency: newProd.currency
+                })
+            } else {
+                console.error(newProd)
+                let e = new Error('Invalid product object')
+                e.name = 'ProductError'
+                e.type = 'Invalid'
+                throw e
+            }
 
             if (debug) {
                 console.log('Added product: ')

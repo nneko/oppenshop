@@ -380,7 +380,7 @@ let productAddHandler = async (req, res) => {
                         ref: newProd._id,
                         name: newProd.name,
                         description: newProd.description,
-                        price: Number(newProd.price),
+                        price: newProd.price,
                         currency: newProd.currency,
                         status: newProd.status
                     })
@@ -399,14 +399,8 @@ let productAddHandler = async (req, res) => {
                 console.error(err)
                 err.stack ? console.error(err.stack) : console.error('No stack trace.')
             }
-            if (debug) {
-                console.log('Added product: ')
-                console.log(p)
-                console.log('Product added for Shop:' + form.sid)
-            }
             let viewData = await shophandler.populateViewData(form.uid.toString())
             viewData.user = req.user
-            //viewData.pane = 'in'
             viewData.pane = 'pd-new'
             viewData.messages = { success: 'Product added.' }
             res.render('sell', viewData)
@@ -552,12 +546,7 @@ let productUpdateHandler = async (req, res) => {
 
                     try {
                         if(p.status == 'inactive') {
-                            let t = await product.delete({_id: p._id}, p)
-                            let viewData = await shophandler.populateViewData(form.uid.toString())
-                            viewData.user = req.user
-                            viewData.pane = 'in'
-                            viewData.messages = { success: 'Product deleted.' }
-                            res.render('sell', viewData)
+                            let t = await product.delete({ _id: p._id }, p)
                             try {
                                 if (debug) {
                                     console.log('Removing product ref ' + p._id + ' from search index')
@@ -573,6 +562,11 @@ let productUpdateHandler = async (req, res) => {
                                 console.error(err)
                                 err.stack ? console.error(err.stack) : console.error('No stack trace.')
                             }
+                            let viewData = await shophandler.populateViewData(form.uid.toString())
+                            viewData.user = req.user
+                            viewData.pane = 'in'
+                            viewData.messages = { success: 'Product deleted.' }
+                            res.render('sell', viewData)
                         } else {
                             let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user

@@ -149,7 +149,7 @@ es.deleteMatches = async (idx, qry, ops) => {
         refresh: true,
         body: {
             query: {
-                term: qry
+                match: qry
             }
         }
     }

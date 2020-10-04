@@ -605,7 +605,7 @@ let productUpdateHandler = async (req, res) => {
                                 ref: p._id
                             }, {
                                 'replacement-values': {
-                                    status: updatedProduct.status
+                                    status: 'active'
                                 }
                             })
                             if (debug) {
@@ -641,7 +641,7 @@ let productUpdateHandler = async (req, res) => {
                                 ref: p._id
                             }, {
                                 'replacement-values': {
-                                    status: updatedProduct.status
+                                    status: 'inactive'
                                 }
                             })
                             if (debug) {

@@ -28,7 +28,7 @@ es.search = async (idx, qry, ops) => {
 }
 
 es.update = async (idx, id, doc, ops) => {
-    return await es_client.delete({
+    return await es_client.update({
         id: id,
         index: idx,
         body: {
@@ -44,7 +44,7 @@ es.updateMatches = async (idx, qry, ops) => {
             script = script + 'ctx.source.' + String(k) + '= ' + String(ops['replacement-values'][k]) + ';'
         }
     }
-    return await es_client.deleteByQuery({
+    return await es_client.updateByQuery({
         index: idx,
         body: {
             script: {

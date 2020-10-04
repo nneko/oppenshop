@@ -19,6 +19,8 @@ const fileUploader = multer({
         next(err);
     }
 }).array('fullimage', 10)
+const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
+const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 
 let producteditor = express.Router()
 

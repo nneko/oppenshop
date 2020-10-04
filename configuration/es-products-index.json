@@ -25,8 +25,7 @@
     "mappings": {
         "properties": {
             "ref": {
-                "type": "text",
-                "index": false
+                "type": "text"
             },
             "name": {
                 "type": "text",

@@ -384,10 +384,8 @@ let productAddHandler = async (req, res) => {
                         ref: newProd._id,
                         name: newProd.name,
                         description: newProd.description,
-                        specifications: newProd.specifications,
-                        quantity: newProd.quantity,
                         price: Number(newProd.price),
-                        currency: newProd.currency
+                        status: newProd.status
                     })
                     if (debug) {
                         console.log('Indexer response ' + JSON.stringify(idx_res))

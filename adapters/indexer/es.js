@@ -11,31 +11,73 @@ es.getClient = () => {
 }
 
 es.index = async (idx, val, ops) => {
-    return await es_client.index({
+    let esReq = {
         index: idx,
         refresh: true,
         body: val
-    })
+    }
+    if (validator.isNotNull(ops)) {
+        for (const o of Object.keys(ops)) {
+            switch (o) {
+                case 'queryOptions':
+                    if (validator.isNotNull(ops[o])) {
+                        for (const k of Object.keys(ops[o])) {
+                            esReq[k] = ops[o][k]
+                        }
+                    }
+                    break
+            }
+        }
+    }
+    return await es_client.index(esReq)
 }
 
 es.search = async (idx, qry, ops) => {
-    return await es_client.search({
+    let esReq = {
         index: idx,
         body: {
             query: qry
         }
-    })
+    }
+    if (validator.isNotNull(ops)) {
+        for (const o of Object.keys(ops)) {
+            switch (o) {
+                case 'queryOptions':
+                    if (validator.isNotNull(ops[o])) {
+                        for (const k of Object.keys(ops[o])) {
+                            esReq[k] = ops[o][k]
+                        }
+                    }
+                    break
+            }
+        }
+    }
+    return await es_client.search(esReq)
 }
 
 es.update = async (idx, id, doc, ops) => {
-    return await es_client.update({
+    let esReq = {
         id: id,
         index: idx,
         refresh: true,
         body: {
             doc: doc ? doc : {}
         }
-    })
+    }
+    if (validator.isNotNull(ops)) {
+        for (const o of Object.keys(ops)) {
+            switch (o) {
+                case 'queryOptions':
+                    if (validator.isNotNull(ops[o])) {
+                        for (const k of Object.keys(ops[o])) {
+                            esReq[k] = ops[o][k]
+                        }
+                    }
+                    break
+            }
+        }
+    }
+    return await es_client.update(esReq)
 }
 
 es.updateMatches = async (idx, qry, ops) => {
@@ -63,27 +105,68 @@ es.updateMatches = async (idx, qry, ops) => {
         console.log('Submitting elasticsearch request: ')
         console.log(esReq)
     }
+    if (validator.isNotNull(ops)) {
+        for (const o of Object.keys(ops)) {
+            switch (o) {
+                case 'queryOptions':
+                    if (validator.isNotNull(ops[o])) {
+                        for (const k of Object.keys(ops[o])) {
+                            esReq[k] = ops[o][k]
+                        }
+                    }
+                    break
+            }
+        }
+    }
     return await es_client.updateByQuery(esReq)
 }
 
 es.delete = async (idx, id, ops) => {
-    return await es_client.delete({
+    let esReq = {
         id: id,
         index: idx,
         refresh: true
-    })
+    }
+    if (validator.isNotNull(ops)) {
+        for (const o of Object.keys(ops)) {
+            switch (o) {
+                case 'queryOptions':
+                    if (validator.isNotNull(ops[o])) {
+                        for (const k of Object.keys(ops[o])) {
+                            esReq[k] = ops[o][k]
+                        }
+                    }
+                    break
+            }
+        }
+    }
+    return await es_client.delete(esReq)
 }
 
 es.deleteMatches = async (idx, qry, ops) => {
-    return await es_client.deleteByQuery({
+    let esReq = {
         index: idx,
         refresh: true,
         body: {
             query: {
-                match: qry
+                term: qry
             }
         }
-    })
+    }
+    if (validator.isNotNull(ops)) {
+        for (const o of Object.keys(ops)) {
+            switch (o) {
+                case 'queryOptions':
+                    if (validator.isNotNull(ops[o])) {
+                        for (const k of Object.keys(ops[o])) {
+                            esReq[k] = ops[o][k]
+                        }
+                    }
+                    break
+            }
+        }
+    }
+    return await es_client.deleteByQuery(esReq)
 }
 
 module.exports = es

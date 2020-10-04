@@ -1,12 +1,10 @@
 const cfg = require('../../configuration')
 const validator = require('../../utilities/validator')
-const user = require('../../models/user')
 const shop = require('../../models/shop')
 const product = require('../../models/product')
 const express = require('express')
 const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
-const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
 const multer  = require('multer')
 const storage = multer.memoryStorage()
@@ -17,10 +15,8 @@ const fileUploader = multer({storage: storage,
                     }
                   }).array('fullimage', 10)
 //const upload = multer({ dest: 'uploads/' })
-const btoa = require('btoa')
 const catalog = require('../../models/catalog')
 const shophandler = require('../handlers/shop')
-const { update } = require('../../models/user')
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 
@@ -385,6 +381,7 @@ let productAddHandler = async (req, res) => {
                         name: newProd.name,
                         description: newProd.description,
                         price: Number(newProd.price),
+                        currency: newProd.currency,
                         status: newProd.status
                     })
                     if (debug) {

@@ -21,11 +21,9 @@ if (!module.parent) {
                         result = await idx.index(productIdx, {
                             ref: p._id,
                             name: p.name,
-                            displayName: p.displayName,
                             description: p.description,
                             price: p.price,
                             currency: p.currency,
-                            quantity: p.quantity,
                             status: p.status
                         })
                         console.log(result)
@@ -34,11 +32,9 @@ if (!module.parent) {
                     result = await idx.index(productIdx, {
                         ref: products._id,
                         name: products.name,
-                        displayName: products.displayName,
                         description: products.description,
                         price: products.price,
                         currency: products.currency,
-                        quantity: products.quantity,
                         status: products.status
                     })
                     console.log(result)

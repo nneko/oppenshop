@@ -282,7 +282,7 @@ producteditor.post('/', function (req, res) {
                                         }
                                     })
                                     if (debug) {
-                                        console.log('Indexer response ' + idx_res)
+                                        console.log('Indexer response ' + JSON.stringify(idx_res))
                                     }
                             } else {
                                 if(debug) {

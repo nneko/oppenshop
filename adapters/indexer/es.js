@@ -44,19 +44,20 @@ es.updateMatches = async (idx, qry, ops) => {
     let script = ''
     if(ops.hasOwnProperty('replacement-values')) {
         for (const k of Object.keys(ops['replacement-values'])) {
-            script = script + 'ctx_source.' + String(k) + '= ' +  JSON.stringify(String(ops['replacement-values'][k])) + ';'
+            script = (script == '' ? script : script + ' ') + 'ctx._source[' + "\"" + String(k) + "\"" + '] = ' +  JSON.stringify(String(ops['replacement-values'][k])) + ';'
         }
-    }
+    } 
+
     let esReq = {
         index: idx,
         refresh: true,
         body: {
             script: {
-                source: script,
-                lang: 'painless'
+                lang: 'painless',
+                source: script
             },
             query: {
-                terms: qry
+                term: qry
             }
         }
     }

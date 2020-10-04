@@ -390,7 +390,7 @@ let productAddHandler = async (req, res) => {
                         currency: newProd.currency
                     })
                     if (debug) {
-                        console.log('Indexer response ' + idx_res)
+                        console.log('Indexer response ' + JSON.stringify(idx_res))
                     }
                 } else {
                     console.error(newProd)
@@ -571,7 +571,7 @@ let productUpdateHandler = async (req, res) => {
                                     ref: p._id
                                 })
                                 if (debug) {
-                                    console.log('Indexer response ' + idx_res)
+                                    console.log('Indexer response ' + JSON.stringify(idx_res))
                                 }
                             } catch (err) {
                                 console.log('Error on index update.')
@@ -609,7 +609,7 @@ let productUpdateHandler = async (req, res) => {
                                 }
                             })
                             if (debug) {
-                                console.log('Indexer response ' + idx_res)
+                                console.log('Indexer response ' + JSON.stringify(idx_res))
                             }
                         } catch (err) {
                             console.log('Error on index update.')
@@ -645,7 +645,7 @@ let productUpdateHandler = async (req, res) => {
                                 }
                             })
                             if (debug) {
-                                console.log('Indexer response ' + idx_res)
+                                console.log('Indexer response ' + JSON.stringify(idx_res))
                             }
                         } catch (err) {
                             console.log('Error on index update.')

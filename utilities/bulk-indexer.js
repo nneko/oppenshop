@@ -19,6 +19,7 @@ if (!module.parent) {
                 if(Array.isArray(products)) {
                     for (const p of products) {
                         result = await idx.index(productIdx, {
+                            ref: p._id,
                             name: p.name,
                             displayName: p.displayName,
                             description: p.description,
@@ -31,6 +32,7 @@ if (!module.parent) {
                     }
                 } else {
                     result = await idx.index(productIdx, {
+                        ref: products._id,
                         name: products.name,
                         displayName: products.displayName,
                         description: products.description,

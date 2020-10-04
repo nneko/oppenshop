@@ -25,6 +25,7 @@
     "mappings": {
         "users": {
             "properties": {
+                "ref": {},
                 "preferredUsername": {
                     "analyzer": "standard"
                 },

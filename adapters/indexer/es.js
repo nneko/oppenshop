@@ -22,9 +22,7 @@ es.search = async (idx, qry, ops) => {
     return await es_client.search({
         index: idx,
         body: {
-            query: {
-                match: qry
-            }
+            query: qry
         }
     })
 }

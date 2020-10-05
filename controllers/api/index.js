@@ -3,15 +3,23 @@ const express = require('express')
 const path = require('path')
 const debug = cfg.env == 'development' ? true : false
 
-let router = express.Router()
+let api = express.Router()
 
-router.use(express.json())
-router.use('/token', require('./token'))
+api.use(express.json())
+api.use('*/view/assets', express.static(path.join(__dirname, '../../views/' + '/assets')))
+api.use('/token*', require('./token'))
+api.use('/find*', require('./find'))
 
 //Default to no matching endpoint
-router.use((req, res, next) => {
+api.use((req, res, next) => {
     res.status(404)
-    res.json({ error: 'No matching api endpoint' })
+    res.json({
+        error: {
+            message: 'Not Found',
+            reason: 'no matching api endpoint'
+        },
+        status: 404
+    })
 })
 
-module.exports = router
+module.exports = api

@@ -46,7 +46,7 @@ router.use(async (req,res,next) => {
 })
 
 //APIs
-router.use('/api*', api)
+router.use('/api', api)
 
 //Static Files
 router.use('/public', express.static(path.join(__dirname, '../views/public')))

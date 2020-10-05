@@ -1,8 +1,7 @@
 const cfg = require('../../configuration/index.js')
 const express = require('express')
 const validator = require('../../utilities/validator')
-const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
-const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
+const searchEngine = require('../handlers/search/finder')
 const debug = cfg.env == 'development' ? true : false
 
 
@@ -19,38 +18,12 @@ find.post('/', async (req, res) => {
             let qry = req.body.query ? req.body.query : {}
             let queryOptions = req.body.options ? req.body.options : {}
 
-            if (debug) {
-                console.log('Submitting query to indexer')
-                console.log('query: ')
-                console.log(qry)
-                console.log('query options: ')
-                console.log(queryOptions)
-            }
-            let searchResult = await idx.search(productIdx,qry,queryOptions)
-
-            if(debug) {
-                console.log('Response received from indexer')
-                console.log('result: ')
-                console.log(searchResult)
-            }
-
-            if(searchResult && searchResult.body && searchResult.body.hits && searchResult.body.hits.hits && Array.isArray(searchResult.body.hits.hits) && searchResult.body.hits.hits.length > 0) {
-                let results = []
-                for (const r of searchResult.body.hits.hits) {
-                    if (r && validator.isNotNull(r["_source"])) results.push(r["_source"])
-                }
-                res.status(200)
-                res.json({
-                    status: 200,
-                    results: results
-                })
-            } else {
-                res.status(200)
-                res.json({
-                    status: 200,
-                    results: []
-                })
-            }
+            let searchResult = await searchEngine.query(qry,queryOptions)
+            res.status(200)
+            res.json({
+                status: 200,
+                results: searchResult
+            })
         } catch (e) {
             if(debug) {
                 console.log(e)

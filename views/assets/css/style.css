@@ -1197,6 +1197,10 @@ white-space: nowrap;
     color: var(--main-highlight-color);
 }
 
+.search-results .item-card:hover .item-image-container {
+    opacity: 0.6;
+}
+
 .search-results .item-card-left {
     margin-right: 1rem;
 }

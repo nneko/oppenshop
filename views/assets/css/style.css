@@ -1185,11 +1185,12 @@ white-space: nowrap;
 
 .search-results .item-card {
     border-bottom: 1px solid var(--main-border-color);
-    margin: 1rem;
+    padding: 1rem;
 }
 
 .search-results .item-card:hover {
     background: var(--main-table-row-highlight-color);
+    transition: ease 0.25s;
 }
 
 .search-results .item-card:hover .item-card-title {

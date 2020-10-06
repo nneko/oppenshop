@@ -14,7 +14,7 @@ finder.query = async (q,o) => {
         console.log('query options: ')
         console.log(o)
     }
-
+    let response = {}
     let results = []
 
     try {
@@ -31,6 +31,13 @@ finder.query = async (q,o) => {
                 if (r && validator.isNotNull(r["_source"])) results.push(r["_source"])
             }
         } 
+
+        if (searchResult && searchResult.body && searchResult.body.hits && searchResult.body.hits.total) {
+            response.total = searchResult.body.hits.total.value
+        }
+
+        response.results = results
+
     } catch (e) {
         if(debug) {
             console.error('Error encountered request to indexer')
@@ -40,7 +47,7 @@ finder.query = async (q,o) => {
         throw e
     }
 
-    return results
+    return response
 }
 
 module.exports = finder

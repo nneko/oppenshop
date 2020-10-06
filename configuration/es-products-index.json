@@ -37,8 +37,7 @@
                 "analyzer": "autocomplete"
             },
             "displayName": {
-                "type": "text",
-                "index": false
+                "type": "text"
             },
             "description": {
                 "type": "text",

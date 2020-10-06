@@ -22,7 +22,8 @@ find.post('/', async (req, res) => {
             res.status(200)
             res.json({
                 status: 200,
-                results: searchResult
+                total: searchResult.total ? searchResult.total : 0,
+                results: searchResult.results ? searchResult.results : []
             })
         } catch (e) {
             if(debug) {

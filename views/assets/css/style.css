@@ -465,6 +465,10 @@ svg {
     max-width: 80%;
 }
 
+.market-container .main-panel {
+    margin-top: 1rem;
+}
+
 .market-container, .shopping-bag-container {
     padding: 0;
     overflow: hidden;
@@ -1178,6 +1182,66 @@ white-space: nowrap;
 .shopping-bag-product-image svg {
     height: 8rem;
 }
+
+.search-results .item-card {
+    border-bottom: 1px solid var(--main-border-color);
+    margin: 1rem;
+}
+
+.search-results .item-card:hover {
+    background: var(--main-table-row-highlight-color);
+}
+
+.search-results .item-card:hover .item-card-title {
+    color: var(--main-highlight-color);
+}
+
+.search-results .item-card-left {
+    margin-right: 1rem;
+}
+
+.search-results .extra-info {
+    padding-bottom: 1rem;
+}
+
+.search-results .item-image-container {
+    height: 4rem;
+    margin-left: 1rem;
+    max-width: 4rem;
+    overflow: hidden;
+    width: 4rem;
+}
+
+.search-results-image {
+    display: block;
+    height: 4rem !important;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    width: 4rem !important;
+}
+
+.search-results-image img, .search-results-image svg {
+    display: block;
+    height: auto;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    max-height: 3.5rem !important;
+    max-width: 3.5rem !important;
+    overflow: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: auto !important;
+    
+}
+
+.search-results-image svg {
+    height: 4rem;
+}
+
 
 .text-legend {
     color: var(--main-text-color);

@@ -273,6 +273,7 @@ producteditor.post('/', function (req, res) {
                                     }, {
                                         'replacement-values': {
                                             name: updatedProduct.name,
+                                            displayName: updatedProduct.displayName,
                                             description: updatedProduct.description,
                                             price: updatedProduct.price,
                                             currency: updatedProduct.currency,

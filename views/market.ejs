@@ -1,12 +1,4 @@
 <main class="container market-container">
-    <ul class="nav marketnav">
-        <li class="nav-item">
-            <a class="nav-link active" href="#">Products</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/market/shops">Shops</a>
-        </li>
-    </ul>
     <section class="main-panel">
         <div class="col-12 main-content marketplace">
             <div class="marketplace-content-pane" id="edit-storefront-content">
@@ -34,7 +26,48 @@
                 <div class="row">
                 </div>
             </div>
-            
+            <% if(typeof(searchResults) !== 'undefined' && searchResults && Array.isArray(searchResults.results) && searchResults.results.length > 0) { %>
+                <div class="content-pane search-results">
+                    <% for (const r of searchResults.results) { %>
+                        <div>
+                            <span>
+                                <a class="shopping-bag-item-product-link" href="/market/product/?p=<%= r.ref %>">
+                                    <div class="item-card" data-product-id="<%= r.ref %>">
+                                        <div class="item-card-left extra-info">
+                                            <div class="item-image-container">
+                                                <% if(r.image && typeof(r.image) !== 'undefined') { %>
+                                                <figure class=" search-results-image">
+                                                    <img alt="<%= r.name %>" class=""
+                                                        src="<%= r.image %>" />
+                                                </figure>
+                                                <% } else { %>
+                                                <figure class=" search-results-image">
+                                                    <%- include('assets/symbols/tags.svg') %>
+                                                </figure>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                        <div class="item-card-right extra-info">
+                                            <h3 class="item-card-title"><%= (typeof(r.displayName) !== 'undefined' && r.displayName) ? r.displayName : r.name %></h3>
+                                            <p>
+                                                <%= r.description.slice(0,250) + (r.description.length > 250 ? '...' : '') %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </span>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+            <ul class="nav marketnav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/market/shops">Shops</a>
+                </li>
+            </ul>
             <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
             <div class="content-pane-scroll-cards-section catalog-item-container product-card-container">
                 <% for(let j=0;j<products.length;j++) { %>

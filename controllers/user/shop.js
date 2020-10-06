@@ -379,6 +379,7 @@ let productAddHandler = async (req, res) => {
                     let idx_res = await idx.index(productIdx, {
                         ref: newProd._id,
                         name: newProd.name,
+                        displayName: newProd.displayName,
                         description: newProd.description,
                         price: newProd.price,
                         currency: newProd.currency,

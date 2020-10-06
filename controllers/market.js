@@ -83,8 +83,12 @@ market.post('/', async (req, res) => {
             let queryString = form.find ? form.find : ''
 
             let qry = {
-                match: {
-                    name: queryString
+                bool: {
+                    should: {
+                        match: {name: queryString},
+                        match: {displayName: queryString},
+                        match: {description: queryString}
+                    }
                 }
             }
 

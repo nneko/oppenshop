@@ -81,16 +81,39 @@ market.post('/', async (req, res) => {
         try {
             let form = converter.objectFieldsToString(req.body)
             let queryString = form.find ? form.find : ''
-
+            
             let qry = {
                 bool: {
-                    should: {
-                        match: {name: queryString},
-                        match: {displayName: queryString},
-                        match: {description: queryString}
-                    }
+                    should: [
+                        {
+                            multi_match: {
+                                query: queryString,
+                                type: "most_fields",
+                                fields: ["name","displayName"],
+                                operator: "and",
+                                prefix_length: 3
+                            }
+                        },
+                        {
+                            match: {
+                                description: queryString
+                            }
+                        }
+                    ],
+                    minimum_should_match: "30%",
+                    boost: 1.0
                 }
-            }
+            }/*
+            let qry = {
+                multi_match: {
+                    query: queryString,
+                    type: "cross_fields",
+                    fields: ["name","displayName","description"],
+                    analyzer: "autocomplete",
+                    minimum_should_match: "30%",
+                    boost: 1.0
+                }
+            }*/
 
             let queryOptions = {}
 

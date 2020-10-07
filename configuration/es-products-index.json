@@ -6,8 +6,8 @@
             "filter": {
                 "autocomplete_filter": {
                     "type": "edge_ngram",
-                    "min_gram": 1,
-                    "max_gram": 25
+                    "min_gram": 3,
+                    "max_gram": 24
                 }
             },
             "analyzer": {
@@ -41,8 +41,7 @@
                 "analyzer": "autocomplete"
             },
             "description": {
-                "type": "text",
-                "analyzer": "autocomplete"
+                "type": "text"
             },
             "price": {
                 "type": "text"

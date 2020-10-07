@@ -1,9 +1,19 @@
 {
 	"query": {
-		"match": {
-			"name": {
-				"query": "xbox"
-			}
+		"bool": {
+			"should": [
+				{"match": {
+					"name": "beer"
+				}},
+				{"match": {
+					"displayName": "beer"
+				}},
+				{"match": {
+					"description": "beer"
+				}}
+			],
+			"minimum_should_match": 1,
+			"boost": 1.0
 		}
 	}
 }

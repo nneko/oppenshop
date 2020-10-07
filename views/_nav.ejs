@@ -23,9 +23,11 @@
         <div class="search-button-container">
             <ul class="search-button-navigation">
                 <li class="nav-link-item search-button-item">
-                    <a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'market' && reqData.path.split('/')[2] == 'find') { %>class="menu-item-selected"
-                        <% } %> data-toggle="tooltip" data-placement="bottom" title="Find in Market"
-                        href="/market/"><%- include('assets/symbols/looking-glass.svg') %></a>
+                    <button class="search-button-item activate-search-button <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'market' && reqData.path.split('/')[2] == 'find') { %>menu-item-selected
+                        <% } %>" type="submit" data-toggle="tooltip" data-placement="bottom"
+                        title="Find in Market">
+                        <%- include('assets/symbols/looking-glass.svg') %>
+                    </button>
                 </li>
             </ul>
         </div>
@@ -34,6 +36,25 @@
             <div class="menu-line2"></div>
         </div>
     </div>
+    <form class="responsive-search-form" autocomplete="off" action="/market" method="POST" oninput="" novalidate>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <button class="search-button-prepend" type="button" data-toggle="tooltip" data-placement="bottom"
+                        title="Find in Market"><%- include('assets/symbols/close.svg') %></button>
+                </div>
+                <input id="find" class="form-control responsive-search-input" type="text" name="find" placeholder="Search the Market" value=""
+                    aria-label="find" aria-describedby="find-basic-addon" size="25" required>
+                <div class="input-group-append">
+                    <button class="search-button" type="submit" data-toggle="tooltip" data-placement="bottom"
+                        title="Find in Market"><%- include('assets/symbols/looking-glass.svg') %></button>
+                </div>
+                <div id="invalid-find" class="invalid-feedback">
+                    Invalid search query.
+                </div>
+            </div>
+        </div>
+    </form>
     <ul class="menu-main-navigation nav-links">
         <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && (reqData.path.split('/')[1] == 'market' || reqData.path.split('/')[1] == '')) { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Browse" href="/market"><%- include('assets/symbols/shop.svg') %></a></li>
         <li class="nav-link-item <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag') { %><%= 'nav-menu-item-selected' %><% } %>"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Buy" href="/user/bag"><%- include('assets/symbols/shopbag.svg') %></a><% if(typeof(bag) !== 'undefined' && bag) { %>

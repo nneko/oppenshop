@@ -245,8 +245,33 @@ svg {
     padding: 0;
 }
 
+.activate-search-button, .activate-search-button:hover, .activate-search-button:active {
+    background: none;
+    border: none;
+    box-sizing: border-box ;
+    cursor: pointer;
+    margin: 0px;
+    padding: 0px;
+    word-wrap:break-word;
+}
+
+.activate-search-button:active svg {
+    fill: var(--main-highlight-color);
+    stroke: var(--main-highlight-color);
+}
+
 #find {
     text-align: center;
+}
+
+.responsive-search-form {
+    align-items: center;
+    display: none;
+    left: 0;
+    margin: 0;
+    opacity: 1;
+    position: relative;
+    vertical-align: middle;
 }
 
 #signin-fb, #signin-google, #signin-apple, #signin-ms {
@@ -295,9 +320,14 @@ svg {
 .menu-main {
     align-items: center;
     display: flex;
+    transition: ease 0.25s;
     justify-content: left;
     width: 50%;
     z-index: 10;
+}
+
+.hide-menu-main {
+    display: none;
 }
 
 .menu-main-navigation .icon {
@@ -568,6 +598,16 @@ svg {
     transform: rotate(45deg) translate(-3px,-2px);
 }
 
+
+.search-button-prepend {
+    background-color: var(--nav-btn-color);
+    border: 1px solid var(--nav-btn-border-color);
+    border-radius: 0;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+    width: 3rem;
+}
+
 .search-button {
     background-color: var(--nav-btn-color);
     border: 1px solid var(--nav-btn-border-color);
@@ -576,12 +616,12 @@ svg {
     width: 3rem;
 }
 
-.search-button .icon {
+.search-button .icon, .search-button-prepend .icon {
     height: 1.6rem;
     padding: 0.2rem;
 }
 
-.search-button:hover path {
+.search-button:hover path, .search-button-prepend:hover path {
     fill: var(--main-highlight-color);
     stroke: var(--main-highlight-color);
 }
@@ -1460,6 +1500,10 @@ white-space: nowrap;
 
 @media screen and (max-width: 1028px) {
 
+    .hide-menu-main {
+        display: none;
+    }
+
     .applogo a {
         font-size: 1rem;
     }
@@ -1553,10 +1597,52 @@ white-space: nowrap;
 }
 
 @media screen and (max-width: 640px) {
+    
+    .hide-menu-main {
+        display: none;
+        transition: ease 0.25s;
+    }
 
     #main-search-form {
         display: none;
         visibility: hidden;
+    }
+
+    .responsive-search-form {
+        align-items: center;
+        flex-direction: row;
+        height: 1rem;
+        justify-content: right;
+        opacity: 0;
+        width: 100%;
+    }
+
+    .responsive-search-input {
+        align-items: center;
+        padding: 0;
+        width: 1 !important;
+    }
+
+    .shrink-search-form {
+        animation-name: anim-scalex-in;
+        animation-duration: 800ms;
+        animation-fill-mode: both;
+    }
+
+    .expand-search-form {
+        display: flex;
+        opacity: 1;
+        transition: ease 0.25s;
+        visibility: visible;
+    }
+
+    .expand-search-input {
+        animation-name: anim-scalex-out;
+        animation-duration: 800ms;
+        animation-fill-mode: both;
+        opacity: 1;
+        transition: ease 0.25s;
+        visibility: visible;
     }
 
     .search-button-container {
@@ -1606,6 +1692,38 @@ white-space: nowrap;
 
     .search-button-item {
         animation-name: none;
+    }
+}
+
+@keyframes anim-scalex-in {
+    from, to {
+        animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+    }
+
+    from {
+        display: flex;
+        opacity: 1;
+        transform: scaleX(1);
+    }
+
+    to {
+        display: none;
+        opacity: 0;
+        transform: scaleX(0);
+    }
+}
+
+@keyframes anim-scalex-out {
+    from, to {
+        animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+    }
+
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
     }
 }
 

@@ -54,6 +54,30 @@ app.setupMenu = () => {
     })
 }
 
+app.setupResponsiveSearchForm = () => {
+    const activateSearchButton = document.querySelector('.activate-search-button')
+    const searchForm = document.querySelector('.responsive-search-form')
+    const searchInput = document.querySelector('.responsive-search-input')
+    const navigation = document.querySelector('.menu-main')
+    const closeButton = document.querySelector('.search-button-prepend')
+
+    if(activateSearchButton) activateSearchButton.addEventListener('click', () => {
+        if (searchForm && navigation) {
+            navigation.classList.toggle('hide-menu-main')
+            searchForm.classList.toggle('expand-search-form')
+            searchForm.classList.toggle('expand-search-input')  
+        }
+    })
+
+    if (closeButton) closeButton.addEventListener('click', () => {
+        if (searchForm && navigation) {
+            navigation.classList.toggle('hide-menu-main')
+            searchForm.classList.toggle('expand-search-form')
+            searchForm.classList.toggle('expand-search-input')  
+        }
+    })
+}
+
 app.search = async (query) => {
     let xhr = new XMLHttpRequest()
 
@@ -73,6 +97,11 @@ app.search = async (query) => {
 app.init = () => {
     window.addEventListener('load', () => {
         app.setupMenu()
+        app.setupResponsiveSearchForm()
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
     })
 }
 

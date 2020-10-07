@@ -735,6 +735,8 @@ svg {
 }
 
 .content-pane-scroll-cards-section .card {
+    border: none;
+    border-top: 1px solid var(--main-sub-border-color);
     margin-top: 1rem;
 
 }
@@ -871,7 +873,7 @@ white-space: nowrap;
 }
 
 .product-card {
-    border: none;
+    border: none !important;
     flex-basis: calc(25% - 4rem);
     margin: 1rem;
     margin-left: 2rem;
@@ -1443,7 +1445,7 @@ white-space: nowrap;
 }
 
 .item-card-label {
-    border-bottom: 1px solid var(--main-sub-border-color);
+    /*border-bottom: 1px solid var(--main-sub-border-color);*/
     margin-bottom: 0.5rem;
     padding-bottom: 1rem;
 }

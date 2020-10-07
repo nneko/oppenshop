@@ -88,10 +88,8 @@ market.post('/', async (req, res) => {
                         {
                             multi_match: {
                                 query: queryString,
-                                type: "most_fields",
-                                fields: ["name","displayName"],
-                                operator: "and",
-                                prefix_length: 3
+                                type: "cross_fields",
+                                fields: ["name","displayName"]
                             }
                         },
                         {

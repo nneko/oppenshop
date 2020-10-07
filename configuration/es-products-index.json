@@ -38,6 +38,11 @@
             },
             "displayName": {
                 "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                },
                 "analyzer": "autocomplete"
             },
             "description": {

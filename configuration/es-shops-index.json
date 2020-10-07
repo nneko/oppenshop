@@ -7,7 +7,7 @@
                 "autocomplete_filter": {
                     "type": "edge_ngram",
                     "min_gram": 3,
-                    "max_gram": 25
+                    "max_gram": 24
                 }
             },
             "analyzer": {

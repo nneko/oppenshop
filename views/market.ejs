@@ -27,12 +27,19 @@
                 </div>
             </div>
             <% if(typeof(searchResults) !== 'undefined' && searchResults && Array.isArray(searchResults.results) && searchResults.results.length > 0) { %>
-                <div class="content-pane search-results">
+                <div class="content-pane search-results fade show">
+                    <div class="search-results-control-section">
+                        <button class="action-icon-button action-icon hide-search-results-button" type="button" data-toggle="tooltip" data-placement="bottom" title="Hide Search Results">
+                            <%- include('./assets/symbols/close.svg') %>
+                        </button>
+                    </div>
+                    <% let resultsStep = 0; %>
                     <% for (const r of searchResults.results) { %>
-                        <div>
+                        <% resultsStep += 1; %>
+                        <div class="returned-results-section">
                             <span>
                                 <a class="shopping-bag-item-product-link" href="/market/product/?p=<%= r.ref %>">
-                                    <div class="item-card" data-product-id="<%= r.ref %>">
+                                <div class="item-card <% if(resultsStep >= searchResults.results.length) { %>item-head-foot-card<% } %>" data-product-id="<%= r.ref %>">
                                         <div class="item-card-left extra-info">
                                             <div class="item-image-container">
                                                 <% if(r.image && typeof(r.image) !== 'undefined') { %>

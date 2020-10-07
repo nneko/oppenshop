@@ -78,6 +78,29 @@ app.setupResponsiveSearchForm = () => {
     })
 }
 
+app.setupSearchControl = () => {
+    let closeSearchButton = document.querySelector('.hide-search-results-button')
+    let resultsContainer = document.querySelector('.returned-results-section')
+    let searchSection = document.querySelector('.search-results')
+    let searchInfoAlert = document.getElementById('main-alert-info')
+
+    if(closeSearchButton) closeSearchButton.addEventListener('click', () => {
+        if(resultsContainer) {
+            resultsContainer.innerHTML = ''
+        }
+
+        if(searchSection) {
+            searchSection.classList.add('hide-search-results')
+            searchSection.classList.add('fade')
+        }
+
+        if(searchInfoAlert){
+            searchInfoAlert.classList.remove('show')
+            searchInfoAlert.remove()
+        }
+    })
+}
+
 app.search = async (query) => {
     let xhr = new XMLHttpRequest()
 
@@ -98,6 +121,7 @@ app.init = () => {
     window.addEventListener('load', () => {
         app.setupMenu()
         app.setupResponsiveSearchForm()
+        app.setupSearchControl()
 
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()

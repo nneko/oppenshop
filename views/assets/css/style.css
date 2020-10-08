@@ -628,6 +628,7 @@ svg {
 
 .main-panel {
     margin: 2rem auto;
+    overflow: hidden;
     padding: 0;
 }
 

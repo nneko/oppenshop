@@ -940,6 +940,10 @@ white-space: nowrap;
     width: auto;
 }
 
+.product-card .item-card-label {
+    border-bottom: 1px solid var(--main-sub-border-color);
+}
+
 .product-carousel {
     padding: 0;
     width: 100%;

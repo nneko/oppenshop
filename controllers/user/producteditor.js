@@ -275,6 +275,7 @@ producteditor.post('/', function (req, res) {
                                             name: updatedProduct.name,
                                             displayName: updatedProduct.displayName,
                                             description: updatedProduct.description,
+                                            specifications: updatedProduct.specifications,
                                             price: updatedProduct.price,
                                             currency: updatedProduct.currency,
                                             status: updatedProduct.status

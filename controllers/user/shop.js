@@ -381,6 +381,7 @@ let productAddHandler = async (req, res) => {
                         name: newProd.name,
                         displayName: newProd.displayName,
                         description: newProd.description,
+                        specifications: newProd.specifications,
                         price: newProd.price,
                         currency: newProd.currency,
                         status: newProd.status

@@ -23,6 +23,7 @@ if (!module.parent) {
                             name: p.name,
                             displayName: p.displayName,
                             description: p.description,
+                            specifications: p.specifications,
                             price: p.price,
                             currency: p.currency,
                             status: p.status
@@ -35,6 +36,7 @@ if (!module.parent) {
                         name: products.name,
                         displayName: products.displayName,
                         description: products.description,
+                        specifications: products.specifications,
                         price: products.price,
                         currency: products.currency,
                         status: products.status

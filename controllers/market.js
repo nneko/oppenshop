@@ -96,6 +96,11 @@ market.post('/', async (req, res) => {
                             match: {
                                 description: queryString
                             }
+                        },
+                        {
+                            match: {
+                                    specifications: queryString
+                            }
                         }
                     ],
                     minimum_should_match: "30%",

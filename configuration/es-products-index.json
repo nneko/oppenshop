@@ -48,6 +48,9 @@
             "description": {
                 "type": "text"
             },
+            "specifications": {
+                "type": "flattened"
+            },
             "price": {
                 "type": "text"
             },

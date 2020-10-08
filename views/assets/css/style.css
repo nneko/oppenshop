@@ -462,6 +462,7 @@ svg {
 .marketnav {
     justify-content: flex-start;
     margin: 1rem;
+    margin-top: 0;
 }
 
 .marketnav .nav-link.active {

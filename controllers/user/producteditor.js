@@ -3,6 +3,7 @@ const validator = require('../../utilities/validator')
 const user = require('../../models/user')
 const shop = require('../../models/shop')
 const product = require('../../models/product')
+const currency = require('../../models/currency')
 const express = require('express')
 const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
@@ -114,6 +115,12 @@ let populateViewData = async (id) => {
                     viewData.phoneNumber = s.phoneNumbers[0] ? s.phoneNumbers[0] : undefined
                 }
                 */
+            }
+            let c = await currency.read({status: 'active'})
+            if (c) {
+                if (Array.isArray(c)) {
+                  viewData.currency_list = c
+                }
             }
             resolve(viewData)
         } catch (e) {
@@ -234,7 +241,8 @@ producteditor.post('/', function (req, res) {
                     }
                     productUpdate.quantity = form.quantity ? Number(form.quantity) : 0
                     productUpdate.price = generator.roundNumber( form.unit_dollar && form.unit_cents ? Number(form.unit_dollar + '.' + form.unit_cents): 0, 2)
-                    productUpdate.currency = form.currency ? form.currency : 'JMD'
+                    //productUpdate.currency = form.currency ? form.currency : 'JMD'
+                    productUpdate.currencyid = form.currency
                     if (form.name !== 'undefined'){
                       productUpdate.displayName = form.name
 
@@ -262,7 +270,7 @@ producteditor.post('/', function (req, res) {
                     hasInvalids ? formValidated = false : formValidated = true
 
                     if (formValidated) {
-                        
+
                         let updated = await product.update({name: p.name},productUpdate)
 
                         try {

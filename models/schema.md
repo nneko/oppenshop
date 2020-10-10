@@ -182,9 +182,15 @@
 ```
     {
         "_id":, ObjectId("2342345235"),
-        "code": "usd",
-        "description": ""
-        "exchangeRate": 1
+        "code": "USD",
+        "symbol": "$",
+        "status": "active",
+        "flag":
+        "description": "",
+        "exchangeBase": "USD",
+        "exchangeRates": Object,
+        "updated": ".....",
+        "updated_timestamp": 123456789
     }
 ```
 

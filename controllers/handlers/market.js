@@ -1,6 +1,7 @@
 const cfg = require('../../configuration/index.js')
 const validator = require('../../utilities/validator')
 const product = require('../../models/product')
+const currency = require('../../models/currency')
 const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
 
@@ -32,6 +33,7 @@ marketHandler.populateViewData = async (uid, product_page = 1) => {
                         img.src = media.getBinaryDetails(img)
                     }
                 }
+                p.currency = await currency.read(p.currencyid,{findBy: 'id'})
             }
 
             console.log(product_index)

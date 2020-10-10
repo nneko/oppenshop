@@ -42,7 +42,16 @@ environment.development = {
    uploadSize: 10485760,
    items_per_page: 25,
    minimum_price: 10,
-   minimum_price_currency: usd
+   minimum_price_currency: usd,
+   indexerAdapter: 'es',
+   indexerType: 'elasticsearch',
+   indexerHost: 'localhost',
+   indexerPort: '9200',
+   indexerProtocol: 'http',
+   indexerAuth: 'basic',
+   indexerUser: 'xxxx',
+   indexerPassword: 'xxxxxx',
+   openExchangeRatesAppID: 'xxxxxxxxxxxxxx'
 };
 
 // Determine which environment was passed as a command-line argument

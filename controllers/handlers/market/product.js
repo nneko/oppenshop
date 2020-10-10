@@ -1,6 +1,7 @@
 const cfg = require('../../../configuration/index.js')
 const validator = require('../../../utilities/validator')
 const product = require('../../../models/product')
+const currency = require('../../../models/currency')
 const media = require('../../../adapters/storage/media')
 const shop = require('../../../models/shop.js')
 const ShoppingBag = require('./../../../models/shoppingbag')
@@ -16,6 +17,7 @@ marketProductHandler.populateViewData = async (pid) => {
 
             if (validator.isNotNull(pid)) {
                 let fetchResult = await product.read(pid,{findBy: 'id'})
+                fetchResult.currency = await currency.read(fetchResult.currencyid,{findBy: 'id'})
                 if(await product.isValid(fetchResult)) {
                     viewData.product = fetchResult
                     let shopInfo = await shop.read(fetchResult.shop,{findBy: 'id'})
@@ -23,7 +25,7 @@ marketProductHandler.populateViewData = async (pid) => {
                         viewData.product.shopName = shopInfo.displayName
                     }
                 }
-            } 
+            }
 
             if(!viewData.product) {
                 let e = new Error('No product found with id: ' + pid)

@@ -19,6 +19,7 @@ const fileUploader = multer({storage: storage,
 //const upload = multer({ dest: 'uploads/' })
 const btoa = require('btoa')
 const catalog = require('../../models/catalog')
+const currency = require('../../models/currency')
 
 let shophandler = {}
 
@@ -60,6 +61,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                   yy.src = media.getBinaryDetails(yy)
                                 }
                             }
+                            y.currency = await currency.read(y.currencyid,{findBy: 'id'})
                         }
                         x.products = p
                     }
@@ -77,6 +79,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                 syy.src = media.getBinaryDetails(syy)
                             }
                         }
+                        sy.currency = await currency.read(sy.currencyid,{findBy: 'id'})
                     }
                     s.products = sp
 
@@ -114,6 +117,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                                         pImg.src = media.getBinaryDetails(pImg)
                                                     }
                                                 }
+                                                p.currency = await currency.read(p.currencyid,{findBy: 'id'})
                                                 pList.push(p)
                                             }
                                         }
@@ -141,6 +145,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                                 pImg.src = media.getBinaryDetails(pImg)
                                             }
                                         }
+                                        p.currency = await currency.read(p.currencyid,{findBy: 'id'})
                                         pList.push(p)
                                     }
                                 }
@@ -152,6 +157,13 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                 } catch (e) {
                     console.error(e)
                     console.log('Error reading shop list skipping remainder.')
+                }
+            }
+
+            let c = await currency.read({status: 'active'})
+            if (c) {
+                if (Array.isArray(c)) {
+                  viewData.currency_list = c
                 }
             }
             // Pagination details
@@ -315,7 +327,8 @@ shophandler.productAddHandler = async (form, files) => {
     p.status = 'active'
     p.quantity = form.quantity ? Number(form.quantity) : 0
     p.price = generator.roundNumber( form.unit_dollar ? Number(form.unit_dollar + '.' + (form.unit_cents ? form.unit_cents : '00')): 0, 2)
-    p.currency = form.currency ? form.currency : 'jmd'
+    //p.currency = form.currency ? form.currency : 'jmd'
+    p.currencyid = form.currency
     if (form.name !== 'undefined'){
       p.displayName = form.name
 

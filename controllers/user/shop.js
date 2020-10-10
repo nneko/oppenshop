@@ -383,7 +383,8 @@ let productAddHandler = async (req, res) => {
                         description: newProd.description,
                         specifications: newProd.specifications,
                         price: newProd.price,
-                        currency: newProd.currency,
+                        //currency: newProd.currency,
+                        currencyid: newProd.currency,
                         status: newProd.status
                     })
                     if (debug) {

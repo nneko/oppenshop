@@ -17,7 +17,46 @@ npm i
 
 Data collections are stored in a document database by the application server. The default supported document database is mongoDB. However, alternate databases may utilized by configuring a supported adapter.
 
-To install mongoDB follow the [mongo documentation](https://docs.mongodb.com/guides/server/install/).
+To install mongoDB follow the [mongo documentation](https://docs.mongodb.com/guides/server/install/). Post database installation peform these additional steps to configure user authentication and a replica set.
+
+#### Enable authentication
+
+Add the security block to the mongod.conf.
+
+```
+security:
+    authorization: enabled
+```
+
+#### Create a user and role for OppenShop
+
+Assign the `readWrite` privileges to the application user on the specified database.
+
+```
+use admin
+db.createUser({user: <username>, pwd: passwordPrompt(), roles: [ role: <role>, db: <db>] }
+```
+
+#### Setup Replication
+
+Add the following lines to the mongodb.conf 
+
+```
+replication:
+   replSetName: "rs0"
+```
+
+Login to the database with the right privileges and initiate the replicates
+
+```
+rs.initiate()
+```
+
+Start/Stop/Restart Database
+
+```
+brew services start/restart/stop mongodb-community
+```
 
 ### Elasticsearch
 

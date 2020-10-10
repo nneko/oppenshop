@@ -738,6 +738,7 @@ svg {
 
 .content-pane-scroll-cards-section .card {
     border: none;
+    border-radius: 0;
     border-top: 1px solid var(--main-sub-border-color);
     margin-top: 1rem;
 

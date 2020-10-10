@@ -3,6 +3,22 @@ Marketplace platform providing a web app and api service to support commerce in 
 
 ## Dependencies
 
+### Node.js
+
+The platform is comprised of a document database, search engine, application server, web application and API. The server side application runs on top of the node.js platform. Download and install the latest LTS (Long Term Support) version of [Node.js Download](https://nodejs.org/en/download/). The minimum supported version is v12.18.3.
+
+Install the oppenshop node module dependencies. 
+
+```
+npm i
+```
+
+### mongoDB.
+
+Data collections are stored in a document database by the application server. The default supported document database is mongoDB. However, alternate databases may utilized by configuring a supported adapter.
+
+To install mongoDB follow the [mongo documentation](https://docs.mongodb.com/guides/server/install/).
+
 ### Elasticsearch
 
 #### Installation

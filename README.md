@@ -5,7 +5,9 @@ Marketplace platform providing a web app and api service to support commerce in 
 
 ### Node.js
 
-The platform is comprised of a document database, search engine, application server, web application and API. The server side application runs on top of the node.js platform. Download and install the latest LTS (Long Term Support) version of [Node.js Download](https://nodejs.org/en/download/). The minimum supported version is v12.18.3.
+The platform is comprised of a document database, search engine, application server, web application and API. The server side application runs on top of the node.js platform.
+
+Download and install the latest LTS (Long Term Support) version of [Node.js Download](https://nodejs.org/en/download/). The minimum supported version is v12.18.3.
 
 Install the oppenshop node module dependencies. 
 
@@ -52,7 +54,7 @@ Login to the database with the right privileges and initiate the replicates
 rs.initiate()
 ```
 
-Start/Stop/Restart Database
+Start/Stop/Restart Database (HomeBrew)
 
 ```
 brew services start/restart/stop mongodb-community

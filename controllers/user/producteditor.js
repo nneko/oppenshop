@@ -64,6 +64,11 @@ let populateViewData = async (id) => {
 
             //let s = await shop.read(id,{findBy: 'id'})
             let p = await product.read(id,{findBy: 'id'})
+            let productCurrency = await currency.read(p.currency, {findBy: 'id'})
+            let productCurrencyCode = baseCurrencyCode
+            if(currency.isValid(productCurrency)) {
+                productCurrencyCode = productCurrency.code
+            }
             let viewData = {}
 
             if (p) {
@@ -81,7 +86,7 @@ let populateViewData = async (id) => {
                   amount = p.price.split(".")
                   viewData.unit_dollar = {value: amount[0]}
                   viewData.unit_cents = {value: amount[1]}
-                  viewData.currency = {value: p.currency}
+                  viewData.currency = {value: productCurrencyCode}
                 }
                 let specs = {}
                 if (typeof(p.specifications) !== 'undefined' ){

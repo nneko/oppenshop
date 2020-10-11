@@ -99,7 +99,7 @@
                                             <h4>Unit Price</h4>
                                             <p>
                                                 <% if(typeof(product.price) !== 'undefined') { %>
-                                                <%= product.price %><% } if(typeof(product.currency) !== 'undefined') { %><%= ' ' + product.currency.toUpperCase() %>
+                                                <%= product.price %><% } if(typeof(product.currency) !== 'undefined' && product.currency && typeof(product.currency.code) !== 'undefined') { %><%= ' ' + product.currency.code.toUpperCase() %>
                                                 <% } %>
                                             </p>
                                         </div>

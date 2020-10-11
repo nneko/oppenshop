@@ -10,11 +10,11 @@
     <select class="custom-select btn" name="currency">
       <% if (typeof(currency_list) !== 'undefined' && Array.isArray(currency_list) && currency_list.length > 0) { %>
       <% for(let i=0;i<currency_list.length;i++) { %>
-        <option value="<%= currency_list[i]._id %>" <% if(typeof(currency) !== 'undefined' && currency.value == currency_list[i].code) { %>selected="selected"<% } %>><%= currency_list[i].code %></option>
+        <option value="<%= currency_list[i]._id %>" <% if(typeof(currency) !== 'undefined' && currency && currency.value == currency_list[i].code) { %>selected="selected"<% } %>><%= currency_list[i].code %></option>
       <% } %>
       <% } else { %>
-        <option value="jmd" <% if(typeof(currency) !== 'undefined' && currency.value == 'jmd') { %>selected="selected"<% } %>>jmd</option>
-        <option value="usd" <% if(typeof(currency) !== 'undefined' && currency.value == 'usd') { %>selected="selected"<% } %>>usd</option>
+        <option value="jmd" <% if(typeof(currency) !== 'undefined' && currency  && currency.value == 'jmd') { %>selected="selected"<% } %>>jmd</option>
+        <option value="usd" <% if(typeof(currency) !== 'undefined' && currency  && currency.value == 'usd') { %>selected="selected"<% } %>>usd</option>
       <% } %>
     </select>
 </div>

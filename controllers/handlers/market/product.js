@@ -17,7 +17,7 @@ marketProductHandler.populateViewData = async (pid) => {
 
             if (validator.isNotNull(pid)) {
                 let fetchResult = await product.read(pid,{findBy: 'id'})
-                fetchResult.currency = await currency.read(fetchResult.currencyid,{findBy: 'id'})
+                fetchResult.currency = await currency.read(fetchResult.currency,{findBy: 'id'})
                 if(await product.isValid(fetchResult)) {
                     viewData.product = fetchResult
                     let shopInfo = await shop.read(fetchResult.shop,{findBy: 'id'})

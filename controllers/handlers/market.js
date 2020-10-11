@@ -33,7 +33,7 @@ marketHandler.populateViewData = async (uid, product_page = 1) => {
                         img.src = media.getBinaryDetails(img)
                     }
                 }
-                p.currency = await currency.read(p.currencyid,{findBy: 'id'})
+                p.currency = await currency.read(p.currency,{findBy: 'id'})
             }
 
             console.log(product_index)

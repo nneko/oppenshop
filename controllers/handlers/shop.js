@@ -61,7 +61,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                   yy.src = media.getBinaryDetails(yy)
                                 }
                             }
-                            y.currency = await currency.read(y.currencyid,{findBy: 'id'})
+                            y.currency = await currency.read(y.currency,{findBy: 'id'})
                         }
                         x.products = p
                     }
@@ -79,7 +79,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                 syy.src = media.getBinaryDetails(syy)
                             }
                         }
-                        sy.currency = await currency.read(sy.currencyid,{findBy: 'id'})
+                        sy.currency = await currency.read(sy.currency,{findBy: 'id'})
                     }
                     s.products = sp
 
@@ -117,7 +117,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                                         pImg.src = media.getBinaryDetails(pImg)
                                                     }
                                                 }
-                                                p.currency = await currency.read(p.currencyid,{findBy: 'id'})
+                                                p.currency = await currency.read(p.currency,{findBy: 'id'})
                                                 pList.push(p)
                                             }
                                         }
@@ -145,7 +145,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                                 pImg.src = media.getBinaryDetails(pImg)
                                             }
                                         }
-                                        p.currency = await currency.read(p.currencyid,{findBy: 'id'})
+                                        p.currency = await currency.read(p.currency,{findBy: 'id'})
                                         pList.push(p)
                                     }
                                 }
@@ -328,7 +328,17 @@ shophandler.productAddHandler = async (form, files) => {
     p.quantity = form.quantity ? Number(form.quantity) : 0
     p.price = generator.roundNumber( form.unit_dollar ? Number(form.unit_dollar + '.' + (form.unit_cents ? form.unit_cents : '00')): 0, 2)
     //p.currency = form.currency ? form.currency : 'jmd'
-    p.currencyid = form.currency
+
+    let productCurrency = await currency.read(form.currency,{findBy: 'id'})
+
+    if (!currency.isValid(productCurrency)) {
+          let error = new Error('Invalid currency code')
+          error.name = 'CurrencyError'
+          error.type = 'Invalid'
+          throw error
+    }
+
+    p.currency = productCurrency._id.toString()
     if (form.name !== 'undefined'){
       p.displayName = form.name
 

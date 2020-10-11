@@ -80,7 +80,12 @@ let populateViewData = async (id) => {
                   amount = p.price.split(".")
                   viewData.unit_dollar = {value: amount[0]}
                   viewData.unit_cents = {value: amount[1]}
-                  viewData.currency = {value: p.currency}
+                  viewData.currencyid = {value: p.currencyid}
+                  let curr = await currency.read(p.currencyid,{findBy: 'id'})
+                  viewData.currency = {
+                    id: curr._id,
+                    value: curr.code
+                  }
                 }
                 let specs = {}
                 if (typeof(p.specifications) !== 'undefined' ){

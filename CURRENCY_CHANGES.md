@@ -54,6 +54,7 @@ db.currencies.find({},{_id: 1, code: 1})
 
 Copy the ID string and update the chosen product record that matches the query
 
+```
 db.products.findAndModify({
     query: { currency: "usd" },
     update: { $set: { currency: <id> }},

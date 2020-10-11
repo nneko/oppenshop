@@ -22,6 +22,7 @@ const fileUploader = multer({
 }).array('fullimage', 10)
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
+const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
 
 let producteditor = express.Router()
 
@@ -241,8 +242,19 @@ producteditor.post('/', function (req, res) {
                     }
                     productUpdate.quantity = form.quantity ? Number(form.quantity) : 0
                     productUpdate.price = generator.roundNumber( form.unit_dollar && form.unit_cents ? Number(form.unit_dollar + '.' + form.unit_cents): 0, 2)
-                    //productUpdate.currency = form.currency ? form.currency : 'JMD'
-                    productUpdate.currencyid = form.currency
+                    
+                    let curr = await currency.read(form.currency, {findBy: 'id'})
+
+                    if (! currency.isValid(curr)) {
+                        console.error(form.currency)
+                        console.error(curr)
+                        let error = new Error('Invalid currency code')
+                        error.name = 'CurrencyError'
+                        error.type = 'Invalid'
+                        throw error
+                    }
+
+                    productUpdate.currency = curr._id.toString()
                     if (form.name !== 'undefined'){
                       productUpdate.displayName = form.name
 
@@ -276,22 +288,28 @@ producteditor.post('/', function (req, res) {
                         try {
                             let updatedProduct = await product.read(p._id,{findBy: 'id'})
                             if(await product.isValid(updatedProduct)) {
-                                    let idx_res = await idx.updateMatches(productIdx, {
-                                        ref: p._id
-                                    }, {
-                                        'replacement-values': {
-                                            name: updatedProduct.name,
-                                            displayName: updatedProduct.displayName,
-                                            description: updatedProduct.description,
-                                            specifications: updatedProduct.specifications,
-                                            price: updatedProduct.price,
-                                            currency: updatedProduct.currency,
-                                            status: updatedProduct.status
-                                        }
-                                    })
-                                    if (debug) {
-                                        console.log('Indexer response ' + JSON.stringify(idx_res))
+                                let productCurrency = await currency.read(updatedProduct.currency, {findBy: 'id'})
+
+                                let productCurrencyCode = baseCurrencyCode
+                                
+                                if(productCurrency && currency.isValid(productCurrency) && validator.isNotNull(productCurrency.code)) productCurrencyCode = productCurrency.code
+
+                                let idx_res = await idx.updateMatches(productIdx, {
+                                    ref: p._id
+                                }, {
+                                    'replacement-values': {
+                                        name: updatedProduct.name,
+                                        displayName: updatedProduct.displayName,
+                                        description: updatedProduct.description,
+                                        specifications: updatedProduct.specifications,
+                                        price: updatedProduct.price,
+                                        currency: productCurrencyCode,
+                                        status: updatedProduct.status
                                     }
+                                })
+                                if (debug) {
+                                    console.log('Indexer response ' + JSON.stringify(idx_res))
+                                }
                             } else {
                                 if(debug) {
                                     console.error('Skipping index update for invalid product entry ' + p._id)

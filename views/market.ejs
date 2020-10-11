@@ -106,7 +106,7 @@
                                                     <p>
                                                         <%= products[j].price + ' ' + products[j].currency.toUpperCase() %>
                                                     </p>
-                                                    <% } else if(typeof(products[j].price) == 'string' && typeof(products[j].currency) == 'object') { %>
+                                                    <% } else if(typeof(products[j].price) == 'string' && typeof(products[j].currency) !== 'undefined' && products[j].currency) { %>
                                                     <p>
                                                         <%= products[j].currency.symbol + products[j].price + ' ' + products[j].currency.code %>
                                                     </p>

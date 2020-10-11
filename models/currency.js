@@ -9,7 +9,7 @@ const request = require('request')
 let currency = {}
 
 currency.isValid = (c) => {
-    if (validator.isNotNull(c.code) && validator.isNotNull(c.symbol) && validator.isNotNull(c.status)){
+    if (c && validator.isNotNull(c.code) && validator.isNotNull(c.symbol) && validator.isNotNull(c.status)){
         return true
     } else {
         return false

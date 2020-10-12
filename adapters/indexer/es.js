@@ -6,6 +6,10 @@ const debug = cfg.env == 'development' ? true : false
 
 let es = {}
 
+function painlessEscape(str) {
+    return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
+
 es.getClient = () => {
     return es_client
 }
@@ -82,22 +86,20 @@ es.update = async (idx, id, doc, ops) => {
 
 es.updateMatches = async (idx, qry, ops) => {
     let script = ''
-    let params = ''
+    let params = {}
     if(ops.hasOwnProperty('replacement-values')) {
-        let specs = {spec: {}}
         for (const k of Object.keys(ops['replacement-values'])) {
-            if (k == 'specifications') {
-                console.log('Converting specification object')
+            if (typeof(ops['replacement-values'][k]) == 'object') {
+                console.log('Converting object to param for indexer query')
+                params[k] = {}
                 for (const s of Object.keys(ops['replacement-values'][k])) {
-                    specs.spec[s.toString()] = String(ops['replacement-values'][k][s])
+                    params[k][s.toString()] = String(ops['replacement-values'][k][s])
                 }
-                params = specs
             }
-            /*
-            let specScript = "for (spec in ctx._source[" + "\"" + 'specifications' + "\"" + ']) { ctx._source[' + "\"" + 'specifications' + "\"" + '][spec.getKey()] = params.spec[spec.getKey()]}'*/
-            let specScript = "ctx._source['specifications'] = params.spec;"
 
-            script = (script == '' ? script : script + ' ') + (k == 'specifications' ? specScript : 'ctx._source[' + "\"" + String(k) + "\"" + '] = ' + '"' + String(ops['replacement-values'][k]) + '";')
+            let assignToParams = "ctx._source['" + String(k) + "'] = params['" + String(k) + "'];"
+
+            script = (script == '' ? script : script + ' ') + ((typeof (ops['replacement-values'][k]) == 'object') ? assignToParams : 'ctx._source[' + "\"" + String(k) + "\"" + '] = "' + painlessEscape(String(ops['replacement-values'][k])) + '";')
         }
     } 
 
@@ -118,6 +120,8 @@ es.updateMatches = async (idx, qry, ops) => {
     if(debug) {
         console.log('Submitting elasticsearch request: ')
         console.log(esReq)
+        console.log("params: ")
+        console.log(params)
     }
     if (validator.isNotNull(ops)) {
         for (const o of Object.keys(ops)) {

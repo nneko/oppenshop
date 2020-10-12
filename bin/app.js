@@ -144,12 +144,12 @@ if(!module.parent){
         authLocal.init(passport, require('../models/user'))
         authGoogle.init(passport, require('../models/user'))
         authWindowsLive.init(passport, require('../models/user'))
-	    authFacebook.init(passport, require('../models/user'))
-	    authToken.init()
+	      authFacebook.init(passport, require('../models/user'))
+	      authToken.init()
         app.use(passport.initialize())
         app.use(passport.session())
-	
-	    app.use(express.json())
+
+	      app.use(express.json())
         app.use(express.raw())
         app.use(express.text())
         app.use(express.urlencoded({ extended: true }))
@@ -163,9 +163,23 @@ if(!module.parent){
             }
             next()
         })
-        
+
         //app routes
         app.use(require('../controllers'))
+        // Calling Exchange endpoint
+        new Promise(async resolve => {
+          const currency = require('../models/currency')
+          const data = await currency.update_currency_conversion_rate()
+          resolve(data)
+        }).then((d) => {
+          if (debug) {
+            if (d) {
+              console.log('Successfully updated FX conversion rates')
+            } else {
+              console.log('Failed updating FX conversion rates')
+            }
+          }
+        })
 
         //Catch-all error handler
         app.use((err, req, res, next) => {

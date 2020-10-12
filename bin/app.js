@@ -28,6 +28,9 @@ const flash = require('express-flash')
 const session = require('express-session')
 const sessionStore = require('connect-mongo')(session)
 
+// CronJobs
+const cron = require('node-cron')
+
 //const debug = cfg.env == 'development' ? true : false
 const debug = require('debug')('oppenshop:app')
 
@@ -177,6 +180,20 @@ if(!module.parent){
               console.log('Successfully updated FX conversion rates')
             } else {
               console.log('Failed updating FX conversion rates')
+            }
+          }
+        })
+
+        // Setup Nightly Job to pull and update FX conversion rates
+        cron.schedule('* 0 * * *', async () => {
+          const currency = require('../models/currency')
+          const d = await currency.update_currency_conversion_rate()
+          if (debug) {
+            console.log(new Date().toISOString())
+            if (d) {
+              console.log('Scheduled Job: Successfully updated FX conversion rates')
+            } else {
+              console.log('Scheduled Job: Failed updating FX conversion rates')
             }
           }
         })

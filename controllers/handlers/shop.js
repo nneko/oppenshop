@@ -45,6 +45,19 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
             console.log(s_count)
             let viewData = {}
 
+            //Populate the currency list
+            viewData.currency_list = {}
+            let c = await currency.read({ status: 'active' })
+            if (c) {
+                if (Array.isArray(c)) {
+                    for (let cIdx=0;cIdx < c.length; cIdx++) {
+                        if(currency.isValid(c[cIdx])) {
+                            viewData.currency_list[c[cIdx]._id.toString()] = c[cIdx]
+                        }
+                    }
+                }
+            }
+
             viewData.shops = []
             if (s) {
                 if (Array.isArray(s)) {
@@ -61,7 +74,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                   yy.src = media.getBinaryDetails(yy)
                                 }
                             }
-                            y.currency = await currency.read(y.currency,{findBy: 'id'})
+                            if(y.currency) y.currency = viewData.currency_list[y.currency]
                         }
                         x.products = p
                     }
@@ -79,7 +92,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                 syy.src = media.getBinaryDetails(syy)
                             }
                         }
-                        sy.currency = await currency.read(sy.currency,{findBy: 'id'})
+                        if(sy.currency) sy.currency = viewData.currency_list[sy.currency]
                     }
                     s.products = sp
 
@@ -117,7 +130,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                                         pImg.src = media.getBinaryDetails(pImg)
                                                     }
                                                 }
-                                                p.currency = await currency.read(p.currency,{findBy: 'id'})
+                                                if(p.currency) p.currency = viewData.currency_list[p.currency]
                                                 pList.push(p)
                                             }
                                         }
@@ -145,7 +158,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                                 pImg.src = media.getBinaryDetails(pImg)
                                             }
                                         }
-                                        p.currency = await currency.read(p.currency,{findBy: 'id'})
+                                        if (p.currency) p.currency = viewData.currency_list[p.currency]
                                         pList.push(p)
                                     }
                                 }
@@ -160,12 +173,6 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                 }
             }
 
-            let c = await currency.read({status: 'active'})
-            if (c) {
-                if (Array.isArray(c)) {
-                  viewData.currency_list = c
-                }
-            }
             // Pagination details
             if (pagination){
               viewData.shops_pages = Math.ceil(s_count / perPage)

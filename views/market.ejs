@@ -102,9 +102,9 @@
                                                     <% } %>
                                                 </div>
                                                 <div class="item-card-left catalog-item-card-section extra-info">
-                                                    <% if(typeof(products[j].price) == 'string' && typeof(products[j].currency) == 'string') { %>
+                                                    <% if(typeof(products[j].price) == 'string' && products[j].currency && typeof(products[j].currency) !== 'undefined' && products[j].currency.code && typeof(products[j].currency.code) == 'string') { %>
                                                     <p>
-                                                        <%= products[j].price + ' ' + products[j].currency.toUpperCase() %>
+                                                        <%= products[j].price + ' ' + products[j].currency.code.toUpperCase() %>
                                                     </p>
                                                     <% } else if(typeof(products[j].price) == 'string' && typeof(products[j].currency) !== 'undefined' && products[j].currency) { %>
                                                     <p>

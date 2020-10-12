@@ -18,6 +18,20 @@ marketHandler.populateViewData = async (uid, product_page = 1) => {
         }
         try {
             let viewData = {}
+
+            //Populate the currency list
+            viewData.currency_list = {}
+            let c = await currency.read({ status: 'active' })
+            if (c) {
+                if (Array.isArray(c)) {
+                    for (let cIdx = 0; cIdx < c.length; cIdx++) {
+                        if (currency.isValid(c[cIdx])) {
+                            viewData.currency_list[c[cIdx]._id.toString()] = c[cIdx]
+                        }
+                    }
+                }
+            }
+
             products = await product.read({}, product_range)
             product_index = await product.count({}, product_range)
 
@@ -33,7 +47,7 @@ marketHandler.populateViewData = async (uid, product_page = 1) => {
                         img.src = media.getBinaryDetails(img)
                     }
                 }
-                p.currency = await currency.read(p.currency,{findBy: 'id'})
+                if(p.currency) p.currency = viewData.currency_list[p.currency]
             }
 
             console.log(product_index)

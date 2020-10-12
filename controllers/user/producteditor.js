@@ -71,6 +71,19 @@ let populateViewData = async (id) => {
             }
             let viewData = {}
 
+            //Populate the currency list
+            viewData.currency_list = {}
+            let c = await currency.read({ status: 'active' })
+            if (c) {
+                if (Array.isArray(c)) {
+                    for (let cIdx = 0; cIdx < c.length; cIdx++) {
+                        if (currency.isValid(c[cIdx])) {
+                            viewData.currency_list[c[cIdx]._id.toString()] = c[cIdx]
+                        }
+                    }
+                }
+            }
+
             if (p) {
                 viewData.id = p._id
                 viewData.name = { value: p.name }
@@ -86,46 +99,16 @@ let populateViewData = async (id) => {
                   amount = p.price.split(".")
                   viewData.unit_dollar = {value: amount[0]}
                   viewData.unit_cents = {value: amount[1]}
-                  viewData.currency = {value: productCurrencyCode}
+                  viewData.currency = {value: productCurrency}
                 }
                 let specs = {}
                 if (typeof(p.specifications) !== 'undefined' ){
                   for (key in p.specifications){
                     specs[key] = {value: p.specifications[key]}
-                    //specs[key.replace('spec_', '')] = form[key]
-                    //p[key] = form[key]
-                    //console.log(key, form[key])
-                    //console.log(key.replace('spec_', ''), form[key])
                   }
                   console.log(typeof(specs))
                   console.log(specs)
                   viewData.specifications = specs
-                }
-
-                /*
-                viewData.address = generator.getPrimaryField(s.addresses)
-                if(!viewData.address && s.addresses && Array.isArray(s.addresses) && s.addresses.length > 0) {
-                    viewData.address = s.addresses[0]
-                }
-                if (viewData.address) {
-                    viewData.addressType = { value: viewData.address.type }
-                    viewData.addressStreet = { value: viewData.address.streetAddress }
-                    viewData.addressLocality = { value: viewData.address.locality }
-                    viewData.addressRegion = { value: viewData.address.region }
-                    viewData.addressPostcode = { value: viewData.address.postalCode }
-                    viewData.addressCountry = { value: viewData.address.country }
-                }
-
-                viewData.phoneNumber = generator.getPrimaryField(s.phoneNumbers)
-                if (!viewData.phoneNumber && s.phoneNumbers && Array.isArray(s.phoneNumbers) && s.phoneNumbers.length > 0) {
-                    viewData.phoneNumber = s.phoneNumbers[0] ? s.phoneNumbers[0] : undefined
-                }
-                */
-            }
-            let c = await currency.read({status: 'active'})
-            if (c) {
-                if (Array.isArray(c)) {
-                  viewData.currency_list = c
                 }
             }
             resolve(viewData)

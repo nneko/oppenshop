@@ -322,6 +322,7 @@ producteditor.post('/', function (req, res) {
                             }
                         } catch (err) {
                             console.log('Error on index update.')
+                            if(err && err.meta && err.meta.body && err.meta.body.error) console.error(err.meta.body.error)
                             console.error(err)
                             err.stack ? console.error(err.stack) : console.error('No stack trace.')
                         }

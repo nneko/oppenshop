@@ -82,9 +82,22 @@ es.update = async (idx, id, doc, ops) => {
 
 es.updateMatches = async (idx, qry, ops) => {
     let script = ''
+    let params = ''
     if(ops.hasOwnProperty('replacement-values')) {
+        let specs = {spec: {}}
         for (const k of Object.keys(ops['replacement-values'])) {
-            script = (script == '' ? script : script + ' ') + 'ctx._source[' + "\"" + String(k) + "\"" + '] = ' +  JSON.stringify(String(ops['replacement-values'][k])) + ';'
+            if (k == 'specifications') {
+                console.log('Converting specification object')
+                for (const s of Object.keys(ops['replacement-values'][k])) {
+                    specs.spec[s.toString()] = String(ops['replacement-values'][k][s])
+                }
+                params = specs
+            }
+            /*
+            let specScript = "for (spec in ctx._source[" + "\"" + 'specifications' + "\"" + ']) { ctx._source[' + "\"" + 'specifications' + "\"" + '][spec.getKey()] = params.spec[spec.getKey()]}'*/
+            let specScript = "ctx._source['specifications'] = params.spec;"
+
+            script = (script == '' ? script : script + ' ') + (k == 'specifications' ? specScript : 'ctx._source[' + "\"" + String(k) + "\"" + '] = ' + '"' + String(ops['replacement-values'][k]) + '";')
         }
     } 
 
@@ -94,7 +107,8 @@ es.updateMatches = async (idx, qry, ops) => {
         body: {
             script: {
                 lang: 'painless',
-                source: script
+                source: script,
+                params: params
             },
             query: {
                 term: qry

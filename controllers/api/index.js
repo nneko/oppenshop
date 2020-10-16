@@ -10,7 +10,7 @@ api.use('*/view/assets', express.static(path.join(__dirname, '../../views/' + '/
 api.use('/token*', require('./token'))
 api.use('/find*', require('./find'))
 api.use('/get/shops*', require('./shop'))
-//api.use('/get/products*', require('./product'))
+api.use('/get/products*', require('./product'))
 //Default to no matching endpoint
 api.use((req, res, next) => {
     res.status(404)

@@ -248,7 +248,7 @@ function getStorefrontDetails(obj){
     console.log('Ending getStorefrontDetails....')
 }
 
-respondToVisibility = function(element, callback) {
+respondToStorefrontVisibility = function(element, callback) {
   var options = {
     root: document.documentElement
   }
@@ -261,7 +261,7 @@ respondToVisibility = function(element, callback) {
   observer.observe(element);
 }
 
-respondToVisibility(document.getElementById("storefronts-pane"), visible => {
+respondToStorefrontVisibility(document.getElementById("storefronts-pane"), visible => {
 	//console.log("Initial Call of Storefront Details!")
   //console.log('<%= user.id %>')
   let e = document.getElementById("storefront-select")
@@ -294,7 +294,7 @@ function updateStorefrontView(s){
       item_card.className = "item-card"
       let item_card_left = document.createElement("DIV")
       item_card_left.className = "item-card-left"
-      console.log(typeof s.shops[ss].images)
+      //console.log(typeof s.shops[ss].images)
       if (typeof (s.shops[ss].images) !== 'undefined' && Array.isArray(s.shops[ss].images) && s.shops[ss].images.length > 0) {
         for (i in s.shops[ss].images){
           let storefront_image = document.createElement("IMG")
@@ -620,5 +620,5 @@ function validateImageFiles() {
     }
 }
 
-toggleStorefrontView()
+//toggleStorefrontView()
 </script>

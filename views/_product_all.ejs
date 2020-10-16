@@ -20,12 +20,13 @@
             <select id="product-filter-select" class="form-control" type="text" onchange="toggleShopSelector()" name="product-filter-selector"
                 aria-label="product-filter-select-label" aria-describedby="product-filter-select-basic-addon">
                 <option value="all-products-cards" selected>None</option>
-                <option value="all-active">Active</option>
-                <option value="all-inactive">Withdrawn</option>
+                <option value="active">Active</option>
+                <option value="inactive">Withdrawn</option>
             </select>
         </div>
     </div>
     <section id="product-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
+      <!--
         <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
             <% for(let j=0;j<shops.length;j++) { %>
                 <div class="shop-products-card" id="<%= shops[j]._id %>" name="<% shops[j].name %>" hidden="true">
@@ -110,10 +111,369 @@
                 </div>
             <% } %>
         <%  } %>
+      -->
     </section>
+    <nav id="product-list-section-pagination" class="content-nav-right" aria-label="Product listing">
+      <!-- Pagination Navigation Details -->
+    </nav>
 </div>
 <script>
+
+
+
+function getProductDetails(obj){
+    console.log('Calling getProductDetails....')
+    var xhttp;
+    xhttp=new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        //cFunction(this);
+        //console.log(document.getElementById('storefronts-pane'))
+        //console.log(typeof this.responseText);
+        updateProductView(JSON.parse(this.responseText))
+        //console.log(this.responseText);
+      }
+    };
+    url = 'http://localhost:3005/api/get/products?'+new URLSearchParams(obj).toString()
+    xhttp.open("GET", url, true);
+    xhttp.send();
+
+    console.log('Ending getProductDetails....')
+}
+
+respondToProductVisibility = function(element, callback) {
+  var options = {
+    root: document.documentElement
+  }
+  var observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.intersectionRatio > 0) callback();
+    });
+  }, options);
+
+  observer.observe(element);
+}
+
+respondToProductVisibility(document.getElementById("inventory-pane"), visible => {
+	//console.log("Initial Call of Storefront Details!")
+  //console.log('<%= user.id %>')
+  let values = {sid: '12', uid: '<%= user.id %>'}
+  let e = document.getElementById("shop-select")
+  if (e.options[e.selectedIndex].value !== 'all-products-cards') {
+    values.shop = e.options[e.selectedIndex].value
+  }
+  let f = document.getElementById("product-filter-select")
+  if (f.options[f.selectedIndex].value !== 'all-products-cards') {
+    values.status = f.options[f.selectedIndex].value
+  }
+  getProductDetails(values)
+});
+
+function updateProductView(pr){
+  //console.log(typeof pr)
+  //console.log(pr.products)
+  document.getElementById("product-list-section").innerHTML = ""
+  if (pr.products.length > 0){
+    for (pp in pr.products){
+      //console.log(pp)
+      //console.log(pr.products[pp])
+      let card = document.createElement("DIV")
+      card.className = "card"
+      let card_body = document.createElement("DIV")
+      card_body.className = "card-body"
+      let actionable_card_pane = document.createElement("DIV")
+      actionable_card_pane.className = "actionable-card-pane"
+      let product_view_card_pane = document.createElement("DIV")
+      product_view_card_pane.className = "product-view-card-pane"
+      let ul = document.createElement("UL")
+      let li = document.createElement("LI")
+      let span = document.createElement("SPAN")
+      let p = document.createElement("P")
+      p.className = "item-card-label"
+      let b = document.createElement("B")
+      b.innerHTML = pr.products[pp].displayName
+      p.appendChild(b)
+      span.appendChild(p)
+      let item_card = document.createElement("DIV")
+      item_card.className = "item-card"
+      let item_card_left = document.createElement("DIV")
+      item_card_left.className = "item-card-left"
+      //console.log(typeof p.products[pp].images)
+      if (typeof (pr.products[pp].images) !== 'undefined' && Array.isArray(pr.products[pp].images) && pr.products[pp].images.length > 0) {
+        for (i in pr.products[pp].images){
+          let product_image = document.createElement("IMG")
+          product_image.className = "card-product-image"
+          product_image.alt = pr.products[pp].images[i].originalname
+          //console.log(typeof(pr.products[pp].images[i].buffer))
+          //console.log(typeof(pr.products[pp].images[i].buffer.buffer))
+          //let imageStringBlob = pr.products[pp].images[i] && s.shops[ss].images[i].buffer && typeof(s.shops[ss].images[i].buffer.buffer) !== 'undefined' ? s.shops[ss].images[i].buffer.buffer : (s.shops[ss].images[i].buffer ? new Buffer.from(s.shops[ss].images[i].buffer,'base64') : '')
+          //let base64string = window.btoa([].reduce.call(new Uint8Array(imageStringBlob),function(p,c){return p+String.fromCharCode(c)},''))
+          //let src = 'data:'+file.mimetype+';base64,'+base64string
+          product_image.src = pr.products[pp].images[i].src
+          item_card_left.appendChild(product_image)
+        }
+      } else {
+        let figure = document.createElement("FIGURE")
+        figure.className = "card-product-image"
+        figure.innerHTML = '<%- include("assets/symbols/tags.svg") %>'
+        item_card_left.appendChild(figure)
+      }
+      item_card.appendChild(item_card_left)
+      let item_card_right_extra_info = document.createElement("DIV")
+      item_card_right_extra_info.className = "item-card-right extra-info"
+      let h4 = document.createElement("H4")
+      h4.innerHTML = "Availability"
+      item_card_right_extra_info.appendChild(h4)
+      let p_status = document.createElement("P")
+      if (typeof (pr.products[pp].quantity) !== 'undefined' && pr.products[pp].quantity > 0) {
+        p_status.innerHTML = pr.products[pp].quantity
+      } else if (pr.products[pp].status == 'active') {
+        p_status.innerHTML = '&infin;'
+      } else {
+        p_status.innerHTML = 'Out of Stock'
+      }
+      item_card_right_extra_info.appendChild(p_status)
+      if (typeof (pr.products[pp].description) !== 'undefined') {
+        let h4 = document.createElement("H4")
+        h4.innerHTML = "Description"
+        item_card_right_extra_info.appendChild(h4)
+        let p_desc = document.createElement("P")
+        p_desc.innerHTML = pr.products[pp].description
+        item_card_right_extra_info.appendChild(p_desc)
+      }
+      item_card.appendChild(item_card_right_extra_info)
+      span.appendChild(item_card)
+      li.appendChild(span)
+      ul.appendChild(li)
+      product_view_card_pane.appendChild(ul)
+      actionable_card_pane.appendChild(product_view_card_pane)
+      let action_button_section = document.createElement("DIV")
+      action_button_section.className = "action-button-section"
+      let edit_delete_action_form = document.createElement("FORM")
+      edit_delete_action_form.className = "edit-delete-action-form"
+      edit_delete_action_form.method = "POST"
+      edit_delete_action_form.action = "/user/shop"
+      let input_id = document.createElement("INPUT")
+      input_id.type = "hidden"
+      input_id.name = "id"
+      input_id.value = "upproduct"
+      edit_delete_action_form.appendChild(input_id)
+      let input_pid = document.createElement("INPUT")
+      input_pid.type = "hidden"
+      input_pid.name = "pid"
+      if (typeof(pr.products[pp]._id)  !== 'undefined') input_pid.value = pr.products[pp]._id
+      edit_delete_action_form.appendChild(input_pid)
+      let input_sid = document.createElement("INPUT")
+      input_sid.type = "hidden"
+      input_sid.name = "id"
+      if (typeof(pr.products[pp].shop)  !== 'undefined') input_sid.value = pr.products[pp].shop
+      edit_delete_action_form.appendChild(input_sid)
+      let input_uid = document.createElement("INPUT")
+      input_uid.type = "hidden"
+      input_uid.name = "id"
+      input_uid.value ='<%= user.id %>'
+      //if (typeof(s.shops[ss].owner)  !== 'undefined') input_uid.value = s.shops[ss].owner
+      edit_delete_action_form.appendChild(input_uid)
+      let a = document.createElement("A")
+      a.href = "/user/shop/edit?s="+pr.products[pp]._id
+      let button_edit = document.createElement("BUTTON")
+      button_edit.className = "action-icon-button  action-icon"
+      button_edit.type="button"
+      button_edit.title="Edit"
+      button_edit.name="update"
+      button_edit.value="edit"
+      //button_edit.
+      button_edit.innerHTML = '<%- include("assets/symbols/edit.svg") %>'
+      a.appendChild(button_edit)
+      edit_delete_action_form.appendChild(a)
+      if (pr.products[pp] == 'inactive') {
+        let button_re_activate = document.createElement("BUTTON")
+        button_re_activate.className = "action-icon-button reactivate-icon action-icon"
+        button_re_activate.type="submit"
+        button_re_activate.title="Re-activate"
+        button_re_activate.name="update"
+        button_re_activate.value="open"
+        //button_re_activate.
+        button_re_activate.innerHTML = '<%- include("assets/symbols/reload.svg") %>'
+        edit_delete_action_form.appendChild(button_re_activate)
+        let button_delete = document.createElement("BUTTON")
+        button_delete.className = "action-icon-button delete-icon action-icon"
+        button_delete.type="submit"
+        button_delete.title="Delete"
+        button_delete.name="update"
+        button_delete.value="delete"
+        //button_delete.
+        button_delete.innerHTML = '<%- include("assets/symbols/bin.svg") %>'
+        edit_delete_action_form.appendChild(button_delete)
+      } else {
+        let button_close = document.createElement("BUTTON")
+        button_close.className = "action-icon-button delete-icon action-icon"
+        button_close.type="submit"
+        button_close.title="Withdraw"
+        button_close.name="update"
+        button_close.value="withdraw"
+        //button_close.
+        button_close.innerHTML = '<%- include("assets/symbols/no.svg") %>'
+        edit_delete_action_form.appendChild(button_close)
+      }
+      action_button_section.appendChild(edit_delete_action_form)
+      actionable_card_pane.appendChild(action_button_section)
+      card_body.appendChild(actionable_card_pane)
+      card.appendChild(card_body)
+      document.getElementById("product-list-section").appendChild(card)
+    }
+  } else {
+    let no_products_card = document.createElement("DIV")
+    no_products_card.className = "no-products-card"
+    let p = document.createElement("P")
+    p.innerHTML = "No products associated with shop."
+    no_products_card.appendChild(p)
+    document.getElementById("product-list-section").appendChild(no_products_card)
+  }
+  //document.getElementById().innerHTML =
+  document.getElementById("product-list-section-pagination").innerHTML = ""
+  if (typeof(pr.total_pages) !== 'undefined' && pr.total_pages > 0) {
+    let pagination_text_center = document.createElement("UL")
+    pagination_text_center.className = "pagination text-center"
+    if (typeof(pr.current_page) !== 'undefined' ) {
+      if (pr.current_page == 1) {
+        let page_item_disabled = document.createElement("LI")
+        page_item_disabled.className = "page-item disabled"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        a.innerHTML = "First"
+        page_item_disabled.appendChild(a)
+        pagination_text_center.appendChild(page_item_disabled)
+      } else {
+        let page_item = document.createElement("LI")
+        page_item.className = "page-item"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        //a.href = "/user/shop/page/1"
+        a.onclick = function () {
+          //let e = document.getElementById("storefront-select")
+          //getProductDetails({sid: '12', uid: '<%= user.id %>',page: 1,status: e.options[e.selectedIndex].value})
+          let values = {sid: '12', uid: '<%= user.id %>',page: 1}
+          let e = document.getElementById("shop-select")
+          if (e.options[e.selectedIndex].value !== 'all-products-cards') {
+            values.shop = e.options[e.selectedIndex].value
+          }
+          let f = document.getElementById("product-filter-select")
+          if (f.options[f.selectedIndex].value !== 'all-products-cards') {
+            values.status = f.options[f.selectedIndex].value
+          }
+          getProductDetails(values)
+        }
+        a.innerHTML = "First"
+        page_item.appendChild(a)
+        pagination_text_center.appendChild(page_item)
+      }
+      let i = (Number(pr.current_page) > 5 ? Number(pr.current_page) - 4 : 1)
+      if (i !== 1) {
+        let page_item_disabled = document.createElement("LI")
+        page_item_disabled.className = "page-item disabled"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        a.innerHTML = "..."
+        page_item_disabled.appendChild(a)
+        pagination_text_center.appendChild(page_item_disabled)
+      }
+      for (; i <= (Number(pr.current_page) + 4) && i <= pr.total_pages; i++) {
+        let j = i
+        if (i == pr.current_page) {
+          let page_item_active = document.createElement("LI")
+          page_item_active.className = "page-item active"
+          let a = document.createElement("A")
+          a.className = "page-link"
+          a.innerHTML = i
+          page_item_active.appendChild(a)
+          pagination_text_center.appendChild(page_item_active)
+        } else {
+          let page_item = document.createElement("LI")
+          page_item.className = "page-item"
+          let a = document.createElement("A")
+          a.className = "page-link"
+          //a.href = "/user/shop/page/"+i
+          a.onclick = function () {
+            //console.log({sid: '12', uid: '<%= user.id %>',page: j})
+            //let e = document.getElementById("storefront-select")
+            //console.log(e.options[e.selectedIndex].value)
+            //getProductDetails({sid: '12', uid: '<%= user.id %>',page: j, status: e.options[e.selectedIndex].value})
+            let values = {sid: '12', uid: '<%= user.id %>',page: j}
+            let e = document.getElementById("shop-select")
+            if (e.options[e.selectedIndex].value !== 'all-products-cards') {
+              values.shop = e.options[e.selectedIndex].value
+            }
+            let f = document.getElementById("product-filter-select")
+            if (f.options[f.selectedIndex].value !== 'all-products-cards') {
+              values.status = f.options[f.selectedIndex].value
+            }
+            getProductDetails(values)
+          }
+          a.innerHTML = i
+          page_item.appendChild(a)
+          pagination_text_center.appendChild(page_item)
+        }
+        if (i == Number(pr.current_page) + 4 && i < pr.total_pages) {
+          let page_item_disabled = document.createElement("LI")
+          page_item_disabled.className = "page-item disabled"
+          let a = document.createElement("A")
+          a.className = "page-link"
+          a.innerHTML = "..."
+          page_item_disabled.appendChild(a)
+          pagination_text_center.appendChild(page_item_disabled)
+        }
+      }
+      if (pr.current_page == pr.total_pages) {
+        let page_item_disabled = document.createElement("LI")
+        page_item_disabled.className = "page-item disabled"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        a.innerHTML = "Last"
+        page_item_disabled.appendChild(a)
+        pagination_text_center.appendChild(page_item_disabled)
+      } else {
+        let page_item = document.createElement("LI")
+        page_item.className = "page-item"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        //a.href = "/user/shop/page/"+s.total_pages
+        a.onclick = function () {
+          //let e = document.getElementById("storefront-select")
+          //getProductDetails({sid: '12', uid: '<%= user.id %>',page: s.total_pages, status: e.options[e.selectedIndex].value})
+          let values = {sid: '12', uid: '<%= user.id %>',page: pr.total_pages}
+          let e = document.getElementById("shop-select")
+          if (e.options[e.selectedIndex].value !== 'all-products-cards') {
+            values.shop = e.options[e.selectedIndex].value
+          }
+          let f = document.getElementById("product-filter-select")
+          if (f.options[f.selectedIndex].value !== 'all-products-cards') {
+            values.status = f.options[f.selectedIndex].value
+          }
+          getProductDetails(values)
+        }
+        a.innerHTML = "Last"
+        page_item.appendChild(a)
+        pagination_text_center.appendChild(page_item)
+      }
+    }
+    document.getElementById("product-list-section-pagination").appendChild(pagination_text_center)
+  }
+}
+
 function toggleShopSelector(){
+  let values = {sid: '12', uid: '<%= user.id %>'}
+  // TODO: Get active page to carry-over when status change
+  let e = document.getElementById("shop-select")
+  if (e.options[e.selectedIndex].value !== 'all-products-cards') {
+    values.shop = e.options[e.selectedIndex].value
+  }
+  let f = document.getElementById("product-filter-select")
+  if (f.options[f.selectedIndex].value !== 'all-products-cards') {
+    values.status = f.options[f.selectedIndex].value
+  }
+  getProductDetails(values)
+    /*
     let elem = document.getElementById('shop-select')
     let elemFilter = document.getElementById('product-filter-select')
     let x = document.getElementsByClassName('shop-products-card')
@@ -213,6 +573,7 @@ function toggleShopSelector(){
             }
         }
     }
+    */
 }
-toggleShopSelector()
+//toggleShopSelector()
 </script>

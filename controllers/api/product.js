@@ -2,15 +2,16 @@ const cfg = require('../../configuration/index.js')
 const validator = require('../../utilities/validator')
 const user = require('../../models/user')
 const shop = require('../../models/shop')
-const media = require('../../adapters/storage/media')
+const product = require('../../models/product')
+const currency = require('../../models/currency')
 const express = require('express')
 const path = require('path')
 const jwt = require('../../adapters/authorization/jwt')
 const debug = cfg.env == 'development' ? true : false
 
-let shops = express.Router()
+let products = express.Router()
 
-shops.get('/', async (req, res) => {
+products.get('/', async (req, res) => {
   if (debug) {
     console.log(req.query)
     console.log(req.session)
@@ -22,41 +23,59 @@ shops.get('/', async (req, res) => {
     if (req.query.uid.length == 12 || req.query.uid.length == 24){
       let u = await user.read(req.query.uid.toString(),{findBy: 'id'})
       if (validator.isNotNull(u)) {
-        let t = { owner: u._id.toString() }
+        let t = {}
+        if (req.query.shop) {
+          t.shop = req.query.shop
+        } else {
+          s = await shop.read({ owner: u._id.toString() })
+          //console.log(typeof s)
+          //console.log(s.map(a => a._id.toString()))
+          t.shop = { $in: s.map(a => a._id.toString())}
+        }
         if (req.query.status) t.status = req.query.status
         let perPage = cfg.items_per_page ? cfg.items_per_page : 2 // 12
-        let shop_page = req.query.page ? Number(req.query.page) : 1
-        let o_shop = null
+        let product_page = req.query.page ? Number(req.query.page) : 1
+        let o_product = null
         let pagination = true
         if (pagination) {
-          o_shop = { pagination_skip: shop_page, pagination_limit: perPage}
+          o_product = { pagination_skip: product_page, pagination_limit: perPage}
         }
         if (debug) {
           console.log(t)
-          console.log(o_shop)
+          console.log(o_product)
         }
-        s = await shop.read(t,o_shop)
-        for (const x of s) {
-            if (Array.isArray(x.images) && x.images.length > 0) {
-                for (const xx of x.images) {
-                    if (xx.storage == 'db') {
-                      xx.src = media.getBinaryDetails(xx)
-                      //console.log(xx)
+        //Populate the currency list
+        currency_list = {}
+        let c = await currency.read({ status: 'active' })
+        if (c) {
+            if (Array.isArray(c)) {
+                for (let cIdx=0;cIdx < c.length; cIdx++) {
+                    if(currency.isValid(c[cIdx])) {
+                        currency_list[c[cIdx]._id.toString()] = c[cIdx]
                     }
                 }
             }
         }
-        s_count = await shop.count(t,o_shop)
-        let total_pages = Math.ceil(s_count / perPage)
-        if (shop_page > total_pages) shop_page = total_pages
+        p = await product.read(t,o_product)
+        for (const y of p) {
+            if (Array.isArray(y.images) && y.images.length > 0) {
+                for (const yy of y.images) {
+                  yy.src = media.getBinaryDetails(yy)
+                }
+            }
+            if(y.currency) y.currency = viewData.currency_list[y.currency]
+        }
+        p_count = await product.count(t,o_product)
+        let total_pages = Math.ceil(p_count / perPage)
+        if (product_page > total_pages) product_page = total_pages
         if (debug) {
-          //console.log(s)
-          console.log(s_count)
+          console.log(p)
+          console.log(p_count)
           console.log(total_pages)
-          console.log(shop_page)
+          console.log(product_page)
         }
         res.status(200)
-        res.json({message: 'Success', shops: s, total_shops: s_count, total_pages: total_pages, current_page: shop_page})
+        res.json({message: 'Success', products: p, total_products: p_count, total_pages: total_pages, current_page: product_page})
         //res.json({message: 'Success'})
       } else {
         res.status(400)
@@ -80,9 +99,9 @@ shops.get('/', async (req, res) => {
 
 })
 
-shops.use((req, res) => {
+products.use((req, res) => {
     res.status(405)
     res.json({ error: 'Method Not Allowed' })
 })
 
-module.exports = shops
+module.exports = products

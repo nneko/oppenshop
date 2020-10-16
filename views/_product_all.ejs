@@ -134,7 +134,7 @@ function getProductDetails(obj){
         //console.log(this.responseText);
       }
     };
-    url = 'http://localhost:3005/api/get/products?'+new URLSearchParams(obj).toString()
+    url = location.protocol + '//' + location.hostname + ':' + location.port + '/api/get/products?'+new URLSearchParams(obj).toString()
     xhttp.open("GET", url, true);
     xhttp.send();
 
@@ -297,7 +297,7 @@ function updateProductView(pr){
         button_re_activate.innerHTML = '<%- include("assets/symbols/reload.svg") %>'
         edit_delete_action_form.appendChild(button_re_activate)
         let button_delete = document.createElement("BUTTON")
-        button_delete.className = "action-icon-button delete-icon action-icon"
+        button_delete.className = "action-icon-button delete-icon action-icon close-icon"
         button_delete.type="submit"
         button_delete.title="Delete"
         button_delete.name="update"

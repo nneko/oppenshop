@@ -223,7 +223,7 @@ shophandler.catalogDeleteHander = async (form) => {
   }
 }
 
-shophandler.catalogAddProductHander = async (form) => {
+shophandler.catalogAddProductHandler = async (form) => {
   try {
     const ctg = await catalog.read(form.cid, { findBy: 'id' })
     let c = {}

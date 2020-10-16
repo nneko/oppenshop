@@ -6,8 +6,8 @@
             <label id="storefront-select-label" class="form-label" for="storefront-select">Show: </label>
             <select id="storefront-select" class="form-control" type="text" onchange="toggleStorefrontView()" name="storefronts"
                 aria-label="storefront-select-label" aria-describedby="storefront-select-basic-addon">
-                <option value="open" selected>Open</option>
-                <option value="closed">Closed</option>
+                <option value="active" selected>Open</option>
+                <option value="inactive">Closed</option>
             </select>
         </div>
         <div class="add-action-button-section">
@@ -18,6 +18,7 @@
         </div>
     </div>
     <section id="storefront-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
+      <!--
         <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
         <% for(let i=0;i<shops.length;i++) { %>
         <div class="card <%= shops[i].status %>" <% if (shops[i].status == 'inactive'){ %>hidden<% } %>>
@@ -29,7 +30,7 @@
                                 <span>
                                     <p class="item-card-label">
                                         <b><% if(typeof(shops[i].displayName) !== 'undefined') {%><%= shops[i].displayName %><% } else { %><%= shops[i].name %><% } %></b>
-                                    </dipv>
+                                    </p>
                                     <div class=" item-card">
                                         <div class="item-card-left">
                                             <% if (typeof(shops[i].images) !== 'undefined' && Array.isArray(shops[i].images) && shops[i].images.length > 0) { %>
@@ -100,8 +101,10 @@
         <%  } else { %>
         <p>No stores associated with account.</p>
         <% } %>
+      -->
     </section>
-    <nav class="content-nav-right" aria-label="Shop listing">
+    <nav id="storefront-list-section-pagination" class="content-nav-right" aria-label="Shop listing">
+      <!--
         <% if (typeof(shops_pages) !== 'undefined' && shops_pages > 0) { %>
         <ul class="pagination text-center">
             <% if (typeof(shops_current) !== 'undefined' ) { %>
@@ -132,6 +135,7 @@
             <% } %>
         </ul>
         <% } %>
+      -->
     </nav>
     <section class="standard-form-section" id="newstore" <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0 ){ %>hidden<% } %> >
         <hr>
@@ -221,7 +225,318 @@
     </section>
 </div>
 <script>
+
+
+function getStorefrontDetails(obj){
+    console.log('Calling getStorefrontDetails....')
+    var xhttp;
+    xhttp=new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        //cFunction(this);
+        //console.log(document.getElementById('storefronts-pane'))
+        //console.log(typeof this.responseText);
+        updateStorefrontView(JSON.parse(this.responseText))
+        //console.log(this.responseText);
+      }
+    };
+    //url = 'http://localhost:3005/api/get/shops?sid=12&uid=5f24af48d559ff4b42e0dc4d'
+    url = 'http://localhost:3005/api/get/shops?'+new URLSearchParams(obj).toString()
+    xhttp.open("GET", url, true);
+    xhttp.send();
+
+    console.log('Ending getStorefrontDetails....')
+}
+
+respondToVisibility = function(element, callback) {
+  var options = {
+    root: document.documentElement
+  }
+  var observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.intersectionRatio > 0) callback();
+    });
+  }, options);
+
+  observer.observe(element);
+}
+
+respondToVisibility(document.getElementById("storefronts-pane"), visible => {
+	//console.log("Initial Call of Storefront Details!")
+  //console.log('<%= user.id %>')
+  let e = document.getElementById("storefront-select")
+  getStorefrontDetails({sid: '12', uid: '<%= user.id %>',status: e.options[e.selectedIndex].value})
+});
+
+function updateStorefrontView(s){
+  //console.log(typeof s)
+  document.getElementById("storefront-list-section").innerHTML = ""
+  if (s.shops.length > 0){
+    for (ss in s.shops){
+      let card = document.createElement("DIV")
+      card.className = "card"
+      let card_body = document.createElement("DIV")
+      card_body.className = "card-body"
+      let actionable_card_pane = document.createElement("DIV")
+      actionable_card_pane.className = "actionable-card-pane"
+      let address_view_card_pane = document.createElement("DIV")
+      address_view_card_pane.className = "address-view-card-pane"
+      let ul = document.createElement("UL")
+      let li = document.createElement("LI")
+      let span = document.createElement("SPAN")
+      let p = document.createElement("P")
+      p.className = "item-card-label"
+      let b = document.createElement("B")
+      b.innerHTML = s.shops[ss].displayName ? s.shops[ss].displayName : s.shops[ss].name
+      p.appendChild(b)
+      span.appendChild(p)
+      let item_card = document.createElement("DIV")
+      item_card.className = "item-card"
+      let item_card_left = document.createElement("DIV")
+      item_card_left.className = "item-card-left"
+      console.log(typeof s.shops[ss].images)
+      if (typeof (s.shops[ss].images) !== 'undefined' && Array.isArray(s.shops[ss].images) && s.shops[ss].images.length > 0) {
+        for (i in s.shops[ss].images){
+          let storefront_image = document.createElement("IMG")
+          storefront_image.className = "storefront-image"
+          storefront_image.alt = s.shops[ss].images[i].originalname
+          //console.log(typeof(s.shops[ss].images[i].buffer))
+          //console.log(typeof(s.shops[ss].images[i].buffer.buffer))
+          //let imageStringBlob = s.shops[ss].images[i] && s.shops[ss].images[i].buffer && typeof(s.shops[ss].images[i].buffer.buffer) !== 'undefined' ? s.shops[ss].images[i].buffer.buffer : (s.shops[ss].images[i].buffer ? new Buffer.from(s.shops[ss].images[i].buffer,'base64') : '')
+          //let base64string = window.btoa([].reduce.call(new Uint8Array(imageStringBlob),function(p,c){return p+String.fromCharCode(c)},''))
+          //let src = 'data:'+file.mimetype+';base64,'+base64string
+          storefront_image.src = s.shops[ss].images[i].src
+          item_card_left.appendChild(storefront_image)
+        }
+      } else {
+        let figure = document.createElement("FIGURE")
+        figure.className = "storefront-image"
+        figure.innerHTML = '<%- include("assets/symbols/shop.svg") %>'
+        item_card_left.appendChild(figure)
+      }
+      item_card.appendChild(item_card_left)
+      let item_card_right_extra_info = document.createElement("DIV")
+      item_card_right_extra_info.className = "item-card-right extra-info"
+      if (typeof (s.shops[ss].status) !== 'undefined') {
+        let h4 = document.createElement("H4")
+        h4.innerHTML = "Status"
+        item_card_right_extra_info.appendChild(h4)
+        let p_status = document.createElement("P")
+        if (s.shops[ss].status == 'active') {
+          p_status.innerHTML = 'Open'
+        } else {
+          p_status.innerHTML = 'Closed'
+        }
+        item_card_right_extra_info.appendChild(p_status)
+      }
+      if (typeof (s.shops[ss].description) !== 'undefined') {
+        let h4 = document.createElement("H4")
+        h4.innerHTML = "Description"
+        item_card_right_extra_info.appendChild(h4)
+        let p_desc = document.createElement("P")
+        p_desc.innerHTML = s.shops[ss].description
+        item_card_right_extra_info.appendChild(p_desc)
+      }
+      item_card.appendChild(item_card_right_extra_info)
+      span.appendChild(item_card)
+      li.appendChild(span)
+      ul.appendChild(li)
+      address_view_card_pane.appendChild(ul)
+      actionable_card_pane.appendChild(address_view_card_pane)
+      let action_button_section = document.createElement("DIV")
+      action_button_section.className = "action-button-section"
+      let edit_delete_action_form = document.createElement("FORM")
+      edit_delete_action_form.className = "edit-delete-action-form"
+      edit_delete_action_form.method = "POST"
+      edit_delete_action_form.action = "/user/shop"
+      let input_id = document.createElement("INPUT")
+      input_id.type = "hidden"
+      input_id.name = "id"
+      input_id.value = "upshop"
+      edit_delete_action_form.appendChild(input_id)
+      let input_sid = document.createElement("INPUT")
+      input_sid.type = "hidden"
+      input_sid.name = "id"
+      if (typeof(s.shops[ss]._id)  !== 'undefined') input_sid.value = s.shops[ss]._id
+      edit_delete_action_form.appendChild(input_sid)
+      let input_uid = document.createElement("INPUT")
+      input_uid.type = "hidden"
+      input_uid.name = "id"
+      if (typeof(s.shops[ss].owner)  !== 'undefined') input_uid.value = s.shops[ss].owner
+      edit_delete_action_form.appendChild(input_uid)
+      if (s.shops[ss].status == 'inactive') {
+        let a = document.createElement("A")
+        a.href = "/user/shop/edit?s="+s.shops[ss]._id
+        let button_edit = document.createElement("BUTTON")
+        button_edit.className = "action-icon-button  action-icon"
+        button_edit.type="button"
+        button_edit.title="Edit"
+        button_edit.name="update"
+        button_edit.value="edit"
+        //button_edit.
+        button_edit.innerHTML = '<%- include("assets/symbols/edit.svg") %>'
+        a.appendChild(button_edit)
+        edit_delete_action_form.appendChild(a)
+        let button_re_activate = document.createElement("BUTTON")
+        button_re_activate.className = "action-icon-button reactivate-icon action-icon"
+        button_re_activate.type="submit"
+        button_re_activate.title="Re-activate"
+        button_re_activate.name="update"
+        button_re_activate.value="open"
+        //button_re_activate.
+        button_re_activate.innerHTML = '<%- include("assets/symbols/reload.svg") %>'
+        edit_delete_action_form.appendChild(button_re_activate)
+        let button_delete = document.createElement("BUTTON")
+        button_delete.className = "action-icon-button delete-icon action-icon"
+        button_delete.type="submit"
+        button_delete.title="Delete"
+        button_delete.name="update"
+        button_delete.value="delete"
+        //button_delete.
+        button_delete.innerHTML = '<%- include("assets/symbols/bin.svg") %>'
+        edit_delete_action_form.appendChild(button_delete)
+      } else {
+        let a = document.createElement("A")
+        a.href = "/user/shop/edit?s="+s.shops[ss]._id
+        let button_edit = document.createElement("BUTTON")
+        button_edit.className = "action-icon-button  action-icon"
+        button_edit.type="button"
+        button_edit.title="Edit"
+        button_edit.name="update"
+        button_edit.value="edit"
+        //button_edit.
+        button_edit.innerHTML = '<%- include("assets/symbols/edit.svg") %>'
+        a.appendChild(button_edit)
+        edit_delete_action_form.appendChild(a)
+        let button_close = document.createElement("BUTTON")
+        button_close.className = "action-icon-button delete-icon action-icon"
+        button_close.type="submit"
+        button_close.title="Delete"
+        button_close.name="update"
+        button_close.value="delete"
+        //button_close.
+        button_close.innerHTML = '<%- include("assets/symbols/no.svg") %>'
+        edit_delete_action_form.appendChild(button_close)
+      }
+      action_button_section.appendChild(edit_delete_action_form)
+      actionable_card_pane.appendChild(action_button_section)
+      card_body.appendChild(actionable_card_pane)
+      card.appendChild(card_body)
+      document.getElementById("storefront-list-section").appendChild(card)
+    }
+  } else {
+    let p = document.createElement("P")
+    p.innerHTML = "No stores associated with account."
+    document.getElementById("storefront-list-section").appendChild(p)
+  }
+  //document.getElementById().innerHTML =
+  document.getElementById("storefront-list-section-pagination").innerHTML = ""
+  if (typeof(s.total_pages) !== 'undefined' && s.total_pages > 0) {
+    let pagination_text_center = document.createElement("UL")
+    pagination_text_center.className = "pagination text-center"
+    if (typeof(s.current_page) !== 'undefined' ) {
+      if (s.current_page == 1) {
+        let page_item_disabled = document.createElement("LI")
+        page_item_disabled.className = "page-item disabled"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        a.innerHTML = "First"
+        page_item_disabled.appendChild(a)
+        pagination_text_center.appendChild(page_item_disabled)
+      } else {
+        let page_item = document.createElement("LI")
+        page_item.className = "page-item"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        //a.href = "/user/shop/page/1"
+        a.onclick = function () {
+          let e = document.getElementById("storefront-select")
+          getStorefrontDetails({sid: '12', uid: '<%= user.id %>',page: 1,status: e.options[e.selectedIndex].value})
+        }
+        a.innerHTML = "First"
+        page_item.appendChild(a)
+        pagination_text_center.appendChild(page_item)
+      }
+      let i = (Number(s.current_page) > 5 ? Number(s.current_page) - 4 : 1)
+      if (i !== 1) {
+        let page_item_disabled = document.createElement("LI")
+        page_item_disabled.className = "page-item disabled"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        a.innerHTML = "..."
+        page_item_disabled.appendChild(a)
+        pagination_text_center.appendChild(page_item_disabled)
+      }
+      for (; i <= (Number(s.current_page) + 4) && i <= s.total_pages; i++) {
+        let j = i
+        if (i == s.current_page) {
+          let page_item_active = document.createElement("LI")
+          page_item_active.className = "page-item active"
+          let a = document.createElement("A")
+          a.className = "page-link"
+          a.innerHTML = i
+          page_item_active.appendChild(a)
+          pagination_text_center.appendChild(page_item_active)
+        } else {
+          let page_item = document.createElement("LI")
+          page_item.className = "page-item"
+          let a = document.createElement("A")
+          a.className = "page-link"
+          //a.href = "/user/shop/page/"+i
+          a.onclick = function () {
+            console.log({sid: '12', uid: '<%= user.id %>',page: j})
+            let e = document.getElementById("storefront-select")
+            console.log(e.options[e.selectedIndex].value)
+            getStorefrontDetails({sid: '12', uid: '<%= user.id %>',page: j, status: e.options[e.selectedIndex].value})
+          }
+          a.innerHTML = i
+          page_item.appendChild(a)
+          pagination_text_center.appendChild(page_item)
+        }
+        if (i == Number(s.current_page) + 4 && i < s.total_pages) {
+          let page_item_disabled = document.createElement("LI")
+          page_item_disabled.className = "page-item disabled"
+          let a = document.createElement("A")
+          a.className = "page-link"
+          a.innerHTML = "..."
+          page_item_disabled.appendChild(a)
+          pagination_text_center.appendChild(page_item_disabled)
+        }
+      }
+      if (s.current_page == s.total_pages) {
+        let page_item_disabled = document.createElement("LI")
+        page_item_disabled.className = "page-item disabled"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        a.innerHTML = "Last"
+        page_item_disabled.appendChild(a)
+        pagination_text_center.appendChild(page_item_disabled)
+      } else {
+        let page_item = document.createElement("LI")
+        page_item.className = "page-item"
+        let a = document.createElement("A")
+        a.className = "page-link"
+        //a.href = "/user/shop/page/"+s.total_pages
+        a.onclick = function () {
+          let e = document.getElementById("storefront-select")
+          getStorefrontDetails({sid: '12', uid: '<%= user.id %>',page: s.total_pages, status: e.options[e.selectedIndex].value})
+        }
+        a.innerHTML = "Last"
+        page_item.appendChild(a)
+        pagination_text_center.appendChild(page_item)
+      }
+    }
+    document.getElementById("storefront-list-section-pagination").appendChild(pagination_text_center)
+  }
+}
+
 function toggleStorefrontView(){
+    let e = document.getElementById("storefront-select")
+    // TODO: Get active page to carry-over when status change
+    //let pagination_section = document.getElementById("storefront-list-section-pagination")
+    //let v = pagination_section.getElementsByClassName(names)
+    getStorefrontDetails({sid: '12', uid: '<%= user.id %>', status: e.options[e.selectedIndex].value})
+    /*
     let cardSelector = document.getElementById('storefront-select')
     let cardList = document.getElementById('storefront-list-section')
     if (cardSelector && cardSelector.value == 'closed'){
@@ -245,6 +560,7 @@ function toggleStorefrontView(){
     } else {
         console.log(cardSelector.value);
     }
+    */
 }
 
 function toggleAddressFields(){

@@ -5,9 +5,11 @@ const debug = cfg.env == 'development' ? true : false
 let media = {}
 
 media.getBinaryDetails = (file) => {
-    console.log(typeof(file))
-    console.log(typeof(file.buffer))
-    console.log(typeof(file.buffer.buffer))
+    if(debug) {
+      console.log(typeof(file))
+      console.log(typeof(file.buffer))
+      console.log(typeof(file.buffer.buffer))
+    }
 
     let imageStringBlob = file && file.buffer && typeof(file.buffer.buffer) !== 'undefined' ? file.buffer.buffer : (file.buffer ? Buffer.from(file.buffer,'base64') : '')
 

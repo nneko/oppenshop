@@ -182,7 +182,7 @@ The application provides a RESTful API with endpoints accessible at /api/*
 
 ### Testing
 
-Testing and validation uses the [JEST](https://jestjs.io) testing frameworks. All test scripts are located under the "tests" directory.
+Testing and validation uses the [JEST](https://jestjs.io) testing frameworks. All test scripts are located under the "tests" directory. To configure and run the test cases for oppenshop follow the [testing](./documentation/TESTING.md) guide.
 
 ### Extensions
 

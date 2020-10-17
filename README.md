@@ -172,24 +172,24 @@ curl -H 'Content-Type: application/json' -X POST 'http://localhost:9200/products
 
 ## API
 
+The platform provides a built-in Application Programming Interface (API) that provides various endpoints to support queries and other features such as authentication. Details of the features provided by the API can be found in the [api reference](./documentation/API.md).
+
 ### Endpoints
 
 The application provides a RESTful API with endpoints accessible at /api/*
 
-#### /find
+## Developmemt
 
-Retrieve a specific shop/product/catalog entry or alternatively search for shop/product/catalogs matching or related to the query.
+### Testing
 
-eg.)
+Testing and validation uses the [JEST](https://jestjs.io) testing frameworks. All test scripts are located under the "tests" directory.
 
-```
-{
-	"query": {
-		"match": {
-			"name": {
-				"query": "xbox"
-			}
-		}
-	}
-}
-```
+### Extensions
+
+Platform extensions must be placed in the adapters directory.
+
+## Features
+
+### Multi-Currency Management
+
+[multi-currency management](./documentation/CURRENCY_CHANGES.md)

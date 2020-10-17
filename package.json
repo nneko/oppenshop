@@ -1,11 +1,11 @@
 {
   "name": "oppenshop",
   "version": "1.0.0",
-  "description": "Marketplace app and api service to support commerce in goods and services across multiple vendors, payment and logistics providers",
+  "description": "Marketplace platform providing an app and api service to support commerce in goods and services between buyers and sellers across multiple vendors, payment and logistics providers.",
   "main": "app.js",
   "private": true,
   "scripts": {
-    "test": "jest",
+    "test": "jest ./tests",
     "start": "node ./bin/app",
     "dev": "nodemon bin/app"
   },

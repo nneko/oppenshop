@@ -312,7 +312,7 @@ function updateStorefrontView(s){
       } else {
         let figure = document.createElement("FIGURE")
         figure.className = "storefront-image"
-        figure.innerHTML = '<%- include("assets/symbols/shop.svg") %>'
+        figure.innerHTML = '<%- include("partials/_shop_image_object.ejs") %>'
         item_card_left.appendChild(figure)
       }
       item_card.appendChild(item_card_left)

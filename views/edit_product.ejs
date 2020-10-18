@@ -39,7 +39,7 @@
                                 <% if(typeof(image) !== 'undefined' && image.value) { %>
                                 <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
                                 <% } else { %>
-                                    <%- include('assets/symbols/tags.svg') %>
+                                    <%- include('partials/_product_image_object.ejs') %>
                                 <% } %>
                                 </figure>
                                 <p class="featured-image-legend">Product Image</p>

@@ -215,7 +215,7 @@ function updateProductView(pr){
       } else {
         let figure = document.createElement("FIGURE")
         figure.className = "card-product-image"
-        figure.innerHTML = '<%- include("assets/symbols/tags.svg") %>'
+        figure.innerHTML = '<%- include("partials/_product_image_object.ejs") %>'
         item_card_left.appendChild(figure)
       }
       item_card.appendChild(item_card_left)

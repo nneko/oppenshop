@@ -22,7 +22,7 @@ router.use(async (req,res,next) => {
             baseCurrency = await currencyModel.read({ code: cfg.base_currency_code }, {limit: 1})
 
             if (!currencyModel.isValid(baseCurrency)) {
-                let currencyError = new Error('Unable to set base currency')
+                let currencyError = new Error('Unsupported to set base currency')
                 throw currencyError
             }
         } catch (e) {

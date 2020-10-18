@@ -48,11 +48,11 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
             if(typeof(this.items[i].price) == 'number' && typeof(this.items[i].qty) == 'number') {
                 if(!this.items[i].currency) this.items[i].currency = this.currency.code
                 qty += Number(this.items[i].qty)
-                let exchangeRate = this.currency.exchangeRates[this.currency.code]
-                if(this.items[i].currency && (! isNaN(this.currency.exchangeRates[this.items[i].currency]))) {
-                    exchangeRate = Number(this.currency.exchangeRates[this.items[i].currency])
-                }
-                price += (Number(this.items[i].qty) * (exchangeRate * Number(this.items[i].price)))
+                let currencyExchangeRate = this.currency.exchangeRates[this.currency.code]
+
+                let productPriceInBase = ((this.items[i].currency && (!isNaN(this.currency.exchangeRates[this.items[i].currency]))) ? Number(this.currency.exchangeRates[this.items[i].currency]) : 1) * Number(this.items[i].price)
+
+                price += (Number(this.items[i].qty) * (currencyExchangeRate * productPriceInBase))
             }
         }
         this.totalPrice = price

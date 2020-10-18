@@ -63,7 +63,20 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
         if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof (quantity) == 'number' && quantity > 0) {
             let item = this.items[product._id]
             if (!item) {
-                item = this.items[product._id] = { displayName: product.displayName, image: Array.isArray(product.images) ? product.images[0] : undefined, qty: 0, price: Number(product.price), currency: product.currency ? String(product.currency) : cfg.base_currency_code }
+                item = this.items[product._id] = {
+                    displayName: product.displayName, 
+                    image: Array.isArray(product.images) ? product.images[0] : undefined,
+                    qty: 0,
+                    price: Number(product.price) 
+                }
+
+                let productCurrency = await currency.read(product.currency,{findBy: 'id'})
+
+                if(currency.isValid(productCurrency)) {
+                    item.currency = String(productCurrency.code)
+                } else {
+                    item.currency = cfg.base_currency_code
+                }
             }
             item.qty += Number(quantity)
             this.items[product._id] = item

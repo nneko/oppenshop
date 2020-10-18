@@ -69,7 +69,7 @@
                                                         <% } %>
                                                     </div>
                                                     <h4 class="spc-top-1"><%= bag.items[product].qty + ' x ' %></h4>
-                                                    <h4 class="spc-top-1"><%= formatter.roundNumber(Number(bag.items[product].price), 2) %></h4>
+                                                    <h4 class="spc-top-1"><%= formatter.roundNumber(Number(bag.items[product].price), 2) + ' ' + bag.items[product].currency %></h4>
                                                 </span>
                                             </a>
                                             <div class="remove-from-bag-button-container">

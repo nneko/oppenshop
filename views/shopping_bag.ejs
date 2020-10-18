@@ -35,9 +35,9 @@
                 <div class="shopping-bag-header">
                     <h2>
                         <% if(typeof(bag) !== 'undefined') { %>
-                            <b>Total is <% if(typeof(currency_symbol) == 'string') { %><%= currency_symbol %>
-                            <% } else { %>$<% } %><%= formatter.roundNumber(Number(bag.total()),2) %><% if(typeof(currency) == 'string') { %><%= ' ' + currency + '.' %>
-                            <% } else { %> USD.<% } %></b>
+                            <b>Total is <% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.symbol) !== 'undefined') { %><%= bag.currency.symbol %>
+                            <% } else { %>$<% } %><%= formatter.roundNumber(Number(bag.total()),2) %><% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined' && bag.currency.code) { %><%= ' ' + bag.currency.code + '.' %>
+                            <% } %></b>
                         <% } else { %>
                             Your bag is empty.
                         <% } %>

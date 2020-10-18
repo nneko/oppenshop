@@ -1,30 +1,69 @@
 const cfg = require('../configuration')
 const user = require('./user')
+const currency = require('./currency')
 const debug = cfg.env == 'development' ? true : false
 
-module.exports = function ShoppingBag(shoppingBag){
+module.exports = function ShoppingBag(shoppingBag, baseCurrency){
+
+    if (!currency.isValid(baseCurrency)) {
+        let err = new Error('Cannot create a shopping bag without setting the base currency')
+        err.name = 'ShoppingBagError'
+        err.type = 'Invalid Base Currency'
+        throw err
+    }
+
+    this.currency = baseCurrency
     this.items = typeof(shoppingBag !== 'undefined') && shoppingBag && shoppingBag.items ? shoppingBag.items : {}
     this.totalQuantity = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalQuantity ? shoppingBag.totalQuantity : 0
-    this.totalPrice = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalPrice ? shoppingBag.totalPrice : 0
+    this.totalPrice = typeof (shoppingBag !== 'undefined') && shoppingBag && shoppingBag.totalPrice && shoppingBag.currency == this.currency.code ? shoppingBag.totalPrice : 0
+
+    this.getCurrency = () => {
+        return this.currency
+    }
+
+    this.setCurrency = async (currency_code) => {
+        try {
+            this.currency = await currency.read({
+                code: (currency_code && typeof(currency_code) == 'string' ? currency_code : cfg.base_currency_code)
+            }, { limit: 1 })
+            if (! currency.isValid(this.currency)) {
+                let err = new Error('Invalid Base Currency')
+                err.name = 'CurrencyError'
+                err.type = 'Invalid Base Currency'
+                throw err
+            }
+            this.sum()
+        } catch (e) {
+            if (debug && e) {
+                console.error(e.stack)
+            }
+            throw e
+        }
+    }
 
     this.sum = function() {
         let qty = 0
         let price = 0
         for (const i of Object.keys(this.items)) {
             if(typeof(this.items[i].price) == 'number' && typeof(this.items[i].qty) == 'number') {
+                if(!this.items[i].currency) this.items[i].currency = this.currency.code
                 qty += Number(this.items[i].qty)
-                price += (Number(this.items[i].qty) * Number(this.items[i].price))
+                let exchangeRate = this.currency.exchangeRates[this.currency.code]
+                if(this.items[i].currency && (! isNaN(this.currency.exchangeRates[this.items[i].currency]))) {
+                    exchangeRate = Number(this.currency.exchangeRates[this.items[i].currency])
+                }
+                price += (Number(this.items[i].qty) * (exchangeRate * Number(this.items[i].price)))
             }
         }
         this.totalPrice = price
         this.totalQuantity = qty
     }
 
-    this.add = function(product,quantity) {
+    this.add = async function(product,quantity) {
         if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof (quantity) == 'number' && quantity > 0) {
             let item = this.items[product._id]
             if (!item) {
-                item = this.items[product._id] = { displayName: product.displayName, image: Array.isArray(product.images) ? product.images[0] : undefined, qty: 0, price: Number(product.price) }
+                item = this.items[product._id] = { displayName: product.displayName, image: Array.isArray(product.images) ? product.images[0] : undefined, qty: 0, price: Number(product.price), currency: product.currency ? String(product.currency) : cfg.base_currency_code }
             }
             item.qty += Number(quantity)
             this.items[product._id] = item
@@ -104,11 +143,12 @@ module.exports = function ShoppingBag(shoppingBag){
 
     this.save = async function(u) {
         try {
-            if (await user.isValid(u)) {
+            if (user.isValid(u)) {
                 u.bag = {
                     items: this.items,
                     totalPrice: this.totalPrice,
-                    totalQuantity: this.totalQuantity
+                    totalQuantity: this.totalQuantity,
+                    currency: this.currency.code
                 }
 
                 return await user.update({_id: u._id},u)

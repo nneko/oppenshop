@@ -1,10 +1,6 @@
 const cfg = require('../../configuration')
 const validator = require('../../utilities/validator')
 const converter = require('../../utilities/converter')
-const media = require('../../adapters/storage/media')
-const user = require('../../models/user')
-const product = require('../../models/product')
-const ShoppingBag = require('../../models/shoppingbag')
 const handler = require('../handlers/user/bag')
 const express = require('express')
 const debug = cfg.env == 'development' ? true : false
@@ -18,7 +14,10 @@ bag.get('/', async (req, res) => {
         res.render('shopping_bag', viewData)
 
     } catch (e) {
-        console.error(e)
+        console.log(e)
+        if(debug) {
+            if (e.stack) console.error(e.stack)
+        }
         res.status(500)
         res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user })
     }
@@ -75,8 +74,10 @@ bag.post('/', async (req, res) => {
             res.redirect('/market')
         }
     } catch (e) {
-        console.error(e)
-        console.error(e.stack)
+        console.log(e)
+        if (debug) {
+            if (e.stack) console.error(e.stack)
+        }
         res.status(500)
         res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user })
     }

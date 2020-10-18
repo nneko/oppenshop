@@ -5,6 +5,7 @@ const converter = require('../../utilities/converter')
 const handler = require('../handlers/market/product')
 const user = require('../../models/user')
 const product = require('../../models/product')
+const currency = require('../../models/currency')
 const ShoppingBag = require('../../models/shoppingbag')
 const debug = cfg.env == 'development' ? true : false
 
@@ -29,7 +30,14 @@ marketProduct.post('/', async (req, res) => {
         let form = converter.objectFieldsToString(req.body)
         if (validator.isNotNull(form)) {
             let p = await product.read(form.pid,{findBy: 'id'})
-            let bag = new ShoppingBag(req.session.bag)
+
+            let bagCurrency = await currency.read({ code: cfg.base_currency_code }, { limit: 1 })
+
+            if (!currency.isValid(bagCurrency)) {
+                let currencyError = new Error('Unable to set shopping bag currency')
+                throw currencyError
+            }
+            let bag = new ShoppingBag(req.session.bag,bagCurrency)
             let viewData = await handler.populateViewData(form.pid)
             viewData.user = req.user
             switch(form.action) {

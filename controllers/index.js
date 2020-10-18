@@ -4,34 +4,55 @@ const path = require('path')
 const api = require('./api')
 const validator = require('../utilities/validator')
 const userModel = require('../models/user')
+const currencyModel = require('../models/currency')
 const ShoppingBag = require('../models/shoppingbag')
 const user = require('../models/user')
+const { base } = require('money')
+let  baseCurrency = null
 const debug = cfg.env == 'development' ? true : false
-let router = express.Router()
 
 //routes
+let router = express.Router()
 
 //Create shopping bag
 router.use(async (req,res,next) => {
+    
+    if(!baseCurrency) {
+        try {
+            baseCurrency = await currencyModel.read({ code: cfg.base_currency_code }, {limit: 1})
+
+            if (!currencyModel.isValid(baseCurrency)) {
+                let currencyError = new Error('Unable to set base currency')
+                throw currencyError
+            }
+        } catch (e) {
+            console.log(e)
+            if(debug && e.stack) {
+                console.error(e.stack)
+            }
+            throw e
+        }
+    }
+
     try {
         if (req.session) {
             if (req.user) {
                 let u = await user.read(req.user.id, { findBy: 'id' })
-                if (await user.isValid(u) && u.bag) {
-                    req.session.bag = new ShoppingBag(u.bag)
+                if (user.isValid(u) && u.bag) {
+                    req.session.bag = new ShoppingBag(u.bag,baseCurrency)
                 } else {
-                    req.session.bag = new ShoppingBag()
+                    req.session.bag = new ShoppingBag(null,baseCurrency)
                 }
             } else {
                 if(!req.session.bag) {
-                    req.session.bag = new ShoppingBag()
+                    req.session.bag = new ShoppingBag(null,baseCurrency)
                 } else {
-                    req.session.bag = new ShoppingBag(req.session.bag)
+                    req.session.bag = new ShoppingBag(req.session.bag,baseCurrency)
                 }
             }
             res.locals.bag = req.session.bag
         } else {
-            res.locals.bag = new ShoppingBag()
+            res.locals.bag = new ShoppingBag(null,baseCurrency)
         }
     } catch (e) {
         if(debug) {

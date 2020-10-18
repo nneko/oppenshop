@@ -5,6 +5,7 @@ const product = require('../../../models/product')
 const media = require('../../../adapters/storage/media')
 const ShoppingBag = require('./../../../models/shoppingbag')
 const generator = require('../../../utilities/generator')
+const currency = require('../../../models/currency')
 const debug = cfg.env == 'development' ? true : false
 
 let bagHandler = {}
@@ -19,10 +20,17 @@ bagHandler.populateViewData = async (uid, bag, product_page = 1) => {
             product_range = { pagination_skip: product_page, pagination_limit: perPage }
         }
         try {
+            let bagCurrency = await currency.read({ code: cfg.base_currency_code }, { limit: 1 })
+
+            if (!currency.isValid(bagCurrency)) {
+                let currencyError = new Error('Unable to set shopping bag currency')
+                throw currencyError
+            }
+
             let viewData = {}
 
             viewData.formatter = generator
-            viewData.bag = new ShoppingBag(bag)
+            viewData.bag = new ShoppingBag(bag, bagCurrency)
 
             for (const key of Object.keys(viewData.bag.items)) {
                 if (viewData.bag.items[key].image) {
@@ -37,7 +45,13 @@ bagHandler.populateViewData = async (uid, bag, product_page = 1) => {
 }
 
 bagHandler.addItem = async (uid, pid, qty, bag) => {
-    let bg = new ShoppingBag(bag)
+    let bagCurrency = await currency.read({ code: cfg.base_currency_code }, { limit: 1 })
+
+    if (!currency.isValid(bagCurrency)) {
+        let currencyError = new Error('Unable to set shopping bag currency')
+        throw currencyError
+    }
+    let bg = new ShoppingBag(bag,bagCurrency)
     let p = await product.read(pid, { findBy: 'id' })
     bg.add(p, Number(qty))
     if (uid) {
@@ -49,7 +63,13 @@ bagHandler.addItem = async (uid, pid, qty, bag) => {
 }
 
 bagHandler.removeItem = async (uid, pid, qty, bag) => {
-    let bg = new ShoppingBag(bag)
+    let bagCurrency = await currency.read({ code: cfg.base_currency_code }, { limit: 1 })
+
+    if (!currency.isValid(bagCurrency)) {
+        let currencyError = new Error('Unable to set shopping bag currency')
+        throw currencyError
+    }
+    let bg = new ShoppingBag(bag,bagCurrency)
     let p = await product.read(pid, { findBy: 'id' })
     bg.remove(p, Number(qty))
     if (uid) {
@@ -61,7 +81,13 @@ bagHandler.removeItem = async (uid, pid, qty, bag) => {
 }
 
 bagHandler.deleteItem = async (uid, pid, bag) => {
-    let bg = new ShoppingBag(bag)
+    let bagCurrency = await currency.read({ code: cfg.base_currency_code }, { limit: 1 })
+
+    if (!currency.isValid(bagCurrency)) {
+        let currencyError = new Error('Unable to set shopping bag currency')
+        throw currencyError
+    }
+    let bg = new ShoppingBag(bag,bagCurrency)
     let p = await product.read(pid, { findBy: 'id' })
     if(debug) console.log(p)
     bg.delete(p)

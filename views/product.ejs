@@ -39,19 +39,19 @@
                                     <% if(typeof(product.images[0]) !== 'undefined') { %>
                                         <img id="product-hero-img" src="<% if(product.images[0].src) { %><%= product.images[0].src %><% } %>">
                                     <% } else { %>
-                                        <%- include('assets/symbols/tags.svg') %>
+                                        <%- include('partials/_product-image-object.ejs') %>
                                     <% } %>
                                 </figure>
                                 <% if(product.images.length > 1) { %>
                                     <div class="product-carousel-images-row">
                                         <% for (let imgIdx=0;imgIdx<product.images.length;imgIdx++) { %>
                                         <figure class="featured-mini-image <% if(imgIdx == 0) { %>featured-mini-image-selected<% } %>">
-                                                <% if(typeof(product.images[0]) !== 'undefined') { %>
-                                                <img class="product-image" src="<% if(product.images[imgIdx].src) { %><%= product.images[imgIdx].src %><% } %>">
-                                                <% } else { %>
-                                                <%- include('assets/symbols/tags.svg') %>
-                                                <% } %>
-                                            </figure>
+                                            <% if(typeof(product.images[0]) !== 'undefined') { %>
+                                            <img class="product-image" src="<% if(product.images[imgIdx].src) { %><%= product.images[imgIdx].src %><% } %>">
+                                            <% } else { %>
+                                            <%- include('partials/_product-image-object.ejs') %>
+                                            <% } %>
+                                        </figure>
                                         <% } %>
                                     </div>
                                 <% } %>
@@ -144,22 +144,21 @@
 <script>
     //Add event listeners for the mini images in the carousel to switch the displayed hero image
     (() => {
-        let productImgs = document.getElementsByClassName('product-image')
-        for (const img of productImgs) {
-            img.addEventListener('click',() => {
-                let productHero = document.getElementById('product-hero-img')
-                if(productHero) {
-                    let productImageFigs = document.getElementsByClassName('featured-mini-image')
-
-                    if(productImageFigs) {
-                        for (const i of productImageFigs) {
+        let productImgs = document.getElementsByClassName('featured-mini-image')
+        if(productImgs) {
+            for (const img of productImgs) {
+                img.addEventListener('click', () => {
+                    let productHero = document.getElementById('product-hero-img')
+                    let imgImg = img.querySelector('.product-image')
+                    if (productHero) {
+                        for (const i of productImgs) {
                             i.classList.remove('featured-mini-image-selected')
                         }
+                        img.classList.add('featured-mini-image-selected')
+                        if(imgImg) productHero.src = imgImg.src
                     }
-                    img.parentElement.classList.add('featured-mini-image-selected')
-                    productHero.src = img.src
-                }
-            })
+                })
+            }
         }
     })();
 
@@ -206,7 +205,6 @@
                 })
             }
         }
-
 
         let removeItemButtons = document.getElementsByClassName('remove-item')
         for (const btn of removeItemButtons) {

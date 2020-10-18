@@ -12,7 +12,7 @@
         </div>
         <div class="add-action-button-section">
             <a id="new-storefront-link" class="right add-storefront-link" href="#newstore"
-                onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %>
+                onclick="document.getElementById('newstore').removeAttribute('hidden');"><%- include('../assets/symbols/plus.svg') %>
                 Add Storefront
             </a>
         </div>
@@ -39,7 +39,7 @@
                                             <% } %>
                                             <% } else { %>
                                             <figure class="storefront-image">
-                                                <%- include('assets/symbols/shop.svg') %>
+                                                <%- include('../assets/symbols/shop.svg') %>
                                             </figure>
                                             <% } %>
                                         </div>
@@ -74,22 +74,22 @@
                             <% if (shops[i].status == 'inactive'){ %>
                                 <a href="/user/shop/edit?s=<%= shops[i]._id %>">
                             <button class=" action-icon-button  action-icon" type="button" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
-                            <%- include('assets/symbols/edit.svg') %>
+                            <%- include('../assets/symbols/edit.svg') %>
                             </button></a>
                             <button class=" action-icon-button reactivate-icon action-icon" type="submit" data-toggle="tooltip"
                                 data-placement="left" title="Re-activate" name="update" value="open">
-                                <%- include('assets/symbols/reload.svg') %>
+                                <%- include('../assets/symbols/reload.svg') %>
                             </button>
                             <button class=" action-icon-button delete-icon action-icon" type="submit" data-toggle="tooltip" data-placement="left"
                                 title="Delete" name="update" value="delete">
-                                <%- include('assets/symbols/bin.svg') %>
+                                <%- include('../assets/symbols/bin.svg') %>
                             </button>
                             <%  } else { %>
                             <a href="/user/shop/edit?s=<%= shops[i]._id %>"><button class=" action-icon-button  action-icon" type="button" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
-                            <%- include('assets/symbols/edit.svg') %>
+                            <%- include('../assets/symbols/edit.svg') %>
                             </button></a>
                             <button class=" action-icon-button close-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Close" name="update" value="close">
-                                <%- include('assets/symbols/no.svg') %>
+                                <%- include('../assets/symbols/no.svg') %>
                             </button>
                             <% } %>
                         </form>
@@ -143,7 +143,7 @@
         <div>
             <button class="right action-icon-button action-icon" type="submit"  data-toggle="tooltip" data-placement="left" href="#add-storefront-button-section    "
                         title="Cancel" name="update" value="cancel" onclick="closeNewStoreForm()">
-                                <%- include('assets/symbols/close.svg') %>
+                                <%- include('../assets/symbols/close.svg') %>
             </button>
         </div>
         <form id="new-storefront-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
@@ -179,7 +179,7 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text input-prepend-icon" id="add-storefront-fullimage-basic-addon" data-toggle="tooltip" data-placement="bottom" data-original-title="Shop Image" title="Shop Image"><%- include('assets/symbols/picture.svg') %></span>
+                                <span class="input-group-text input-prepend-icon" id="add-storefront-fullimage-basic-addon" data-toggle="tooltip" data-placement="bottom" data-original-title="Shop Image" title="Shop Image"><%- include('../assets/symbols/picture.svg') %></span>
                             </div>
                             <input id="add-storefront-fullimage" class="form-control <% if(typeof(fullimage) !== 'undefined') { %><%= fullname.class %><% } %>" type="file" name="fullimage"
                                 aria-label="Storefront Image" aria-describedby="add-storefront-fullimage-basic-addon" accept=".jpg,.jpeg,.png" multiple onchange="validateImageFiles()" onclick="clearImageValidation()">
@@ -312,7 +312,7 @@ function updateStorefrontView(s){
       } else {
         let figure = document.createElement("FIGURE")
         figure.className = "storefront-image"
-        figure.innerHTML = '<%- include("partials/_shop_image_object.ejs") %>'
+        figure.innerHTML = '<%- include("../assets/symbols/shop.svg") %>'
         item_card_left.appendChild(figure)
       }
       item_card.appendChild(item_card_left)
@@ -375,7 +375,7 @@ function updateStorefrontView(s){
         button_edit.name="update"
         button_edit.value="edit"
         //button_edit.
-        button_edit.innerHTML = '<%- include("assets/symbols/edit.svg") %>'
+        button_edit.innerHTML = '<%- include("../assets/symbols/edit.svg") %>'
         a.appendChild(button_edit)
         edit_delete_action_form.appendChild(a)
         let button_re_activate = document.createElement("BUTTON")
@@ -385,7 +385,7 @@ function updateStorefrontView(s){
         button_re_activate.name="update"
         button_re_activate.value="open"
         //button_re_activate.
-        button_re_activate.innerHTML = '<%- include("assets/symbols/reload.svg") %>'
+        button_re_activate.innerHTML = '<%- include("../assets/symbols/reload.svg") %>'
         edit_delete_action_form.appendChild(button_re_activate)
         let button_delete = document.createElement("BUTTON")
         button_delete.className = "action-icon-button delete-icon action-icon close-icon"
@@ -394,7 +394,7 @@ function updateStorefrontView(s){
         button_delete.name="update"
         button_delete.value="delete"
         //button_delete.
-        button_delete.innerHTML = '<%- include("assets/symbols/bin.svg") %>'
+        button_delete.innerHTML = '<%- include("../assets/symbols/bin.svg") %>'
         edit_delete_action_form.appendChild(button_delete)
       } else {
         let a = document.createElement("A")
@@ -406,7 +406,7 @@ function updateStorefrontView(s){
         button_edit.name="update"
         button_edit.value="edit"
         //button_edit.
-        button_edit.innerHTML = '<%- include("assets/symbols/edit.svg") %>'
+        button_edit.innerHTML = '<%- include("../assets/symbols/edit.svg") %>'
         a.appendChild(button_edit)
         edit_delete_action_form.appendChild(a)
         let button_close = document.createElement("BUTTON")
@@ -416,7 +416,7 @@ function updateStorefrontView(s){
         button_close.name="update"
         button_close.value="delete"
         //button_close.
-        button_close.innerHTML = '<%- include("assets/symbols/no.svg") %>'
+        button_close.innerHTML = '<%- include("../assets/symbols/no.svg") %>'
         edit_delete_action_form.appendChild(button_close)
       }
       action_button_section.appendChild(edit_delete_action_form)

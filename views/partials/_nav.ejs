@@ -2,7 +2,7 @@
     <div class="menu-main">
         <div class="applogo">
             <a href="/">
-                <%- include('assets/symbols/logo.svg') %>
+                <%- include('../assets/symbols/logo.svg') %>
             </a>
         </div>
         <form id="main-search-form" class="search-form" autocomplete="off" action="/market" method="POST" oninput="" novalidate>
@@ -12,7 +12,7 @@
                         aria-label="find" aria-describedby="find-basic-addon" size="25" required>
                     <div class="input-group-append">
                         <button class="search-button" type="submit"
-                                data-toggle="tooltip" data-placement="bottom" title="Find in Market"><%- include('assets/symbols/looking-glass.svg') %></button>
+                                data-toggle="tooltip" data-placement="bottom" title="Find in Market"><%- include('../assets/symbols/looking-glass.svg') %></button>
                     </div>
                     <div id="invalid-find" class="invalid-feedback">
                         Invalid search query.
@@ -26,7 +26,7 @@
                     <button class="search-button-item activate-search-button <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'market' && reqData.path.split('/')[2] == 'find') { %>menu-item-selected
                         <% } %>" type="submit" data-toggle="tooltip" data-placement="bottom"
                         title="Find in Market">
-                        <%- include('assets/symbols/looking-glass.svg') %>
+                        <%- include('../assets/symbols/looking-glass.svg') %>
                     </button>
                 </li>
             </ul>
@@ -41,13 +41,13 @@
             <div class="input-group">
                 <div class="input-group-prepend">
                     <button class="search-button-prepend" type="button" data-toggle="tooltip" data-placement="bottom"
-                        title="Find in Market"><%- include('assets/symbols/close.svg') %></button>
+                        title="Find in Market"><%- include('../assets/symbols/close.svg') %></button>
                 </div>
                 <input id="find" class="form-control responsive-search-input" type="text" name="find" placeholder="Find products and shops" value=""
                     aria-label="find" aria-describedby="find-basic-addon" size="25" required>
                 <div class="input-group-append">
                     <button class="search-button" type="submit" data-toggle="tooltip" data-placement="bottom"
-                        title="Find in Market"><%- include('assets/symbols/looking-glass.svg') %></button>
+                        title="Find in Market"><%- include('../assets/symbols/looking-glass.svg') %></button>
                 </div>
                 <div id="invalid-find" class="invalid-feedback">
                     Invalid search query.
@@ -56,13 +56,13 @@
         </div>
     </form>
     <ul class="menu-main-navigation nav-links">
-        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && (reqData.path.split('/')[1] == 'market' || reqData.path.split('/')[1] == '')) { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Browse" href="/market"><%- include('assets/symbols/shop.svg') %></a></li>
-        <li class="nav-link-item <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag') { %><%= 'nav-menu-item-selected' %><% } %>"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Buy" href="/user/bag"><%- include('assets/symbols/bag.svg') %></a><% if(typeof(bag) !== 'undefined' && bag) { %>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && (reqData.path.split('/')[1] == 'market' || reqData.path.split('/')[1] == '')) { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Browse" href="/market"><%- include('../assets/symbols/shop.svg') %></a></li>
+        <li class="nav-link-item <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag') { %><%= 'nav-menu-item-selected' %><% } %>"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Buy" href="/user/bag"><%- include('../assets/symbols/bag.svg') %></a><% if(typeof(bag) !== 'undefined' && bag) { %>
         <% if(typeof(bag.quantity) == 'function' && bag.quantity() > 0) { %><span class="shopping-bag-counter"><% if(bag.quantity() > 99) { %><%= '99+' %><% } else { %><%= bag.quantity() %><% } %></span><% } %>
         <% } %></li>
-        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'shop') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Sell" href="/user/shop"><%- include('assets/symbols/tags.svg') %></a></li>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'shop') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Sell" href="/user/shop"><%- include('../assets/symbols/tags.svg') %></a></li>
         <% if(typeof(user) !== 'undefined') {%> 
-        <li class="menu-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'account') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Account" href="/user/account"><%- include('assets/symbols/person-outline.svg') %></a></li>
+        <li class="menu-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'account') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Account" href="/user/account"><%- include('../assets/symbols/person-outline.svg') %></a></li>
 
             <% if(Array.isArray(user.roles)) { %>
                 <% for (const r of user.roles) { %>
@@ -70,14 +70,14 @@
                         <li class="menu-item"><a
                                 <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'admin') { %>class="menu-item-selected"
                                 <% } %> data-toggle="tooltip" data-placement="bottom" title="Administration"
-                                href="/admin"><%- include('assets/symbols/wrench.svg') %></a></li>
+                                href="/admin"><%- include('../assets/symbols/wrench.svg') %></a></li>
                     <% break; } %>
                 <% } %>
             <% } %>
-            <li class="menu-item"><a data-toggle="tooltip" data-placement="bottom" title="Sign Out" href="/signout"><%- include('assets/symbols/exit.svg') %></a></li>
+            <li class="menu-item"><a data-toggle="tooltip" data-placement="bottom" title="Sign Out" href="/signout"><%- include('../assets/symbols/exit.svg') %></a></li>
         <% } else { %>
-            <li class="nav-link-item"><a data-toggle="tooltip" data-placement="bottom" title="Sign In" <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'signin' || reqData.path.split('/')[1] == 'signup' || reqData.path.split('/')[1] == 'reset' || reqData.path.split('/')[1] == 'verify') { %>class="menu-item-selected" <% } %> href="/signin"><%- include('assets/symbols/login.svg') %></a></li>
+            <li class="nav-link-item"><a data-toggle="tooltip" data-placement="bottom" title="Sign In" <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'signin' || reqData.path.split('/')[1] == 'signup' || reqData.path.split('/')[1] == 'reset' || reqData.path.split('/')[1] == 'verify') { %>class="menu-item-selected" <% } %> href="/signin"><%- include('../assets/symbols/login.svg') %></a></li>
         <% } %>
-        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'support') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Support" href="/support"><%- include('assets/symbols/help.svg') %></a></li>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'support') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Support" href="/support"><%- include('../assets/symbols/help.svg') %></a></li>
     </ul>
 </nav>

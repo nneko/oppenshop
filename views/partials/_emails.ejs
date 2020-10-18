@@ -13,13 +13,13 @@
                             <% if(emails[i].verified) {%>
                             <li class="tick-icon badge ">
                                 <p>Verified:
-                                    <%- include('assets/symbols/tick.svg') %></p>
+                                    <%- include('../assets/symbols/tick.svg') %></p>
                             </li>
                             <% } %>
                             <% if(emails[i].primary) { %>
                             <li class="tick-icon badge">
                                 <p>Primary:
-                                    <%- include('assets/symbols/tick.svg') %></p>
+                                    <%- include('../assets/symbols/tick.svg') %></p>
                             </li>
                             <% } %>
                         </ul>
@@ -31,7 +31,7 @@
                             <input type="hidden" name="email" value="<% if(typeof(emails) !== 'undefined' && Array.isArray(emails)) { %><%= emails[i].value %><% } %>">
                             <button class=" action-icon-button delete-icon action-icon" type="submit"
                                 data-toggle="tooltip" data-placement="left" title="Delete">
-                                <%- include('assets/symbols/bin.svg') %>
+                                <%- include('../assets/symbols/bin.svg') %>
                             </button>
                         </form>
                     </div>

@@ -4,21 +4,21 @@
         <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane != 'ad' && pane != 'em' && pane != 'pn') { %>active<% } %>" id="primary-tab"
                 data-toggle="tab" href="#primaryTab" role="tab" aria-controls="primaryTab"
-                aria-selected="true"><%- include('assets/symbols/contact.svg') %>Basic Info</a>
+                aria-selected="true"><%- include('../assets/symbols/contact.svg') %>Basic Info</a>
         </li>
         <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'ad') { %>active<% } %>" id="addresses-tab"
                 data-toggle="tab" href="#addressesTab" role="tab" aria-controls="addressesTab"
-                aria-selected="false"><%- include('assets/symbols/location.svg') %>Addresses</a>
+                aria-selected="false"><%- include('../assets/symbols/location.svg') %>Addresses</a>
         </li>
         <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'em') { %>active<% } %>" id="emails-tab" data-toggle="tab" href="#emailsTab" role="tab" aria-controls="emailsTab"
-                aria-selected="false"><%- include('assets/symbols/mail.svg') %>Emails</a>
+                aria-selected="false"><%- include('../assets/symbols/mail.svg') %>Emails</a>
         </li>
         <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'pn') { %>active<% } %>" id="phone-tab"
                 data-toggle="tab" href="#phoneTab" role="tab" aria-controls="phoneTab"
-                aria-selected="false"><%- include('assets/symbols/phone.svg') %>Phone Numbers</a>
+                aria-selected="false"><%- include('../assets/symbols/phone.svg') %>Phone Numbers</a>
         </li>
     </ul>
     <div class="tab-content" id="contactTabContent">

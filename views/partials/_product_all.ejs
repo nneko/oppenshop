@@ -50,7 +50,7 @@
                                                             <% } %>
                                                         <% } else { %>
                                                             <figure class="card-product-image">
-                                                                <%- include('assets/symbols/tags.svg') %>
+                                                                <%- include('../assets/symbols/tags.svg') %>
                                                             </figure>
                                                         <% } %>
                                                     </div>
@@ -81,20 +81,20 @@
                                             <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                                             <a href="/user/shop/product/edit?s=<%= shops[j].products[i]._id %>">
                                             <button class=" action-icon-button  action-icon" type="button" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
-                                            <%- include('assets/symbols/edit.svg') %>
+                                            <%- include('../assets/symbols/edit.svg') %>
                                             </button></a>
                                             <% if(shops[j].products[i].status == 'inactive') { %>
                                                 <button class=" action-icon-button reactivate-icon action-icon" type="submit" data-toggle="tooltip" data-placement="left"
                                                     title="Re-activate" name="update" value="reactivate">
-                                                    <%- include('assets/symbols/reload.svg') %>
+                                                    <%- include('../assets/symbols/reload.svg') %>
                                                 </button>
                                                 <button class=" action-icon-button delete-icon action-icon" type="submit" data-toggle="tooltip" data-placement="left"
                                                     title="Delete" name="update" value="delete">
-                                                    <%- include('assets/symbols/bin.svg') %>
+                                                    <%- include('../assets/symbols/bin.svg') %>
                                                 </button>
                                             <% }  else { %>
                                                 <button class=" action-icon-button close-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Withdraw" name="update" value="withdraw">
-                                                    <%- include('assets/symbols/no.svg') %>
+                                                    <%- include('../assets/symbols/no.svg') %>
                                                 </button>
                                             <% } %>
                                         </form>
@@ -215,7 +215,7 @@ function updateProductView(pr){
       } else {
         let figure = document.createElement("FIGURE")
         figure.className = "card-product-image"
-        figure.innerHTML = '<%- include("partials/_product_image_object.ejs") %>'
+        figure.innerHTML = '<%- include("./_product_image_object.ejs") %>'
         item_card_left.appendChild(figure)
       }
       item_card.appendChild(item_card_left)
@@ -283,7 +283,7 @@ function updateProductView(pr){
       button_edit.name="update"
       button_edit.value="edit"
       //button_edit.
-      button_edit.innerHTML = '<%- include("assets/symbols/edit.svg") %>'
+      button_edit.innerHTML = '<%- include("../assets/symbols/edit.svg") %>'
       a.appendChild(button_edit)
       edit_delete_action_form.appendChild(a)
       if (pr.products[pp] == 'inactive') {
@@ -294,7 +294,7 @@ function updateProductView(pr){
         button_re_activate.name="update"
         button_re_activate.value="open"
         //button_re_activate.
-        button_re_activate.innerHTML = '<%- include("assets/symbols/reload.svg") %>'
+        button_re_activate.innerHTML = '<%- include("../assets/symbols/reload.svg") %>'
         edit_delete_action_form.appendChild(button_re_activate)
         let button_delete = document.createElement("BUTTON")
         button_delete.className = "action-icon-button delete-icon action-icon close-icon"
@@ -303,7 +303,7 @@ function updateProductView(pr){
         button_delete.name="update"
         button_delete.value="delete"
         //button_delete.
-        button_delete.innerHTML = '<%- include("assets/symbols/bin.svg") %>'
+        button_delete.innerHTML = '<%- include("../assets/symbols/bin.svg") %>'
         edit_delete_action_form.appendChild(button_delete)
       } else {
         let button_close = document.createElement("BUTTON")
@@ -313,7 +313,7 @@ function updateProductView(pr){
         button_close.name="update"
         button_close.value="withdraw"
         //button_close.
-        button_close.innerHTML = '<%- include("assets/symbols/no.svg") %>'
+        button_close.innerHTML = '<%- include("../assets/symbols/no.svg") %>'
         edit_delete_action_form.appendChild(button_close)
       }
       action_button_section.appendChild(edit_delete_action_form)

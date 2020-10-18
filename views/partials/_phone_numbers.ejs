@@ -13,13 +13,13 @@
                             <% if(phoneNumbers[i].verified) {%>
                             <li class="tick-icon badge ">
                                 <p>Verified:
-                                    <%- include('assets/symbols/tick.svg') %></p>
+                                    <%- include('../assets/symbols/tick.svg') %></p>
                             </li>
                             <% } %>
                             <% if(phoneNumbers[i].primary) { %>
                             <li class="tick-icon badge">
                                 <p>Primary:
-                                    <%- include('assets/symbols/tick.svg') %></p>
+                                    <%- include('../assets/symbols/tick.svg') %></p>
                             </li>
                             <% } %>
                         </ul>
@@ -32,7 +32,7 @@
                                 value="<% if(typeof(phoneNumbers) !== 'undefined' && Array.isArray(phoneNumbers)) { %><%= phoneNumbers[i].value %><% } %>">
                             <button class=" action-icon-button delete-icon action-icon" type="submit"
                                 data-toggle="tooltip" data-placement="left" title="Delete">
-                                <%- include('assets/symbols/bin.svg') %>
+                                <%- include('../assets/symbols/bin.svg') %>
                             </button>
                         </form>
                     </div>

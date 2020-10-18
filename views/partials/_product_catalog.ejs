@@ -15,7 +15,7 @@
         </div>
         <div class="add-action-button-section">
             <a id="create-catalog-link" class="right add-address-link create-catalog-link" href="#create-catalog-form"
-                onclick="document.getElementById('create-catalog-section').removeAttribute('hidden');"><%- include('assets/symbols/plus.svg') %>Create
+                onclick="document.getElementById('create-catalog-section').removeAttribute('hidden');"><%- include('../assets/symbols/plus.svg') %>Create
                 Catalog</a>
         </div>
     </div>
@@ -30,7 +30,7 @@
                         <% if(typeof(catalogs[i].image) !== 'undefined' && typeof(catalogs[i].image.src) !== 'undefined') { %>
                         <img src="<%= catalogs[i].image.src %>">
                         <% } else { %>
-                        <%- include('assets/symbols/tags.svg') %>
+                        <%- include('../assets/symbols/tags.svg') %>
                         <% } %>
                     </figure>
                 </div>
@@ -123,7 +123,7 @@
                                                         src="<%= catalogs[i].products[j].images[0].src %>" />
                                                     <% } else { %>
                                                     <figure class="catalog-item-image">
-                                                        <%- include('assets/symbols/tags.svg') %>
+                                                        <%- include('../assets/symbols/tags.svg') %>
                                                     </figure>
                                                     <% } %>
                                                 </div>
@@ -160,7 +160,7 @@
                                             
                                                     <button class=" action-icon-button delete-icon action-icon" type="submit" data-toggle="tooltip"
                                                         data-placement="bottom" title="Delete" name="update" value="delete">
-                                                        <%- include('assets/symbols/bin.svg') %>
+                                                        <%- include('../assets/symbols/bin.svg') %>
                                                     </button>
                                                 </form>
                                             </div>
@@ -231,7 +231,7 @@
             <button class="right action-icon-button action-icon" type="submit" data-toggle="tooltip" data-placement="left"
                 href="#catalogs-pane" title="Cancel" name="update" value="cancel"
                 onclick="closeCreateCatalogForm()">
-                <%- include('assets/symbols/close.svg') %>
+                <%- include('../assets/symbols/close.svg') %>
             </button>
         </div>
         <form id="create-catalog-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST" oninput=""
@@ -286,7 +286,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text input-prepend-icon" id="create-catalog-image-basic-addon"
                                     data-toggle="tooltip" data-placement="bottom" data-original-title="Catalog Image"
-                                    title="Catalog Image"><%- include('assets/symbols/picture.svg') %>
+                                    title="Catalog Image"><%- include('../assets/symbols/picture.svg') %>
                                 </span>
                             </div>
                             <input id="create-catalog-image"

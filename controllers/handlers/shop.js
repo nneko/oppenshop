@@ -105,16 +105,8 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                 try {
                     if (await shop.isValid(viewData.shops[i])) {
                         let cFilter = { owner: viewData.shops[i]._id.toString() }
-                        if(debug) {
-                            console.log('Searching for catalogs using filter:')
-                            console.log(cFilter)
-                        }
                         let cList = await catalog.read(cFilter)
                         if (Array.isArray(cList) && cList.length > 0) {
-                            if(debug) {
-                                console.log('Catalog list found: ')
-                                console.log(cList)
-                            }
                             for (let j = 0; j < cList.length; j++) {
                                 if (await catalog.isValid(cList[j])) {
                                     if(typeof(cList[j].image) !== 'undefined') {
@@ -136,15 +128,10 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                         }
                                         cList[j].products = pList
                                     }
-                                    if(debug) console.log('Adding 1 item to catalog list')
                                     viewData.catalogs.push(cList[j])
                                 }
                             }
                         } else if (await catalog.isValid(cList)) {
-                            if (debug) {
-                                console.log('Single catalog found: ')
-                                console.log(cList)
-                            }
                             if (typeof (cList.image) !== 'undefined') {
                                 cList.image.src = media.getBinaryDetails(cList.image)
                             }

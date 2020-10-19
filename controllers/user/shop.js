@@ -19,6 +19,7 @@ const catalog = require('../../models/catalog')
 const shophandler = require('../handlers/shop')
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
+const currency = require('../../models/currency')
 const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
 
 let shops = express.Router()
@@ -391,7 +392,6 @@ let productAddHandler = async (req, res) => {
                         description: newProd.description,
                         specifications: newProd.specifications,
                         price: newProd.price,
-                        //currency: newProd.currency,
                         currency: productCurrencyCode,
                         status: newProd.status
                     })

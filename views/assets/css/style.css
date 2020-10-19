@@ -118,8 +118,12 @@ svg {
     border: none;
 }
 
-.spc-top-1 {
+.qty-spc-top-1, .spc-top-1 {
     margin-top: 1rem;
+}
+
+.qty-spc-top-1 {
+    color: var(--main-text-legend-color);
 }
 
 .spc-left-1 {
@@ -1627,9 +1631,17 @@ white-space: nowrap;
         flex-basis: calc(100% - 4rem);
         max-width: calc(100% - 4rem);
     }
+
+    .shopping-bag-item-name, .qty-spc-top-1, .spc-top-1 {
+        font-size: 0.8rem !important;
+    }
 }
 
 @media screen and (max-width: 640px) {
+
+    h1, h2 {
+        font-size: 1.4rem;
+    }
     
     .hide-menu-main {
         display: none;

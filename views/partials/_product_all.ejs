@@ -7,10 +7,10 @@
         <select id="shop-select"
                 class="form-control" type="text" onchange="toggleShopSelector()"
                 name="shops" aria-label="shop-select-label" aria-describedby="shop-select-basic-addon">
-            <option value="all-products-cards" selected>All</option>
+            <option value="all-products-cards">All</option>
             <% if (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
             <% for(let i=0;i<shops.length;i++) { %>
-            <option value="<%= shops[i]._id %>"><%= shops[i].displayName %></option>
+            <option value="<%= shops[i]._id %>" <% if(i==0) { %>selected<% } %>><%= shops[i].displayName %></option>
             <% } %>
             <% } %>
         </select>
@@ -292,7 +292,7 @@ function updateProductView(pr){
         button_re_activate.type="submit"
         button_re_activate.title="Re-activate"
         button_re_activate.name="update"
-        button_re_activate.value="open"
+        button_re_activate.value="reactivate"
         //button_re_activate.
         button_re_activate.innerHTML = '<%- include("../assets/symbols/reload.svg") %>'
         edit_delete_action_form.appendChild(button_re_activate)

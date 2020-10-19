@@ -46,11 +46,25 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
         let price = 0
         for (const i of Object.keys(this.items)) {
             if(typeof(this.items[i].price) == 'number' && typeof(this.items[i].qty) == 'number') {
-                if(!this.items[i].currency) this.items[i].currency = this.currency.code
+                if(!this.items[i].currency) this.items[i].currency = this.currency.exchangeBase
                 qty += Number(this.items[i].qty)
                 let currencyExchangeRate = this.currency.exchangeRates[this.currency.code]
 
-                let productPriceInBase = ((this.items[i].currency && (!isNaN(this.currency.exchangeRates[this.items[i].currency]))) ? Number(this.currency.exchangeRates[this.items[i].currency]) : 1) * Number(this.items[i].price)
+                let cp = this.items[i].price
+
+                if(!isNaN(this.currency.exchangeRates[this.items[i].currency])) {
+                    if(this.currency.code != this.items[i].currency) {
+                        cp = this.items[i].price * Number(this.currency.exchangeRates[this.items[i].currency])
+                    } else {
+                        cp = this.items[i].price / Number(this.currency.exchangeRates[this.items[i].currency])
+                    }
+                } else {
+                    console.error('Unable to do currency conversion for product: ')
+                    console.error(this.items[i])
+                    continue
+                }
+
+                let productPriceInBase = cp
 
                 price += (Number(this.items[i].qty) * (currencyExchangeRate * productPriceInBase))
             }

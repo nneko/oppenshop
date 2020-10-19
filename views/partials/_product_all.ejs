@@ -275,7 +275,7 @@ function updateProductView(pr){
       //if (typeof(s.shops[ss].owner)  !== 'undefined') input_uid.value = s.shops[ss].owner
       edit_delete_action_form.appendChild(input_uid)
       let a = document.createElement("A")
-      a.href = "/user/shop/edit?s="+pr.products[pp]._id
+      a.href = "/user/shop/product/edit?s="+pr.products[pp]._id
       let button_edit = document.createElement("BUTTON")
       button_edit.className = "action-icon-button  action-icon"
       button_edit.type="button"
@@ -307,7 +307,7 @@ function updateProductView(pr){
         edit_delete_action_form.appendChild(button_delete)
       } else {
         let button_close = document.createElement("BUTTON")
-        button_close.className = "action-icon-button delete-icon action-icon"
+        button_close.className = "action-icon-button delete-icon action-icon close-icon"
         button_close.type="submit"
         button_close.title="Withdraw"
         button_close.name="update"

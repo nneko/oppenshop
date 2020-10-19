@@ -53,7 +53,7 @@ bagHandler.addItem = async (uid, pid, qty, bag) => {
     }
     let bg = new ShoppingBag(bag,bagCurrency)
     let p = await product.read(pid, { findBy: 'id' })
-    bg.add(p, Number(qty))
+    await bg.add(p, Number(qty))
     if (uid) {
         let u = await user.read(uid, { findBy: 'id' })
         if(user.isValid(u)) await bg.save(u)

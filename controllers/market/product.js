@@ -42,7 +42,7 @@ marketProduct.post('/', async (req, res) => {
             viewData.user = req.user
             switch(form.action) {
                 case 'add_to_bag':
-                    bag.add(p, Number(form.quantity))
+                    await bag.add(p, Number(form.quantity))
                     if (req.user) {
                         let u = await user.read(req.user.id, { findBy: 'id' })
                         await bag.save(u)

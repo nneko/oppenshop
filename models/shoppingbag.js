@@ -48,39 +48,36 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
             if(typeof(this.items[i].price) == 'number' && typeof(this.items[i].qty) == 'number') {
                 if(!this.items[i].currency) this.items[i].currency = this.currency.exchangeBase
                 qty += Number(this.items[i].qty)
-                let currencyExchangeRate = this.currency.exchangeRates[this.currency.code]
+                let currencyExchangeRate = Number(this.currency.exchangeRates[this.items[i].currency])
 
-                let cp = this.items[i].price
-
-                if(!isNaN(this.currency.exchangeRates[this.items[i].currency])) {
-                    if(this.currency.code != this.items[i].currency) {
-                        cp = this.items[i].price * Number(this.currency.exchangeRates[this.items[i].currency])
-                    } else {
-                        cp = this.items[i].price / Number(this.currency.exchangeRates[this.items[i].currency])
-                    }
-                } else {
+                if(isNaN(currencyExchangeRate)) {
                     console.error('Unable to do currency conversion for product: ')
                     console.error(this.items[i])
                     continue
                 }
 
-                let productPriceInBase = cp
-
-                price += (Number(this.items[i].qty) * (currencyExchangeRate * productPriceInBase))
+                price += (Number(this.items[i].qty) * (this.items[i].price / currencyExchangeRate))
             }
         }
-        this.totalPrice = price
+        let cp = price
+        if (this.currency.code == this.currency.exchangeBase) {
+            cp = price
+        } else {
+            cp = cp * Number(this.currency.exchangeRates[this.currency.code])
+            console.log(cp)
+        }
+        this.totalPrice = cp
         this.totalQuantity = qty
     }
 
     this.add = async function(product,quantity) {
-        if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof (quantity) == 'number' && quantity > 0) {
+        if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && product.hasOwnProperty('currency') && typeof (quantity) == 'number' && quantity > 0) {
             let item = this.items[product._id]
             if (!item) {
                 item = this.items[product._id] = {
                     displayName: product.displayName, 
                     image: Array.isArray(product.images) ? product.images[0] : undefined,
-                    qty: 0,
+                    qty: quantity,
                     price: Number(product.price) 
                 }
 
@@ -92,7 +89,9 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
                     item.currency = cfg.base_currency_code
                 }
             }
-            item.qty += Number(quantity)
+            else {
+                item.qty += Number(quantity)
+            }
             this.items[product._id] = item
             this.sum()
         } else {

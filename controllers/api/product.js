@@ -5,8 +5,7 @@ const shop = require('../../models/shop')
 const product = require('../../models/product')
 const currency = require('../../models/currency')
 const express = require('express')
-const path = require('path')
-const jwt = require('../../adapters/authorization/jwt')
+const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
 
 let products = express.Router()
@@ -63,7 +62,7 @@ products.get('/', async (req, res) => {
                   yy.src = media.getBinaryDetails(yy)
                 }
             }
-            if(y.currency) y.currency = viewData.currency_list[y.currency]
+            if(y.currency) y.currency = currency_list[y.currency]
         }
         p_count = await product.count(t,o_product)
         let total_pages = Math.ceil(p_count / perPage)

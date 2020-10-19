@@ -8,6 +8,7 @@
   --main-text-color: #444;
   --main-text-em-color: black;
   --main-sub-text-color: rgb(96,96,96);
+  --main-text-legend-color: #96969d;
   --main-alert-err-color: #be4e3b;
   --main-alert-err-em-color: red;
   --main-content-bg-color: white;
@@ -681,6 +682,14 @@ svg {
 
 .shopping-bag-checkout {
     margin-top: 1.6rem;
+}
+
+.shopping-bag-legend {
+    color: var(--main-text-legend-color);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .pane-h2 {

@@ -35,9 +35,10 @@
                 <div class="shopping-bag-header">
                     <h2>
                         <% if(typeof(bag) !== 'undefined') { %>
-                            <b>Total is <% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.symbol) !== 'undefined') { %><%= bag.currency.symbol %>
+                            <b>Estimated total <% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.symbol) !== 'undefined') { %><%= bag.currency.symbol %>
                             <% } else { %>$<% } %><%= formatter.roundNumber(Number(bag.total()),2) %><% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined' && bag.currency.code) { %><%= ' ' + bag.currency.code + '.' %>
                             <% } %></b>
+                            <p class="shopping-bag-legend">Quotation doesn't include additional charges related to taxes, shipping and other fees. Final invoice available during checkout.</p>
                         <% } else { %>
                             Your bag is empty.
                         <% } %>

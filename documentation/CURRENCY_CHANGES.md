@@ -15,11 +15,11 @@ db.createCollection('currencies')
 Populate currencies with initial currency data
 
 ```
-db.currencies.insert{"code":"USD","symbol":"$","status":"active","description":"United States Dollar"}
+db.currencies.insert({"code":"USD","symbol":"$","status":"active","description":"United States Dollar"})
 ```
 
 ```
-db.currencies.insert{"code":"JMD","symbol":"$","status":"active","description":"Jamaican Dollar"}
+db.currencies.insert({"code":"JMD","symbol":"$","status":"active","description":"Jamaican Dollar"})
 ```
 
 ### View Currencies

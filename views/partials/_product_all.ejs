@@ -286,7 +286,7 @@ function updateProductView(pr){
       button_edit.innerHTML = '<%- include("../assets/symbols/edit.svg") %>'
       a.appendChild(button_edit)
       edit_delete_action_form.appendChild(a)
-      if (pr.products[pp] == 'inactive') {
+      if (pr.products[pp].status == 'inactive') {
         let button_re_activate = document.createElement("BUTTON")
         button_re_activate.className = "action-icon-button reactivate-icon action-icon"
         button_re_activate.type="submit"

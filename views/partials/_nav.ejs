@@ -64,7 +64,7 @@
         <% if(typeof(user) !== 'undefined') {%> 
         <li class="menu-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'account') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Account" href="/user/account"><%- include('../assets/symbols/person-outline.svg') %></a></li>
 
-            <% if(Array.isArray(user.roles)) { %>
+            <% if(user && user.roles && Array.isArray(user.roles)) { %>
                 <% for (const r of user.roles) { %>
                     <% if(typeof(r.role) !== 'undefined' && r.role == 'superuser') { %>
                         <li class="menu-item"><a

@@ -92,7 +92,7 @@ let populateViewData = async (id) => {
                 viewData.image = { value: generator.getPrimaryField(p.images) }
                 if (!viewData.image.value && p.images && Array.isArray(p.images) && p.images.length > 0) {
                     viewData.image = { value: p.images[0] }
-                    viewData.image.value.src = media.getBinaryDetails(viewData.image.value)
+                    viewData.image.value.src = media.read(viewData.image.value)
                 }
                 viewData.quantity = {value: p.quantity}
                 if (typeof(p.price) !== 'undefined'){

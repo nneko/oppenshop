@@ -62,7 +62,7 @@ let populateViewData = async (id) => {
                 viewData.description = c.description ? { value: c.description } : undefined
                 viewData.image = { value: c.image }
                 if (viewData.image.value ) {
-                    viewData.image.value.src = media.getBinaryDetails(viewData.image.value)
+                    viewData.image.value.src = media.read(viewData.image.value)
                 }
             }
             resolve(viewData)

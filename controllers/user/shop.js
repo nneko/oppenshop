@@ -6,15 +6,8 @@ const express = require('express')
 const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
 const debug = cfg.env == 'development' ? true : false
-const multer  = require('multer')
-const storage = multer.memoryStorage()
-const fileUploader = multer({storage: storage,
-                    onError : function(err, next) {
-                      console.log('error', err);
-                      next(err);
-                    }
-                  }).array('fullimage', 10)
-//const upload = multer({ dest: 'uploads/' })
+const mediaAdapter = require('../../adapters/storage/media')
+const fileUploader = mediaAdapter.uploader()
 const catalog = require('../../models/catalog')
 const shophandler = require('../handlers/shop')
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
@@ -760,24 +753,7 @@ shops.get('/', async (req, res) => {
     }
 })
 
-shops.post('/', function (req, res) {
-  fileUploader(req, res, async function (err) {
-    if (err instanceof multer.MulterError) {
-      console.error('A Multer error occurred when uploading.')
-      console.error(err.stack)
-      res.status(500)
-      res.render('error', { error: { status: 500, message: 'File Upload Error' }, name: '', user: req.user })
-      //return
-    } else if (err) {
-      console.error('An unknown error occurred when uploading.')
-      console.error(err.stack)
-      res.status(500)
-      res.render('error', { error: { status: 500, message: 'An Unknown Error occurred' }, name: '', user: req.user })
-      //return
-    } else {
-    //console.log('Second')
-    //console.log(req.body)
-    //console.log(req.files)
+shops.post('/', fileUploader, async (req, res)  => {
     try {
         if (validator.hasActiveSession(req)) {
             let form = req.body
@@ -827,8 +803,6 @@ shops.post('/', function (req, res) {
         res.status(500)
         res.render('error', { error: { status: 500, message: 'Shop update error' }, name: '', user: req.user })
     }
-  }
-  })
 })
 
 module.exports = shops

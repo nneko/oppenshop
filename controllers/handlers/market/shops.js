@@ -29,7 +29,7 @@ shopsHandler.populateViewData = async (uid, shops_page = 1) => {
             for (const p of viewData.shops) {
                 if (Array.isArray(p.images) && p.images.length > 0) {
                     for (const img of p.images) {
-                        img.src = media.getBinaryDetails(img)
+                        img.src = media.read(img)
                     }
                 }
             }

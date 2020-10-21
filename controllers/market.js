@@ -135,7 +135,7 @@ market.post('/', async (req, res) => {
                                 displayName: p.displayName,
                                 description: p.description
                             }
-                            if (p.images && Array.isArray(p.images) && p.images.length > 0) i.image = media.getBinaryDetails(p.images[0]) //TODO: replace by primary image rather than just first image in list
+                            if (p.images && Array.isArray(p.images) && p.images.length > 0) i.image = media.read(p.images[0]) //TODO: replace by primary image rather than just first image in list
                             itemsFound.push(i)
                         }
                     }

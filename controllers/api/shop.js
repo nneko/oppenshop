@@ -40,7 +40,7 @@ shops.get('/', async (req, res) => {
             if (Array.isArray(x.images) && x.images.length > 0) {
                 for (const xx of x.images) {
                     if (xx.storage == 'db') {
-                      xx.src = media.getBinaryDetails(xx)
+                      xx.src = media.read(xx)
                       //console.log(xx)
                     }
                 }

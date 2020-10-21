@@ -7,7 +7,9 @@ const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
 const debug = cfg.env == 'development' ? true : false
 //const passport = require('passport')
+const currency = require('../../models/currency')
 const accounthandler = require('../handlers/account')
+const ShoppingBag = require('../../models/shoppingbag')
 
 let account = express.Router()
 
@@ -946,10 +948,18 @@ let deleteHandler = async (req, res) => {
             if(u_deletehandler.deletedCount > 0){
                 req.logout()
                 if (req.session) {
-                    req.session.bag = new ShoppingBag()
+                    let bagCurrency = await currency.read({ code: cfg.base_currency_code }, { limit: 1 })
+
+                    if (!currency.isValid(bagCurrency)) {
+                        let currencyError = new Error('Unable to set base currency')
+                        throw currencyError
+                    }
+
+                    req.session.bag = new ShoppingBag(null, bagCurrency)
                     res.locals.bag = req.session.bag
                 }
-                res.render('market', { name: undefined, user: undefined,  messages: { success: 'Account deleted.' } })
+                res.local =  {messages: { success: 'Account deleted.' }}
+                res.redirect('/')
             } else {
                 let e = new Error('Deletion failed')
                 e.name = 'UserError'

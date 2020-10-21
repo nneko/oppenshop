@@ -64,14 +64,14 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                     for (const x of s) {
                         if (Array.isArray(x.images) && x.images.length > 0) {
                             for (const xx of x.images) {
-                                xx.src = media.getBinaryDetails(xx)
+                                xx.src = media.read(xx)
                             }
                         }
                         let p = await product.read({ shop: x._id.toString() })
                         for (const y of p) {
                             if (Array.isArray(y.images) && y.images.length > 0) {
                                 for (const yy of y.images) {
-                                  yy.src = media.getBinaryDetails(yy)
+                                  yy.src = media.read(yy)
                                 }
                             }
                             if(y.currency) y.currency = viewData.currency_list[y.currency]
@@ -82,14 +82,14 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                 } else if(await shop.isValid(s)) {
                     if (Array.isArray(s.images) && s.images.length > 0) {
                         for (const sxx of s.images) {
-                            sxx.src = media.getBinaryDetails(sxx)
+                            sxx.src = media.read(sxx)
                         }
                     }
                     let sp = await product.read({ shop: s._id.toString() })
                     for (const sy of sp) {
                         if (Array.isArray(sy.images) && sy.images.length > 0) {
                             for (const syy of sy.images) {
-                                syy.src = media.getBinaryDetails(syy)
+                                syy.src = media.read(syy)
                             }
                         }
                         if(sy.currency) sy.currency = viewData.currency_list[sy.currency]
@@ -110,7 +110,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                             for (let j = 0; j < cList.length; j++) {
                                 if (await catalog.isValid(cList[j])) {
                                     if(typeof(cList[j].image) !== 'undefined') {
-                                        cList[j].image.src = media.getBinaryDetails(cList[j].image)
+                                        cList[j].image.src = media.read(cList[j].image)
                                     }
                                     if(cList[j].products.length > 0) {
                                         let pList = []
@@ -119,7 +119,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                             if(await product.isValid(p)) {
                                                 if (typeof (p.images) !== 'undefined' && Array.isArray(p.images)) {
                                                     for (const pImg of p.images) {
-                                                        pImg.src = media.getBinaryDetails(pImg)
+                                                        pImg.src = media.read(pImg)
                                                     }
                                                 }
                                                 if(p.currency) p.currency = viewData.currency_list[p.currency]
@@ -133,7 +133,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                             }
                         } else if (await catalog.isValid(cList)) {
                             if (typeof (cList.image) !== 'undefined') {
-                                cList.image.src = media.getBinaryDetails(cList.image)
+                                cList.image.src = media.read(cList.image)
                             }
                             let pList = []
                             if (cList.products.length > 0) {
@@ -142,7 +142,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                                     if (await product.isValid(p)) {
                                         if (typeof (p.images) !== 'undefined' && Array.isArray(p.images)) {
                                             for (const pImg of p.images) {
-                                                pImg.src = media.getBinaryDetails(pImg)
+                                                pImg.src = media.read(pImg)
                                             }
                                         }
                                         if (p.currency) p.currency = viewData.currency_list[p.currency]

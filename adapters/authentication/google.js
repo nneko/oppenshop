@@ -138,6 +138,11 @@ google.serialize = (user,done) => {
 google.deserialize = async (uid,done) => {
     try {
         const user = await model.read(uid, { findBy: 'id' })
+
+        if (!model.isValid(user)) {
+            return done(null, false, { message: 'User does not exist.' })
+        }
+
         //Extract only relevant user details
         let u = {}
         u.id = user._id

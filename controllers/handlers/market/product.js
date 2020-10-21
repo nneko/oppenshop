@@ -36,7 +36,7 @@ marketProductHandler.populateViewData = async (pid) => {
 
             if (Array.isArray(viewData.product.images) && viewData.product.images.length > 0) {
                 for (const img of viewData.product.images) {
-                    img.src = media.getBinaryDetails(img)
+                    img.src = media.read(img)
                 }
             }
 

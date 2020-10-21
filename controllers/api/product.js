@@ -59,7 +59,7 @@ products.get('/', async (req, res) => {
         for (const y of p) {
             if (Array.isArray(y.images) && y.images.length > 0) {
                 for (const yy of y.images) {
-                  yy.src = media.getBinaryDetails(yy)
+                  yy.src = media.read(yy)
                 }
             }
             if(y.currency) y.currency = currency_list[y.currency]

@@ -265,12 +265,12 @@ function updateProductView(pr){
       edit_delete_action_form.appendChild(input_pid)
       let input_sid = document.createElement("INPUT")
       input_sid.type = "hidden"
-      input_sid.name = "id"
+      input_sid.name = "sid"
       if (typeof(pr.products[pp].shop)  !== 'undefined') input_sid.value = pr.products[pp].shop
       edit_delete_action_form.appendChild(input_sid)
       let input_uid = document.createElement("INPUT")
       input_uid.type = "hidden"
-      input_uid.name = "id"
+      input_uid.name = "uid"
       input_uid.value ='<%= user.id %>'
       //if (typeof(s.shops[ss].owner)  !== 'undefined') input_uid.value = s.shops[ss].owner
       edit_delete_action_form.appendChild(input_uid)

@@ -357,12 +357,12 @@ function updateStorefrontView(s){
       edit_delete_action_form.appendChild(input_id)
       let input_sid = document.createElement("INPUT")
       input_sid.type = "hidden"
-      input_sid.name = "id"
+      input_sid.name = "sid"
       if (typeof(s.shops[ss]._id)  !== 'undefined') input_sid.value = s.shops[ss]._id
       edit_delete_action_form.appendChild(input_sid)
       let input_uid = document.createElement("INPUT")
       input_uid.type = "hidden"
-      input_uid.name = "id"
+      input_uid.name = "uid"
       if (typeof(s.shops[ss].owner)  !== 'undefined') input_uid.value = s.shops[ss].owner
       edit_delete_action_form.appendChild(input_uid)
       if (s.shops[ss].status == 'inactive') {

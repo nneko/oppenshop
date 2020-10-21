@@ -67,7 +67,7 @@ let populateViewData = async (id) => {
                 viewData.image = { value: generator.getPrimaryField(s.images) }
                 if (!viewData.image.value && s.images && Array.isArray(s.images) && s.images.length > 0) {
                     viewData.image = { value: s.images[0] }
-                    viewData.image.value.src = media.getBinaryDetails(viewData.image.value)
+                    viewData.image.value.src = media.read(viewData.image.value)
                 }
                 viewData.address = generator.getPrimaryField(s.addresses)
                 if(!viewData.address && s.addresses && Array.isArray(s.addresses) && s.addresses.length > 0) {

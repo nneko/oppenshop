@@ -44,7 +44,7 @@ marketHandler.populateViewData = async (uid, product_page = 1) => {
             for (const p of viewData.products) {
                 if (Array.isArray(p.images) && p.images.length > 0) {
                     for (const img of p.images) {
-                        img.src = media.getBinaryDetails(img)
+                        img.src = media.read(img)
                     }
                 }
                 if(p.currency) p.currency = viewData.currency_list[p.currency]

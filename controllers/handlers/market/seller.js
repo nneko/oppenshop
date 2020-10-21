@@ -28,7 +28,7 @@ sellerHandler.populateViewData = async (sid) => {
 
             if (Array.isArray(viewData.shop.images) && viewData.shop.images.length > 0) {
                 for (const img of viewData.shop.images) {
-                    img.src = media.getBinaryDetails(img)
+                    img.src = media.read(img)
                 }
             }
 

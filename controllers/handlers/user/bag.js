@@ -34,7 +34,7 @@ bagHandler.populateViewData = async (uid, bag, product_page = 1) => {
 
             for (const key of Object.keys(viewData.bag.items)) {
                 if (viewData.bag.items[key].image) {
-                    viewData.bag.items[key].image.src = media.getBinaryDetails(viewData.bag.items[key].image)
+                    viewData.bag.items[key].image.src = media.read(viewData.bag.items[key].image)
                 }
             }
             resolve(viewData)

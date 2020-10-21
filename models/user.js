@@ -8,7 +8,7 @@ const debug = cfg.env == 'development' ? true : false
 let user = {}
 
 user.isValid = (u) => {
-    if (validator.isNotNull(u.preferredUsername) && validator.isNotNull(u.name) && validator.isNotNull(u.name.givenName) && validator.isNotNull(u.name.familyName) && validator.isNotNull(u.displayName) && validator.isNotNull(u.provider)){
+    if (u && validator.isNotNull(u.preferredUsername) && validator.isNotNull(u.name) && validator.isNotNull(u.name.givenName) && validator.isNotNull(u.name.familyName) && validator.isNotNull(u.displayName) && validator.isNotNull(u.provider)){
         return true
     } else {
         return false

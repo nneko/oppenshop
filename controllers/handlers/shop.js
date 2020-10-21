@@ -328,8 +328,42 @@ shophandler.productAddHandler = async (form, files) => {
     if (!currency.isValid(productCurrency)) {
           let error = new Error('Invalid currency code')
           error.name = 'CurrencyError'
-          error.type = 'Invalid'
+          error.type = 'InvalidCurrency'
           throw error
+    }
+
+    if(cfg.minimum_price && cfg.minimum_price_currency) {
+        try {
+            let minPrice = Number(cfg.minimum_price)
+            let minCurCode = String(cfg.minimum_price_currency)
+
+            let currencyExchangeRate = Number(productCurrency.exchangeRates[productCurrency.code])
+
+            if (isNaN(currencyExchangeRate)) {
+                console.error('Unable to do currency conversion for product: ')
+                console.error(currencyExchangeRate)
+                let eXError = new Error('Invalid exchange rate')
+                eXError.name = 'CurrencyExchangeRateError'
+                eXError.type = 'InvalidExchangeRate'
+                throw eXError
+            }
+
+            let productPriceInBase = (1 * (p.price / currencyExchangeRate))
+            let minPriceInBase = 1 * (minPrice / Number(productCurrency.exchangeRates[minCurCode]))
+
+            if (!(productPriceInBase >= minPriceInBase)) {
+                console.error('Product price lower than minimum allowed price')
+                console.error(generator.roundNumber(productPriceInBase,2) + ' ' + productCurrency.exchangeBase)
+                console.error('Minimum allowed price: ')
+                console.error(generator.roundNumber(minPriceInBase,2) + ' ' + productCurrency.exchangeBase)
+                let minPriceError = new Error('Below minimum')
+                minPriceError.name = 'PricingError'
+                minPriceError.type = 'InvalidPrice'
+                throw minPriceError
+           }
+        } catch (e) {
+            throw e
+        }
     }
 
     p.currency = productCurrency._id.toString()
@@ -352,6 +386,7 @@ shophandler.productAddHandler = async (form, files) => {
     p.specifications = specs
     return await product.create(p)
   } catch (e) {
+      console.log('Error on product add operation. Passing error up the stack')
       console.error(e)
       throw e
   }

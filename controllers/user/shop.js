@@ -41,7 +41,7 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { user: req.user, messages: { error: 'Internal error due to bad request' } })
+        res.render('error', { user: req.user, error: { message: 'Internal error due to bad request', status: 500 } })
     }
 }
 
@@ -106,7 +106,7 @@ let catalogAddHander = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a catalog.' } })
+            res.render('error', { user: req.user, error: { message: 'Unable to complete requested addition of a catalog.', status: 500 } })
             return
         }
     }
@@ -157,7 +157,7 @@ let catalogDeleteHander = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a catalog.' } })
+            res.render('error', { user: req.user, error: { message: 'Unable to complete requested addition of a catalog.', status: 500 } })
             return
         }
     }
@@ -210,7 +210,7 @@ let catalogAddProductHander = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested product addition to catalog.' } })
+            res.render('error', { user: req.user, error: { message: 'Unable to complete requested product addition to catalog.', status: 500 } })
             return
         }
     }
@@ -265,7 +265,7 @@ let catalogDeleteProductHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested product addition to catalog.' } })
+            res.render('error', { user: req.user, error: { message: 'Unable to complete requested product addition to catalog.', status: 500 } })
             return
         }
     }
@@ -319,7 +319,7 @@ let shopAddHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a shop.' } })
+            res.render('error', { user: req.user, error: { message: 'Unable to complete requested addition of a shop.', status: 500 } })
             return
         }
     }
@@ -409,10 +409,26 @@ let productAddHandler = async (req, res) => {
             viewData.messages = { success: 'Product added.' }
             res.render('sell', viewData)
         } catch (e) {
+            console.log('Handling product add error.')
             console.error(e)
             e.stack ? console.error(e.stack) : console.error('No stack trace.')
-            res.status(500)
-            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested addition of a product.' } })
+            try {
+                let viewData = await shophandler.populateViewData(form.uid.toString())
+                viewData.user = req.user
+                viewData.pane = 'pd-new'
+                viewData.messages = { error: 'Unable to complete request due to error.' }
+                if (e.type && e.type == 'InvalidPrice') {
+                    console.log('Product pricing error detected.')
+                    viewData.messages.error = 'Product unit price is below minimum allowed'
+                    res.status(400)
+                    res.render('sell', viewData)
+                } else {
+                    throw e
+                }
+            } catch (err) {
+                res.status(500)
+                res.render('error', { user: req.user, error: { message: 'Unable to complete requested addition of a product.', status: 500} })
+            }
         }
     }
 }
@@ -455,7 +471,7 @@ let shopUpdateHandler = async (req, res) => {
                     } catch (e) {
                         console.error(e)
                         res.status(500)
-                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                        res.render('error', { user: req.user, error: { message: 'Unable to complete requested operation.', status: 500} })
                     }
                     break
                 case 'close':
@@ -476,7 +492,7 @@ let shopUpdateHandler = async (req, res) => {
                     } catch (e) {
                         console.error(e)
                         res.status(500)
-                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                        res.render('error', { user: req.user, error: { message: 'Unable to complete requested operation.',status: 500 } })
                     }
                     break
                 case 'delete':
@@ -505,7 +521,7 @@ let shopUpdateHandler = async (req, res) => {
                     } catch (e) {
                         console.error(e)
                         res.status(500)
-                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                        res.render('error', { user: req.user, error: { message: 'Unable to complete requested operation.', status: 500 } })
                     }
                     break
                 case 'edit':
@@ -581,7 +597,7 @@ let productUpdateHandler = async (req, res) => {
                     } catch (e) {
                         console.error(e)
                         res.status(500)
-                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                        res.render('error', { user: req.user, error: { message: 'Unable to complete requested operation.', status: 500 } })
                     }
                     break
                 case 'reactivate':
@@ -617,7 +633,7 @@ let productUpdateHandler = async (req, res) => {
                     } catch (e) {
                         console.error(e)
                         res.status(500)
-                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                        res.render('error', { user: req.user, error: { message: 'Unable to complete requested operation.', status: 500 } })
                     }
                     break
                 case 'withdraw':
@@ -653,7 +669,7 @@ let productUpdateHandler = async (req, res) => {
                     } catch (e) {
                         console.error(e)
                         res.status(500)
-                        res.render('error', { user: req.user, messages: { error: 'Unable to complete requested operation.' } })
+                        res.render('error', { user: req.user, error: { message: 'Unable to complete requested operation.', status: 500 } })
                     }
                     break
                 default:

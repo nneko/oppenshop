@@ -13,6 +13,7 @@ const shophandler = require('../handlers/shop')
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 const currency = require('../../models/currency')
+const products = require('../api/product')
 const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
 
 let shops = express.Router()
@@ -500,7 +501,26 @@ let shopUpdateHandler = async (req, res) => {
 
                     try {
                         let t = await shop.update({_id: s._id}, {status: 'inactive'})
-                        console.log(t)
+
+                        //Retrieve all the shop's products
+                        let sProducts = await product.read({ shop: String(s._id) })
+
+                        if (sProducts && (!Array.isArray(sProducts))) {
+                            sProducts = [sProducts]
+                        }
+
+                        if (debug) {
+                            console.log(s.displayName + ' has ' + sProducts.length + ' products.')
+                        }
+
+                        //Withdraw all the shops products from the market
+                        for (const p of sProducts) {
+                            if (await product.isValid(p) && p.status != 'inactive') {
+                                if(debug) console.log('Withdrawing product ' + p.displayName + ' ' + String(p._id))
+                                await product.update({ name: p.name, shop: String(s._id) },{status: 'inactive'})
+                            }
+                        }
+
                         if (debug) console.log('Shop status made \'inactive\' for ' + form.uid)
                         let viewData = await shophandler.populateViewData(form.uid.toString())
                         viewData.user = req.user
@@ -521,9 +541,36 @@ let shopUpdateHandler = async (req, res) => {
 
                     try {
                         if(s.status == 'inactive'){
+                            //Retrieve all the shop's products
+                            let sProducts = await product.read({shop: s._id})
+
+                            if(sProducts && (!Array.isArray(sProducts))) {
+                                sProducts = [sProducts]
+                            }
+
+                            //Ensure all products are withdrawn from market prior to attempting deletion
+                            for (const p of sProducts) {
+                                if(await product.isValid(p) && p.status != 'inactive') {
+                                    let viewData = await shophandler.populateViewData(form.uid.toString())
+                                    viewData.user = req.user
+                                    viewData.pane = 'sf'
+                                    viewData.messages = { error: 'A shop with active products on the market cannot be deleted.' }
+                                    res.render('sell', viewData)
+                                    return
+                                }
+                            }
+
                             let t = await shop.delete({ _id: s._id })
                             console.log(t)
                             if (debug) console.log('Shop deleted for ' + form.uid)
+
+                            for (const pd of sProducts) {
+                                if (await product.isValid(pd)) {
+                                    if (debug) console.log('Deleting product ' + p.displayName + ' ' + String(p._id))
+                                    await product.delete({ name: p.name, shop: String(s._id) })
+                                }
+                            }
+
                             let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user
                             viewData.pane = 'sf'

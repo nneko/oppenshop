@@ -105,11 +105,11 @@
                                 <div class="input-group-prepend small-input-control">
                                     <span class="input-group-text">Unit Price</span>
                                 </div>
-                                <input class="form-control small-input-control"
+                                <input class="form-control small-input-control <% if(typeof(unit_dollar) !== 'undefined' && unit_dollar) { %><%= unit_dollar.class %><% } %>"
                                     name = "unit_dollar"
                                     type="number" aria-label="" aria-describedby="" size="" placeholder="0" min="" required>
                                 <h6 class="price-label">.</h6>
-                                <input class="form-control small-input-control"
+                                <input class="form-control small-input-control <% if(typeof(unit_cents) !== 'undefined' && unit_cents) { %><%= unit_cents.class %><% } %>"
                                     name = "unit_cents"
                                     type="number" aria-label=""
                                     aria-describedby="" size="" placeholder="00" min="0" max="99" required>

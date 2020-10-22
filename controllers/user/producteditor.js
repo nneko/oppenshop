@@ -173,6 +173,7 @@ producteditor.post('/', function (req, res) {
 
                     let formValidated = false
                     let formFields = {}
+                    let validationError = null
 
                     if (!req.body) {
                         await badRequest(req, res, 'disabled', 400, 'Invalid request.')
@@ -257,6 +258,44 @@ producteditor.post('/', function (req, res) {
                     }
                     productUpdate.specifications = specs
 
+                    let productCurrency = await currency.read(productUpdate.currency, { findBy: 'id' })
+
+                    if (cfg.minimum_price && cfg.minimum_price_currency) {
+                        try {
+                            let minPrice = Number(cfg.minimum_price)
+                            let minCurCode = String(cfg.minimum_price_currency)
+
+                            let currencyExchangeRate = Number(productCurrency.exchangeRates[productCurrency.code])
+
+                            if (isNaN(currencyExchangeRate)) {
+                                console.error('Unable to do currency conversion for product: ')
+                                console.error(currencyExchangeRate)
+                                let eXError = new Error('Invalid exchange rate')
+                                eXError.name = 'CurrencyExchangeRateError'
+                                eXError.type = 'InvalidExchangeRate'
+                                throw eXError
+                            }
+
+                            let productPriceInBase = (1 * (productUpdate.price / currencyExchangeRate))
+                            let minPriceInBase = 1 * (minPrice / Number(productCurrency.exchangeRates[minCurCode]))
+
+                            if (!(productPriceInBase >= minPriceInBase)) {
+                                console.error('Product price lower than minimum allowed price')
+                                console.error(generator.roundNumber(productPriceInBase, 2) + ' ' + productCurrency.exchangeBase)
+                                console.error('Minimum allowed price: ')
+                                console.error(generator.roundNumber(minPriceInBase, 2) + ' ' + productCurrency.exchangeBase)
+                                let minPriceError = new Error('Below minimum')
+                                minPriceError.name = 'PricingError'
+                                minPriceError.type = 'InvalidPrice'
+                                throw minPriceError
+                            }
+                        } catch (e) {
+                            if (e && e.name == 'CurrencyExchangeRateError') throw e
+                            validationError = e
+                            formFields.unit_dollar = { class: 'is-invalid', value: form.unit_dollar }
+                            formFields.unit_cents = { class: 'is-invalid', value: form.unit_cents }
+                        }
+                    }
 
                     let hasInvalids = false;
 
@@ -276,7 +315,6 @@ producteditor.post('/', function (req, res) {
                         try {
                             let updatedProduct = await product.read(p._id,{findBy: 'id'})
                             if(await product.isValid(updatedProduct)) {
-                                let productCurrency = await currency.read(updatedProduct.currency, {findBy: 'id'})
 
                                 let productCurrencyCode = baseCurrencyCode
 
@@ -320,8 +358,26 @@ producteditor.post('/', function (req, res) {
                         for (const k of Object.keys(formFields)) {
                             viewData[k] = formFields[k]
                         }
+
                         viewData.user = req.user
                         viewData.messages = { error: 'Product update unsucessful. One or more invalid field entries.' }
+
+                        if (validationError && validationError.type == 'InvalidPrice') {
+                            console.log('Product pricing error detected.')
+                            viewData.messages.error = 'Product unit price is below allowed minimum price of ' + cfg.minimum_price + ' ' + cfg.minimum_price_currency + '.'
+                            if (viewData['unit_dollar']) viewData['unit_dollar'].class = 'is-invalid'
+                            if (viewData['unit_cents']) viewData['unit_cents'].class = 'is-invalid'
+                            res.status(400)
+                        } else if (validationError && validataionError.name == 'ProductError') {
+                            console.log('Invalid product fields detected.')
+                            viewData.messages.error = 'Product could not be registered due to one or more invalid entries. Please check the fields and try again.'
+                            if (viewData['fullname']) viewData['fullname'].class = 'is-invalid'
+                            if (viewData['description']) viewData['description'].class = 'is-invalid'
+                            if (viewData['quantity']) viewData['quantity'].class = 'is-invalid'
+                            if (viewData['unit_dollar']) viewData['unit_dollar'].class = 'is-invalid'
+                            if (viewData['unit_cents']) viewData['unit_cents'].class = 'is-invalid'
+                            res.status(400)
+                        }
                         res.render('edit_product', viewData)
                     }
                 } else {

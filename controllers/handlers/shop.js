@@ -386,7 +386,7 @@ shophandler.productAddHandler = async (form, files) => {
     p.specifications = specs
     return await product.create(p)
   } catch (e) {
-      console.log('Error on product add operation. Passing error up the stack')
+      console.log('Error during product add operation. Passing error up the stack')
       console.error(e)
       throw e
   }

@@ -250,11 +250,11 @@
                             <input id="create-catalog-name"
                                 class="form-control <% if(typeof(name) !== 'undefined') { %><%= name.class %><% } %>"
                                 type="text" name="name"
-                                value="<% if(typeof(fullname) !== 'undefined' && name.value) { %><%= name.value %><% } %>"
+                                value="<% if(typeof(name) !== 'undefined' && name && name.value) { %><%= name.value %><% } %>"
                                 aria-label="Catalog Name" aria-describedby="create-catalog-name-basic-addon" size="55"
                                 required>
                             <div id="create-catalog-invalid-name" class="invalid-feedback">
-                                <% if(typeof(fullname) !== 'undefined' && name.class == 'is-invalid') { %><%= name.message %><% } else { %>
+                                <% if(typeof(name) !== 'undefined' && name && name.class == 'is-invalid') { %><%= name.message %><% } else { %>
                                 You must provide a valid catalog name.
                                 <% } %>
                             </div>

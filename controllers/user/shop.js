@@ -417,17 +417,35 @@ let productAddHandler = async (req, res) => {
                 viewData.user = req.user
                 viewData.pane = 'pd-new'
                 viewData.messages = { error: 'Unable to complete request due to error.' }
-                if (e.type && e.type == 'InvalidPrice') {
+                for (const k of Object.keys(form)) {
+                    formFields[k] = {class: 'is-valid', value: form[k]}
+                    viewData[k] = formFields[k]
+                }
+
+                if (e.type == 'InvalidPrice') {
                     console.log('Product pricing error detected.')
-                    viewData.messages.error = 'Product unit price is below minimum allowed'
+                    viewData.messages.error = 'Product unit price is below allowed minimum price of ' + cfg.minimum_price + ' ' + cfg.minimum_price_currency + '.'
+                    viewData['unit_dollar'].class = 'is-invalid'
+                    viewData['unit_cents'].class = 'is-invalid'
+                    res.status(400)
+                    res.render('sell', viewData)
+                } else if (e.name == 'ProductError') {
+                    console.log('Invalid product fields detected.')
+                    viewData.messages.error = 'Product could not be registered due to one or more invalid entries. Please check the fields and try again.'
+                    if (viewData['fullname']) viewData['fullname'].class = 'is-invalid'
+                    if (viewData['description']) viewData['description'].class = 'is-invalid'
+                    if (viewData['quantity']) viewData['quantity'].class = 'is-invalid'
+                    if (viewData['unit_dollar']) viewData['unit_dollar'].class = 'is-invalid'
+                    if (viewData['unit_cents']) viewData['unit_cents'].class = 'is-invalid'
                     res.status(400)
                     res.render('sell', viewData)
                 } else {
+                    console.log(e.name)
                     throw e
                 }
             } catch (err) {
                 res.status(500)
-                res.render('error', { user: req.user, error: { message: 'Unable to complete requested addition of a product.', status: 500} })
+                res.render('error', { user: req.user, error: { message: 'Unable to complete operation', status: 500} })
             }
         }
     }

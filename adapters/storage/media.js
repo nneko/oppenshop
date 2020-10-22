@@ -9,7 +9,7 @@ const dataUploader = mediaManager({
     next(err)
   }
 })
-
+const fs = require('fs/promises')
 const debug = cfg.env == 'development' ? true : false
 
 let media = {}
@@ -33,7 +33,11 @@ media.read = (file) => {
 }
 
 media.write = (file, dest) => {
+  let blob = file && file.buffer && typeof (file.buffer.buffer) !== 'undefined' ? file.buffer.buffer : (file.buffer ? Buffer.from(file.buffer, 'base64') : '')
 
+  return new Promise(async (resolve, reject) => {
+    
+  })
 }
 
 module.exports = media

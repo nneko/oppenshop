@@ -118,5 +118,9 @@ configuration/index.js
 configuration/ls-mongo-to-es_products.conf
 configuration/ls-mongo-to-es_users.conf
 
+# Data directory
+data
+data/*
+
 # Editor
 .vscode

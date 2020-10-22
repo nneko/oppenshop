@@ -500,28 +500,7 @@ let shopUpdateHandler = async (req, res) => {
                     }
 
                     try {
-                        let t = await shop.update({_id: s._id}, {status: 'inactive'})
-
-                        //Retrieve all the shop's products
-                        let sProducts = await product.read({ shop: String(s._id) })
-
-                        if (sProducts && (!Array.isArray(sProducts))) {
-                            sProducts = [sProducts]
-                        }
-
-                        if (debug) {
-                            console.log(s.displayName + ' has ' + sProducts.length + ' products.')
-                        }
-
-                        //Withdraw all the shops products from the market
-                        for (const p of sProducts) {
-                            if (await product.isValid(p) && p.status != 'inactive') {
-                                if(debug) console.log('Withdrawing product ' + p.displayName + ' ' + String(p._id))
-                                await product.update({ name: p.name, shop: String(s._id) },{status: 'inactive'})
-                            }
-                        }
-
-                        if (debug) console.log('Shop status made \'inactive\' for ' + form.uid)
+                        await shophandler.shopClose(s)
                         let viewData = await shophandler.populateViewData(form.uid.toString())
                         viewData.user = req.user
                         viewData.pane = 'sf'
@@ -540,53 +519,25 @@ let shopUpdateHandler = async (req, res) => {
                     }
 
                     try {
-                        if(s.status == 'inactive'){
-                            //Retrieve all the shop's products
-                            let sProducts = await product.read({shop: s._id})
-
-                            if(sProducts && (!Array.isArray(sProducts))) {
-                                sProducts = [sProducts]
-                            }
-
-                            //Ensure all products are withdrawn from market prior to attempting deletion
-                            for (const p of sProducts) {
-                                if(await product.isValid(p) && p.status != 'inactive') {
-                                    let viewData = await shophandler.populateViewData(form.uid.toString())
-                                    viewData.user = req.user
-                                    viewData.pane = 'sf'
-                                    viewData.messages = { error: 'A shop with active products on the market cannot be deleted.' }
-                                    res.render('sell', viewData)
-                                    return
-                                }
-                            }
-
-                            let t = await shop.delete({ _id: s._id })
-                            console.log(t)
-                            if (debug) console.log('Shop deleted for ' + form.uid)
-
-                            for (const pd of sProducts) {
-                                if (await product.isValid(pd)) {
-                                    if (debug) console.log('Deleting product ' + p.displayName + ' ' + String(p._id))
-                                    await product.delete({ name: p.name, shop: String(s._id) })
-                                }
-                            }
-
+                        await shophandler.shopDelete(s)
+                        let viewData = await shophandler.populateViewData(form.uid.toString())
+                        viewData.user = req.user
+                        viewData.pane = 'sf'
+                        viewData.messages = { success: 'Shop deleted.' }
+                        res.render('sell', viewData)
+                    } catch (e) {
+                        if(e && e.name == 'PermissionError') {
+                            console.error(e)
                             let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user
                             viewData.pane = 'sf'
-                            viewData.messages = { success: 'Shop deleted.' }
+                            viewData.messages = { error: 'Permission denied. Only closed shops with no active products can be deleted.' }
                             res.render('sell', viewData)
                         } else {
-                            let viewData = await shophandler.populateViewData(form.uid.toString())
-                            viewData.user = req.user
-                            viewData.pane = 'sf'
-                            viewData.messages = { error: 'Permission denied. Only closed shops can be deleted.' }
-                            res.render('sell', viewData)
+                            console.error(e)
+                            res.status(500)
+                            res.render('error', { user: req.user, error: { message: 'Unable to complete requested operation.', status: 500 } })
                         }
-                    } catch (e) {
-                        console.error(e)
-                        res.status(500)
-                        res.render('error', { user: req.user, error: { message: 'Unable to complete requested operation.', status: 500 } })
                     }
                     break
                 case 'edit':

@@ -312,6 +312,91 @@ shophandler.shopAddHandler = async (form, files) => {
   }
 }
 
+shophandler.shopClose = async (s) => {
+    try {
+        if(! await shop.isValid(s)) {
+            let err = new Error('Not a valid shop')
+            err.name = 'ShopError'
+            err.type = 'Invalid'
+            throw err
+        }
+
+        let result = await shop.update({ _id: s._id }, { status: 'inactive' })
+        if (debug) console.log(result)
+
+        //Retrieve all the shop's products
+        let sProducts = await product.read({ shop: String(s._id) })
+
+        if (sProducts && (!Array.isArray(sProducts))) {
+            sProducts = [sProducts]
+        }
+
+        if (debug) {
+            console.log(s.displayName + ' has ' + sProducts.length + ' products.')
+        }
+
+        //Withdraw all the shops products from the market
+        for (const p of sProducts) {
+            if (await product.isValid(p) && p.status != 'inactive') {
+                if (debug) console.log('Withdrawing product ' + p.displayName + ' ' + String(p._id))
+                await product.update({ name: p.name, shop: String(s._id) }, { status: 'inactive' })
+            }
+        }
+
+        if (debug) console.log('Shop: ' + String(s._id) + ' status \'inactive\'.')
+    } catch (e) {
+        throw e
+    }
+}
+
+shophandler.shopDelete = async (s) => {
+    try {
+        if (! await shop.isValid(s)) {
+            let err = new Error('Not a valid shop')
+            err.name = 'ShopError'
+            err.type = 'Invalid'
+            throw err
+        }
+
+        if (s.status != 'inactive') {
+            let err = new Error('Not permitted')
+            err.name = 'PermissionError'
+            err.type = 'Denied'
+            throw err
+        }
+        
+        //Retrieve all the shop's products
+        let sProducts = await product.read({ shop: String(s._id) })
+
+        if (sProducts && (!Array.isArray(sProducts))) {
+            sProducts = [sProducts]
+        }
+
+        //Ensure all products are withdrawn from market prior to attempting deletion
+        for (const p of sProducts) {
+            if (await product.isValid(p)) {
+                if (p.status != 'inactive') {
+                    let activeProductErr = new Error('Not permitted to delete shop with active products')
+                    activeProductErr.name = 'PermissionError'
+                    activeProductErr.type = 'ActiveProduct'
+                    throw activeProductErr
+                } else {
+                    if (debug) console.log('Deleting product ' + p.displayName + ' ' + String(p._id))
+                    let productDeleteResult = await product.delete({ name: p.name, shop: String(s._id) })
+                    if (debug) console.log(productDeleteResult)
+                }
+
+            }
+        }
+
+        let result = await shop.delete({ _id: s._id })
+        if(debug) console.log(result)
+        if (debug) console.log('Shop ' + String(s._id) + 'deleted.')
+    } catch (e) {
+        throw e
+    }
+}
+
 shophandler.productAddHandler = async (form, files) => {
   try {
     let p = {}

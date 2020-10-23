@@ -170,6 +170,27 @@ Calling elasticsearch endpoint directly can be done with the following parameter
 curl -H 'Content-Type: application/json' -X POST 'http://localhost:9200/products-index/_search?pretty' -d '{"query": {"match": {"name": "XBox"}}}'
 ```
 
+## Configuration
+
+### Media Handling
+
+A standard media handler storage adapter is provided by default. This storage adapter can save media images to either the database in a base64 7bit string buffer or alternatively directly to the file system. The following configuration parameters determine the behaviour of the standard media adapter.
+
+```
+  media_datastore: 'fs',
+  media_dest_type: 'relative',
+  media_dest: '/data/media',
+  media_dest_users: '/users',
+  media_dest_shops: '/shops',
+  media_dest_products: '/products',
+  media_dest_catalogs: '/catalogs',
+  media_uri_path: '/view/assets/media',
+```
+
+The default behaviour for a properly configured app shown above is to save media images to the file system as indicated by the *media_datastore* value of 'fs'. Alternatively image binary data could be saved to the databse by using the 'db' value. Note, the app will failback to utilizing the database as media storage if no configuration values are set.
+
+When the `media_dest_type` and `media_dest` options are provided they determine whether the destination path is relative to the application's parent directory or if it is an absolute system path.
+
 ## API
 
 The platform provides a built-in Application Programming Interface (API) that provides various endpoints to support queries and other features such as authentication. Details of the features provided by the API can be found in the [api reference](./documentation/API.md).

@@ -73,6 +73,12 @@ router.use('/api', api)
 router.use('/public', express.static(path.join(__dirname, '../views/public')))
 router.use('*/view/assets', express.static(path.join(__dirname, '../views/' + '/assets')))
 
+if (cfg.media_uri_path && cfg.media_dest) {
+    let mediaPath = path.join(__dirname, '../' + cfg.media_dest.slice(1))
+    console.log('Serving static media from ' + mediaPath)
+    router.use('*' + cfg.media_uri_path, express.static(mediaPath))
+}
+
 //controllers
 router.use('/market', require('./market'))
 router.use('/signin', require('./signin'))

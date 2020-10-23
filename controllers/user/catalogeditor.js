@@ -5,15 +5,7 @@ const express = require('express')
 const converter = require('../../utilities/converter')
 const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
-const multer = require('multer')
-const storage = multer.memoryStorage()
-const fileUploader = multer({
-    storage: storage,
-    onError: function (err, next) {
-        console.log('error', err);
-        next(err);
-    }
-}).array('fullimage', 10)
+const fileUploader = media.uploader
 
 let catalogeditor = express.Router()
 
@@ -169,10 +161,14 @@ catalogeditor.post('/', function (req, res) {
                             await badRequest(req, res, '', 403, 'Upload limits exceeded.')
                             return
                         }
-                        if(req.files.length > 0) {
-                            let img =  req.files[0]
-                            img.storage = 'db'
-                            if(debug) console.log(req.files)
+                        if (req.files.length > 0) {
+                            let img = req.files[0]
+                            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                            if (x.storage != 'db') {
+                                img = await media.write(x, '/catalog/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                            } else {
+                                img = x
+                            }
                             catalogUpdate.image = img
                         }
                     }

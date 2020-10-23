@@ -1,7 +1,5 @@
 const cfg = require('../../configuration')
 const validator = require('../../utilities/validator')
-const user = require('../../models/user')
-const shop = require('../../models/shop')
 const product = require('../../models/product')
 const currency = require('../../models/currency')
 const express = require('express')
@@ -9,17 +7,7 @@ const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
 const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
-//const passport = require('passport')
-const multer = require('multer')
-const { removePrimaryFields } = require('../../utilities/generator')
-const storage = multer.memoryStorage()
-const fileUploader = multer({
-    storage: storage,
-    onError: function (err, next) {
-        console.log('error', err);
-        next(err);
-    }
-}).array('fullimage', 10)
+const fileUploader = media.uploader
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
@@ -221,12 +209,18 @@ producteditor.post('/', function (req, res) {
                             return
                         }
                         if(req.files.length > 0) {
+                            let pImgs = []
                             for (x of req.files) {
-                                x.storage = 'db'
+                                let img = {}
+                                x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                                if (x.storage != 'db') {
+                                    img = await media.write(x, '/product/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                                } else {
+                                    img = x
+                                }
+                                pImgs.push(img)
                             }
-                            if(debug) console.log(req.files)
-                            //shopUpdate.images = req.files
-                            productUpdate.images = req.files
+                            productUpdate.images = pImgs
                         }
                     }
                     productUpdate.quantity = form.quantity ? Number(form.quantity) : 0

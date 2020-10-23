@@ -13,7 +13,6 @@ const shophandler = require('../handlers/shop')
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 const currency = require('../../models/currency')
-const products = require('../api/product')
 const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
 
 let shops = express.Router()

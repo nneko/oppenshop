@@ -1,23 +1,10 @@
 const cfg = require('../../configuration')
-const validator = require('../../utilities/validator')
 const user = require('../../models/user')
 const shop = require('../../models/shop')
 const product = require('../../models/product')
-const express = require('express')
-const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
 const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
-const multer  = require('multer')
-const storage = multer.memoryStorage()
-const fileUploader = multer({storage: storage,
-                    onError : function(err, next) {
-                      console.log('error', err);
-                      next(err);
-                    }
-                  }).array('fullimage', 10)
-//const upload = multer({ dest: 'uploads/' })
-const btoa = require('btoa')
 const catalog = require('../../models/catalog')
 const currency = require('../../models/currency')
 
@@ -65,6 +52,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                         if (Array.isArray(x.images) && x.images.length > 0) {
                             for (const xx of x.images) {
                                 xx.src = media.read(xx)
+                                console.log(xx)
                             }
                         }
                         let p = await product.read({ shop: x._id.toString() })
@@ -187,7 +175,7 @@ shophandler.catalogAddHander = async (form, files) => {
     c.products = []
     if (files) {
         for (x of files) {
-            x.storage = 'db'
+            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
         }
         console.log(files)
         if(Array.isArray(files) && files.length >= 1) c.image = files[0]
@@ -278,7 +266,7 @@ shophandler.shopAddHandler = async (form, files) => {
     //if (typeof(req.file) !== 'undefined'){
     if (files){
         for (x of files){
-          x.storage = 'db'
+            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
         }
         console.log(files)
         u.images = files
@@ -459,7 +447,7 @@ shophandler.productAddHandler = async (form, files) => {
 
     if (files){
         for (x of files){
-          x.storage = 'db'
+            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
         }
         p.images = files
     }

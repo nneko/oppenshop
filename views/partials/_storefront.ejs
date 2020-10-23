@@ -301,12 +301,9 @@ function updateStorefrontView(s){
           let storefront_image = document.createElement("IMG")
           storefront_image.className = "storefront-image"
           storefront_image.alt = s.shops[ss].images[i].originalname
-          //console.log(typeof(s.shops[ss].images[i].buffer))
-          //console.log(typeof(s.shops[ss].images[i].buffer.buffer))
-          //let imageStringBlob = s.shops[ss].images[i] && s.shops[ss].images[i].buffer && typeof(s.shops[ss].images[i].buffer.buffer) !== 'undefined' ? s.shops[ss].images[i].buffer.buffer : (s.shops[ss].images[i].buffer ? new Buffer.from(s.shops[ss].images[i].buffer,'base64') : '')
-          //let base64string = window.btoa([].reduce.call(new Uint8Array(imageStringBlob),function(p,c){return p+String.fromCharCode(c)},''))
-          //let src = 'data:'+file.mimetype+';base64,'+base64string
           storefront_image.src = s.shops[ss].images[i].src
+          console.log(s.shops[ss].images[i].src)
+          console.log(s.shops[ss].images[i])
           item_card_left.appendChild(storefront_image)
         }
       } else {

@@ -36,7 +36,8 @@ media.read = (file) => {
 }
 
 media.write = (file, dest, opts) => {
-  let blob = file && file.buffer ? file.buffer: ''
+  if(debug) console.log(file)
+  let blob = file && file.buffer ? (file.storage == 'db' && file.buffer.buffer ? file.buffer.buffer : file.buffer) : ''
 
   let storageType = file && file.storage ? file.storage : (cfg.media_datastore ? cfg.media_datastore : 'fs')
 

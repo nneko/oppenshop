@@ -58,6 +58,9 @@ media.write = (file, dest, opts) => {
   return new Promise(async (resolve, reject) => {
     try {
       switch(storageType) {
+        case 'db':
+          resolve(file)
+          break
         default:
           let dataDir = dataLocation.split('/').slice(0, -1).join('/')
           if(debug) console.log('Writing media to ' + dataDir)
@@ -72,7 +75,7 @@ media.write = (file, dest, opts) => {
           if(file.mimetype) newF.mimetype = file.mimetype
 
           resolve(newF)
-          break;
+          break
       }
     } catch (e) {
       console.error('Media write operation failed due to error: ', e.message)

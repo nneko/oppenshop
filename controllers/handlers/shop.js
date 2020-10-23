@@ -173,13 +173,17 @@ shophandler.catalogAddHander = async (form, files) => {
     c.description = form.description
     c.owner = form.sid
     c.products = []
+    
+    let cImgs = []
     if (files) {
         for (x of files) {
             x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+            let img = await media.write(x, cfg.media_dest_products ? cfg.media_dest_catalogs : '/catalog')
+            cImgs.push(img)
         }
-        console.log(files)
-        if(Array.isArray(files) && files.length >= 1) c.image = files[0]
+        if (Array.isArray(cImgs) && cImgs.length >= 1) c.image = cImgs[0]
     }
+    
     return await catalog.create(c)
   } catch (e) {
       console.error(e)
@@ -255,21 +259,22 @@ shophandler.catalogDeleteProductHandler = async (form) => {
 
 shophandler.shopAddHandler = async (form, files) => {
   try {
-    let u = {}
+    let s = {}
     // Read existing stored user details
     const usr = await user.read(form.uid, { findBy: 'id' })
 
-    u.owner = form.uid
-    u.name = form.fullname
-    u.displayName = form.fullname
-    u.status = 'active'
-    //if (typeof(req.file) !== 'undefined'){
+    s.owner = form.uid
+    s.name = form.fullname
+    s.displayName = form.fullname
+    s.status = 'active'
+    let sImgs  = []
     if (files){
         for (x of files){
             x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+            let img = await media.write(x, cfg.media_dest_shops ? cfg.media_dest_shops : '/shop')
+            sImgs.push(img)
         }
-        console.log(files)
-        u.images = files
+        s.images = sImgs
     }
 
     let addr = {}
@@ -282,18 +287,18 @@ shophandler.shopAddHandler = async (form, files) => {
     addr.formatted = generator.formattedAddress(addr)
 
     if (form.setPrimary != 'true'){
-        u.addresses = usr.addresses
-        u.addresses.push(addr)
+        s.addresses = usr.addresses
+        s.addresses.push(addr)
     } else {
         addr.primary = true
         if (typeof(usr.addresses) !== 'undefined') {
-            u.addresses = generator.removePrimaryFields(usr.addresses)
-            u.addresses.push(addr)
+            s.addresses = generator.removePrimaryFields(usr.addresses)
+            s.addresses.push(addr)
         } else {
-            u.addresses = [addr]
+            s.addresses = [addr]
         }
     }
-    return await shop.create(u)
+    return await shop.create(s)
   } catch (e) {
       console.error(e)
       throw e
@@ -445,12 +450,16 @@ shophandler.productAddHandler = async (form, files) => {
 
     }
 
-    if (files){
-        for (x of files){
+    let pImgs = []
+    if (files) {
+        for (x of files) {
             x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+            let img = await media.write(x, cfg.media_dest_products ? cfg.media_dest_products : '/product')
+            pImgs.push(img)
         }
-        p.images = files
+        p.images = pImgs
     }
+
     let specs = {}
     for (key in form){
       if (!key.startsWith('spec_')) continue

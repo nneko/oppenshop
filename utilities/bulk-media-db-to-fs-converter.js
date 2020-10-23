@@ -2,7 +2,6 @@ const cfg = require('../configuration')
 const shop = require('../models/shop')
 const product = require('../models/product')
 const catalog = require('../models/catalog')
-const validator = require('./validator')
 const debug = cfg.env == 'development' ? true : false
 const media = require('../adapters/storage/media')
 const generator = require('./generator')

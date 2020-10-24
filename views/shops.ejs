@@ -44,9 +44,6 @@
                                 <ul>
                                     <li>
                                         <span>
-                                            <p class="item-card-label">
-                                            <b><% if(shops[j].displayName.length <= 20) { %><%= shops[j].displayName.slice(0,20) %><% } else { %><%= shops[j].displayName.slice(0,20) + '...' %><% } %></b>
-                                            </p>
                                             <div class="item-card-label">
                                                 <div class="catalog-item-card-section">
                                                     <% if(typeof(shops[j].images) !== 'undefined' && Array.isArray(shops[j].images) && shops[j].images.length > 0) { %>
@@ -59,6 +56,9 @@
                                                         <%- include('partials/_shop_image_object.ejs') %>
                                                     </figure>
                                                     <% } %>
+                                                    <p class="item-card-label">
+                                                        <b><% if(shops[j].displayName.length <= 20) { %><%= shops[j].displayName.slice(0,20) %><% } else { %><%= shops[j].displayName.slice(0,20) + '...' %><% } %></b>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </span>

@@ -148,7 +148,11 @@ market.post('/', async (req, res) => {
                 total: searchResult.total,
                 results: itemsFound
             }
-            viewData.messages = {info: 'Found ' + (typeof(searchResult.total) == 'number' ? searchResult.total : 0) + ' matches for ' + '"' + (viewData.searchResults.query != '' ? (viewData.searchResults.query && viewData.searchResults.query.length < 21 ? viewData.searchResults.query.slice(0,20) : viewData.searchResults.query.slice(0,20) + '...') : '') + '"' + '.'}
+            viewData.messages = {success: 'Found ' + (typeof(searchResult.total) == 'number' ? searchResult.total : 0) + ' matches for ' + '"' + (viewData.searchResults.query != '' ? (viewData.searchResults.query && viewData.searchResults.query.length < 21 ? viewData.searchResults.query.slice(0,20) : viewData.searchResults.query.slice(0,20) + '...') : '') + '"' + '.'}
+            if(Number(searchResult.total) == 0) {
+                viewData.messages.info = viewData.messages.success
+                delete viewData.messages.success
+            }
             res.render('market', viewData)
             
         } catch (e) {

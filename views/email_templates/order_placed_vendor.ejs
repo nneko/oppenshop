@@ -1,0 +1,23 @@
+<!-- body -->
+<main class="container">
+    <section class="welcome-section">
+      <div>
+        Good Day  <%= name %>,
+        <br>
+        <p>The following item(s) has been ordered:</p>
+        <ul>
+          <% if (typeof(items) !== 'undefined' && Array.isArray(items) && items.length > 0) { %>
+          <% for(let i=0;i<items.length;i++) { %>
+            <li><%= items[i].name %></li>
+          <% } %>
+          <% } %>
+        </ul>
+        <p>Total: <%= total_amount %> <%= total_currency %>
+        <br>Once the order is confirmed, further updates will be sent.
+        Best Regards,<br>
+        The OppenShop Team
+        <hr>
+        <p><i>We don't check this mailbox, so please don't reply to this message.</i></p>
+      </div>
+    </section>
+</main>

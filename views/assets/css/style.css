@@ -65,6 +65,14 @@ body {
     line-height: 1.6rem;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: Questrial;
+}
+
+b {
+    font-family: Questrial;
+}
+
 nav h4  {
     /*letter-spacing: 0.1rem;*/
     font-size: 1.5rem;
@@ -717,10 +725,22 @@ svg {
     padding: 0;
 }
 
+.product-details-content h2, h4 {
+    font-family: Questrial;
+}
+
+.product-details-content p {
+    font-family: Quicksand;
+}
+
 .content-pane {
     background-color: var(--main-content-bg-color);
     border-radius: 0.25rem;
     padding: 1rem;
+}
+
+.content-pane p {
+    font-family: Quicksand;
 }
 
 .marketplace {
@@ -1041,8 +1061,9 @@ white-space: nowrap;
     /*border-bottom: 1px solid var(--main-sub-border-color);*/
     /*color: #444;*/
     color: var(--sidebar-icon-highlight-color);
+    font-family: Gafata;
     font-size: 1.05rem;
-    font-weight: 450;
+    font-weight: 600;
 }
 
 .product-carousel {

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" href="/view/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/view/assets/css/style.css">
+    <link rel="shortcut icon" href="/view/assets/images/favicon.png" type="image/png" media="screen">
+    <title><%= subject %></title>
+</head>
+
+<body>
+  <!-- header -->
+  <nav class="menu">
+    <div class="menu-main">
+        <div class="applogo">
+            <a href="/">
+                <%- await include('../assets/symbols/logo.svg') %>
+            </a>
+        </div>
+    </div>
+  </nav>
+  <!-- body -->
+  <main class="container">
+      <section class="welcome-section">
+        <div>
+          Good Day <%= name %>,
+          <br><br>
+          Please select the link below to verify your email address:
+          <br><a href="<%= url %>">Email Verify Link</a>
+          <br><br>
+          Best Regards,<br>
+          The OppenShop Team
+
+        </div>
+      </section>
+  </main>
+  <!-- footer -->
+  <script src="view/assets/jquery/jquery-3.4.1.slim.js"></script>
+  <script src="view/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="view/assets/js/app.js"></script>
+</body>
+</html>

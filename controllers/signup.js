@@ -7,6 +7,8 @@ const debug = cfg.env == 'development' ? true : false
 const mailer = require('../adapters/messaging/mailer.js')
 const jwt = require('jsonwebtoken')
 const generator = require('../utilities/generator')
+const path = require('path')
+const ejs = require('ejs')
 
 let signup = express.Router()
 
@@ -15,11 +17,28 @@ let signupEmailer = {}
 signupEmailer.sendEmailVerification = async _data => {
     try {
         let data = {}
-        data.subject = 'OppenShop Email Verification'
+        data.subject = 'OppenShop - Email Verification'
         let token = jwt.sign({ email: _data.email, token: _data.token }, cfg.accessTokenSecret)
-        let url = cfg.endpoint + 'verify?data=' + token
-        data.text = 'Good Day ' + _data.name + ',\n\nPlease select the link below to verify your email address:\n' + url + '\n\nBest Regards,\nThe OppenShop Team'
-        data.html = 'Good Day ' + _data.name + ',<br><br>Please select the link below to verify your email address:<br><a href="' + url + '">Email Verify Link</a><br><br>Best Regards,<br>The OppenShop Team'
+        //let url = cfg.endpoint + 'verify?data=' + token
+        _data.url = cfg.endpoint + 'verify?data=' + token
+        data.html = await ejs.renderFile(path.resolve(__dirname, '../views/email_templates/verify.ejs'), _data, {async: true})
+        //data.text = 'Good Day ' + _data.name + ',\n\nPlease select the link below to verify your email address:\n' + url + '\n\nBest Regards,\nThe OppenShop Team'
+        //data.html = 'Good Day ' + _data.name + ',<br><br>Please select the link below to verify your email address:<br><a href="' + url + '">Email Verify Link</a><br><br>Best Regards,<br>The OppenShop Team'
+        data.to = _data.email
+        await mailer.send(data)
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+signupEmailer.sendEmailWelcome = async _data => {
+    try {
+        let data = {}
+        data.subject = 'OppenShop - Welcome'
+        _data.url = cfg.endpoint
+        data.html = await ejs.renderFile(path.resolve(__dirname, '../views/email_templates/welcome.ejs'), _data, {async: true})
+        //data.text = 'Good Day ' + _data.name + ',\n\nPlease select the link below to verify your email address:\n' + url + '\n\nBest Regards,\nThe OppenShop Team'
+        //data.html = 'Good Day ' + _data.name + ',<br><br>Please select the link below to verify your email address:<br><a href="' + url + '">Email Verify Link</a><br><br>Best Regards,<br>The OppenShop Team'
         data.to = _data.email
         await mailer.send(data)
     } catch (e) {
@@ -37,7 +56,7 @@ signup.get('/', (req, res) => {
 
 signup.post('/', async (req,res) => {
     let u = {}
-    
+
     let formValidated = false
     let formFields = {}
 
@@ -55,13 +74,13 @@ signup.post('/', async (req,res) => {
 
     //Name
     let name = {}
-    if (validator.isNotNull(req.body.givenName)) { 
+    if (validator.isNotNull(req.body.givenName)) {
         name.givenName = String(req.body.givenName)
         formFields.givenName = { class: 'is-valid', value: name.givenName }
      } else {
         formFields.givenName = {class: 'is-invalid', message: 'You must provide your Given Name.'}
      }
-    
+
     if (validator.isNotNull(req.body.familyName)) {
         name.familyName = String(req.body.familyName)
         formFields.familyName = {class: 'is-valid', value: name.familyName}
@@ -73,18 +92,18 @@ signup.post('/', async (req,res) => {
     }
     u.name = name
     u.displayName = name.givenName + ' ' + name.familyName
-    
+
     //Password
     if(validator.isNotNull(req.body.password)) {
         const pwHash = await bcrypt.hash(String(req.body.password), 10)
         u.password = pwHash
     } else {
         formFields.password = {
-            class: 'is-invalid', 
+            class: 'is-invalid',
             message: 'Please enter a password'
         }
     }
-    
+
     //Addresses
     let addresses = []
     u.addresses = addresses
@@ -106,9 +125,9 @@ signup.post('/', async (req,res) => {
         if(formFields[k].class == 'is-invalid') {
             hasInvalids = true
             break
-        } 
-    } 
-    
+        }
+    }
+
     hasInvalids ? formValidated = false : formValidated = true
 
     if(!formValidated) {
@@ -125,6 +144,7 @@ signup.post('/', async (req,res) => {
             u.verified = false
             const result = await user.create(u)
             if(debug)console.log('User account created for '+u.preferredUsername)
+            signupEmailer.sendEmailWelcome({name: req.body.givenName, email: u.preferredUsername})
             signupEmailer.sendEmailVerification({name: req.body.givenName, email: u.preferredUsername, token: u.verificationToken})
             res.render('verify', { title: cfg.title, theme: cfg.template, messages: { info: 'A verification link has been sent via email.' } })
         } catch (e) {
@@ -143,7 +163,7 @@ signup.post('/', async (req,res) => {
                     }
                     formFields.error = e.message
                     status = 403
-                } 
+                }
             }
             res.status(status)
             res.render('signup',formFields)

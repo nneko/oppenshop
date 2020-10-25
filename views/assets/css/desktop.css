@@ -795,15 +795,21 @@ white-space: nowrap;
 }
 
 .catalog-item-image {
-    height: auto;
+    height: 16rem !important;
     margin: 0;
     margin-bottom: 0.5rem;
-    width: 100%;
+    max-width: 100% !important;
+    max-height: 16rem;
+    width: auto !important;
 }
+
 .catalog-item-image svg {
-    height: auto;
+    height: 16rem !important;
     margin: 0;
-    width: 100% !important; 
+    margin-bottom: 0.5rem;
+    max-width: 100% !important;
+    max-height: 16rem;
+    width: auto !important;
 }
 
 .catalog-delete-section {

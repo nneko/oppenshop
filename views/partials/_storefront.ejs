@@ -249,7 +249,7 @@ function getStorefrontDetails(obj){
     console.log('Ending getStorefrontDetails....')
 }
 
-respondToStorefrontVisibility = function(element, callback) {
+ function respondToStorefrontVisibility(element, callback) {
   var options = {
     root: document.documentElement
   }
@@ -309,7 +309,7 @@ function updateStorefrontView(s){
       } else {
         let figure = document.createElement("FIGURE")
         figure.className = "storefront-image"
-        figure.innerHTML = '<%- include("../assets/symbols/shop.svg") %>'
+        figure.innerHTML = `<%- include("../assets/symbols/shop.svg") %>`
         item_card_left.appendChild(figure)
       }
       item_card.appendChild(item_card_left)
@@ -372,7 +372,7 @@ function updateStorefrontView(s){
         button_edit.name="update"
         button_edit.value="edit"
         //button_edit.
-        button_edit.innerHTML = '<%- include("../assets/symbols/edit.svg") %>'
+        button_edit.innerHTML = `<%- include("../assets/symbols/edit.svg") %>`
         a.appendChild(button_edit)
         edit_delete_action_form.appendChild(a)
         let button_re_activate = document.createElement("BUTTON")
@@ -382,7 +382,7 @@ function updateStorefrontView(s){
         button_re_activate.name="update"
         button_re_activate.value="open"
         //button_re_activate.
-        button_re_activate.innerHTML = '<%- include("../assets/symbols/reload.svg") %>'
+        button_re_activate.innerHTML = `<%- include("../assets/symbols/reload.svg") %>`
         edit_delete_action_form.appendChild(button_re_activate)
         let button_delete = document.createElement("BUTTON")
         button_delete.className = "action-icon-button delete-icon action-icon close-icon"
@@ -391,7 +391,7 @@ function updateStorefrontView(s){
         button_delete.name="update"
         button_delete.value="delete"
         //button_delete.
-        button_delete.innerHTML = '<%- include("../assets/symbols/bin.svg") %>'
+        button_delete.innerHTML = `<%- include("../assets/symbols/bin.svg") %>`
         edit_delete_action_form.appendChild(button_delete)
       } else {
         let a = document.createElement("A")
@@ -403,7 +403,7 @@ function updateStorefrontView(s){
         button_edit.name="update"
         button_edit.value="edit"
         //button_edit.
-        button_edit.innerHTML = '<%- include("../assets/symbols/edit.svg") %>'
+        button_edit.innerHTML = `<%- include("../assets/symbols/edit.svg") %>`
         a.appendChild(button_edit)
         edit_delete_action_form.appendChild(a)
         let button_close = document.createElement("BUTTON")
@@ -413,7 +413,7 @@ function updateStorefrontView(s){
         button_close.name="update"
         button_close.value="close"
         //button_close.
-        button_close.innerHTML = '<%- include("../assets/symbols/no.svg") %>'
+        button_close.innerHTML = `<%- include("../assets/symbols/no.svg") %>`
         edit_delete_action_form.appendChild(button_close)
       }
       action_button_section.appendChild(edit_delete_action_form)

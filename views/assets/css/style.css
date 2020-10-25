@@ -7,6 +7,7 @@
     --sample-color-light: #6AECDF;
     --sample-color-highlight: #23E8D4;
     --sample-color-dark: #2F6963;
+    --sample-color-dark2: #2d635e;
     --sample-color-neutral: #1BB5A6;
     --main-highlight-color: /*#007bff;#1ab1a1;#0fc4b2;#1DC2B1;*/ var(--sample-color-base);
     --main-highlight-light-color: var(--sample-color-light);
@@ -29,6 +30,7 @@
     --signin-with-btn-bg-color: #f9fafb;
     --signin-with-btn-text-color: #263237;
     --main-nav-highlight-color: var(--sample-color-dark);
+    --main-nav-highlight-bold-color: var(--sample-color-dark2);
     --main-nav-neutral-color: var(--sample-color-neutral);
     --main-nav-highlight-focus-color: rgba(29,196,180,0.4);
     --nav-bg-color: white;
@@ -36,6 +38,7 @@
     --nav-btn-border-color: #ced4da;
     --sidebar-icon-highlight-color: white;
     --green-light-color: #28a745;
+    --icon-default-color: #3b857d;
     --icon-delete-color: #cb2431;
     --product-card-highlight-color: #f9fafb;
 }
@@ -186,6 +189,11 @@ svg {
     border: none;
     height: 2rem;
     padding: 0;
+}
+
+.icon path {
+    fill: var(--icon-default-color);
+    stroke: var(--icon-default-color);
 }
 
 .medium-icon {
@@ -615,7 +623,7 @@ svg {
 }
 
 .menu-button div {
-    background-color: var(--main-symbol-stroke-color);
+    background-color: var(--icon-default-color);
     height: 2px;
     margin: 5px;
     width: 20px;
@@ -648,6 +656,7 @@ svg {
 
 .menu-item-selected .icon path {
     fill: var(--main-highlight-color);
+    stroke: var(--main-highlight-color);
     color: var(--main-highlight-color);
 }
 
@@ -801,8 +810,8 @@ svg {
 }
 
 .nav-link.active .icon path {
-    fill: var(--main-highlight-color);
-    stroke: var(--main-highlight-color);
+    fill: var(--main-nav-highlight-color);
+    stroke: var(--main-nav-highlight-color);
 }
 
 .content-pane-scroll-cards-section {
@@ -1223,7 +1232,7 @@ white-space: nowrap;
 }
 
 .shopping-bag-counter {
-    background-color: var(--main-symbol-stroke-color);
+    background-color: var(--icon-default-color);
     border-radius: 0.5rem;
     color: var(--main-content-btn-hover-color);
     cursor: pointer;
@@ -1262,10 +1271,16 @@ white-space: nowrap;
     /*background: var(--main-table-row-highlight-color);*/
     background-color: var(--main-highlight-light-color);
     color: var(--sidebar-icon-highlight-color);
+    transition: ease 0.25s;
 }
 
 .shopping-bag-item-card:hover .qty-spc-top-1 {
     color: var(--main-nav-highlight-color);
+}
+
+
+.shopping-bag-item-card:hover .shopping-bag-item-row figure {
+    opacity: 0.6;
 }
 
 .shopping-bag-item-card-divider {

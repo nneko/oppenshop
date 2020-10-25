@@ -25,8 +25,8 @@
         <div id="catalog-card-<%= catalogs[i]._id %>" class="catalog-card" <% if(i!=0) { %>hidden<% } %>>
             <div class="catalog-card-header row">
                 <h3><%= catalogs[i].displayName ? catalogs[i].displayName : catalogs[i].name %></h3>
-                <div class="col-6">
-                    <figure class="featured-image">
+                <div class="col-6 catalog-header-item">
+                    <figure class="featured-image edit-featured-image">
                         <% if(typeof(catalogs[i].image) !== 'undefined' && typeof(catalogs[i].image.src) !== 'undefined') { %>
                         <img src="<%= catalogs[i].image.src %>">
                         <% } else { %>
@@ -34,7 +34,7 @@
                         <% } %>
                     </figure>
                 </div>
-                <div class="col-6">
+                <div class="col-6 catalog-header-item">
                     <p>
                         <% if(typeof(catalogs[i].description) == 'string') { %>
                         <%= catalogs[i].description %>

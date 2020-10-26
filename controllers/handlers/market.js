@@ -32,8 +32,8 @@ marketHandler.populateViewData = async (uid, product_page = 1) => {
                 }
             }
 
-            products = await product.read({}, product_range)
-            product_index = await product.count({}, product_range)
+            products = await product.read({status: 'active'}, product_range)
+            product_index = await product.count({status: 'active'}, product_range)
 
             if (validator.isNotNull(products)) {
                 viewData.products = Array.isArray(products) ? products : [products]

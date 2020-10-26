@@ -1,23 +1,13 @@
 const cfg = require('../../configuration')
 const validator = require('../../utilities/validator')
-const user = require('../../models/user')
 const shop = require('../../models/shop')
 const express = require('express')
 const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
 const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
-//const passport = require('passport')
-const multer = require('multer')
 const { removePrimaryFields } = require('../../utilities/generator')
-const storage = multer.memoryStorage()
-const fileUploader = multer({
-    storage: storage,
-    onError: function (err, next) {
-        console.log('error', err);
-        next(err);
-    }
-}).array('fullimage', 10)
+const fileUploader = media.uploader()
 
 let shopeditor = express.Router()
 
@@ -125,170 +115,158 @@ shopeditor.get('/', async (req, res) => {
     }
 })
 
-shopeditor.post('/', function (req, res) {
-    fileUploader(req, res, async function (err) {
-        if (err instanceof multer.MulterError) {
-            console.error('A Multer error occurred when uploading.')
-            console.error(err.stack)
-            res.status(500)
-            res.render('error', { error: { status: 500, message: 'File Upload Error' }, name: '', user: req.user })
-            //return
-        } else if (err) {
-            console.error('An unknown error occurred when uploading.')
-            console.error(err.stack)
-            res.status(500)
-            res.render('error', { error: { status: 500, message: 'An Unknown Error occurred' }, name: '', user: req.user })
-            //return
-        } else {
-            //console.log('Second')
-            //console.log(req.body)
-            //console.log(req.files)
-            try {
-                if (validator.hasActiveSession(req)) {
-                    let form = converter.objectFieldsToString(req.body)
+shopeditor.post('/', fileUploader, async (req, res) => {
+    try {
+        if (validator.hasActiveSession(req)) {
+            let form = converter.objectFieldsToString(req.body)
 
-                    let formValidated = false
-                    let formFields = {}
+            let formValidated = false
+            let formFields = {}
 
-                    if (!req.body) {
-                        await badRequest(req, res, 'disabled', 400, 'Invalid request.')
-                        return
-                    }
-
-                    if (form.uid != req.user.id.toString()) {
-                        _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
-                        return
-                    }
-
-                    if (!validator.isNotNull(form.id)) {
-                        await badRequest(req, res, '', 400, 'Invalid shop id.')
-                        return
-                    }
-
-                    let s = await shop.read(form.id, {findBy: 'id'})
-
-                    let shopUpdate = {}
-
-                    if (!validator.isNotNull(form.name)) {
-                        formFields.name = { class: 'is-invalid', value: form.name }
-                        formFields.name = { class: 'is-invalid', value: form.displayName }
-                    } else {
-                        shopUpdate.name = form.name
-                        shopUpdate.displayName = form.name
-                        formFields.name = { class: 'valid', value: form.name }
-                        formFields.name = { class: 'valid', value: form.displayName }
-                    }
-
-                    if(validator.isNotNull(form.description)) {
-                        shopUpdate.description = form.description
-                        formFields.description = {class: 'valid', value: shopUpdate.description}
-                    } else {
-                        formFields.description = { class: 'is-valid', value: form.description }
-                    }
-
-                    if (req.files && Array.isArray(req.files)) {
-                        if (validator.isUploadLimitExceeded(req.files)) {
-                            await badRequest(req, res, '', 403, 'Upload limits exceeded.')
-                            return
-                        }
-                        if(req.files.length > 0) {
-                            for (x of req.files) {
-                                x.storage = 'db'
-                            }
-                            if(debug) console.log(req.files)
-                            shopUpdate.images = req.files
-                        }
-                    }
-
-                    let addr = {}
-                    addr.type = form.addressType
-                    addr.streetAddress = form.addressStreet
-                    addr.locality = form.addressLocality
-                    addr.region = form.addressRegion
-                    addr.postalCode = form.addressPostcode
-                    addr.country = form.addressCountry
-                    addr.formatted = generator.formattedAddress(addr)
-                    addr.primary = true
-                    
-                    if (validator.isAddress(addr)) {
-                        if (typeof (s.addresses) !== 'undefined') {
-                            // Current implementation only supports a single primary address per shop
-                            /*
-                            shopUpdate.addresses = generator.removePrimaryFields(s.addresses)
-                            shopUpdate.addresses.push(addr)
-                            */
-                            shopUpdate.addresses = [addr]
-                        } else {
-                            shopUpdate.addresses = [addr]
-                        }
-                    } else {
-                        formFields.addressType = { class: 'is-invalid', value: form.addressType }
-                        formFields.addressStreet = { class: 'is-invalid', value: form.addressStreet }
-                        formFields.addressLocality = { class: 'is-invalid', value: form.addressLocality }
-                        formFields.addressRegion = { class: 'is-invalid', value: form.addressRegion }
-                        formFields.addressPostcode = { class: 'is-invalid', value: form.addressPostcode }
-                        formFields.addressCountry = { class: 'is-invalid', value: form.addressCountry }
-                    }
-
-                    //Validate phone
-                    if (validator.isNotNull(form.phoneNumber) && validator.isPhoneNumber(form.phoneNumber)) {
-
-                        s.phoneNumbers ? shopUpdate.phoneNumbers = s.phoneNumbers : shopUpdate.phoneNumbers = [];
-
-                        let primaryPhone = {
-                            value: form.phoneNumber,
-                            type: form.phoneType || "work",
-                            primary: true
-                        }
-                        // Current implementation supports only a single phone number per shop
-                        /*
-                        shopUpdate.phoneNumbers = removePrimaryFields(shopUpdate.phoneNumbers)
-                        shopUpdate.phoneNumbers.push(primaryPhone)
-                        */
-                       shopUpdate.phoneNumbers = [primaryPhone]
-
-                        formFields.phone = { class: 'valid', value: form.phone }
-                    }
-
-                    let hasInvalids = false;
-
-                    for (const k of Object.keys(formFields)) {
-                        if (typeof (formFields[k].class) === 'undefined' || formFields[k].class == 'is-invalid') {
-                            hasInvalids = true
-                            break
-                        }
-                    }
-
-                    hasInvalids ? formValidated = false : formValidated = true
-
-                    if (formValidated) {
-                        if(debug) console.log(shopUpdate)
-                        await shop.update({name: s.name},shopUpdate)
-                        let viewData = {}
-                        viewData = await populateViewData(s._id)
-                        viewData.user = req.user
-                        viewData.messages = {success: 'Shop updated.'}
-                        res.render('edit_storefront', viewData)
-                    } else {
-                        let viewData = {}
-                        viewData = await populateViewData(s._id)
-                        for (const k of Object.keys(formFields)) {
-                            viewData[k] = formFields[k]
-                        }
-                        viewData.user = req.user
-                        viewData.messages = { error: 'Shop update unsucessful. One or more invalid field entries.' }
-                        res.render('edit_storefront', viewData)
-                    }
-                } else {
-                    _403redirect(req, res, '/user/shop', 'You need to be signed in.')
-                }
-            } catch (e) {
-                console.error(e)
-                res.status(500)
-                res.render('error', { error: { status: 500, message: 'Shop editor error' }, name: '', user: req.user })
+            if (!req.body) {
+                await badRequest(req, res, 'disabled', 400, 'Invalid request.')
+                return
             }
+
+            if (form.uid != req.user.id.toString()) {
+                _403redirect(req, res, '/user/shop/?show=sf', 'Permission denied.')
+                return
+            }
+
+            if (!validator.isNotNull(form.id)) {
+                await badRequest(req, res, '', 400, 'Invalid shop id.')
+                return
+            }
+
+            let s = await shop.read(form.id, {findBy: 'id'})
+
+            let shopUpdate = {}
+
+            if (!validator.isNotNull(form.name)) {
+                formFields.name = { class: 'is-invalid', value: form.name }
+                formFields.name = { class: 'is-invalid', value: form.displayName }
+            } else {
+                shopUpdate.name = form.name
+                shopUpdate.displayName = form.name
+                formFields.name = { class: 'valid', value: form.name }
+                formFields.name = { class: 'valid', value: form.displayName }
+            }
+
+            if(validator.isNotNull(form.description)) {
+                shopUpdate.description = form.description
+                formFields.description = {class: 'valid', value: shopUpdate.description}
+            } else {
+                formFields.description = { class: 'is-valid', value: form.description }
+            }
+
+            if (req.files && Array.isArray(req.files)) {
+                if (validator.isUploadLimitExceeded(req.files)) {
+                    await badRequest(req, res, '', 403, 'Upload limits exceeded.')
+                    return
+                }
+                if(req.files.length > 0) {
+                    let sImgs = []
+                    for (x of req.files) {
+                        let img = {}
+                        x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                        if(x.storage != 'db') {
+                            img = await media.write(x,'/shop/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                        } else {
+                            img = x
+                        }
+                        sImgs.push(img)
+                    }
+                    shopUpdate.images = sImgs
+                }
+            }
+
+            let addr = {}
+            addr.type = form.addressType
+            addr.streetAddress = form.addressStreet
+            addr.locality = form.addressLocality
+            addr.region = form.addressRegion
+            addr.postalCode = form.addressPostcode
+            addr.country = form.addressCountry
+            addr.formatted = generator.formattedAddress(addr)
+            addr.primary = true
+            
+            if (validator.isAddress(addr)) {
+                if (typeof (s.addresses) !== 'undefined') {
+                    // Current implementation only supports a single primary address per shop
+                    /*
+                    shopUpdate.addresses = generator.removePrimaryFields(s.addresses)
+                    shopUpdate.addresses.push(addr)
+                    */
+                    shopUpdate.addresses = [addr]
+                } else {
+                    shopUpdate.addresses = [addr]
+                }
+            } else {
+                formFields.addressType = { class: 'is-invalid', value: form.addressType }
+                formFields.addressStreet = { class: 'is-invalid', value: form.addressStreet }
+                formFields.addressLocality = { class: 'is-invalid', value: form.addressLocality }
+                formFields.addressRegion = { class: 'is-invalid', value: form.addressRegion }
+                formFields.addressPostcode = { class: 'is-invalid', value: form.addressPostcode }
+                formFields.addressCountry = { class: 'is-invalid', value: form.addressCountry }
+            }
+
+            //Validate phone
+            if (validator.isNotNull(form.phoneNumber) && validator.isPhoneNumber(form.phoneNumber)) {
+
+                s.phoneNumbers ? shopUpdate.phoneNumbers = s.phoneNumbers : shopUpdate.phoneNumbers = [];
+
+                let primaryPhone = {
+                    value: form.phoneNumber,
+                    type: form.phoneType || "work",
+                    primary: true
+                }
+                // Current implementation supports only a single phone number per shop
+                /*
+                shopUpdate.phoneNumbers = removePrimaryFields(shopUpdate.phoneNumbers)
+                shopUpdate.phoneNumbers.push(primaryPhone)
+                */
+                shopUpdate.phoneNumbers = [primaryPhone]
+
+                formFields.phone = { class: 'valid', value: form.phone }
+            }
+
+            let hasInvalids = false;
+
+            for (const k of Object.keys(formFields)) {
+                if (typeof (formFields[k].class) === 'undefined' || formFields[k].class == 'is-invalid') {
+                    hasInvalids = true
+                    break
+                }
+            }
+
+            hasInvalids ? formValidated = false : formValidated = true
+
+            if (formValidated) {
+                if(debug) console.log(shopUpdate)
+                await shop.update({name: s.name},shopUpdate)
+                let viewData = {}
+                viewData = await populateViewData(s._id)
+                viewData.user = req.user
+                viewData.messages = {success: 'Shop updated.'}
+                res.render('edit_storefront', viewData)
+            } else {
+                let viewData = {}
+                viewData = await populateViewData(s._id)
+                for (const k of Object.keys(formFields)) {
+                    viewData[k] = formFields[k]
+                }
+                viewData.user = req.user
+                viewData.messages = { error: 'Shop update unsucessful. One or more invalid field entries.' }
+                res.render('edit_storefront', viewData)
+            }
+        } else {
+            _403redirect(req, res, '/user/shop', 'You need to be signed in.')
         }
-    })
+    } catch (e) {
+        console.error(e)
+        res.status(500)
+        res.render('error', { error: { status: 500, message: 'Shop editor error' }, name: '', user: req.user })
+    }
 })
 
 module.exports = shopeditor

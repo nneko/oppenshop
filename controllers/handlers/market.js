@@ -9,14 +9,14 @@ let marketHandler = {}
 
 marketHandler.populateViewData = async (uid, product_page = 1) => {
     return new Promise(async (resolve, reject) => {
-        let perPage = cfg.items_per_page ? cfg.items_per_page : 12
-        pagination = true
-        product_range = null
-        console.log('Page: ' + product_page)
-        if (pagination) {
-            product_range = { pagination_skip: product_page, pagination_limit: perPage }
-        }
         try {
+            let perPage = cfg.items_per_page ? cfg.items_per_page : 12
+            pagination = true
+            product_range = null
+            console.log('Page: ' + product_page)
+            if (pagination) {
+                product_range = { pagination_skip: product_page, pagination_limit: perPage }
+            }
             let viewData = {}
 
             //Populate the currency list
@@ -32,8 +32,8 @@ marketHandler.populateViewData = async (uid, product_page = 1) => {
                 }
             }
 
-            products = await product.read({}, product_range)
-            product_index = await product.count({}, product_range)
+            products = await product.read({status: 'active'}, product_range)
+            product_index = await product.count({status: 'active'}, product_range)
 
             if (validator.isNotNull(products)) {
                 viewData.products = Array.isArray(products) ? products : [products]

@@ -25,8 +25,8 @@
         <div id="catalog-card-<%= catalogs[i]._id %>" class="catalog-card" <% if(i!=0) { %>hidden<% } %>>
             <div class="catalog-card-header row">
                 <h3><%= catalogs[i].displayName ? catalogs[i].displayName : catalogs[i].name %></h3>
-                <div class="col-6">
-                    <figure class="featured-image">
+                <div class="col-6 catalog-header-item">
+                    <figure class="featured-image edit-featured-image">
                         <% if(typeof(catalogs[i].image) !== 'undefined' && typeof(catalogs[i].image.src) !== 'undefined') { %>
                         <img src="<%= catalogs[i].image.src %>">
                         <% } else { %>
@@ -34,7 +34,7 @@
                         <% } %>
                     </figure>
                 </div>
-                <div class="col-6">
+                <div class="col-6 catalog-header-item">
                     <p>
                         <% if(typeof(catalogs[i].description) == 'string') { %>
                         <%= catalogs[i].description %>
@@ -250,11 +250,11 @@
                             <input id="create-catalog-name"
                                 class="form-control <% if(typeof(name) !== 'undefined') { %><%= name.class %><% } %>"
                                 type="text" name="name"
-                                value="<% if(typeof(fullname) !== 'undefined' && name.value) { %><%= name.value %><% } %>"
+                                value="<% if(typeof(name) !== 'undefined' && name && name.value) { %><%= name.value %><% } %>"
                                 aria-label="Catalog Name" aria-describedby="create-catalog-name-basic-addon" size="55"
                                 required>
                             <div id="create-catalog-invalid-name" class="invalid-feedback">
-                                <% if(typeof(fullname) !== 'undefined' && name.class == 'is-invalid') { %><%= name.message %><% } else { %>
+                                <% if(typeof(name) !== 'undefined' && name && name.class == 'is-invalid') { %><%= name.message %><% } else { %>
                                 You must provide a valid catalog name.
                                 <% } %>
                             </div>

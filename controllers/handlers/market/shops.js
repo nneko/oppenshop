@@ -17,8 +17,8 @@ shopsHandler.populateViewData = async (uid, shops_page = 1) => {
         }
         try {
             let viewData = {}
-            shops = await shop.read({}, shops_range)
-            shops_index = await shop.count({}, shops_range)
+            shops = await shop.read({status: 'active'}, shops_range)
+            shops_index = await shop.count({status: 'active'}, shops_range)
 
             if (validator.isNotNull(shops)) {
                 viewData.shops = Array.isArray(shops) ? shops : [shops]

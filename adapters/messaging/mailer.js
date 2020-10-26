@@ -26,6 +26,7 @@ mailer.send = async data => {
 			//Send email message
 			await mailgun.messages().send(data, function (error, body) {
 				console.log(body)
+				//return body
 			})
 		} else {
 			throw new Error('Invalid message headers')

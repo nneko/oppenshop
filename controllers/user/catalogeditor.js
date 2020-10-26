@@ -5,15 +5,7 @@ const express = require('express')
 const converter = require('../../utilities/converter')
 const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
-const multer = require('multer')
-const storage = multer.memoryStorage()
-const fileUploader = multer({
-    storage: storage,
-    onError: function (err, next) {
-        console.log('error', err);
-        next(err);
-    }
-}).array('fullimage', 10)
+const fileUploader = media.uploader()
 
 let catalogeditor = express.Router()
 
@@ -103,119 +95,104 @@ catalogeditor.get('/', async (req, res) => {
     }
 })
 
-catalogeditor.post('/', function (req, res) {
-    fileUploader(req, res, async function (err) {
-        if (err instanceof multer.MulterError) {
-            console.error('A Multer error occurred when uploading.')
-            console.error(err.stack)
-            res.status(500)
-            res.render('error', { error: { status: 500, message: 'File Upload Error' }, name: '', user: req.user })
-            //return
-        } else if (err) {
-            console.error('An unknown error occurred when uploading.')
-            console.error(err.stack)
-            res.status(500)
-            res.render('error', { error: { status: 500, message: 'An Unknown Error occurred' }, name: '', user: req.user })
-            //return
-        } else {
-            //console.log('Second')
-            //console.log(req.body)
-            //console.log(req.files)
-            try {
-                if (validator.hasActiveSession(req)) {
-                    let form = converter.objectFieldsToString(req.body)
+catalogeditor.post('/', fileUploader, async (req, res) => {
+    try {
+        if (validator.hasActiveSession(req)) {
+            let form = converter.objectFieldsToString(req.body)
 
-                    let formValidated = false
-                    let formFields = {}
+            let formValidated = false
+            let formFields = {}
 
-                    if (!req.body) {
-                        await badRequest(req, res, 'disabled', 400, 'Invalid request.')
-                        return
-                    }
-
-                    if (form.uid != req.user.id.toString()) {
-                        _403redirect(req, res, '/user/shop/?show=cl', 'Permission denied.')
-                        return
-                    }
-
-                    if (!validator.isNotNull(form.id)) {
-                        await badRequest(req, res, '', 400, 'Invalid catalog id.')
-                        return
-                    }
-
-                    let c = await catalog.read(form.id, {findBy: 'id'})
-
-                    let catalogUpdate = {}
-
-                    if (!validator.isNotNull(form.name)) {
-                        formFields.name = { class: 'is-invalid', value: form.name }
-                        formFields.name = { class: 'is-invalid', value: form.displayName }
-                    } else {
-                        catalogUpdate.name = form.name
-                        catalogUpdate.displayName = form.name
-                        formFields.name = { class: 'valid', value: form.name }
-                        formFields.name = { class: 'valid', value: form.displayName }
-                    }
-
-                    if(validator.isNotNull(form.description)) {
-                        catalogUpdate.description = form.description
-                        formFields.description = {class: 'valid', value: catalogUpdate.description}
-                    } else {
-                        formFields.description = { class: 'is-valid', value: form.description }
-                    }
-
-                    if (req.files && Array.isArray(req.files)) {
-                        if (validator.isUploadLimitExceeded(req.files)) {
-                            await badRequest(req, res, '', 403, 'Upload limits exceeded.')
-                            return
-                        }
-                        if(req.files.length > 0) {
-                            let img =  req.files[0]
-                            img.storage = 'db'
-                            if(debug) console.log(req.files)
-                            catalogUpdate.image = img
-                        }
-                    }
-
-                    let hasInvalids = false;
-
-                    for (const k of Object.keys(formFields)) {
-                        if (typeof (formFields[k].class) === 'undefined' || formFields[k].class == 'is-invalid') {
-                            hasInvalids = true
-                            break
-                        }
-                    }
-
-                    hasInvalids ? formValidated = false : formValidated = true
-
-                    if (formValidated) {
-                        if(debug) console.log(catalogUpdate)
-                        await catalog.update({name: c.name},catalogUpdate)
-                        let viewData = {}
-                        viewData = await populateViewData(c._id)
-                        viewData.user = req.user
-                        viewData.messages = {success: 'Catalog updated.'}
-                        res.render('edit_catalog', viewData)
-                    } else {
-                        let viewData = {}
-                        viewData = await populateViewData(c._id)
-                        for (const k of Object.keys(formFields)) {
-                            viewData[k] = formFields[k]
-                        }
-                        viewData.user = req.user
-                        viewData.messages = { error: 'Catalog update unsucessful. One or more invalid field entries.' }
-                        res.render('edit_catalog', viewData)
-                    }
-                } else {
-                    _403redirect(req, res, '/user/shop', 'You need to be signed in.')
-                }
-            } catch (e) {
-                console.error(e)
-                res.status(500)
-                res.render('error', { error: { status: 500, message: 'Catalog editor error' }, name: '', user: req.user })
+            if (!req.body) {
+                await badRequest(req, res, 'disabled', 400, 'Invalid request.')
+                return
             }
+
+            if (form.uid != req.user.id.toString()) {
+                _403redirect(req, res, '/user/shop/?show=cl', 'Permission denied.')
+                return
+            }
+
+            if (!validator.isNotNull(form.id)) {
+                await badRequest(req, res, '', 400, 'Invalid catalog id.')
+                return
+            }
+
+            let c = await catalog.read(form.id, {findBy: 'id'})
+
+            let catalogUpdate = {}
+
+            if (!validator.isNotNull(form.name)) {
+                formFields.name = { class: 'is-invalid', value: form.name }
+                formFields.name = { class: 'is-invalid', value: form.displayName }
+            } else {
+                catalogUpdate.name = form.name
+                catalogUpdate.displayName = form.name
+                formFields.name = { class: 'valid', value: form.name }
+                formFields.name = { class: 'valid', value: form.displayName }
+            }
+
+            if(validator.isNotNull(form.description)) {
+                catalogUpdate.description = form.description
+                formFields.description = {class: 'valid', value: catalogUpdate.description}
+            } else {
+                formFields.description = { class: 'is-valid', value: form.description }
+            }
+
+            if (req.files && Array.isArray(req.files)) {
+                if (validator.isUploadLimitExceeded(req.files)) {
+                    await badRequest(req, res, '', 403, 'Upload limits exceeded.')
+                    return
+                }
+                if (req.files.length > 0) {
+                    let img = req.files[0]
+                    x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                    if (x.storage != 'db') {
+                        img = await media.write(x, '/catalog/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                    } else {
+                        img = x
+                    }
+                    catalogUpdate.image = img
+                }
+            }
+
+            let hasInvalids = false;
+
+            for (const k of Object.keys(formFields)) {
+                if (typeof (formFields[k].class) === 'undefined' || formFields[k].class == 'is-invalid') {
+                    hasInvalids = true
+                    break
+                }
+            }
+
+            hasInvalids ? formValidated = false : formValidated = true
+
+            if (formValidated) {
+                if(debug) console.log(catalogUpdate)
+                await catalog.update({name: c.name},catalogUpdate)
+                let viewData = {}
+                viewData = await populateViewData(c._id)
+                viewData.user = req.user
+                viewData.messages = {success: 'Catalog updated.'}
+                res.render('edit_catalog', viewData)
+            } else {
+                let viewData = {}
+                viewData = await populateViewData(c._id)
+                for (const k of Object.keys(formFields)) {
+                    viewData[k] = formFields[k]
+                }
+                viewData.user = req.user
+                viewData.messages = { error: 'Catalog update unsucessful. One or more invalid field entries.' }
+                res.render('edit_catalog', viewData)
+            }
+        } else {
+            _403redirect(req, res, '/user/shop', 'You need to be signed in.')
         }
-    })
+    } catch (e) {
+        console.error(e)
+        res.status(500)
+        res.render('error', { error: { status: 500, message: 'Catalog editor error' }, name: '', user: req.user })
+    }
 })
 
 module.exports = catalogeditor

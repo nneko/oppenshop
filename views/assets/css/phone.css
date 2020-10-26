@@ -1,0 +1,114 @@
+/*
+* Responsive style sheet for small screen sized devices
+*/
+
+@media screen and (max-width: 640px) {
+
+    h1, h2 {
+        font-size: 1.4rem;
+    }
+    
+    .hide-menu-main {
+        display: none;
+        transition: ease 0.25s;
+    }
+
+    #main-search-form {
+        display: none;
+        visibility: hidden;
+    }
+
+    .responsive-search-form {
+        align-items: center;
+        flex-direction: row;
+        height: 1rem;
+        justify-content: space-around;
+        opacity: 0;
+        width: 100%;
+    }
+
+    .responsive-search-input {
+        align-items: center;
+        padding: 0;
+    }
+
+    .shrink-search-form {
+        animation-name: anim-scalex-in;
+        animation-duration: 800ms;
+        animation-fill-mode: both;
+    }
+
+    .expand-search-form {
+        display: flex;
+        opacity: 1;
+        transition: ease 0.25s;
+        visibility: visible;
+    }
+
+    .expand-search-input {
+        /*animation-name: anim-scalex-out;
+        animation-duration: 800ms;
+        animation-fill-mode: both; */
+        opacity: 1;
+        transition: ease 0.25s;
+        visibility: visible;
+    }
+
+    .search-button-container {
+        display: block;
+        visibility: visible;
+    }
+
+    .signup-form, .signin-form, .standard-form {
+        margin: auto;
+        max-width: 98%;
+        width: 98%;
+    }
+
+    .sidebar {
+        flex: 0 0 100%;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .main-content {
+        flex: 0 0 100%;
+        margin-top: 1rem;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .nav-link {
+        text-align: left;
+    }
+
+    .nav-link.active {
+        background-color: var(--main-highlight-color) !important;
+        border: 0 !important;
+        border-radius: .25rem !important;
+        color: var(--sidebar-icon-highlight-color) !important;
+    }
+
+    .nav-link.active .icon path {
+        fill: var(--sidebar-icon-highlight-color);
+        stroke: var(--sidebar-icon-highlight-color);
+    }
+    
+    .signup-section, .signin-section, .standard-form-section {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .tab-scroll-pane {
+        max-width: 100%;
+    }
+
+    .product-card {
+        flex-basis: calc(100% - 4rem);
+        max-width: calc(100% - 4rem);
+    }
+
+    .search-button-item {
+        animation-name: none;
+    }
+}

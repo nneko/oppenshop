@@ -35,14 +35,13 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-3">
-                            <figure class="featured-image">
+                            <figure class="featured-image edit-featured-image">
                                 <% if(typeof(image) !== 'undefined' && image.value) { %>
                                 <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
                                 <% } else { %>
                                     <%- include('partials/_shop_image_object.ejs') %>
                                 <% } %>
                                 </figure>
-                                <p class="featured-image-legend">Storefront Image</p>
                         </div>
                         <div class="col-sm-9">
                             <form id="edit-storefront-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/edit" method="POST" oninput=""

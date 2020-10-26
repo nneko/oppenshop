@@ -85,9 +85,6 @@
                                 <ul>
                                     <li>
                                         <span>
-                                            <p class="item-card-label">
-                                            <b><% if(products[j].displayName.length <= 20) { %><%= products[j].displayName.slice(0,20) %><% } else { %><%= products[j].displayName.slice(0,20) + '...' %><% } %></b>
-                                            </p>
                                             <div class="item-card-label">
                                                 <div class="catalog-item-card-section">
                                                     <% if(typeof(products[j].images) !== 'undefined' && Array.isArray(products[j].images) && products[j].images.length > 0) { %>
@@ -102,6 +99,9 @@
                                                     <% } %>
                                                 </div>
                                                 <div class="item-card-left catalog-item-card-section extra-info">
+                                                    <p class="item-card-label">
+                                                        <b><% if(products[j].displayName.length <= 20) { %><%= products[j].displayName.slice(0,20) %><% } else { %><%= products[j].displayName.slice(0,20) + '...' %><% } %></b>
+                                                    </p>
                                                     <% if(typeof(products[j].price) == 'string' && products[j].currency && typeof(products[j].currency) !== 'undefined' && products[j].currency.code && typeof(products[j].currency.code) == 'string') { %>
                                                     <p>
                                                         <%= products[j].price + ' ' + products[j].currency.code.toUpperCase() %>

@@ -83,6 +83,7 @@ app.setupSearchControl = () => {
     let resultsContainer = document.querySelector('.returned-results-section')
     let searchSection = document.querySelector('.search-results')
     let searchInfoAlert = document.getElementById('main-alert-info')
+    let searchSuccessAlert = document.getElementById('main-alert-success')
 
     if(closeSearchButton) closeSearchButton.addEventListener('click', () => {
         if(resultsContainer) {
@@ -97,6 +98,11 @@ app.setupSearchControl = () => {
         if(searchInfoAlert){
             searchInfoAlert.classList.remove('show')
             searchInfoAlert.remove()
+        }
+
+        if (searchSuccessAlert) {
+            searchSuccessAlert.classList.remove('show')
+            searchSuccessAlert.remove()
         }
     })
 }

@@ -41,8 +41,8 @@ sellerHandler.populateViewData = async (sid, product_page = 1) => {
                 }
             }
 
-            products = await product.read({shop: String(viewData.shop._id)}, product_range)
-            product_index = await product.count({ shop: String(viewData.shop._id)}, product_range)
+            products = await product.read({shop: String(viewData.shop._id), status: 'active'}, product_range)
+            product_index = await product.count({ shop: String(viewData.shop._id), status: 'active'}, product_range)
 
             if (validator.isNotNull(products)) {
                 viewData.products = Array.isArray(products) ? products : [products]

@@ -97,10 +97,12 @@
                                     <div class="item-card-right extra-info">
                                         <h4>Description</h4>
                                         <p><%= shop.description %></p>
+                                        <!--
                                         <h4>Status</h4>
                                         <p>
                                             <%= shop.status %>
                                         </p>
+                                        -->
                                     </div>
                                 </div>
                             </span>
@@ -108,12 +110,12 @@
                     </div>
                 </div>
             </div>
+            <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
             <ul class="nav marketnav">
                 <li class="nav-item">
                     <a class="nav-link active" href=".product-card-container"> All Products</a>
                 </li>
             </ul>
-            <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
             <div class="content-pane-scroll-cards-section catalog-item-container product-card-container">
                 <% for(let j=0;j<products.length;j++) { %>
                 <a href="/market/product/?p=<%= products[j]._id %>"

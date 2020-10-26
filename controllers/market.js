@@ -11,9 +11,11 @@ const debug = cfg.env == 'development' ? true : false
 
 let market = express.Router()
 
-market.use('/seller*', require('./market/seller'))
+market.use('/seller/:shop/page/:page', require('./market/seller'))
+market.use('/seller/:shop', require('./market/seller'))
+market.use('/seller/', require('./market/seller'))
 market.use('/product*', require('./market/product'))
-market.use('/page/:page', async function (req, res, next) {
+market.use('/page/:page', async (req, res) => {
     try {
         let page = req.params.page || 1
         let qd = req.query
@@ -27,12 +29,12 @@ market.use('/page/:page', async function (req, res, next) {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retrieving shop pagination data' }, name: '', user: req.user })
+        res.render('error', { error: { status: 500, message: 'Error retrieving market data' }, name: '', user: req.user })
 
     }
 })
 
-market.use('/shops/page/:page', async function (req, res, next) {
+market.use('/shops/page/:page', async (req, res) => {
     try {
         let page = req.params.page || 1
         let qd = req.query
@@ -46,7 +48,7 @@ market.use('/shops/page/:page', async function (req, res, next) {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retrieving shop pagination data' }, name: '', user: req.user })
+        res.render('error', { error: { status: 500, message: 'Error retrieving shop data' }, name: '', user: req.user })
 
     }
 })
@@ -60,7 +62,7 @@ market.get('/shops', async (req, res) => {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user })
+        res.render('error', { error: { status: 500, message: 'Error retrieving shops data' }, name: '', user: req.user })
     }
 })
 
@@ -72,7 +74,7 @@ market.get('/', async (req, res) => {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user })
+        res.render('error', { error: { status: 500, message: 'Error retrieving market data' }, name: '', user: req.user })
     }
 })
 

@@ -994,6 +994,10 @@ white-space: nowrap;
     width: calc(100% - 2rem) !important;
 }
 
+.product-specifications-table th {
+    border-top: none;
+}
+
 .product-specifications-table td {
     white-space: normal;
     width: 50% !important;
@@ -1065,6 +1069,8 @@ white-space: nowrap;
 
 .edit-featured-image svg {
     margin: 0;
+    max-height: 100%;
+    max-width: 100%;
     position: absolute;
     top: 0;
     left: 50%;

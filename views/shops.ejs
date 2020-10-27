@@ -28,6 +28,9 @@
             </div>
             <ul class="nav marketnav">
                 <li class="nav-item">
+                    <h6 class="nav-link">Recommended</h6>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/market">Products</a>
                 </li>
                 <li class="nav-item">
@@ -47,12 +50,12 @@
                                             <div class="item-card-label">
                                                 <div class="catalog-item-card-section">
                                                     <% if(typeof(shops[j].images) !== 'undefined' && Array.isArray(shops[j].images) && shops[j].images.length > 0) { %>
-                                                        <figure class="product-card-image">
+                                                        <figure class="product-card-image shop-card-image">
                                                             <img alt="<%= shops[j].images[0].originalname %>"
                                                         src="<%= shops[j].images[0].src %>" />
                                                         </figure>
                                                     <% } else { %>
-                                                    <figure class="product-card-image">
+                                                    <figure class="product-card-image shop-card-image">
                                                         <%- include('partials/_shop_image_object.ejs') %>
                                                     </figure>
                                                     <% } %>

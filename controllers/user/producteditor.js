@@ -82,6 +82,14 @@ let populateViewData = async (id) => {
                     viewData.image = { value: p.images[0] }
                     viewData.image.value.src = media.read(viewData.image.value)
                 }
+                viewData.images = []
+                if (Array.isArray(p.images)) {
+                    for (const img of p.images) {
+                        let i = img
+                        i.src = media.read(img)
+                        viewData.images.push(i)
+                    }
+                }
                 viewData.quantity = {value: p.quantity}
                 if (typeof(p.price) !== 'undefined'){
                   amount = p.price.split(".")

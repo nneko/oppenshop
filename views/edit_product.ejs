@@ -34,14 +34,28 @@
                         <hr>
                     </div>
                     <div class="row">
-                        <div class="col-sm-3">
-                            <figure class="featured-image edit-featured-image">
+                        <div class="product-carousel col-sm-3">
+                            <figure class="featured-image edit-featured-image edit-product-hero-figure">
                                 <% if(typeof(image) !== 'undefined' && image.value) { %>
-                                <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
+                                <img id="product-hero-img" src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
                                 <% } else { %>
                                     <%- include('partials/_product_image_object.ejs') %>
                                 <% } %>
+                            </figure>
+                            <% if(images && Array.isArray(images) && images.length > 1) { %>
+                            <div class="product-carousel-images-row">
+                                <% for (let imgIdx=0;imgIdx<images.length;imgIdx++) { %>
+                                <figure class="featured-mini-image <% if(imgIdx == 0) { %>featured-mini-image-selected<% } %>">
+                                    <% if(typeof(images[0]) !== 'undefined') { %>
+                                    <img class="product-image" src="<% if(images[imgIdx].src) { %><%= images[imgIdx].src %><% } %>">
+                                    <% } else { %>
+                                    <%- include('partials/_product-image-object.ejs') %>
+                                    <% } %>
                                 </figure>
+                                <% } %>
+                            </div>
+                            <button id="make-product-image-primary-button" type="button" class="btn btn-light small-input-control"">Make Primary</button>
+                            <% } %>
                         </div>
                         <div class="col-sm-9">
                             <form id="edit-product-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/product/edit" method="POST" oninput=""
@@ -189,6 +203,48 @@
         </div>
     </section>
     <script>
+        //Add event listeners for the mini images in the carousel to switch the displayed hero image
+        (() => {
+            let productImgs = document.getElementsByClassName('featured-mini-image')
+            if (productImgs) {
+                for (const img of productImgs) {
+                    img.addEventListener('click', () => {
+                        let productHero = document.getElementById('product-hero-img')
+                        let imgImg = img.querySelector('.product-image')
+                        if (productHero) {
+                            for (const i of productImgs) {
+                                i.classList.remove('featured-mini-image-selected')
+                            }
+                            img.classList.add('featured-mini-image-selected')
+                            if (imgImg) productHero.src = imgImg.src
+                        }
+                    })
+                }
+            }
+
+            let makePrimaryButton = document.getElementById('make-product-image-primary-button')
+            if(makePrimaryButton) {
+                makePrimaryButton.addEventListener('click', () => {
+                    let productHero = document.getElementById('product-hero-img')
+                    if (productHero) {
+                        let pImgs = document.getElementsByClassName('featured-mini-image')
+                        for (const i of pImgs) {
+                            let iImg = i.querySelector('.product-image')
+                            if(iImg.src == productHero.src) {
+                                i.classList.add('featured-image-primary')
+                            } else {
+                                i.classList.remove('featured-image-primary')
+                            }
+                        }
+                    }
+                })
+            }
+        })();
+
+        function makeHeroIamgePrimary() {
+
+        }
+
         let specItemCounter = 0
         function addSpec(){
             let skey = document.getElementById('speckey-input');

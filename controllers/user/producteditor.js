@@ -89,6 +89,18 @@ let populateViewData = async (id) => {
                         i.src = media.read(img)
                         viewData.images.push(i)
                     }
+
+                    let primaryImgIdx = generator.getPrimaryFieldIndex(p.images)
+                    if (primaryImgIdx > 0) {
+                        let imgs = []
+                        imgs.push(viewData.images[primaryImgIdx])
+                        for(let idx=0;idx < p.images.length;idx++) {
+                            if(idx != primaryImgIdx) {
+                                imgs.push(viewData.images[idx])
+                            }
+                        }
+                        viewData.images = imgs
+                    }
                 }
                 viewData.quantity = {value: p.quantity}
                 if (typeof(p.price) !== 'undefined'){
@@ -208,7 +220,7 @@ producteditor.post('/', fileUploader, async (req, res) => {
                         let img = {}
                         x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
                         if (x.storage != 'db') {
-                            img = await media.write(x, '/product/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                            img = await media.write(x, '/product/' + String(p._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
                         } else {
                             img = x
                         }
@@ -282,6 +294,21 @@ producteditor.post('/', fileUploader, async (req, res) => {
                     validationError = e
                     formFields.unit_dollar = { class: 'is-invalid', value: form.unit_dollar }
                     formFields.unit_cents = { class: 'is-invalid', value: form.unit_cents }
+                }
+            }
+
+            if(form.ppi && form.ppi != "") {
+                if(!productUpdate.images) {
+                    productUpdate.images = p.images
+                    if(productUpdate.images && Array.isArray(productUpdate.images)) {
+                        for (let imgIdx=0;imgIdx < productUpdate.images.length;imgIdx++) {
+                            if (productUpdate.images[imgIdx].storage == 'fs' && productUpdate.images[imgIdx].path && productUpdate.images[imgIdx].path == form.ppi) {
+                                productUpdate.images = generator.removePrimaryFields(productUpdate.images)
+                                if(productUpdate.images[imgIdx]) productUpdate.images[imgIdx].primary = true
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 

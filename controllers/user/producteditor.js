@@ -158,9 +158,7 @@ producteditor.get('/', async (req, res) => {
 })
 
 producteditor.post('/', fileUploader, async (req, res) => {
-    //console.log('Second')
     console.log(req.body)
-    //console.log(req.files)
     try {
         if (validator.hasActiveSession(req)) {
             let form = converter.objectFieldsToString(req.body)
@@ -184,31 +182,26 @@ producteditor.post('/', fileUploader, async (req, res) => {
                 return
             }
 
-            //let s = await shop.read(form.id, {findBy: 'id'})
             let p = await product.read(form.id, {findBy: 'id'})
 
-            //let shopUpdate = {}
             let productUpdate = {}
 
             if (!validator.isNotNull(form.name)) {
                 formFields.name = { class: 'is-invalid', value: form.name }
-                //formFields.name = { class: 'is-invalid', value: form.displayName }
             } else {
-                //shopUpdate.name = form.name
                 productUpdate.name = form.name
-                //shopUpdate.displayName = form.name
                 productUpdate.displayName = form.name
                 formFields.name = { class: 'valid', value: form.name }
                 formFields.name = { class: 'valid', value: form.displayName }
             }
-            /*
+            
             if(validator.isNotNull(form.description)) {
-                shopUpdate.description = form.description
-                formFields.description = {class: 'valid', value: shopUpdate.description}
+                productUpdate.description = form.description
+                formFields.description = {class: 'valid', value: productUpdate.description}
             } else {
                 formFields.description = { class: 'is-valid', value: form.description }
             }
-            */
+            
             if (req.files && Array.isArray(req.files)) {
                 if (validator.isUploadLimitExceeded(req.files)) {
                     await badRequest(req, res, '', 403, 'Upload limits exceeded.')

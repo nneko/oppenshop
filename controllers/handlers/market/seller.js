@@ -39,6 +39,21 @@ sellerHandler.populateViewData = async (sid, product_page = 1) => {
                 for (const img of viewData.shop.images) {
                     img.src = media.read(img)
                 }
+                let s = viewData.shop
+
+                let primaryImgIdx = generator.getPrimaryFieldIndex(s.images)
+                if (primaryImgIdx > 0) {
+                    let imgs = []
+                    imgs.push(s.images[primaryImgIdx])
+                    for (let idx = 0; idx < s.images.length; idx++) {
+                        if (idx != primaryImgIdx) {
+                            imgs.push(s.images[idx])
+                        }
+                    }
+                    s.images = imgs
+                }
+
+                viewData.shop.images = s.images
             }
 
             products = await product.read({shop: String(viewData.shop._id), status: 'active'}, product_range)
@@ -46,6 +61,29 @@ sellerHandler.populateViewData = async (sid, product_page = 1) => {
 
             if (validator.isNotNull(products)) {
                 viewData.products = Array.isArray(products) ? products : [products]
+
+                for(const p of viewData.products) {
+                    if (Array.isArray(p.images) && p.images.length > 0) {
+                        for (const img of p.images) {
+                            img.src = media.read(img)
+                        }
+                        let sp = p
+
+                        let primaryImgIdx = generator.getPrimaryFieldIndex(sp.images)
+                        if (primaryImgIdx > 0) {
+                            let imgs = []
+                            imgs.push(sp.images[primaryImgIdx])
+                            for (let idx = 0; idx < sp.images.length; idx++) {
+                                if (idx != primaryImgIdx) {
+                                    imgs.push(sp.images[idx])
+                                }
+                            }
+                            p.images = imgs
+                        }
+
+                        p.images = sp.images
+                    }
+                }
             } else {
                 viewData.products = []
             }

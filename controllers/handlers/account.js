@@ -1,7 +1,9 @@
 const cfg = require('../../configuration')
 const validator = require('../../utilities/validator')
 const user = require('../../models/user')
+const shopHandler = require('../handlers/shop')
 const generator = require('../../utilities/generator')
+const shop = require('../../models/shop')
 const debug = cfg.env == 'development' ? true : false
 
 let getField = generator.getField
@@ -369,6 +371,20 @@ accounthandler.phoneDeleteHandler = async (form) => {
 
 accounthandler.deleteHandler = async (uid) => {
   try {
+    let shopsOwned = await shop.read({owner: uid})
+    if(shopsOwned && (! Array.isArray(shopsOwned)) && await shop.isValid(shopsOwned)) {
+      shopsOwned = [shopsOwned]
+    } else if (shopsOwned && Array.isArray(shopsOwned)) {
+      for(const s of shopsOwned) {
+        if(await shop.isValid(s)) {
+          let shopDeleteResult = await shopHandler.shopDelete(s)
+          if(debug) {
+            console.log(shopDeleteResult)
+          }
+        }
+      }
+    }
+    
     let u = await user.read(uid,{findBy: 'id'})
     return await user.delete({preferredUsername: u.preferredUsername})
   } catch (e) {

@@ -362,12 +362,36 @@ shophandler.shopDelete = async (s) => {
             err.type = 'Denied'
             throw err
         }
+
+        //Retrieve all the shop's catalogs
+        let sCatalogs = await catalog.read({ owner: String(s._id) })
+
+        if (sCatalogs && (!Array.isArray(sCatalogs))) {
+            sCatalogs = [sCatalogs]
+        }
         
         //Retrieve all the shop's products
         let sProducts = await product.read({ shop: String(s._id) })
 
         if (sProducts && (!Array.isArray(sProducts))) {
             sProducts = [sProducts]
+        }
+
+        //Ensure all catalogs are removed prior to deletion
+        for (const c of sCatalogs) {
+            if (await catalog.isValid(c)) {
+                if (c.status != 'inactive') {
+                    let activeCatalogErr = new Error('Not permitted to delete shop with active product catalogs')
+                    activeCatalogErr.name = 'PermissionError'
+                    activeCatalogErr.type = 'ActiveCatalog'
+                    throw activeCatalogErr
+                } else {
+                    if (debug) console.log('Deleting catalog ' + c.displayName + ' ' + String(c._id))
+                    let catalogDeleteResult = await catalog.delete(c)
+                    if (debug) console.log(catalogDeleteResult)
+                }
+
+            }
         }
 
         //Ensure all products are withdrawn from market prior to attempting deletion

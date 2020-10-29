@@ -14,6 +14,8 @@ const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexer
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 const currency = require('../../models/currency')
 const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
+const csrf = require('csurf')
+const csrfProtection = csrf({cookie: true})
 
 let shops = express.Router()
 
@@ -603,7 +605,7 @@ let shopUpdateHandler = async (req, res) => {
                             let viewData = await shophandler.populateViewData(form.uid.toString())
                             viewData.user = req.user
                             viewData.pane = 'sf'
-                            viewData.messages = { error: 'Permission denied. Only closed shops with no active products can be deleted.' }
+                            viewData.messages = { error: 'Permission denied. Only closed shops with no active products or catalogs can be deleted.' }
                             res.render('sell', viewData)
                         } else {
                             console.error(e)
@@ -819,7 +821,7 @@ shops.use('/page/:page', async function(req, res, next) {
   }
 })
 
-shops.get('/', async (req, res) => {
+shops.get('/', csrfProtection, async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query
@@ -843,6 +845,7 @@ shops.get('/', async (req, res) => {
             viewData = await shophandler.populateViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = panel
+            viewData.csrfToken = req.csrfToken
             res.render('sell', viewData)
         } else {
             messages = {error: "You need to be signed in."}

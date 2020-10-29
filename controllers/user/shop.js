@@ -6,8 +6,8 @@ const express = require('express')
 const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
 const debug = cfg.env == 'development' ? true : false
-const mediaAdapter = require('../../adapters/storage/media')
-const fileUploader = mediaAdapter.uploader()
+const media = require('../../adapters/storage/media')
+const fileUploader = media.uploader()
 const catalog = require('../../models/catalog')
 const shophandler = require('../handlers/shop')
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
@@ -93,8 +93,36 @@ let catalogAddHander = async (req, res) => {
                 return
             }
 
-            let c_addhandler = await shophandler.catalogAddHander(form,req.files)
-            // TODO: validation check on 'c_addhandler' response to show response if created or not
+            let cAddResult = await shophandler.catalogAddHander(form,req.files)
+            
+
+
+            if (cAddResult) {
+                let newCtg = await catalog.read({ name: form.name, owner: form.sid }, { limit: 1 })
+
+                if (newCtg && await catalog.isValid(newCtg)) {
+                    // Save catalog images
+                    let cImgs = []
+                    if (req.files && Array.isArray(req.files)) {
+                        let cImgs = []
+                        for (x of req.files) {
+                            let img = {}
+                            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                            if (x.storage != 'db') {
+                                img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/catalog') + '/' + String(newCtg._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                            } else {
+                                img = x
+                            }
+                            cImgs.push(img)
+                        }
+                        newCtg.image = cImgs[0]
+                    }
+                    if (debug) console.log('Saving new catalog images')
+                    let catalogImageSaveResult = await catalog.update({ name: String(form.name).toLowerCase(), owner: form.sid }, newShop)
+                    if (debug) console.error(catalogImageSaveResult)
+                }
+            }
+
             if (debug) console.log('Catalog added for ' + shp.displayName)
             //let viewData = await shophandler.populateViewData('\''+u.uid+'\'')
             let viewData = await shophandler.populateViewData(req.user.id.toString())
@@ -307,7 +335,32 @@ let shopAddHandler = async (req, res) => {
         try {
             //let t = await shop.create(u)
             let s_addhandler = await shophandler.shopAddHandler(form,req.files)
-            // TODO: validation check on 's_addhandler' response to show response if created or not
+            
+            if(s_addhandler) {
+                let newShop = await shop.read({name: form.fullname, owner: form.uid},{limit: 1})
+
+                if(newShop && await shop.isValid(newShop)) {
+                    // Save shop images
+                    let sImgs = []
+                    if (req.files && Array.isArray(req.files)) {
+                        let sImgs = []
+                        for (x of req.files) {
+                            let img = {}
+                            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                            if (x.storage != 'db') {
+                                img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/shop') + '/' + String(newShop._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                            } else {
+                                img = x
+                            }
+                            sImgs.push(img)
+                        }
+                        newShop.images = sImgs
+                    }
+                    if (debug) console.log('Saving new shop images')
+                    let shopImageSaveResult = await shop.update({ name: String(form.fullname).toLowerCase(), owner: form.uid }, newShop)
+                    if (debug) console.error(shopImageSaveResult)
+                }
+            }
 
             if (debug) console.log('Shop added for ' + u.owner)
             let viewData = await shophandler.populateViewData(u.owner)
@@ -364,15 +417,35 @@ let productAddHandler = async (req, res) => {
 
             // Returns a promise so reject should trigger the catch block
             let result = await shophandler.productAddHandler(form,req.files)
+            console.log(result)
             try {
-                let newProd = await product.read({ name: String(form.fullname).toLowerCase() }, { limit: 1 })
+                let newProd = await product.read({ name: form.fullname.toLowerCase(), shop: form.sid }, { limit: 1 })
 
                 if (result && await product.isValid(newProd)) {
+
+                    // Save product images
+                    let pImgs = []
+                    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+                        for (x of req.files) {
+                            let img = {}
+                            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                            if (x.storage != 'db') {
+                                img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/product') + '/' + String(newProd._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                            } else {
+                                img = x
+                            }
+                            pImgs.push(img)
+                        }
+                    }
+                    if(debug) console.log('Saving new product images')
+                    let productImageSaveResult = await product.update(newProd, {images: pImgs})
+                    if(debug) console.error(productImageSaveResult)
+
                     if (debug) {
                         console.log('Attempting to index new product ' + newProd._id + '.')
                     }
 
-                    let productCurrency = await currency.read(updatedProduct.currency, { findBy: 'id' })
+                    let productCurrency = await currency.read(newProd.currency, { findBy: 'id' })
 
                     let productCurrencyCode = baseCurrencyCode
 

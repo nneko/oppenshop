@@ -213,7 +213,7 @@ producteditor.post('/', fileUploader, async (req, res) => {
                         let img = {}
                         x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
                         if (x.storage != 'db') {
-                            img = await media.write(x, '/product/' + String(p._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                            img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/product') + '/' + String(p._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
                         } else {
                             img = x
                         }

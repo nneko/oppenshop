@@ -170,7 +170,7 @@ shopeditor.post('/', fileUploader, async (req, res) => {
                         let img = {}
                         x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
                         if(x.storage != 'db') {
-                            img = await media.write(x,'/shop/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                            img = await media.write(x, (cfg.media_dest_shops ? cfg.media_dest_shops : '/shop') + '/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
                         } else {
                             img = x
                         }

@@ -173,7 +173,7 @@ shophandler.catalogAddHander = async (form, files) => {
     c.description = form.description
     c.owner = form.sid
     c.products = []
-    
+    /*
     let cImgs = []
     if (files) {
         for (x of files) {
@@ -183,6 +183,8 @@ shophandler.catalogAddHander = async (form, files) => {
         }
         if (Array.isArray(cImgs) && cImgs.length >= 1) c.image = cImgs[0]
     }
+    */
+   c.image = null
     
     return await catalog.create(c)
   } catch (e) {
@@ -267,15 +269,18 @@ shophandler.shopAddHandler = async (form, files) => {
     s.name = form.fullname
     s.displayName = form.fullname
     s.status = 'active'
-    let sImgs  = []
+
+    let sImgs = []
+    /*
     if (files){
         for (x of files){
             x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
             let img = await media.write(x, cfg.media_dest_shops ? cfg.media_dest_shops : '/shop')
             sImgs.push(img)
         }
-        s.images = sImgs
     }
+    */
+    s.images = sImgs
 
     let addr = {}
     addr.type = form.addressType
@@ -449,16 +454,24 @@ shophandler.productAddHandler = async (form, files) => {
       p.displayName = form.name
 
     }
-
+    
     let pImgs = []
-    if (files) {
+    /*
+    if (files && Array.isArray(files)) {
+        let pImgs = []
         for (x of files) {
+            let img = {}
             x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
-            let img = await media.write(x, cfg.media_dest_products ? cfg.media_dest_products : '/product')
+            if (x.storage != 'db') {
+                img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/product') + '/' + String(p._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+            } else {
+                img = x
+            }
             pImgs.push(img)
         }
-        p.images = pImgs
     }
+    */
+    p.images = pImgs
 
     let specs = {}
     for (key in form){

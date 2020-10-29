@@ -860,7 +860,7 @@ shops.get('/', csrfProtection, async (req, res) => {
     }
 })
 
-shops.post('/', fileUploader, async (req, res)  => {
+shops.post('/', csrfProtection, fileUploader, async (req, res)  => {
     try {
         if (validator.hasActiveSession(req)) {
             let form = req.body

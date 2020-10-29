@@ -199,7 +199,15 @@
     {
         "_id":, ObjectId("2342345235"),
         "timestamp": Math.floor(Date.now() / 1000),
-        "user": ""
+        "user": "",
+        "order_code": "",
+        "offer_code": "",
+        "status": "",
+        "type": "",
+        "delivery_address": "",
+        "charges": [],
+        "total_charge": "",
+        "charge_currency": "",
         "items": [
             {
                 "product": "xyz",

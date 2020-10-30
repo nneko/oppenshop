@@ -10,8 +10,6 @@ const debug = cfg.env == 'development' ? true : false
 const currency = require('../../models/currency')
 const accounthandler = require('../handlers/account')
 const ShoppingBag = require('../../models/shoppingbag')
-const csrf = require('csurf')
-const csrfProtection = csrf({ cookie: true })
 
 let account = express.Router()
 
@@ -981,7 +979,7 @@ let deleteHandler = async (req, res) => {
 
 }
 
-account.get('/', csrfProtection, async (req, res) => {
+account.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query
@@ -1004,7 +1002,7 @@ account.get('/', csrfProtection, async (req, res) => {
             let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = panel
-            viewData.csrfToken = req.csrfToken
+            viewData.csrfToken = req.csrfToken()
             res.render('account', viewData)
         } else {
             messages = {error: "You need to be signed in."}
@@ -1019,7 +1017,7 @@ account.get('/', csrfProtection, async (req, res) => {
     }
 })
 
-account.post('/', csrfProtection, async (req, res) => {
+account.post('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let form = req.body

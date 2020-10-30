@@ -14,8 +14,6 @@ const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexer
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 const currency = require('../../models/currency')
 const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
-const csrf = require('csurf')
-const csrfProtection = csrf({cookie: true})
 
 let shops = express.Router()
 
@@ -821,7 +819,7 @@ shops.use('/page/:page', async function(req, res, next) {
   }
 })
 
-shops.get('/', csrfProtection, async (req, res) => {
+shops.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query
@@ -845,22 +843,22 @@ shops.get('/', csrfProtection, async (req, res) => {
             viewData = await shophandler.populateViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = panel
-            viewData.csrfToken = req.csrfToken
+            viewData.csrfToken = req.csrfToken()
             res.render('sell', viewData)
         } else {
             messages = {error: "You need to be signed in."}
             res.status(403)
-            res.render('signin', {messages: messages})
+            res.render('signin', {messages: messages, csrfToken: req.csrfToken()})
         }
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user })
+        res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user ,csrfToken: req.csrfToken()})
 
     }
 })
 
-shops.post('/', csrfProtection, fileUploader, async (req, res)  => {
+shops.post('/', fileUploader, async (req, res)  => {
     try {
         if (validator.hasActiveSession(req)) {
             let form = req.body

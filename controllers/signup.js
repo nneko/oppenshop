@@ -48,9 +48,9 @@ signupEmailer.sendEmailWelcome = async _data => {
 
 signup.get('/', (req, res) => {
     if (validator.hasActiveSession(req)) {
-        res.redirect('/user/account')
+        res.redirect('/user/account', { csrfToken: req.csrfToken() })
     } else {
-        res.render('signup')
+        res.render('signup', { csrfToken: req.csrfToken() })
     }
 })
 

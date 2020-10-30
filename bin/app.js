@@ -27,6 +27,7 @@ const authToken = require('../adapters/authorization/jwt')
 const flash = require('express-flash')
 const session = require('express-session')
 const sessionStore = require('connect-mongo')(session)
+const csrf = require('csurf')
 
 // CronJobs
 const cron = require('node-cron')
@@ -151,12 +152,11 @@ if(!module.parent){
 	      authToken.init()
         app.use(passport.initialize())
         app.use(passport.session())
-
-	      app.use(express.json())
+	    app.use(express.json())
         app.use(express.raw())
         app.use(express.text())
         app.use(express.urlencoded({ extended: true }))
-
+        app.use(csrf({ cookie: false }))
         //app populate request data for all routes
         app.use((req, res, next) => {
             if (typeof (app.locals.reqData) === 'object') {

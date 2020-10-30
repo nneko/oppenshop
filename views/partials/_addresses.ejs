@@ -42,6 +42,7 @@
                         <form class="edit-delete-action-form" method="POST" action="/user/account">
                             <input type="hidden" name="id" value="upaddr">
                             <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <input type="hidden" name="streetAddress"
                                 value="<% if(typeof(addresses) !== 'undefined' && Array.isArray(addresses)) { %><%= addresses[i].streetAddress %><% } %>">
                             <input type="hidden" name="locality"

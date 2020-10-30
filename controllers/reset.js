@@ -10,13 +10,14 @@ const generator = require('../utilities/generator')
 
 
 
+
 let reset = express.Router()
 
 reset.get('/', (req, res) => {
     if(req.user) {
-        res.redirect('/user/account?show=ls')
+        res.redirect('/user/account?show=ls', { csrfToken: req.csrfToken() })
     } else {
-        res.render('reset')
+        res.render('reset', { csrfToken: req.csrfToken() })
     }
 })
 /*
@@ -58,6 +59,7 @@ reset.post('/', async (req, res) => {
             console.log(formFields)
         }
         formFields.messages = {error: 'Please enter valid user details'}
+        formFields.csrfToken = req.csrfToken()
         res.status(400)
         res.render('reset', formFields)
     } else {
@@ -67,7 +69,7 @@ reset.post('/', async (req, res) => {
 		        u = await user.read({ preferredUsername: u.preferredUsername }, { limit: 1 })
                 //console.log(u)
                 if(u.provider != 'native'){
-                    res.render('reset', {messages: { error: 'You cannot reset passwords for external accounts' } })
+                    res.render('reset', {messages: { error: 'You cannot reset passwords for external accounts' }, csrfToken: req.csrfToken()})
                     return
                 }
                 let new_password = generator.randomString(10)
@@ -76,9 +78,9 @@ reset.post('/', async (req, res) => {
 		        // TODO: Send reset email
                 reset_mailer.password_reset({name: u.name.givenName, email: u.preferredUsername, temp: new_password})
                 formFields.messages = { info: 'Please check email for reset password details.' }
-                res.render('signin', { messages: formFields.messages })
+                res.render('signin', { messages: formFields.messages ,  csrfToken: req.csrfToken() })
             } else {
-                res.render('reset', { messages: { error: 'Account is not registered.' } })
+                res.render('reset', { messages: { error: 'Account is not registered.' } , csrfToken: req.csrfToken() })
             }
             
         } catch (e) {
@@ -88,6 +90,7 @@ reset.post('/', async (req, res) => {
             let status = 500
 
             formFields.error = 'The password could not be reset at this time. Please try again later.'
+            formFields.csrfToken = req.csrfToken()
 
             if (e.name == 'UserError') {
                 if (e.type == 'Invalid') {

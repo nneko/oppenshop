@@ -103,7 +103,7 @@
                                             </p>
                                         </div>
                                         <div class="add-to-bag-button-container">
-                                            <form class="add-to-bag-form" method="POST" action="/market/product">
+                                            <form class="add-to-bag-form" method="POST" action="/market/product<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>">
                                             <fieldset <% if(product.quantity == 0) { %>disabled="disabled<% } %>>
                                                     <input type="hidden" name="action" value="add_to_bag">
                                                     <input type="hidden" name="pid"
@@ -170,7 +170,7 @@
                     console.log('Creating buy-now event listener...')
                     const form = document.createElement('form')
                     form.method = 'post'
-                    form.action = '/user/bag/checkout'
+                    form.action = '/user/bag/checkout<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>'
 
                     const hiddenUserInputField = document.createElement('input')
                     hiddenUserInputField.type = 'hidden'
@@ -212,7 +212,7 @@
                     console.log('Creating remove-item event listener...')
                     const form = document.createElement('form')
                     form.method = 'post'
-                    form.action = '/market/product'
+                    form.action = '/market/product<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>'
 
                     const hiddenUserInputField = document.createElement('input')
                     hiddenUserInputField.type = 'hidden'

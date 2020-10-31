@@ -10,6 +10,7 @@
                 <div class="input-group">
                     <input id="find" class="form-control" type="text" name="find" placeholder="Find products and shops" value=""
                         aria-label="find" aria-describedby="find-basic-addon" size="25" required>
+                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
                     <div class="input-group-append">
                         <button class="search-button" type="submit"
                                 data-toggle="tooltip" data-placement="bottom" title="Find in Market"><%- include('../assets/symbols/looking-glass.svg') %></button>
@@ -37,6 +38,7 @@
         </div>
     </div>
     <form class="responsive-search-form" autocomplete="off" action="/market" method="POST" oninput="" novalidate>
+        <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
         <div class="form-group">
             <div class="input-group">
                 <div class="input-group-prepend">

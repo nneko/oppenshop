@@ -843,17 +843,16 @@ shops.get('/', async (req, res) => {
             viewData = await shophandler.populateViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = panel
-            viewData.csrfToken = req.csrfToken()
             res.render('sell', viewData)
         } else {
             messages = {error: "You need to be signed in."}
             res.status(403)
-            res.render('signin', {messages: messages, csrfToken: req.csrfToken()})
+            res.render('signin', {messages: messages})
         }
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user ,csrfToken: req.csrfToken()})
+        res.render('error', { error: { status: 500, message: 'Error retrieving data' }, name: '', user: req.user })
 
     }
 })

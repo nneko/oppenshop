@@ -68,7 +68,7 @@
                     <h4>Products</h4>
                     <% if(typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length > 0) { %>
                         <% for(let s=0;s<shops.length;s++) { %>
-                        <form class="catalog-add-action-form" method="POST" action="/user/shop">
+                        <form class="catalog-add-action-form" method="POST" action="/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>">
                             <input type="hidden" name="id" value="cl-add-pd">
                         
                             <input type="hidden" name="cid"
@@ -147,7 +147,7 @@
                                                 </div>
                                             </div>
                                             <div class="action-button-section">
-                                                <form class="edit-delete-action-form" method="POST" action="/user/shop">
+                                                <form class="edit-delete-action-form" method="POST" action="/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>">
                                                     <input type="hidden" name="id" value="cl-del-pd">
                                             
                                                     <input type="hidden" name="pid"
@@ -234,7 +234,7 @@
                 <%- include('../assets/symbols/close.svg') %>
             </button>
         </div>
-        <form id="create-catalog-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST" oninput=""
+        <form id="create-catalog-form" class="standard-form" autocomplete="off" action="/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST" oninput=""
             enctype="multipart/form-data" novalidate>
             <fieldset <% if((typeof(disabledForms) !== 'undefined' && disabledForms.catalog) || (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length < 1)) { %> disabled="disabled"
                 <% } %>>

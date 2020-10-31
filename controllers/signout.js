@@ -27,7 +27,7 @@ signout.get('/', async (req, res) => {
         }
     }
     req.logout()
-    res.render('signin',{messages: {success: 'You have been signed out.'}, csrfToken: req.csrfToken()})
+    res.render('signin',{messages: {success: 'You have been signed out.'}})
 })
 
 module.exports = signout

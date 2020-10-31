@@ -1,7 +1,7 @@
 <main class="container">
     <section class="signin-section">
         <form id="signin-form" class="signin-form" autocomplete="off" action="/reset" method="POST" oninput="" novalidate>
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
             <div class="form-group">
                 <% if(typeof(messages.error) !== 'undefined') { %>
                 <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">

@@ -9,7 +9,7 @@ signin.get('/', (req, res) => {
     if(validator.hasActiveSession(req)){
         res.redirect('/user/account')
     } else {
-        res.render('signin', {csrfToken: req.csrfToken()})
+        res.render('signin')
     }
 })
 

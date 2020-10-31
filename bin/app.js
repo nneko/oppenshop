@@ -156,7 +156,7 @@ if(!module.parent){
         app.use(express.raw())
         app.use(express.text())
         app.use(express.urlencoded({ extended: true }))
-        app.use(csrf({ cookie: false }))
+        app.use(csrf())
         //app populate request data for all routes
         app.use((req, res, next) => {
             if (typeof (app.locals.reqData) === 'object') {
@@ -164,6 +164,8 @@ if(!module.parent){
             } else {
                 app.locals.reqData = { path: req.path }
             }
+
+            if (typeof (req.csrfToken) == 'function') res.locals.csrfToken = req.csrfToken()
             next()
         })
 
@@ -215,6 +217,11 @@ if(!module.parent){
                     break
                 case 403:
                     message = 'Forbidden'
+                    if (err.code == 'EBADCSRFTOKEN') {
+                        if(debug) {
+                            console.error(err)
+                        }
+                    }
                     break
                 case 404:
                     message = 'Not Found'

@@ -72,7 +72,7 @@
                                                 </span>
                                             </a>
                                             <div class="remove-from-bag-button-container">
-                                                <form class="remove-from-bag-form" method="POST" action="/user/bag">
+                                                <form class="remove-from-bag-form" method="POST" action="/user/bag<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>">
                                                     <fieldset>
                                                         <input type="hidden" name="action" value="delete_from_bag">
                                                         <input type="hidden" name="pid" value="<% if(typeof(product) !== 'undefined') { %><%= product %><% } %>">

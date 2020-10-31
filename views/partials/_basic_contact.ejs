@@ -9,7 +9,7 @@
                 <input type="hidden" name="id" value="ci">
                 <input type="hidden" name="uid"
                     value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
                 <div class="form-group">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">

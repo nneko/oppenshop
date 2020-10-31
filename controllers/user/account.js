@@ -1002,7 +1002,6 @@ account.get('/', async (req, res) => {
             let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
             viewData.pane = panel
-            viewData.csrfToken = req.csrfToken()
             res.render('account', viewData)
         } else {
             messages = {error: "You need to be signed in."}

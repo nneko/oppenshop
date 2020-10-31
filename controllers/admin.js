@@ -13,7 +13,6 @@ admin.get('/', async (req, res) => {
         let viewData = {}
         viewData.messages = {info: 'Functionality not implemented.'}
         viewData.user = req.user
-        viewData.csrfToken = req.csrfToken()
         res.status = 501
         res.render('admin', viewData)
 
@@ -31,7 +30,6 @@ admin.post('/', async (req, res) => {
 
         let viewData = {}
         viewData.user = req.user
-        viewData.csrfToken = req.csrfToken()
         viewData.messages = { info: 'Feature not implemented' }
         res.status(501)
         res.render('admin', viewData)

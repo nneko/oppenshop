@@ -48,6 +48,7 @@
                 <% if(typeof(bag) !== 'undefined') { %>
                     <div class="shopping-bag-itemslist">
                         <% for (const product of Object.keys(bag.items)) { %>
+                            <% if (typeof(bag.items[product]) !== 'undefined' && bag.items[product]) { %>
                             <div>
                                 <span>
                                     <div class="item-card shopping-bag-item-card" data-product-id="<%= product %>">
@@ -88,6 +89,7 @@
                                         </div>
                                     </span>
                                 </div>
+                            <% } %>
                             </div>
                         <% } %>
                     </div>

@@ -53,7 +53,7 @@ shop.create = (s) => {
                 throw e
             }
 
-            if (await shop.exists({ name: s.name })) {
+            if (await shop.exists({ name: s.name.toLowerCase() })) {
                 let e = new Error('Shop already exists')
                 e.name = 'ShopError'
                 e.type = 'Duplicate'

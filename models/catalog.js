@@ -59,7 +59,7 @@ catalog.create = (c) => {
                 throw e
             }
 
-            if (await catalog.exists({name: c.name})) {
+            if (await catalog.exists({name: c.name.toLowerCase()})) {
                 let e = new Error('Catalog already exists')
                 e.name = 'CatalogError'
                 e.type = 'Duplicate'

@@ -62,7 +62,7 @@ product.create = (p) => {
                 throw e
             }
 
-            if (await product.exists({ name: p.name, shop: p.shop })) {
+            if (await product.exists({ name: p.name.toLowerCase(), shop: p.shop })) {
                 let e = new Error('Product already exists')
                 e.name = 'ProductError'
                 e.type = 'Duplicate'

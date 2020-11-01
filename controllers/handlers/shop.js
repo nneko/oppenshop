@@ -7,6 +7,7 @@ const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
 const catalog = require('../../models/catalog')
 const currency = require('../../models/currency')
+const validator = require('../../utilities/validator')
 
 let shophandler = {}
 
@@ -186,7 +187,32 @@ shophandler.catalogAddHander = async (form, files) => {
     */
    c.image = null
     
-    return await catalog.create(c)
+    let result = await catalog.create(c)
+
+    let newCtg = await catalog.read(c, { limit: 1 })
+    if (result && newCtg && await catalog.isValid(newCtg)) {
+          // Save catalog images
+          let cImgs = []
+        if (files && Array.isArray(files)) {
+            for (x of files) {
+                let img = {}
+                x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                if (x.storage != 'db') {
+                    img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/catalog') + '/' + String(newCtg._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                } else {
+                    img = x
+                }
+                cImgs.push(img)
+            }
+        }
+        if (debug) console.log('Saving new catalog images')
+        let catalogImageSaveResult = await catalog.update(newCtg, {images: cImgs})
+        if (debug) console.error(catalogImageSaveResult)
+        return catalogImageSaveResult
+    } else {
+        if(debug) console.error(result)
+        return false
+    }
   } catch (e) {
       console.error(e)
       throw e
@@ -268,42 +294,73 @@ shophandler.shopAddHandler = async (form, files) => {
     s.owner = form.uid
     s.name = form.fullname
     s.displayName = form.fullname
+    s.description = form.description
     s.status = 'active'
+    s.images = []
+    s.phoneNumbers = []
 
-    let sImgs = []
-    /*
-    if (files){
-        for (x of files){
-            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
-            let img = await media.write(x, cfg.media_dest_shops ? cfg.media_dest_shops : '/shop')
-            sImgs.push(img)
-        }
+    if(form.phoneNumber && validator.isPhoneNumber(form.phoneNumber)) {
+        s.phoneNumbers.push({
+            value: form.phoneNumber,
+            type: 'main',
+            primary: true
+        })
     }
-    */
-    s.images = sImgs
 
     let addr = {}
     addr.type = form.addressType
     addr.streetAddress = form.addressStreet
+    addr.secondStreetAddress = form.secondAddressStreet
     addr.locality = form.addressLocality
     addr.region = form.addressRegion
     addr.postalCode = form.addressPostcode
     addr.country = form.addressCountry
     addr.formatted = generator.formattedAddress(addr)
+    addr.primary = true
 
-    if (form.setPrimary != 'true'){
-        s.addresses = usr.addresses
+    if (!form.setPrimary) {
+        s.addresses = []
         s.addresses.push(addr)
     } else {
-        addr.primary = true
-        if (typeof(usr.addresses) !== 'undefined') {
-            s.addresses = generator.removePrimaryFields(usr.addresses)
-            s.addresses.push(addr)
+        if (typeof (usr.addresses) !== 'undefined' && Array.isArray(usr.addresses) && usr.addresses.length > 0) {
+            s.addresses = []
+            let usrPrimaryAddr = generator.getPrimaryField(usr.addresses)
+            if(usrPrimaryAddr) {
+                s.addresses.push(usrPrimaryAddr)
+            } else {
+                s.addresses = [addr]
+            }
         } else {
             s.addresses = [addr]
         }
     }
-    return await shop.create(s)
+    if (debug) console.log('Attempting to create new shop...')
+    let createResult = await shop.create(s)
+    let newShop = await shop.read(s, { limit: 1 })
+
+      if (createResult && newShop && (await shop.isValid(newShop))) {
+        // Save shop images
+        let sImgs = []
+        if (files && Array.isArray(files)) {
+            for (x of files) {
+                let img = {}
+                x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                if (x.storage != 'db') {
+                    img = await media.write(x, (cfg.media_dest_shops ? cfg.media_dest_shops : '/shop') + '/' + String(newShop._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                } else {
+                    img = x
+                }
+                sImgs.push(img)
+            }
+        }
+        if (debug) console.log('Saving new shop images...')
+        let shopImageSaveResult = await shop.update(newShop, {images: sImgs})
+        if (debug) console.error(shopImageSaveResult)
+        return shopImageSaveResult
+    } else {
+        if(debug) console.log(newShop)
+        return false
+    }
   } catch (e) {
       console.error(e)
       throw e
@@ -480,21 +537,6 @@ shophandler.productAddHandler = async (form, files) => {
     }
     
     let pImgs = []
-    /*
-    if (files && Array.isArray(files)) {
-        let pImgs = []
-        for (x of files) {
-            let img = {}
-            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
-            if (x.storage != 'db') {
-                img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/product') + '/' + String(p._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
-            } else {
-                img = x
-            }
-            pImgs.push(img)
-        }
-    }
-    */
     p.images = pImgs
 
     let specs = {}
@@ -503,7 +545,33 @@ shophandler.productAddHandler = async (form, files) => {
       specs[key.replace('spec_', '')] = form[key]
     }
     p.specifications = specs
-    return await product.create(p)
+    let result = await product.create(p)
+
+    let newProd = await product.read(p,{ limit: 1 })
+
+    if (result && await product.isValid(newProd)) {
+        // Save product images
+        let pImgs = []
+        if (files && Array.isArray(files) && files.length > 0) {
+            for (x of files) {
+                let img = {}
+                x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                if (x.storage != 'db') {
+                    img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/product') + '/' + String(newProd._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                } else {
+                    img = x
+                }
+                pImgs.push(img)
+            }
+        }
+        if (debug) console.log('Saving new product images')
+        let productImageSaveResult = await product.update(newProd, { images: pImgs })
+        if (debug) console.error(productImageSaveResult)
+        return productImageSaveResult
+    } else {
+        if(debug) console.error(result)
+        return false
+    }
   } catch (e) {
       console.log('Error during product add operation. Passing error up the stack')
       console.error(e)

@@ -66,6 +66,7 @@ let populateViewData = async (id) => {
                 if (viewData.address) {
                     viewData.addressType = { value: viewData.address.type }
                     viewData.addressStreet = { value: viewData.address.streetAddress }
+                    viewData.secondAddressStreet = { value: viewData.address.secondStreetAddress }
                     viewData.addressLocality = { value: viewData.address.locality }
                     viewData.addressRegion = { value: viewData.address.region }
                     viewData.addressPostcode = { value: viewData.address.postalCode }
@@ -183,6 +184,7 @@ shopeditor.post('/', fileUploader, async (req, res) => {
             let addr = {}
             addr.type = form.addressType
             addr.streetAddress = form.addressStreet
+            addr.secondStreetAddress = form.secondAddressStreet
             addr.locality = form.addressLocality
             addr.region = form.addressRegion
             addr.postalCode = form.addressPostcode
@@ -204,6 +206,7 @@ shopeditor.post('/', fileUploader, async (req, res) => {
             } else {
                 formFields.addressType = { class: 'is-invalid', value: form.addressType }
                 formFields.addressStreet = { class: 'is-invalid', value: form.addressStreet }
+                formFields.secondAddressStreet = { class: 'is-invalid', value: form.secondAddressStreet }
                 formFields.addressLocality = { class: 'is-invalid', value: form.addressLocality }
                 formFields.addressRegion = { class: 'is-invalid', value: form.addressRegion }
                 formFields.addressPostcode = { class: 'is-invalid', value: form.addressPostcode }

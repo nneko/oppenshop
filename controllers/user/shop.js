@@ -305,8 +305,6 @@ let shopAddHandler = async (req, res) => {
         _403redirect(req, res, '/user/shop/?show=sf', 'You must be signed in.')
         return
     } else {
-        let u = {}
-
         let formValidated = false
         let formFields = {}
 
@@ -335,44 +333,26 @@ let shopAddHandler = async (req, res) => {
         try {
             //let t = await shop.create(u)
             let s_addhandler = await shophandler.shopAddHandler(form,req.files)
-            
-            if(s_addhandler) {
-                let newShop = await shop.read({name: form.fullname, owner: form.uid},{limit: 1})
+            let newShop = await shop.read({name: form.fullname ? form.fullname.toLowerCase() : null, owner: form.uid }, { limit: 1 })
 
-                if(newShop && await shop.isValid(newShop)) {
-                    // Save shop images
-                    let sImgs = []
-                    if (req.files && Array.isArray(req.files)) {
-                        let sImgs = []
-                        for (x of req.files) {
-                            let img = {}
-                            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
-                            if (x.storage != 'db') {
-                                img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/shop') + '/' + String(newShop._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
-                            } else {
-                                img = x
-                            }
-                            sImgs.push(img)
-                        }
-                        newShop.images = sImgs
-                    }
-                    if (debug) console.log('Saving new shop images')
-                    let shopImageSaveResult = await shop.update({ name: String(form.fullname).toLowerCase(), owner: form.uid }, newShop)
-                    if (debug) console.error(shopImageSaveResult)
-                }
+            if(newShop && (await shop.isValid(newShop))) {
+                if (debug) console.log('Shop added for ' + newShop.owner)
+                let viewData = await shophandler.populateViewData(newShop.owner)
+                viewData.user = req.user
+                viewData.pane = 'sf'
+                viewData.messages = { success: 'Shop added.' }
+                res.render('sell', viewData)
+            } else {
+                let sCreateError = new Error('Shop creation error')
+                sCreateError.name = 'ShopError'
+                sCreateError.type = 'ShopCreateError'
+                if(debug) console.error(newShop)
+                throw sCreateError
             }
-
-            if (debug) console.log('Shop added for ' + u.owner)
-            let viewData = await shophandler.populateViewData(u.owner)
-            viewData.user = req.user
-            viewData.pane = 'sf'
-            viewData.messages = { success: 'Shop added.' }
-            res.render('sell', viewData)
-            return
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', { user: req.user, error: { message: 'Unable to complete requested addition of a shop.', status: 500 } })
+            res.render('error', { user: req.user, error: { message: 'Unable to complete requested shop addition.', status: 500 } })
             return
         }
     }
@@ -422,25 +402,6 @@ let productAddHandler = async (req, res) => {
                 let newProd = await product.read({ name: form.fullname.toLowerCase(), shop: form.sid }, { limit: 1 })
 
                 if (result && await product.isValid(newProd)) {
-
-                    // Save product images
-                    let pImgs = []
-                    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-                        for (x of req.files) {
-                            let img = {}
-                            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
-                            if (x.storage != 'db') {
-                                img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/product') + '/' + String(newProd._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
-                            } else {
-                                img = x
-                            }
-                            pImgs.push(img)
-                        }
-                    }
-                    if(debug) console.log('Saving new product images')
-                    let productImageSaveResult = await product.update(newProd, {images: pImgs})
-                    if(debug) console.error(productImageSaveResult)
-
                     if (debug) {
                         console.log('Attempting to index new product ' + newProd._id + '.')
                     }

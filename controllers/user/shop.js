@@ -13,6 +13,7 @@ const shophandler = require('../handlers/shop')
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 const currency = require('../../models/currency')
+const { render } = require('../../bin/app')
 const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
 
 let shops = express.Router()
@@ -350,10 +351,31 @@ let shopAddHandler = async (req, res) => {
                 throw sCreateError
             }
         } catch (e) {
-            console.error(e)
-            res.status(500)
-            res.render('error', { user: req.user, error: { message: 'Unable to complete requested shop addition.', status: 500 } })
-            return
+            if(debug) {
+                console.log('Error encountered during shop creation.')
+                console.error(e)
+                e.stack ? console.error(e.stack) : console.error('No stack trace.')
+            }
+            try {
+                let viewData = await shophandler.populateViewData(form.uid)
+                viewData.user = req.user
+                viewData.pane = 'sf'
+                viewData.messages = {error: 'Operation canceled due to one or more errors.'}
+                if (e.name === 'ShopError') {
+                    if(e.type == 'Duplicate') {
+                        viewData.messages = { error: 'Cannot create duplicate shop.' }
+                    } 
+                    res.status(400)
+                    res.render('sell', viewData)
+                } else {
+                    if(debug) console.log('Unknown error type encountered. Passing to generic error handler.')
+                    throw e
+                }
+            } catch (err) {
+                console.error(err)
+                res.status(500)
+                res.render('error', { user: req.user, error: { message: 'Unable to complete requested shop addition.', status: 500 } })
+            }
         }
     }
 }
@@ -466,6 +488,9 @@ let productAddHandler = async (req, res) => {
                 } else if (e.name == 'ProductError') {
                     console.log('Invalid product fields detected.')
                     viewData.messages.error = 'Product could not be registered due to one or more invalid entries. Please check the fields and try again.'
+                    if(e.type == 'Duplicate') {
+                        viewData.messages.error = 'Cannot create duplicate product'
+                    }
                     if (viewData['fullname']) viewData['fullname'].class = 'is-invalid'
                     if (viewData['description']) viewData['description'].class = 'is-invalid'
                     if (viewData['quantity']) viewData['quantity'].class = 'is-invalid'

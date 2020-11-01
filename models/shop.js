@@ -30,7 +30,8 @@ shop.isValid = async (s) => {
 
 shop.exists = async (s) => {
     try {
-        const result = validator.isNotNull(await shop.read(s,{limit: 1}))
+        const doc = await shop.read(s,{limit: 1})
+        let result = await shop.isValid(doc) ? true : false
         if(debug) {
             console.log('Checking shop exits: ')
             console.log(s)

@@ -39,7 +39,8 @@ product.isValid = async (p) => {
 
 product.exists = async (p) => {
     try {
-        const result = validator.isNotNull(await product.read(p,{limit: 1}))
+        const doc = await product.read(p,{limit: 1})
+        let result = await product.isValid(doc) ? true : false
         if(debug) {
             console.log('Checking product exits: ')
             console.log(p)

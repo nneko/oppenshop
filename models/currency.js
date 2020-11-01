@@ -18,7 +18,8 @@ currency.isValid = (c) => {
 
 currency.exists = async (c) => {
     try {
-        const result = validator.isNotNull(await currency.read(c,{limit: 1}))
+        const doc = await currency.read(c,{limit: 1})
+        let result = currency.isValid(doc) ? true : false
         return result
     } catch (e) {
         if(debug) console.log(e)

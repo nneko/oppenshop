@@ -182,7 +182,7 @@
     /*border: 1px solid var(--main-highlight-color);*/
     color: var(--main-text-highlight-bold-color);
     font-family: Quicksand;
-    text-align: center;
+    text-align: left;
 }
 
 .responsive-search-form {

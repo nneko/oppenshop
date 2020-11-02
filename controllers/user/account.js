@@ -40,7 +40,7 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', {  user: req.user, messages: { error: 'Internal error due to bad request' } })
+        res.render('error', {  user: req.user, error: {message: 'Internal error due to bad request' }})
     }
 }
 
@@ -170,12 +170,12 @@ let lsFormHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', {  user: req.user, messages: { error: 'Unable to complete account update.' } })
+                res.render('error', {  user: req.user, error: {message: 'Unable to complete account update.'} })
             }
         }
     } catch (e) {
         console.error(e)
-        render('error', {  messages: { error: 'Unable to process request', status: 500 } })
+        render('error', {  error: {message: 'Unable to process request', status: 500}, user: req.user })
     }
 }
 
@@ -325,7 +325,7 @@ let ciFormHandler = async (req, res) => {
         } catch (e) {
             console.error(e)
             res.status(500)
-            res.render('error', {  user: req.user, messages: { error: 'Unable to complete account update.' } })
+            res.render('error', {  user: req.user, error: {message: 'Unable to complete account update.' }})
         }
     }
 
@@ -478,7 +478,7 @@ let naFormHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { user: req.user, messages: { error: 'Unable to complete account update.' } })
+                res.render('error', { user: req.user, error: {message: 'Unable to complete account update.' }})
             }
         }
     }
@@ -591,7 +591,7 @@ let addressUpdateHandler = async (req, res) => {
                         } catch (e) {
                             console.error(e)
                             res.status(500)
-                            res.render('error', { user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                            res.render('error', { user: req.user, error: { message: 'Unable to complete requested update.', status: 500 }})
                         }
                     }
                     break
@@ -683,7 +683,7 @@ let emailAddHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                res.render('error', { user: req.user, error: { message: 'Unable to complete requested update.', status: 500 }})
             }
         }
     }
@@ -764,7 +764,7 @@ let emailDeleteHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                res.render('error', { user: req.user, error: { message: 'Unable to complete requested update.', status: 500 }} )
             }
         }
     }
@@ -846,7 +846,7 @@ let phoneAddHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', {  user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                res.render('error', {  user: req.user, error: {message: 'Unable to complete requested update.', status: 500 }})
             }
         }
     }
@@ -916,7 +916,7 @@ let phoneDeleteHandler = async (req, res) => {
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', {  user: req.user, messages: { error: 'Unable to complete requested update.' } })
+                res.render('error', { user: req.user, error: { message: 'Unable to complete requested update.', status: 500  }})
             }
         }
     }
@@ -1011,7 +1011,7 @@ account.get('/', async (req, res) => {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Error retrieving account data' }, name: '', user: req.user })
+        res.render('error', { status: 500, error: {message: 'Error retrieving account data'} , name: '', user: req.user })
 
     }
 })
@@ -1068,7 +1068,7 @@ account.post('/', async (req, res) => {
     } catch (e) {
         console.error(e)
         res.status(500)
-        res.render('error', { error: { status: 500, message: 'Account update error' }, name: '', user: req.user })
+        res.render('error', { error: {status: 500, message: 'Account update error'}, name: '', user: req.user })
     }
 })
 

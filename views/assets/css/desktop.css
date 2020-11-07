@@ -200,10 +200,16 @@
     text-align: left;
 }
 
+#find:hover {
+    box-shadow: 0 0 0 0.2rem var(--main-nav-highlight-focus-color);
+    cursor: pointer;
+}
+
 #find:focus {
     border-radius: 0;
     box-shadow: none;
     /*box-shadow: -0.2rem 0 0 0 var(--main-nav-highlight-focus-color);*/
+    cursor: text;
 }
 
 .responsive-search-form {

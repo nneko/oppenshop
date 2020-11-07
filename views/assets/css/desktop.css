@@ -147,8 +147,18 @@
 
 #main-search-form {
     margin: 0 2rem 0 2rem;
-    width: 65%;
+    width: 76%;
     z-index: 10;
+}
+
+#main-search-form:active .search-button path {
+    fill: var(--main-highlight-color);
+    stroke: var(--main-highlight-color);
+}
+
+#main-search-form #find:active .search-button path {
+    fill: var(--main-highlight-color);
+    stroke: var(--main-highlight-color);
 }
 
 .search-button-container {
@@ -180,9 +190,20 @@
 
 #find {
     /*border: 1px solid var(--main-highlight-color);*/
+    border: none;
+    border-radius: 0;
     color: var(--main-text-highlight-bold-color);
     font-family: Quicksand;
+    height: 3rem;
+    margin: 0;
+    padding: 0;
     text-align: left;
+}
+
+#find:focus {
+    border-radius: 0;
+    box-shadow: none;
+    /*box-shadow: -0.2rem 0 0 0 var(--main-nav-highlight-focus-color);*/
 }
 
 .responsive-search-form {
@@ -466,8 +487,31 @@
 }
 
 .logo {
-    height: 3rem;
+    height: 1.75rem;
 }
+
+.applogo svg {
+    height: 1.75rem;
+}
+
+.applogo .icon path {
+    fill: var(--main-highlight-color);
+    stroke: none;
+}
+
+.applogo .icon circle {
+    fill: var(--main-highlight-color);
+}
+
+.applogo:hover .icon path {
+    fill: var(--icon-default-color);
+    stroke: none;
+}
+
+.applogo:hover .icon circle {
+    fill: var(--icon-default-color);
+}
+
 /*
 .logo path {
     stroke: var(--main-highlight-color);
@@ -534,8 +578,11 @@
 }
 
 .search-button-prepend {
+    /*
     background-color: var(--nav-btn-color);
-    border: 1px solid var(--nav-btn-border-color);
+    border: 1px solid var(--nav-btn-border-color);*/
+    background: transparent;
+    border: none;
     border-radius: 0;
     border-top-left-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
@@ -543,26 +590,34 @@
 }
 
 .search-button {
+    /*
     background-color: var(--nav-btn-color);
     border: 1px solid var(--nav-btn-border-color);
+    */
+    background: transparent;
+    border: none;
     border-top-right-radius: 0.25rem;
     border-bottom-right-radius: 0.25rem;
     width: 3rem;
 }
 
 .search-button .icon, .search-button-prepend .icon {
-    height: 1.6rem;
+    /*height: 1.6rem;*/
     padding: 0.2rem;
 }
 
 .search-button .icon path, .search-button-prepend .icon path {
-    fill: var(--main-symbol-stroke-color);
-    stroke: var(--main-symbol-stroke-color);
+    fill: var(--icon-default-color);
+    stroke: var(--icon-default-color);
 }
 
 .search-button:hover path, .search-button-prepend:hover path {
-    fill: var(--main-nav-highlight-color);
-    stroke: var(--main-nav-highlight-color);
+    fill: var(--main-highlight-color);
+    stroke: var(--main-highlight-color);
+}
+
+.search-button:focus {
+    outline-style: none;
 }
 
 .main-panel {
@@ -632,6 +687,13 @@
     border-bottom: 1px solid var(--main-sub-border-color);
     padding-bottom: 4rem;
     padding-top: 1rem;
+    text-align: center;
+}
+
+.checkout-summary-header {
+    border-top: 1px solid var(--main-border-color);
+    padding-bottom: 2rem;
+    padding-top: 2rem;
     text-align: center;
 }
 
@@ -1222,9 +1284,13 @@ white-space: nowrap;
     background-color: var(--main-nav-highlight-color);
 }
 
-.shopping-bag-item-card {
+.shopping-bag-item-card, .checkout-item-card {
     border-bottom: 1px solid var(--main-border-color);
     padding: 1rem;
+}
+
+.checkout-item-card {
+    border: none;
 }
 
 .shopping-bag-item-card:hover {
@@ -1255,7 +1321,7 @@ white-space: nowrap;
     margin: 0.5rem;
 }
 
-.shopping-bag-item-row {
+.shopping-bag-item-row, .checkout-item-row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -1280,6 +1346,11 @@ white-space: nowrap;
 .shopping-bag-item-name {
     max-width: 25%;
     width: 25%;
+}
+
+.checkout-item-name {
+    max-width: 75%;
+    width: 75%;
 }
 
 .remove-from-bag-button-container {

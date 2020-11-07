@@ -673,6 +673,27 @@
     padding: 0;
 }
 
+.shop-info-header-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.shop-info-header-row svg {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.shop-info-header-row svg path {
+    fill: var(--main-nav-neutral-color) !important;
+    stroke: var(--main-nav-neutral-color) !important;
+}
+/*
+.shop-info-header-row:hover svg path {
+    fill: var(--sidebar-icon-highlight-color) !important;
+    stroke: var(--sidebar-icon-highlight-color) !important;
+}
+*/
 .seller-link {
     border-bottom: 1px solid;
     padding-bottom: 0.2rem;
@@ -1097,6 +1118,7 @@ white-space: nowrap;
 }
 
 .product-specifications-table td {
+    border: none;
     white-space: normal;
     width: 50% !important;
 }

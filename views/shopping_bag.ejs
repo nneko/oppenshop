@@ -41,9 +41,11 @@
                             Your bag is empty.
                         <% } %>
                     </h2>
+                    <% if(typeof(bag) !== 'undefined' && typeof(bag.quantity) === 'function' && bag.quantity() > 0) { %>
                     <a href="/checkout">
                         <button class="btn btn-primary shopping-bag-checkout">Proceed to checkout</button>
                     </a>
+                    <% }%>
                 </div>
                 <% if(typeof(bag) !== 'undefined') { %>
                     <div class="shopping-bag-itemslist">
@@ -95,7 +97,8 @@
                     </div>
                     <div class="shopping-bag-footer">
                         <a href="/checkout">
-                            <button class="btn btn-primary">Checkout</button>
+                            <button class="btn btn-primary" 
+                        <% if(typeof(bag) !== 'undefined' && typeof(bag.quantity) === 'function' && bag.quantity() < 1) { %>disabled="disabled"<% } %>>Checkout</button>
                         </a>
                     </div>
                 <% } %>

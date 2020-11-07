@@ -47,9 +47,9 @@
                                     <div class="item-card checkout-item-card" data-product-id="<%= product %>">
                                         <div class="shopping-bag-item-card-divider">
                                             <span class="checkout-item-row extra-info">
-                                                <h4 class="checkout-item-name spc-top-1"><%= bag.items[product].displayName %></h4>
-                                                <h4 class="qty-spc-top-1"><%= bag.items[product].qty + ' x ' %></h4>
-                                                <h4 class="spc-top-1"><%= formatter.roundNumber(Number(bag.items[product].price), 2) + ' ' + bag.items[product].currency %></h4>
+                                                <h6 class="checkout-item-name spc-top-1"><%= bag.items[product].displayName %></h6>
+                                                <h6 class="qty-spc-top-1"><%= bag.items[product].qty + ' x ' %></h6>
+                                                <h6 class="spc-top-1"><%= formatter.roundNumber(Number(bag.items[product].price), 2) + ' ' + bag.items[product].currency %></h6>
                                             </span>
                                         </div>
                                     </span>
@@ -61,17 +61,14 @@
                     <div class="shopping-bag-header checkout-summary-header">
                         <h2>
                             <% if(typeof(bag) !== 'undefined') { %>
-                            <b>Total Charges
-                                <% if(typeof(bag) !== 'undefined' && typeof(bag.quantity) === 'function') { %><% if(bag.quantity() > 0) { %>(<%= bag.quantity() %>
-                                item<% if(bag.quantity() > 1) { %>s<% } %>)<% } %><% } %>
-                                <% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined') { %><%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: bag.currency.code}).format(formatter.roundNumber(Number(bag.total()),2)) %><% } %>.</b>
-                            <p class="shopping-bag-legend">Quotation includes additional charges related to taxes, shipping and other fees.</p>
+                            <b>Total Charge (<% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined') { %><%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: bag.currency.code}).format(formatter.roundNumber(Number(bag.total()),2)) %><% } %>).</b>
+                            <p class="shopping-bag-legend">Summary includes additional charges related to taxes, shipping and other fees.</p>
                             <% } %>
                         </h2>
                     </div>
                     <div class="shopping-bag-footer">
                         <form method="POST" action="/checkout<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>">
-                            <fieldset>
+                        <fieldset <% if(typeof(bag) !== 'undefined' && typeof(bag.quantity) === 'function' && bag.quantity() <= 0) { %>disabled="disabled"<% } %>>
                                 <input type="hidden" name="uid" value="<% if(typeof(user) !== 'undefined') { %><%= user.id %><% } %>">
                                 <button class="btn btn-primary" type="submit">Place Order</button>
                             </fieldset>

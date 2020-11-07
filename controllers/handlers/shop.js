@@ -334,6 +334,16 @@ shophandler.shopAddHandler = async (form, files) => {
             s.addresses = [addr]
         }
     }
+
+    //Validate email
+    if (validator.isNotNull(form.email) && validator.isEmailAddress(form.email)) {
+        let primaryEmail = {
+            value: form.email,
+            primary: true
+        }
+        s.emails = [primaryEmail]
+    }
+
     if (debug) console.log('Attempting to create new shop...')
     let createResult = await shop.create(s)
     let newShop = await shop.read(s, { limit: 1 })

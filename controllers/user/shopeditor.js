@@ -77,6 +77,11 @@ let populateViewData = async (id) => {
                 if (!viewData.phoneNumber && s.phoneNumbers && Array.isArray(s.phoneNumbers) && s.phoneNumbers.length > 0) {
                     viewData.phoneNumber = s.phoneNumbers[0] ? s.phoneNumbers[0] : undefined
                 }
+
+                viewData.email = generator.getPrimaryField(s.emails)
+                if (!viewData.email && s.emails && Array.isArray(s.emails) && s.emails.length > 0) {
+                    viewData.email = s.emails[0] ? s.emails[0] : undefined
+                }
             }
             resolve(viewData)
         } catch (e) {
@@ -231,6 +236,20 @@ shopeditor.post('/', fileUploader, async (req, res) => {
                 shopUpdate.phoneNumbers = [primaryPhone]
 
                 formFields.phone = { class: 'valid', value: form.phone }
+            }
+
+            //Validate email
+            if (validator.isNotNull(form.email) && validator.isEmailAddress(form.email)) {
+
+                s.emails ? shopUpdate.emails = s.emails : shopUpdate.emails = [];
+
+                let primaryEmail = {
+                    value: form.email,
+                    primary: true
+                }
+                shopUpdate.emails = [primaryEmail]
+
+                formFields.email = { class: 'valid', value: form.email }
             }
 
             let hasInvalids = false;

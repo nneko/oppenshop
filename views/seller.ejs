@@ -66,24 +66,33 @@
                                 if(!addr) addr = shop.addresses[0]
 
                                 let pn = generator.getPrimaryField(shop.phoneNumbers)
+
+                                let em = generator.getPrimaryField(shop.emails)
                                 %> 
                             <table class="table table-striped table-hover product-specifications-table">
                                 <thead>
                                     <tr>
-                                        <th scope="row" colspan="2">Contact Information</th>
+                                        <th scope="row" colspan="2">Shop Information</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th scope="row">Address</th>
+                                        <th scope="row"><div class="shop-info-header-row">Location<%- include('assets/symbols/location-bold.svg') %></div></th></th>
+                                        </div>
                                         <td>
-                                            <div class="table-content"><% if(addr) { %><%= addr.formatted %><% }%></div>
+                                            <div class="table-content"><% if(typeof(addr) !== 'undefined' && addr) { %><%= addr.formatted %><% }%></div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">Phone Number</th>
+                                        <th scope="row"><div class="shop-info-header-row">Contact Number<%- include('assets/symbols/phone-bold.svg') %></div></th>
                                         <td>
-                                            <div class="table-content"><% if(pn && typeof(pn.value) !== 'undefined') { %><%= pn.value %><% }%></div>
+                                            <div class="table-content"><% if(typeof(pn) !== 'undefined' && pn && typeof(pn.value) !== 'undefined') { %><%= pn.value %><% }%></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><div class="shop-info-header-row">Contact Mail<%- include('assets/symbols/mail-bold.svg') %></div></th>
+                                        <td>
+                                            <div class="table-content"><% if(typeof(em) !== 'undefined' && em && typeof(em.value) !== 'undefined') { %><%= em.value %><% }%></div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -95,7 +104,7 @@
                             <span>
                                 <div class="item-card product-details-card">
                                     <div class="item-card-right extra-info">
-                                        <h4>Description</h4>
+                                        <!-- <h4>Shop Description</h4> -->
                                         <p><%= shop.description %></p>
                                         <!--
                                         <h4>Status</h4>

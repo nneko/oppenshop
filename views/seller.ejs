@@ -59,18 +59,23 @@
                 </figure>
                 <% } %>
                 <div class="row">
+                    <%
+                        let addr = null
+                        if(typeof(shop.addresses) !== 'undefined') {
+                            addr = generator.getPrimaryField(shop.addresses)
+                            if(!addr) addr = shop.addresses[0]
+                        } 
+
+                        let pn = null
+                        if(typeof(shop.phoneNumbers) !== 'undefined') pn = generator.getPrimaryField(shop.phoneNumbers)
+
+                        let em = null
+                        if(typeof(shop.emails) !== 'undefined') em = generator.getPrimaryField(shop.emails)
+
+                        let web = typeof(shop.website) !== 'undefined' && shop.website ? {value: shop.website} : null
+                    %>
                     <div id="product-images-carousel" class="product-carousel <% if(typeof(shop.description) === 'string' && shop.description != '') { %>col-sm-6<% } else { %>col-sm-12<% } %>">
                         <% if (typeof(shop.addresses) !== 'undefined' && Array.isArray(shop.addresses) && shop.addresses.length > 0 ) { %>
-                            <%
-                                let addr = generator.getPrimaryField(shop.addresses)
-                                if(!addr) addr = shop.addresses[0]
-
-                                let pn = generator.getPrimaryField(shop.phoneNumbers)
-
-                                let em = generator.getPrimaryField(shop.emails)
-
-                                let web = shop.website ? {value: shop.website} : null
-                            %>
                             <% if(addr || pn || em || web) { %>
                             <table class="table table-striped table-hover product-specifications-table">
                                 <thead>
@@ -118,7 +123,7 @@
                         <% } %>
                     </div>
                     <% if(typeof(shop.description) === 'string' && shop.description != '') { %>
-                    <div class="<% if(typeof(shop.description) === 'string' && shop.description != '') { %>col-sm-6<% } else { %>col-sm-12<% } %>">
+                    <div class="<% if(addr || pn || em || web) { %>col-sm-6<% } else { %>col-sm-12<% } %>">
                         <div class="product-view-card-pane">
                             <span>
                                 <div class="item-card product-details-card">

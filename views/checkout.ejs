@@ -109,7 +109,7 @@
                         </h2>
                     </div>
                     <div class="shopping-bag-itemslist">
-                        <div>
+                        <div class="checkout-item-card">
                             <span class="checkout-item-row">
                                 <h6>
                                     Items (<% if(typeof(bag) !== 'undefined' && bag && typeof(bag.quantity) === 'function') { %><%= bag.quantity() %><% } %>) Subtotal
@@ -126,7 +126,7 @@
                                                 <%= c.name %>
                                             </h6>
                                             <h6>
-                                                <%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: c.currency}).format(formatter.roundNumber(c.value),2) %>
+                                                <%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: c.currency}).format(formatter.roundNumber(c.value,2)) %>
                                             </h6>
                                         </span>
                                     <% } %>

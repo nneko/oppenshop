@@ -39,13 +39,13 @@ checkoutHandler.populateViewData = async (uid, bag, product_page = 1) => {
 
             let processingCharges = {
                 name: 'Handling and processing',
-                value: 0,
+                value: bag.total() > 0 ? 0.03 * bag.total() : 0,
                 currency: bagCurrency.code
             }
 
             let taxCharges = {
                 name: 'Taxes',
-                value: 0,
+                value: bag.total() > 0 ? 0.15 * bag.total() : 0,
                 currency: bagCurrency.code
             }
 

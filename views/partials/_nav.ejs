@@ -83,3 +83,9 @@
         <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'support') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Support" href="/support"><%- include('../assets/symbols/help.svg') %></a></li>
     </ul>
 </nav>
+<% if(typeof(env) !== 'undefined' && env != 'production') { %>
+<div class="alert alert-primary alert-dismissible fade show alert-banner" role="alert">You are viewing a demonstration. This environment is to be used for testing purposes only. All artifacts and transactions are simulations.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+</div>
+<% } %>

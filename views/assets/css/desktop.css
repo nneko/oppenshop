@@ -3,6 +3,12 @@
 */
 
 
+.alert-banner {
+    border-radius: 0;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
 #find::placeholder {
     color: var(--main-text-legend-color);
     /* color: rgb(206, 212, 218); */

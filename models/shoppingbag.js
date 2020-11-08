@@ -1,6 +1,7 @@
 const cfg = require('../configuration')
 const user = require('./user')
 const currency = require('./currency')
+const fx = require('./fx')
 const product = require('./product')
 const debug = cfg.env == 'development' ? true : false
 
@@ -57,6 +58,16 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
             try {
                 let qty = 0
                 let price = 0
+
+                let fxRates = await fx.read({ source: cfg.fxSource }, { limit: 1 })
+
+                if (!fx.isValid(fxRates)) {
+                    let fxError = new Error('Invalid FX Rates')
+                    fxError.type = 'Invalid'
+                    fxError.name = 'fxError'
+                    throw fxError
+                }
+
                 for (const i of Object.keys(this.items)) {
                     if (typeof (this.items[i] && this.items[i].qty) == 'number') {
                         let prod = await product.read(i, {findBy: 'id'})
@@ -74,10 +85,16 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
                             itemCurrencyCode = String(productCurrency.code)
                         }
 
-                        if (!itemCurrencyCode) itemCurrencyCode = this.currency.exchangeBase
+                        if (!itemCurrencyCode) itemCurrencyCode = fxRates.exchangeBase
 
                         qty += Number(this.items[i].qty)
-                        let currencyExchangeRate = Number(this.currency.exchangeRates[itemCurrencyCode])
+                        if(typeof(fxRates.exchangeRates[itemCurrencyCode]) === 'undefined' || typeof(fxRates.exchangeRates[itemCurrencyCode]) !== 'number') {
+                            let fxError = new Error('No matching conversion rate')
+                            fxError.name = 'fxError'
+                            fxError.type = 'Conversion'
+                            throw fxError
+                        }
+                        let currencyExchangeRate = Number(fxRates.exchangeRates[itemCurrencyCode])
 
                         if (isNaN(currencyExchangeRate)) {
                             console.error('Unable to do currency conversion for product: ')
@@ -89,10 +106,16 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
                     }
                 }
                 let cp = price
-                if (this.currency.code == this.currency.exchangeBase) {
+                if (this.currency.code == fxRates.exchangeBase) {
                     cp = price
                 } else {
-                    cp = cp * Number(this.currency.exchangeRates[this.currency.code])
+                    if (typeof (fxRates.exchangeRates[this.currency.code]) === 'undefined' || typeof (fxRates.exchangeRates[this.currency.code]) !== 'number') {
+                        let fxError = new Error('No matching conversion rate')
+                        fxError.name = 'fxError'
+                        fxError.type = 'Conversion'
+                        throw fxError
+                    }
+                    cp = cp * Number(fxRates.exchangeRates[this.currency.code])
                 }
                 this.totalPrice = cp
                 this.totalQuantity = qty

@@ -180,12 +180,32 @@ if(!module.parent){
                 try {
                     if (!await fx.exists({ source: cfg.fxSource })) {
                         await fx.create({ source: cfg.fxSource, exchangeBase: cfg.fxBase ? cfg.fxBase : 'USD', exchangeRates: cfg.fxBaseRates ? cfg.fxBaseRates : {} })
+                        await fx.updateRates(cfg.fxSource)
+                    } else {
+                        let fxMap = await fx.read({source: cfg.fxSource},{limit: 1})
+                        if(fx.isValid(fxMap)) {
+                            let lastUpdated = new Date(fxMap.updated)
+                            let currentDate = new Date()
+                            let updateEpoch = currentDate
+                            updateEpoch.setDate(currentDate.getDate() -1)
+                            if(lastUpdated < updateEpoch) {
+                                console.log('Exchange rates last updated more than 24hrs ago.')
+                                console.log('Updating FX rates')
+                                await fx.updateRates(cfg.fxSource)
+                            } else {
+                                console.log('Exchange rates updated within the last 24hrs.')
+                                console.log('Skipping FX update')
+                            }
+                        } else {
+                            let fxError = new Error('FX not found')
+                            fxError.name = 'fxError'
+                            fxError.type = 'NotFound'
+                            throw fxError
+                        }
                     }
-                    await fx.updateRates(cfg.fxSource)
 
                     // Setup Nightly Job to pull and update FX conversion rates
                     cron.schedule('0 59 23 * * *', async () => {
-                        const fx = require('../models/fx')
                         const d = await fx.updateRates(cfg.fxSource)
                         if (debug) {
                             console.log(new Date().toISOString())

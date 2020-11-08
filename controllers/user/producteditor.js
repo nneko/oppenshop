@@ -11,6 +11,7 @@ const fileUploader = media.uploader()
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
+const fx = require('../../models/fx')
 
 let producteditor = express.Router()
 
@@ -253,12 +254,28 @@ producteditor.post('/', fileUploader, async (req, res) => {
 
             let productCurrency = await currency.read(productUpdate.currency, { findBy: 'id' })
 
+            let fxRates = await fx.read({source: cfg.fxSource},{limit: 1})
+
+            if(!fx.isValid(fxRates)) {
+                let fxError = new Error('Invalid FX Rates')
+                fxError.type = 'Invalid'
+                fxError.name = 'fxError'
+                throw fxError
+            }
+
             if (cfg.minimum_price && cfg.minimum_price_currency) {
                 try {
                     let minPrice = Number(cfg.minimum_price)
                     let minCurCode = String(cfg.minimum_price_currency)
 
-                    let currencyExchangeRate = Number(productCurrency.exchangeRates[productCurrency.code])
+                    if (typeof (fxRates.exchangeRates[productCurrency.code]) === 'undefined' || typeof (fxRates.exchangeRates[productCurrency.code]) !== 'number' || typeof (fxRates.exchangeRates[minCurCode]) === 'undefined' || typeof (fxRates.exchangeRates[minCurCode]) !== 'number') {
+                        let fxError = new Error('No matching conversion rate')
+                        fxError.name = 'fxError'
+                        fxError.type = 'Conversion'
+                        throw fxError
+                    }
+
+                    let currencyExchangeRate = Number(fxRates.exchangeRates[productCurrency.code])
 
                     if (isNaN(currencyExchangeRate)) {
                         console.error('Unable to do currency conversion for product: ')
@@ -270,7 +287,7 @@ producteditor.post('/', fileUploader, async (req, res) => {
                     }
 
                     let productPriceInBase = (1 * (productUpdate.price / currencyExchangeRate))
-                    let minPriceInBase = 1 * (minPrice / Number(productCurrency.exchangeRates[minCurCode]))
+                    let minPriceInBase = 1 * (minPrice / Number(fxRates.exchangeRates[minCurCode]))
 
                     if (!(productPriceInBase >= minPriceInBase)) {
                         console.error('Product price lower than minimum allowed price')

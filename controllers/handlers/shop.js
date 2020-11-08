@@ -7,6 +7,7 @@ const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
 const catalog = require('../../models/catalog')
 const currency = require('../../models/currency')
+const fx = require('../../models/fx')
 const validator = require('../../utilities/validator')
 
 let shophandler = {}
@@ -506,12 +507,28 @@ shophandler.productAddHandler = async (form, files) => {
           throw error
     }
 
+    let fxRates = await fx.read({ source: cfg.fxSource }, { limit: 1 })
+
+    if (!fx.isValid(fxRates)) {
+        let fxError = new Error('Invalid FX Rates')
+        fxError.type = 'Invalid'
+        fxError.name = 'fxError'
+        throw fxError
+    }
+
     if(cfg.minimum_price && cfg.minimum_price_currency) {
         try {
             let minPrice = Number(cfg.minimum_price)
             let minCurCode = String(cfg.minimum_price_currency)
 
-            let currencyExchangeRate = Number(productCurrency.exchangeRates[productCurrency.code])
+            if (typeof (fxRates.exchangeRates[productCurrency.code]) === 'undefined' || typeof (fxRates.exchangeRates[productCurrency.code]) !== 'number' || typeof (fxRates.exchangeRates[minCurCode]) === 'undefined' || typeof (fxRates.exchangeRates[minCurCode]) !== 'number') {
+                let fxError = new Error('No matching conversion rate')
+                fxError.name = 'fxError'
+                fxError.type = 'Conversion'
+                throw fxError
+            }
+
+            let currencyExchangeRate = Number(fxRates.exchangeRates[productCurrency.code])
 
             if (isNaN(currencyExchangeRate)) {
                 console.error('Unable to do currency conversion for product: ')
@@ -523,7 +540,7 @@ shophandler.productAddHandler = async (form, files) => {
             }
 
             let productPriceInBase = (1 * (p.price / currencyExchangeRate))
-            let minPriceInBase = 1 * (minPrice / Number(productCurrency.exchangeRates[minCurCode]))
+            let minPriceInBase = 1 * (minPrice / Number(fxRates.exchangeRates[minCurCode]))
 
             if (!(productPriceInBase >= minPriceInBase)) {
                 console.error('Product price lower than minimum allowed price')

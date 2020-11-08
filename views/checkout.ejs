@@ -32,10 +32,51 @@
                     </span>
                     <hr>
                 </div>
-                <div class="shopping-bag-header">
+                <div class="shopping-bag-header checkout-header">
                     <h2>
-                        <% if(typeof(bag) !== 'undefined') { %>
-                        <b>Items <% if(typeof(bag) !== 'undefined' && typeof(bag.quantity) === 'function') { %>(<%= bag.quantity() %>)<% } %><% } %>
+                        <b>Payment Method</b>
+                    </h2>
+                </div>
+                <div class="shopping-bag-itemslist">
+                    <div class="checkout-item-card">
+                        <span class="checkout-item-row">
+                            <h6>Payment Options</h6>
+                            <form class="checkout-option-form">
+                                <select class="form-control">
+                                    <option>Credit Card</option>
+                                </select>
+                            </form>
+                            <a class="checkout-option-edit-link" href="#payment-details">Edit</a>
+                        </span>
+                        <span id="payment-details">
+
+                        </span>
+                    </div>
+                </div>
+                <div class="shopping-bag-header checkout-header">
+                    <h2>
+                        <b>Delivery Method</b>
+                    </h2>
+                </div>
+                <div class="shopping-bag-itemslist">
+                    <div class="checkout-item-card">
+                        <span class="checkout-item-row">
+                            <h6>Collection Options</h6>
+                            <form class="checkout-option-form">
+                                <select class="form-control">
+                                    <option>Pick-Up</option>
+                                </select>
+                            </form>
+                            <a class="checkout-option-edit-link" href="#delivery-details">Edit</a>
+                        </span>
+                        <span id="delivery-details">
+
+                        </span>
+                    </div>
+                </div>
+                <div class="shopping-bag-header checkout-header">
+                    <h2>
+                        <b>Review Items</b>
                     </h2>
                 </div>
                 <% if(typeof(bag) !== 'undefined') { %>
@@ -61,10 +102,45 @@
                     <div class="shopping-bag-header checkout-summary-header">
                         <h2>
                             <% if(typeof(bag) !== 'undefined') { %>
-                            <b>Total Charge (<% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined') { %><%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: bag.currency.code}).format(formatter.roundNumber(Number(bag.total()),2)) %><% } %>).</b>
-                            <p class="shopping-bag-legend">Summary includes additional charges related to taxes, shipping and other fees.</p>
+                            <b>Order Summary</b>
+                            <p class="shopping-bag-legend">By placing your order, you agree to accept all the charges inclusive of taxes, shipping and service fees detailed in the summary below.</p>
+                            <p class="shopping-bag-legend">You also agree to our privacy policy and terms and conditions of use.</p>
                             <% } %>
                         </h2>
+                    </div>
+                    <div class="shopping-bag-itemslist">
+                        <div>
+                            <span class="checkout-item-row">
+                                <h6>
+                                    Items (<% if(typeof(bag) !== 'undefined' && bag && typeof(bag.quantity) === 'function') { %><%= bag.quantity() %><% } %>) Subtotal
+                                </h6>
+                                <h6>
+                                    <% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined') { %><%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: bag.currency.code}).format(formatter.roundNumber(Number(bag.total()),2)) %><% } %>
+                                </h6>
+                            </span>
+                            <% if(typeof(charges) !== 'undefined' && charges && Array.isArray(charges)) { %>
+                                <% for (const c of charges) { %>
+                                    <% if(c && typeof(c.name) === 'string' && typeof(c.value) === 'number' && typeof(c.currency) == 'string') { %>
+                                        <span class="checkout-item-row">
+                                            <h6>
+                                                <%= c.name %>
+                                            </h6>
+                                            <h6>
+                                                <%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: c.currency}).format(formatter.roundNumber(c.value),2) %>
+                                            </h6>
+                                        </span>
+                                    <% } %>
+                                <% } %>
+                            <% }%>
+                            <span class="checkout-item-row">
+                                <h6>
+                                    <b>Order Total</b>
+                                </h6>
+                                <h6>
+                                    <% if(typeof(total) !== 'undefined' && total && typeof(total.currency) === 'string' && typeof(total.value) === 'number') { %><%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: total.currency}).format(formatter.roundNumber(total.value,2)) %><% } %>
+                                </h6>
+                            </span>
+                        </div>
                     </div>
                     <div class="shopping-bag-footer">
                         <form method="POST" action="/checkout<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>">

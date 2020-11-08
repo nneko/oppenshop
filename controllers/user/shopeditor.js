@@ -82,6 +82,8 @@ let populateViewData = async (id) => {
                 if (!viewData.email && s.emails && Array.isArray(s.emails) && s.emails.length > 0) {
                     viewData.email = s.emails[0] ? s.emails[0] : undefined
                 }
+
+                viewData.website = s.website
             }
             resolve(viewData)
         } catch (e) {
@@ -250,6 +252,14 @@ shopeditor.post('/', fileUploader, async (req, res) => {
                 shopUpdate.emails = [primaryEmail]
 
                 formFields.email = { class: 'valid', value: form.email }
+            }
+
+            //Validate website url
+            if (validator.isNotNull(form.website) && validator.isWebAddress(form.website)) {
+
+                shopUpdate.website = form.website
+
+                formFields.website = { class: 'valid', value: form.website }
             }
 
             let hasInvalids = false;

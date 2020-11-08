@@ -259,7 +259,7 @@ generator.removeAddressFields = (list, addr) => {
 }
 
 generator.roundNumber = (value, decimals) => {
-    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals).toFixed(decimals);
+    return value == 0 ? 0 : Number(Math.round(value + 'e' + decimals) + 'e-' + decimals).toFixed(decimals);
 }
 
 // Export the module

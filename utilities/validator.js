@@ -54,6 +54,10 @@ validator.isEmailAddress = (email) => {
     return emailRE.test(email)
 }
 
+validator.isWebAddress = (url) => {
+    return true
+}
+
 validator.isAuthProvider = (provider) => {
     let isProvider = false
     switch(provider){

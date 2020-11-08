@@ -717,11 +717,38 @@
     text-align: center;
 }
 
+.checkout-header {
+    border-bottom: 1px solid var(--main-border-color);
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+    text-align: center;
+}
+
 .checkout-summary-header {
     border-top: 1px solid var(--main-border-color);
     padding-bottom: 2rem;
     padding-top: 2rem;
     text-align: center;
+}
+
+.checkout-option-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 50%;
+}
+
+.checkout-option-form select {
+    width: 35%;
+}
+
+.checkout-option-edit-link {
+    color: var(--main-text-highlight-bold-color);
+    text-decoration: underline;
+}
+
+.checkout-option-edit-link:hover {
+    color: var(--main-highlight-color);
 }
 
 .shopping-bag-footer {

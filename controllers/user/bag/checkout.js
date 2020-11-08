@@ -3,13 +3,17 @@ const express = require('express')
 const validator = require('../../../utilities/validator')
 const converter = require('../../../utilities/converter')
 const bagHandler = require('../../handlers/user/bag')
+const checkoutHandler = require('../../handlers/checkout')
 const debug = cfg.env == 'development' ? true : false
 
 let checkout = express.Router()
 
 checkout.get('/', async (req, res) => {
     try {
-        let viewData = await bagHandler.populateViewData(req.user ? req.user.id : null, req.session ? req.session.bag : null)
+        let viewBagData = await bagHandler.populateViewData(req.user ? req.user.id : null, req.session ? req.session.bag : null)
+        let viewData = await checkoutHandler.populateViewData(req.user ? req.user.id : null, req.session ? req.session.bag : null)
+        viewData.formatter = viewBagData.formatter
+        viewData.bag = viewBagData.bag
         viewData.user = req.user
         res.status(501)
         res.render('checkout', viewData)

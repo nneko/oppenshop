@@ -28,9 +28,11 @@ const flash = require('express-flash')
 const session = require('express-session')
 const sessionStore = require('connect-mongo')(session)
 const csrf = require('csurf')
+const fx = require('../models/fx')
 
 // CronJobs
 const cron = require('node-cron')
+const { resolve } = require('path')
 
 //const debug = cfg.env == 'development' ? true : false
 const debug = require('debug')('oppenshop:app')
@@ -171,34 +173,46 @@ if(!module.parent){
 
         //app routes
         app.use(require('../controllers'))
-        // Calling Exchange endpoint
-        new Promise(async resolve => {
-          const currency = require('../models/currency')
-          const data = await currency.update_currency_conversion_rate()
-          resolve(data)
-        }).then((d) => {
-          if (debug) {
-            if (d) {
-              console.log('Successfully updated FX conversion rates')
-            } else {
-              console.log('Failed updating FX conversion rates')
-            }
-          }
-        })
 
-        // Setup Nightly Job to pull and update FX conversion rates
-        cron.schedule('* 0 * * *', async () => {
-          const currency = require('../models/currency')
-          const d = await currency.update_currency_conversion_rate()
-          if (debug) {
-            console.log(new Date().toISOString())
-            if (d) {
-              console.log('Scheduled Job: Successfully updated FX conversion rates')
-            } else {
-              console.log('Scheduled Job: Failed updating FX conversion rates')
-            }
-          }
-        })
+        let updateFx = () => {
+            return new Promise(async (resolve, reject) => {
+                // Updating exchange rates
+                try {
+                    if (!await fx.exists({ source: cfg.fxSource })) {
+                        await fx.create({ source: cfg.fxSource, exchangeBase: cfg.fxBase ? cfg.fxBase : 'USD', exchangeRates: cfg.fxBaseRates ? cfg.fxBaseRates : {} })
+                    }
+                    await fx.updateRates(cfg.fxSource)
+
+                    // Setup Nightly Job to pull and update FX conversion rates
+                    cron.schedule('0 59 23 * * *', async () => {
+                        const fx = require('../models/fx')
+                        const d = await fx.updateRates(cfg.fxSource)
+                        if (debug) {
+                            console.log(new Date().toISOString())
+                            if (d) {
+                                console.log('Scheduled FX rate update completed')
+                            } else {
+                                console.log('Scheduled FX rate update failed')
+                            }
+                        }
+                    }, {
+                        scheduled: true,
+                        timezone: "America/Bogota"
+                    })
+                } catch (fxError) {
+                    if (debug) {
+                        console.log('Failed to update FX rates')
+                        console.error(fxError)
+                    }
+                }
+            })
+        }
+        
+        try {
+            updateFx()
+        } catch (fxError) {
+            if(debug) console.log(fxError)
+        }
 
         //Catch-all error handler
         app.use((err, req, res, next) => {

@@ -1,8 +1,8 @@
 const cfg = require('../configuration')
 const db = require('../adapters/storage/' + cfg.dbAdapter)
 const validator = require('../utilities/validator')
+const StringDecoder = require('string_decoder').StringDecoder;
 const debug = cfg.env == 'development' ? true : false
-const request = require('request-promise')
 
 let fx = {}
 
@@ -42,7 +42,7 @@ fx.create = (f) => {
                 throw e
             }
 
-            const result = await db.get().collection('fx').insertOne(c)
+            const result = await db.get().collection('fx').insertOne(f)
             resolve(result)
         } catch (e) {
             reject(e)
@@ -175,7 +175,7 @@ function fxAPIRequest(url) {
             // select correct request module depending on whether the protocol is http or https in the url
             const request = url.startsWith('https') ? require('https') : require('http')
 
-            const req = request.get(url, { headers: 'application/json' }, (res) => {
+            const req = request.get(url, (res) => {
                 // process any non http success codes indicating errors
                 if (res.statusCode < 200 || res.statusCode > 299) {
                     reject(new Error('Error on fx api request, status code: ' + res.statusCode));
@@ -194,10 +194,10 @@ function fxAPIRequest(url) {
                 res.on('end', () => {
                     resolve(JSON.parse(data))
                 })
-            });
+            })
 
             // handle connection errors of the request
-            request.on('error', (err) => reject(err))
+            req.on('error', (err) => reject(err))
         } catch (e) {
             reject(e)
         }

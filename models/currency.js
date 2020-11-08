@@ -2,7 +2,6 @@ const cfg = require('../configuration')
 const db = require('../adapters/storage/'+cfg.dbAdapter)
 const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
-const request = require('request')
 
 //Model format based on:
 //https://tools.ietf.org/html/draft-smarr-vcarddav-portable-contacts-00

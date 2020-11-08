@@ -8,8 +8,6 @@ const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
 const generator = require('../utilities/generator')
 
-
-
 let reset = express.Router()
 
 reset.get('/', (req, res) => {

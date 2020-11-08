@@ -30,13 +30,42 @@ bagHandler.populateViewData = async (uid, bag, product_page = 1) => {
             let viewData = {}
 
             viewData.formatter = generator
-            viewData.bag = new ShoppingBag(bag, bagCurrency)
+            let sb = new ShoppingBag(bag, bagCurrency)
+            viewData.bag = {
+                currency: sb.currency,
+                quantity: sb.quantity,
+                total: sb.total,
+                items: {}
+            }
 
-            for (const key of Object.keys(viewData.bag.items)) {
-                if (viewData.bag.items[key].image) {
-                    viewData.bag.items[key].image.src = media.read(viewData.bag.items[key].image)
+            for (const key of Object.keys(sb.items)) {
+                viewData.bag.items[key] = sb.items[key]
+                let p = await product.read(key,{findBy: 'id'})
+                if(await product.isValid(p)) {
+                    viewData.bag.items[key].price = p.price
+                    let productCurrency = await currency.read(p.currency, {findBy: 'id'})
+                    if(currency.isValid(productCurrency)) {
+                        viewData.bag.items[key].currency = productCurrency.code
+                    } else {
+                        viewData.bag.items[key].currency = bagCurrency.code
+                    }
+                    viewData.bag.items[key].displayName = p.displayName
+                    viewData.bag.items[key].name = p.name
+
+                    if (Array.isArray(p.images) && p.images.length > 0) {
+                        let img = {}
+                        let primaryImgIdx = generator.getPrimaryFieldIndex(p.images)
+                        if (primaryImgIdx > 0) {
+                            img = p.images[primaryImgIdx]
+                        } else img = p.images[0]
+                        img.src = media.read(img)
+                        viewData.bag.items[key].image = img
+                    } else viewData.bag.items[key].image = null
                 }
             }
+
+            let u = await user.read(uid, { findBy: 'id' })
+            if (user.isValid(u)) await sb.save(u)
             resolve(viewData)
         } catch (e) {
             reject(e)
@@ -71,7 +100,7 @@ bagHandler.removeItem = async (uid, pid, qty, bag) => {
     }
     let bg = new ShoppingBag(bag,bagCurrency)
     let p = await product.read(pid, { findBy: 'id' })
-    bg.remove(p, Number(qty))
+    await bg.remove(p, Number(qty))
     if (uid) {
         let u = await user.read(uid, { findBy: 'id' })
         if (user.isValid(u)) await bg.save(u)
@@ -90,7 +119,7 @@ bagHandler.deleteItem = async (uid, pid, bag) => {
     let bg = new ShoppingBag(bag,bagCurrency)
     let p = await product.read(pid, { findBy: 'id' })
     if(debug) console.log(p)
-    bg.delete(p)
+    await bg.delete(p)
     if (uid) {
         let u = await user.read(uid, { findBy: 'id' })
         if (user.isValid(u)) await bg.save(u)

@@ -6,6 +6,7 @@ const media = require('../../../adapters/storage/media')
 const shop = require('../../../models/shop.js')
 const ShoppingBag = require('./../../../models/shoppingbag')
 const marketProduct = require('../../market/product.js')
+const generator = require('../../../utilities/generator')
 const debug = cfg.env == 'development' ? true : false
 
 let marketProductHandler = {}
@@ -38,6 +39,21 @@ marketProductHandler.populateViewData = async (pid) => {
                 for (const img of viewData.product.images) {
                     img.src = media.read(img)
                 }
+                let p = viewData.product
+
+                let primaryImgIdx = generator.getPrimaryFieldIndex(p.images)
+                if (primaryImgIdx > 0) {
+                    let imgs = []
+                    imgs.push(p.images[primaryImgIdx])
+                    for (let idx = 0; idx < p.images.length; idx++) {
+                        if (idx != primaryImgIdx) {
+                            imgs.push(p.images[idx])
+                        }
+                    }
+                    p.images = imgs
+                }
+
+                viewData.product.images = p.images
             }
 
             if (debug) {

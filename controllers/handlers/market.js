@@ -3,20 +3,21 @@ const validator = require('../../utilities/validator')
 const product = require('../../models/product')
 const currency = require('../../models/currency')
 const media = require('../../adapters/storage/media')
+const generator = require('../../utilities/generator.js')
 const debug = cfg.env == 'development' ? true : false
 
 let marketHandler = {}
 
 marketHandler.populateViewData = async (uid, product_page = 1) => {
     return new Promise(async (resolve, reject) => {
-        let perPage = cfg.items_per_page ? cfg.items_per_page : 12
-        pagination = true
-        product_range = null
-        console.log('Page: ' + product_page)
-        if (pagination) {
-            product_range = { pagination_skip: product_page, pagination_limit: perPage }
-        }
         try {
+            let perPage = cfg.items_per_page ? cfg.items_per_page : 12
+            pagination = true
+            product_range = null
+            console.log('Page: ' + product_page)
+            if (pagination) {
+                product_range = { pagination_skip: product_page, pagination_limit: perPage }
+            }
             let viewData = {}
 
             //Populate the currency list
@@ -32,8 +33,8 @@ marketHandler.populateViewData = async (uid, product_page = 1) => {
                 }
             }
 
-            products = await product.read({}, product_range)
-            product_index = await product.count({}, product_range)
+            products = await product.read({status: 'active'}, product_range)
+            product_index = await product.count({status: 'active'}, product_range)
 
             if (validator.isNotNull(products)) {
                 viewData.products = Array.isArray(products) ? products : [products]
@@ -45,6 +46,18 @@ marketHandler.populateViewData = async (uid, product_page = 1) => {
                 if (Array.isArray(p.images) && p.images.length > 0) {
                     for (const img of p.images) {
                         img.src = media.read(img)
+                    }
+
+                    let primaryImgIdx = generator.getPrimaryFieldIndex(p.images)
+                    if (primaryImgIdx > 0) {
+                        let imgs = []
+                        imgs.push(p.images[primaryImgIdx])
+                        for (let idx = 0; idx < p.images.length; idx++) {
+                            if (idx != primaryImgIdx) {
+                                imgs.push(p.images[idx])
+                            }
+                        }
+                        p.images = imgs
                     }
                 }
                 if(p.currency) p.currency = viewData.currency_list[p.currency]

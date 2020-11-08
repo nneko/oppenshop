@@ -2,17 +2,40 @@
 
 Transition from mainly single currency (string) to multiple currency (object)
 
+## Configuration the applications Foreign Exchange
+
+The application will store either manually set exchange rate (FX) data or can automatically populate the exchange rate tables using data provided by https://openexchangerates.org/ using a valid API key.
+
+The following variable should be set in each environment using the `configuration/index.js` file.
+
+```
+  fxBase: 'USD',
+  fxBaseRates: {
+    'USD': 1,
+    'GBP': 0.76,
+    'JMD': 148.4647,
+    'EUR': 0.84,
+    'CAD': 1.30
+  },
+  fxSource: 'openexchangerates.org',
+  openExchangeRatesAppID: '<openexchangerates.org api key>'
+```
+
+Note, to manually set the exchange rates used by the application set the `fxSource` value to any except `openexchangerates.org` and provide required dictionary to `fxBaseRates`.
+
+When setting the exchange rates ensure that the *fxBaseRates* has an entry for each currency in the currencies collection in addition to an entry for the `fxBase`.
+
 ## Collection
 
-Create collection on db named 'currencies'
+Create collection on db named 'currencies' to store details on currencies accepted for transactions.
 
 ```
 db.createCollection('currencies')
 ```
 
-### Populate Currencies
+### Populate Currencies collection
 
-Populate currencies with initial currency data
+Populate currencies collection with initial data for each accepted currency.
 
 ```
 db.currencies.insert({"code":"USD","symbol":"$","status":"active","description":"United States Dollar"})

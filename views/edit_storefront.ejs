@@ -35,17 +35,16 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-3">
-                            <figure class="featured-image">
+                            <figure class="featured-image edit-featured-image">
                                 <% if(typeof(image) !== 'undefined' && image.value) { %>
                                 <img src="<% if(image.value.src) { %><%= image.value.src %><% } %>">
                                 <% } else { %>
                                     <%- include('partials/_shop_image_object.ejs') %>
                                 <% } %>
                                 </figure>
-                                <p class="featured-image-legend">Storefront Image</p>
                         </div>
                         <div class="col-sm-9">
-                            <form id="edit-storefront-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/edit" method="POST" oninput=""
+                            <form id="edit-storefront-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/edit<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST" oninput=""
                                 enctype="multipart/form-data" novalidate>
                                 <fieldset <% if(typeof(show) !== 'undefined' && show == 'disabled') { %> disabled="disabled"
                                     <% } %>>
@@ -112,6 +111,16 @@
                                         </div>
                                         <input type="hidden" name="phoneType" value="work">
                                         <%- include('partials/_phoneNumber_form_fields') %>
+                                        <hr>
+                                        <div class="form-callout mb-3">
+                                            <p class="form-callout-legend">Provide a support email address for the shop.</p>
+                                        </div>
+                                        <%- include('partials/_email_form_fields') %>
+                                        <hr>
+                                        <div class="form-callout mb-3">
+                                            <p class="form-callout-legend">Provide a website url.</p>
+                                        </div>
+                                        <%- include('partials/_website_form_fields') %>
                                         <div id="storefront-save-button-container">
                                             <button id="save-storefront-button" type="submit" class="btn btn-primary" onclick="">Save</button>
                                         </div>

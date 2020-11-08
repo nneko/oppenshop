@@ -39,10 +39,7 @@ shops.get('/', async (req, res) => {
         for (const x of s) {
             if (Array.isArray(x.images) && x.images.length > 0) {
                 for (const xx of x.images) {
-                    if (xx.storage == 'db') {
-                      xx.src = media.read(xx)
-                      //console.log(xx)
-                    }
+                  xx.src = media.read(xx)
                 }
             }
         }

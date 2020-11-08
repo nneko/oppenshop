@@ -141,7 +141,7 @@ function getProductDetails(obj){
     console.log('Ending getProductDetails....')
 }
 
-respondToProductVisibility = function(element, callback) {
+ function respondToProductVisibility(element, callback) {
   var options = {
     root: document.documentElement
   }
@@ -204,18 +204,13 @@ function updateProductView(pr){
           let product_image = document.createElement("IMG")
           product_image.className = "card-product-image"
           product_image.alt = pr.products[pp].images[i].originalname
-          //console.log(typeof(pr.products[pp].images[i].buffer))
-          //console.log(typeof(pr.products[pp].images[i].buffer.buffer))
-          //let imageStringBlob = pr.products[pp].images[i] && s.shops[ss].images[i].buffer && typeof(s.shops[ss].images[i].buffer.buffer) !== 'undefined' ? s.shops[ss].images[i].buffer.buffer : (s.shops[ss].images[i].buffer ? new Buffer.from(s.shops[ss].images[i].buffer,'base64') : '')
-          //let base64string = window.btoa([].reduce.call(new Uint8Array(imageStringBlob),function(p,c){return p+String.fromCharCode(c)},''))
-          //let src = 'data:'+file.mimetype+';base64,'+base64string
           product_image.src = pr.products[pp].images[i].src
           item_card_left.appendChild(product_image)
         }
       } else {
         let figure = document.createElement("FIGURE")
         figure.className = "card-product-image"
-        figure.innerHTML = '<%- include("./_product_image_object.ejs") %>'
+        figure.innerHTML = `<%- include("./_product_image_object.ejs") %>`
         item_card_left.appendChild(figure)
       }
       item_card.appendChild(item_card_left)
@@ -252,7 +247,7 @@ function updateProductView(pr){
       let edit_delete_action_form = document.createElement("FORM")
       edit_delete_action_form.className = "edit-delete-action-form"
       edit_delete_action_form.method = "POST"
-      edit_delete_action_form.action = "/user/shop"
+      edit_delete_action_form.action = "/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>"
       let input_id = document.createElement("INPUT")
       input_id.type = "hidden"
       input_id.name = "id"
@@ -283,7 +278,7 @@ function updateProductView(pr){
       button_edit.name="update"
       button_edit.value="edit"
       //button_edit.
-      button_edit.innerHTML = '<%- include("../assets/symbols/edit.svg") %>'
+      button_edit.innerHTML = `<%- include("../assets/symbols/edit.svg") %>`
       a.appendChild(button_edit)
       edit_delete_action_form.appendChild(a)
       if (pr.products[pp].status == 'inactive') {
@@ -294,7 +289,7 @@ function updateProductView(pr){
         button_re_activate.name="update"
         button_re_activate.value="reactivate"
         //button_re_activate.
-        button_re_activate.innerHTML = '<%- include("../assets/symbols/reload.svg") %>'
+        button_re_activate.innerHTML = `<%- include("../assets/symbols/reload.svg") %>`
         edit_delete_action_form.appendChild(button_re_activate)
         let button_delete = document.createElement("BUTTON")
         button_delete.className = "action-icon-button delete-icon action-icon close-icon"
@@ -303,7 +298,7 @@ function updateProductView(pr){
         button_delete.name="update"
         button_delete.value="delete"
         //button_delete.
-        button_delete.innerHTML = '<%- include("../assets/symbols/bin.svg") %>'
+        button_delete.innerHTML = `<%- include("../assets/symbols/bin.svg") %>`
         edit_delete_action_form.appendChild(button_delete)
       } else {
         let button_close = document.createElement("BUTTON")
@@ -313,7 +308,7 @@ function updateProductView(pr){
         button_close.name="update"
         button_close.value="withdraw"
         //button_close.
-        button_close.innerHTML = '<%- include("../assets/symbols/no.svg") %>'
+        button_close.innerHTML = `<%- include("../assets/symbols/no.svg") %>`
         edit_delete_action_form.appendChild(button_close)
       }
       action_button_section.appendChild(edit_delete_action_form)

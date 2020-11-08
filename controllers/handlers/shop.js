@@ -1,25 +1,14 @@
 const cfg = require('../../configuration')
-const validator = require('../../utilities/validator')
 const user = require('../../models/user')
 const shop = require('../../models/shop')
 const product = require('../../models/product')
-const express = require('express')
-const converter = require('../../utilities/converter')
 const generator = require('../../utilities/generator')
 const media = require('../../adapters/storage/media')
 const debug = cfg.env == 'development' ? true : false
-const multer  = require('multer')
-const storage = multer.memoryStorage()
-const fileUploader = multer({storage: storage,
-                    onError : function(err, next) {
-                      console.log('error', err);
-                      next(err);
-                    }
-                  }).array('fullimage', 10)
-//const upload = multer({ dest: 'uploads/' })
-const btoa = require('btoa')
 const catalog = require('../../models/catalog')
 const currency = require('../../models/currency')
+const fx = require('../../models/fx')
+const validator = require('../../utilities/validator')
 
 let shophandler = {}
 
@@ -65,6 +54,7 @@ shophandler.populateViewData = async (uid, status = 'active', shop_page = 1, pro
                         if (Array.isArray(x.images) && x.images.length > 0) {
                             for (const xx of x.images) {
                                 xx.src = media.read(xx)
+                                console.log(xx)
                             }
                         }
                         let p = await product.read({ shop: x._id.toString() })
@@ -185,14 +175,45 @@ shophandler.catalogAddHander = async (form, files) => {
     c.description = form.description
     c.owner = form.sid
     c.products = []
+    /*
+    let cImgs = []
     if (files) {
         for (x of files) {
-            x.storage = 'db'
+            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+            let img = await media.write(x, cfg.media_dest_products ? cfg.media_dest_catalogs : '/catalog')
+            cImgs.push(img)
         }
-        console.log(files)
-        if(Array.isArray(files) && files.length >= 1) c.image = files[0]
+        if (Array.isArray(cImgs) && cImgs.length >= 1) c.image = cImgs[0]
     }
-    return await catalog.create(c)
+    */
+   c.image = null
+    
+    let result = await catalog.create(c)
+
+    let newCtg = await catalog.read(c, { limit: 1 })
+    if (result && newCtg && await catalog.isValid(newCtg)) {
+          // Save catalog images
+          let cImgs = []
+        if (files && Array.isArray(files)) {
+            for (x of files) {
+                let img = {}
+                x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                if (x.storage != 'db') {
+                    img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/catalog') + '/' + String(newCtg._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                } else {
+                    img = x
+                }
+                cImgs.push(img)
+            }
+        }
+        if (debug) console.log('Saving new catalog images')
+        let catalogImageSaveResult = await catalog.update(newCtg, {images: cImgs})
+        if (debug) console.error(catalogImageSaveResult)
+        return catalogImageSaveResult
+    } else {
+        if(debug) console.error(result)
+        return false
+    }
   } catch (e) {
       console.error(e)
       throw e
@@ -267,49 +288,203 @@ shophandler.catalogDeleteProductHandler = async (form) => {
 
 shophandler.shopAddHandler = async (form, files) => {
   try {
-    let u = {}
+    let s = {}
     // Read existing stored user details
     const usr = await user.read(form.uid, { findBy: 'id' })
 
-    u.owner = form.uid
-    u.name = form.fullname
-    u.displayName = form.fullname
-    u.status = 'active'
-    //if (typeof(req.file) !== 'undefined'){
-    if (files){
-        for (x of files){
-          x.storage = 'db'
-        }
-        console.log(files)
-        u.images = files
+    s.owner = form.uid
+    s.name = form.fullname
+    s.displayName = form.fullname
+    s.description = form.description
+    s.status = 'active'
+    s.images = []
+    s.phoneNumbers = []
+
+    if(form.phoneNumber && validator.isPhoneNumber(form.phoneNumber)) {
+        s.phoneNumbers.push({
+            value: form.phoneNumber,
+            type: 'main',
+            primary: true
+        })
     }
 
     let addr = {}
     addr.type = form.addressType
     addr.streetAddress = form.addressStreet
+    addr.secondStreetAddress = form.secondAddressStreet
     addr.locality = form.addressLocality
     addr.region = form.addressRegion
     addr.postalCode = form.addressPostcode
     addr.country = form.addressCountry
     addr.formatted = generator.formattedAddress(addr)
+    addr.primary = true
 
-    if (form.setPrimary != 'true'){
-        u.addresses = usr.addresses
-        u.addresses.push(addr)
+    if (!form.setPrimary) {
+        s.addresses = []
+        s.addresses.push(addr)
     } else {
-        addr.primary = true
-        if (typeof(usr.addresses) !== 'undefined') {
-            u.addresses = generator.removePrimaryFields(usr.addresses)
-            u.addresses.push(addr)
+        if (typeof (usr.addresses) !== 'undefined' && Array.isArray(usr.addresses) && usr.addresses.length > 0) {
+            s.addresses = []
+            let usrPrimaryAddr = generator.getPrimaryField(usr.addresses)
+            if(usrPrimaryAddr) {
+                s.addresses.push(usrPrimaryAddr)
+            } else {
+                s.addresses = [addr]
+            }
         } else {
-            u.addresses = [addr]
+            s.addresses = [addr]
         }
     }
-    return await shop.create(u)
+
+    //Validate email
+    if (validator.isNotNull(form.email) && validator.isEmailAddress(form.email)) {
+        let primaryEmail = {
+            value: form.email,
+            primary: true
+        }
+        s.emails = [primaryEmail]
+    }
+
+    if (debug) console.log('Attempting to create new shop...')
+    let createResult = await shop.create(s)
+    let newShop = await shop.read(s, { limit: 1 })
+
+      if (createResult && newShop && (await shop.isValid(newShop))) {
+        // Save shop images
+        let sImgs = []
+        if (files && Array.isArray(files)) {
+            for (x of files) {
+                let img = {}
+                x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                if (x.storage != 'db') {
+                    img = await media.write(x, (cfg.media_dest_shops ? cfg.media_dest_shops : '/shop') + '/' + String(newShop._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                } else {
+                    img = x
+                }
+                sImgs.push(img)
+            }
+        }
+        if (debug) console.log('Saving new shop images...')
+        let shopImageSaveResult = await shop.update(newShop, {images: sImgs})
+        if (debug) console.error(shopImageSaveResult)
+        return shopImageSaveResult
+    } else {
+        if(debug) console.log(newShop)
+        return false
+    }
   } catch (e) {
       console.error(e)
       throw e
   }
+}
+
+shophandler.shopClose = async (s) => {
+    try {
+        if(! await shop.isValid(s)) {
+            let err = new Error('Not a valid shop')
+            err.name = 'ShopError'
+            err.type = 'Invalid'
+            throw err
+        }
+
+        let result = await shop.update({ _id: s._id }, { status: 'inactive' })
+        if (debug) console.log(result)
+
+        //Retrieve all the shop's products
+        let sProducts = await product.read({ shop: String(s._id) })
+
+        if (sProducts && (!Array.isArray(sProducts))) {
+            sProducts = [sProducts]
+        }
+
+        if (debug) {
+            console.log(s.displayName + ' has ' + sProducts.length + ' products.')
+        }
+
+        //Withdraw all the shops products from the market
+        for (const p of sProducts) {
+            if (await product.isValid(p) && p.status != 'inactive') {
+                if (debug) console.log('Withdrawing product ' + p.displayName + ' ' + String(p._id))
+                await product.update({ name: p.name, shop: String(s._id) }, { status: 'inactive' })
+            }
+        }
+
+        if (debug) console.log('Shop: ' + String(s._id) + ' status \'inactive\'.')
+    } catch (e) {
+        throw e
+    }
+}
+
+shophandler.shopDelete = async (s) => {
+    try {
+        if (! await shop.isValid(s)) {
+            let err = new Error('Not a valid shop')
+            err.name = 'ShopError'
+            err.type = 'Invalid'
+            throw err
+        }
+
+        if (s.status != 'inactive') {
+            let err = new Error('Not permitted')
+            err.name = 'PermissionError'
+            err.type = 'Denied'
+            throw err
+        }
+
+        //Retrieve all the shop's catalogs
+        let sCatalogs = await catalog.read({ owner: String(s._id) })
+
+        if (sCatalogs && (!Array.isArray(sCatalogs))) {
+            sCatalogs = [sCatalogs]
+        }
+        
+        //Retrieve all the shop's products
+        let sProducts = await product.read({ shop: String(s._id) })
+
+        if (sProducts && (!Array.isArray(sProducts))) {
+            sProducts = [sProducts]
+        }
+
+        //Ensure all catalogs are removed prior to deletion
+        for (const c of sCatalogs) {
+            if (await catalog.isValid(c)) {
+                if (c.status != 'inactive') {
+                    let activeCatalogErr = new Error('Not permitted to delete shop with active product catalogs')
+                    activeCatalogErr.name = 'PermissionError'
+                    activeCatalogErr.type = 'ActiveCatalog'
+                    throw activeCatalogErr
+                } else {
+                    if (debug) console.log('Deleting catalog ' + c.displayName + ' ' + String(c._id))
+                    let catalogDeleteResult = await catalog.delete(c)
+                    if (debug) console.log(catalogDeleteResult)
+                }
+
+            }
+        }
+
+        //Ensure all products are withdrawn from market prior to attempting deletion
+        for (const p of sProducts) {
+            if (await product.isValid(p)) {
+                if (p.status != 'inactive') {
+                    let activeProductErr = new Error('Not permitted to delete shop with active products')
+                    activeProductErr.name = 'PermissionError'
+                    activeProductErr.type = 'ActiveProduct'
+                    throw activeProductErr
+                } else {
+                    if (debug) console.log('Deleting product ' + p.displayName + ' ' + String(p._id))
+                    let productDeleteResult = await product.delete({ name: p.name, shop: String(s._id) })
+                    if (debug) console.log(productDeleteResult)
+                }
+
+            }
+        }
+
+        let result = await shop.delete({ _id: s._id })
+        if(debug) console.log(result)
+        if (debug) console.log('Shop ' + String(s._id) + 'deleted.')
+    } catch (e) {
+        throw e
+    }
 }
 
 shophandler.productAddHandler = async (form, files) => {
@@ -328,8 +503,58 @@ shophandler.productAddHandler = async (form, files) => {
     if (!currency.isValid(productCurrency)) {
           let error = new Error('Invalid currency code')
           error.name = 'CurrencyError'
-          error.type = 'Invalid'
+          error.type = 'InvalidCurrency'
           throw error
+    }
+
+    let fxRates = await fx.read({ source: cfg.fxSource }, { limit: 1 })
+
+    if (!fx.isValid(fxRates)) {
+        let fxError = new Error('Invalid FX Rates')
+        fxError.type = 'Invalid'
+        fxError.name = 'fxError'
+        throw fxError
+    }
+
+    if(cfg.minimum_price && cfg.minimum_price_currency) {
+        try {
+            let minPrice = Number(cfg.minimum_price)
+            let minCurCode = String(cfg.minimum_price_currency)
+
+            if (typeof (fxRates.exchangeRates[productCurrency.code]) === 'undefined' || typeof (fxRates.exchangeRates[productCurrency.code]) !== 'number' || typeof (fxRates.exchangeRates[minCurCode]) === 'undefined' || typeof (fxRates.exchangeRates[minCurCode]) !== 'number') {
+                let fxError = new Error('No matching conversion rate')
+                fxError.name = 'fxError'
+                fxError.type = 'Conversion'
+                throw fxError
+            }
+
+            let currencyExchangeRate = Number(fxRates.exchangeRates[productCurrency.code])
+
+            if (isNaN(currencyExchangeRate)) {
+                console.error('Unable to do currency conversion for product: ')
+                console.error(currencyExchangeRate)
+                let eXError = new Error('Invalid exchange rate')
+                eXError.name = 'CurrencyExchangeRateError'
+                eXError.type = 'InvalidExchangeRate'
+                throw eXError
+            }
+
+            let productPriceInBase = (1 * (p.price / currencyExchangeRate))
+            let minPriceInBase = 1 * (minPrice / Number(fxRates.exchangeRates[minCurCode]))
+
+            if (!(productPriceInBase >= minPriceInBase)) {
+                console.error('Product price lower than minimum allowed price')
+                console.error(generator.roundNumber(productPriceInBase,2) + ' ' + productCurrency.exchangeBase)
+                console.error('Minimum allowed price: ')
+                console.error(generator.roundNumber(minPriceInBase,2) + ' ' + productCurrency.exchangeBase)
+                let minPriceError = new Error('Below minimum')
+                minPriceError.name = 'PricingError'
+                minPriceError.type = 'InvalidPrice'
+                throw minPriceError
+           }
+        } catch (e) {
+            throw e
+        }
     }
 
     p.currency = productCurrency._id.toString()
@@ -337,21 +562,45 @@ shophandler.productAddHandler = async (form, files) => {
       p.displayName = form.name
 
     }
+    
+    let pImgs = []
+    p.images = pImgs
 
-    if (files){
-        for (x of files){
-          x.storage = 'db'
-        }
-        p.images = files
-    }
     let specs = {}
     for (key in form){
       if (!key.startsWith('spec_')) continue
       specs[key.replace('spec_', '')] = form[key]
     }
     p.specifications = specs
-    return await product.create(p)
+    let result = await product.create(p)
+
+    let newProd = await product.read(p,{ limit: 1 })
+
+    if (result && await product.isValid(newProd)) {
+        // Save product images
+        let pImgs = []
+        if (files && Array.isArray(files) && files.length > 0) {
+            for (x of files) {
+                let img = {}
+                x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+                if (x.storage != 'db') {
+                    img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/product') + '/' + String(newProd._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                } else {
+                    img = x
+                }
+                pImgs.push(img)
+            }
+        }
+        if (debug) console.log('Saving new product images')
+        let productImageSaveResult = await product.update(newProd, { images: pImgs })
+        if (debug) console.error(productImageSaveResult)
+        return productImageSaveResult
+    } else {
+        if(debug) console.error(result)
+        return false
+    }
   } catch (e) {
+      console.log('Error during product add operation. Passing error up the stack')
       console.error(e)
       throw e
   }

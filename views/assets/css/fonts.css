@@ -1,0 +1,55 @@
+@font-face {
+  font-family: Capriola;
+  src: url("/view/assets/fonts/Capriola/Capriola-Regular.ttf");
+}
+
+@font-face {
+  font-family: Gafata;
+  src: url("/view/assets/fonts/Gafata/Gafata-Regular.ttf");
+}
+
+@font-face {
+  font-family: Lato;
+  src: url("/view/assets/fonts/Lato/Lato-Regular.ttf");
+}
+
+@font-face {
+  font-family: OpenSans-Light;
+  src: url("/view/assets/fonts/Open_Sans/OpenSans-Light.ttf");
+}
+
+@font-face {
+  font-family: OpenSans;
+  src: url("/view/assets/fonts/Open_Sans/OpenSans-Regular.ttf");
+}
+
+@font-face {
+    font-family: Poppins;
+    src: url("/view/assets/fonts/Poppins/Poppins-Regular.ttf")
+}
+
+@font-face {
+    font-family: Poppins-Thin;
+    src: url("/view/assets/fonts/Poppins/Poppins-Thin.ttf")
+}
+
+@font-face {
+    font-family: Questrial;
+    src: url("/view/assets/fonts/Questrial/Questrial-Regular.ttf")
+}
+
+@font-face {
+  font-family: Quicksand;
+  src: url("/view/assets/fonts/Quicksand/Quicksand-VariableFont_wght.ttf");
+}
+
+@font-face {
+    font-family: Raleway;
+    src: url("/view/assets/fonts/Raleway/Raleway-VariableFont_wght.ttf")
+}
+@font-face {
+    font-family: Rubik;
+    src: url("/view/assets/fonts/Rubik/Rubik-VariableFont_wght.ttf")
+}
+
+

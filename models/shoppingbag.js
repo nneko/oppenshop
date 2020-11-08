@@ -1,6 +1,8 @@
 const cfg = require('../configuration')
 const user = require('./user')
 const currency = require('./currency')
+const fx = require('./fx')
+const product = require('./product')
 const debug = cfg.env == 'development' ? true : false
 
 module.exports = function ShoppingBag(shoppingBag, baseCurrency){
@@ -32,7 +34,7 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
                 err.type = 'Invalid Base Currency'
                 throw err
             }
-            this.sum()
+            await this.sum()
         } catch (e) {
             if (debug && e) {
                 console.error(e.stack)
@@ -41,33 +43,87 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
         }
     }
 
-    this.sum = function() {
-        let qty = 0
-        let price = 0
-        for (const i of Object.keys(this.items)) {
-            if(typeof(this.items[i].price) == 'number' && typeof(this.items[i].qty) == 'number') {
-                if(!this.items[i].currency) this.items[i].currency = this.currency.exchangeBase
-                qty += Number(this.items[i].qty)
-                let currencyExchangeRate = Number(this.currency.exchangeRates[this.items[i].currency])
+    this.productIsValid = (p) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                resolve(await product.isValid(p))
+            } catch (e) {
+                reject(e)
+            }
+        })
+    }
 
-                if(isNaN(currencyExchangeRate)) {
-                    console.error('Unable to do currency conversion for product: ')
-                    console.error(this.items[i])
-                    continue
+    this.sum = () => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let qty = 0
+                let price = 0
+
+                let fxRates = await fx.read({ source: cfg.fxSource }, { limit: 1 })
+
+                if (!fx.isValid(fxRates)) {
+                    let fxError = new Error('Invalid FX Rates')
+                    fxError.type = 'Invalid'
+                    fxError.name = 'fxError'
+                    throw fxError
                 }
 
-                price += (Number(this.items[i].qty) * (this.items[i].price / currencyExchangeRate))
+                for (const i of Object.keys(this.items)) {
+                    if (typeof (this.items[i] && this.items[i].qty) == 'number') {
+                        let prod = await product.read(i, {findBy: 'id'})
+                        if(! await product.isValid(prod)) {
+                            console.log('Skipping sum on invalid product: ' + String(i) + ' in shopping bag.')
+                            console.log('Deleting invalid product from shopping bag')
+                            delete this.items[i]
+                            continue
+                        }
+                        let productCurrency = await currency.read(prod.currency, { findBy: 'id' })
+
+                        let itemCurrencyCode = cfg.base_currency_code
+
+                        if (currency.isValid(productCurrency)) {
+                            itemCurrencyCode = String(productCurrency.code)
+                        }
+
+                        if (!itemCurrencyCode) itemCurrencyCode = fxRates.exchangeBase
+
+                        qty += Number(this.items[i].qty)
+                        if(typeof(fxRates.exchangeRates[itemCurrencyCode]) === 'undefined' || typeof(fxRates.exchangeRates[itemCurrencyCode]) !== 'number') {
+                            let fxError = new Error('No matching conversion rate')
+                            fxError.name = 'fxError'
+                            fxError.type = 'Conversion'
+                            throw fxError
+                        }
+                        let currencyExchangeRate = Number(fxRates.exchangeRates[itemCurrencyCode])
+
+                        if (isNaN(currencyExchangeRate)) {
+                            console.error('Unable to do currency conversion for product: ')
+                            console.error(i)
+                            continue
+                        }
+
+                        price += (Number(this.items[i].qty) * (prod.price / currencyExchangeRate))
+                    }
+                }
+                let cp = price
+                if (this.currency.code == fxRates.exchangeBase) {
+                    cp = price
+                } else {
+                    if (typeof (fxRates.exchangeRates[this.currency.code]) === 'undefined' || typeof (fxRates.exchangeRates[this.currency.code]) !== 'number') {
+                        let fxError = new Error('No matching conversion rate')
+                        fxError.name = 'fxError'
+                        fxError.type = 'Conversion'
+                        throw fxError
+                    }
+                    cp = cp * Number(fxRates.exchangeRates[this.currency.code])
+                }
+                this.totalPrice = cp
+                this.totalQuantity = qty
+                resolve()
+            } catch (e) {
+                reject(e)
             }
-        }
-        let cp = price
-        if (this.currency.code == this.currency.exchangeBase) {
-            cp = price
-        } else {
-            cp = cp * Number(this.currency.exchangeRates[this.currency.code])
-            console.log(cp)
-        }
-        this.totalPrice = cp
-        this.totalQuantity = qty
+        })
     }
 
     this.add = async function(product,quantity) {
@@ -75,25 +131,14 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
             let item = this.items[product._id]
             if (!item) {
                 item = this.items[product._id] = {
-                    displayName: product.displayName, 
-                    image: Array.isArray(product.images) ? product.images[0] : undefined,
-                    qty: quantity,
-                    price: Number(product.price) 
-                }
-
-                let productCurrency = await currency.read(product.currency,{findBy: 'id'})
-
-                if(currency.isValid(productCurrency)) {
-                    item.currency = String(productCurrency.code)
-                } else {
-                    item.currency = cfg.base_currency_code
+                    qty: quantity
                 }
             }
             else {
                 item.qty += Number(quantity)
             }
             this.items[product._id] = item
-            this.sum()
+            await this.sum()
         } else {
             if (!(product && product.hasOwnProperty('_id') && product.hasOwnProperty('price'))) {
                 let e = new Error('Invalid item')
@@ -111,7 +156,7 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
         }
     }
 
-    this.remove = function(product, quantity) {
+    this.remove = async (product, quantity) => {
         if (product && product.hasOwnProperty('_id') && product.hasOwnProperty('price') && typeof(quantity) == 'number' && quantity >= 0) {
             let item = this.items[product._id]
             if (!item) {
@@ -130,7 +175,7 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
             } else {
                 this.items[product._id] = item
             }
-            this.sum()
+            await this.sum()
         } else {
             if (!(product && product.hasOwnProperty('_id') && product.hasOwnProperty('price'))) {
                 let e = new Error('Invalid item')
@@ -148,7 +193,7 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
         }
     }
 
-    this.delete = function(product) {
+    this.delete = async (product) => {
         let item = this.items[product._id]
         if (!item) {
             let e = new Error("Item doesn't exist")
@@ -156,18 +201,18 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
             e.type = 'InvalidItem'
             throw e
         }
-        this.remove(product, item.qty)
+        await this.remove(product, item.qty)
     }
 
-    this.total = function() {
+    this.total = () => {
         return this.totalPrice
     }
 
-    this.quantity = function() {
+    this.quantity = () => {
         return this.totalQuantity
     }
 
-    this.save = async function(u) {
+    this.save = async (u) => {
         try {
             if (user.isValid(u)) {
                 u.bag = {
@@ -186,5 +231,9 @@ module.exports = function ShoppingBag(shoppingBag, baseCurrency){
         }
     }
 
-    this.sum()
+    this.sum().then(r => {
+
+    }).catch(e => {
+        throw e
+    })
 }

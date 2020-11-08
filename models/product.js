@@ -26,7 +26,7 @@ product.isValid = async (p) => {
                 throw e
             }*/
 
-        if (shopExists && typeof(p.name) == 'string' && validator.isNotNull(p.name) && typeof (p.description) == 'string' && validator.isNotNull(p.description) && p.hasOwnProperty('images') && p.hasOwnProperty('specifications') && p.hasOwnProperty('price') && p.hasOwnProperty('quantity') /*&& p.hasOwnProperty('currecy') && p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')*/) {
+        if (shopExists && typeof(p.name) == 'string' && validator.isNotNull(p.name) && typeof (p.description) == 'string' && validator.isNotNull(p.description) && p.hasOwnProperty('images') && p.hasOwnProperty('specifications') && p.hasOwnProperty('price') && p.hasOwnProperty('quantity') && p.hasOwnProperty('currency') /*&& p.hasOwnProperty('isSKU') && p.hasOwnProperty('SKU')*/) {
             return true
         } else {
             return false
@@ -39,7 +39,8 @@ product.isValid = async (p) => {
 
 product.exists = async (p) => {
     try {
-        const result = validator.isNotNull(await product.read(p,{limit: 1}))
+        const doc = await product.read(p,{limit: 1})
+        let result = await product.isValid(doc) ? true : false
         if(debug) {
             console.log('Checking product exits: ')
             console.log(p)
@@ -62,7 +63,7 @@ product.create = (p) => {
                 throw e
             }
 
-            if (await product.exists({ name: p.name, shop: p.shop })) {
+            if (await product.exists({ name: p.name.toLowerCase(), shop: p.shop })) {
                 let e = new Error('Product already exists')
                 e.name = 'ProductError'
                 e.type = 'Duplicate'

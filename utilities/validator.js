@@ -40,7 +40,7 @@ validator.isAddress = (addr) => {
 
 validator.isAddressMatch = (addr1, addr2) => {
     if(validator.isAddress(addr1) && validator.isAddress(addr2)){
-        return ((addr1.streetAddress === addr2.streetAddress) && (addr1.locality === addr2.locality) && (addr1.region === addr2.region) && (addr1.postalCode === addr2.postalCode) && (addr1.country === addr2.country))
+        return ((addr1.streetAddress === addr2.streetAddress) && (addr1.secondStreetAddress === addr2.secondStreetAddress) && (addr1.locality === addr2.locality) && (addr1.region === addr2.region) && (addr1.postalCode === addr2.postalCode) && (addr1.country === addr2.country))
     } else {
         return false
     }
@@ -52,6 +52,10 @@ validator.isEmailAddress = (email) => {
     const emailRE = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 
     return emailRE.test(email)
+}
+
+validator.isWebAddress = (url) => {
+    return true
 }
 
 validator.isAuthProvider = (provider) => {

@@ -36,7 +36,8 @@ catalog.isValid = async (c) => {
 
 catalog.exists = async (c) => {
     try {
-        const result = validator.isNotNull(await catalog.read(c,{limit: 1}))
+        const doc = await catalog.read(c,{limit: 1})
+        let result = await catalog.isValid(doc) ? true : false
         if(debug) {
             console.log('Checking catalog exits: ')
             console.log(c)
@@ -59,7 +60,7 @@ catalog.create = (c) => {
                 throw e
             }
 
-            if (await catalog.exists({name: c.name})) {
+            if (await catalog.exists({name: c.name.toLowerCase()})) {
                 let e = new Error('Catalog already exists')
                 e.name = 'CatalogError'
                 e.type = 'Duplicate'

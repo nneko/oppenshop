@@ -17,7 +17,8 @@ user.isValid = (u) => {
 
 user.exists = async (u) => {
     try {
-        const result = validator.isNotNull(await user.read(u,{limit: 1}))
+        const doc = await user.read(u,{limit: 1})
+        let result = user.isValid(doc) ? true : false
         return result
     } catch (e) {
         if(debug) console.log(e)

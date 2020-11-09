@@ -41,13 +41,16 @@
                             Your bag is empty.
                         <% } %>
                     </h2>
+                    <% if(typeof(bag) !== 'undefined' && typeof(bag.quantity) === 'function' && bag.quantity() > 0) { %>
                     <a href="/checkout">
                         <button class="btn btn-primary shopping-bag-checkout">Proceed to checkout</button>
                     </a>
+                    <% }%>
                 </div>
                 <% if(typeof(bag) !== 'undefined') { %>
                     <div class="shopping-bag-itemslist">
                         <% for (const product of Object.keys(bag.items)) { %>
+                            <% if (typeof(bag.items[product]) !== 'undefined' && bag.items[product]) { %>
                             <div>
                                 <span>
                                     <div class="item-card shopping-bag-item-card" data-product-id="<%= product %>">
@@ -72,7 +75,7 @@
                                                 </span>
                                             </a>
                                             <div class="remove-from-bag-button-container">
-                                                <form class="remove-from-bag-form" method="POST" action="/user/bag">
+                                                <form class="remove-from-bag-form" method="POST" action="/user/bag<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>">
                                                     <fieldset>
                                                         <input type="hidden" name="action" value="delete_from_bag">
                                                         <input type="hidden" name="pid" value="<% if(typeof(product) !== 'undefined') { %><%= product %><% } %>">
@@ -88,12 +91,14 @@
                                         </div>
                                     </span>
                                 </div>
+                            <% } %>
                             </div>
                         <% } %>
                     </div>
                     <div class="shopping-bag-footer">
                         <a href="/checkout">
-                            <button class="btn btn-primary">Checkout</button>
+                            <button class="btn btn-primary" 
+                        <% if(typeof(bag) !== 'undefined' && typeof(bag.quantity) === 'function' && bag.quantity() < 1) { %>disabled="disabled"<% } %>>Checkout</button>
                         </a>
                     </div>
                 <% } %>

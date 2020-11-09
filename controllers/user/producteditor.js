@@ -11,6 +11,7 @@ const fileUploader = media.uploader()
 const idx = cfg.indexerAdapter ? require('../../adapters/indexer/' + cfg.indexerAdapter) : null
 const productIdx = cfg.indexerProductIndex ? cfg.indexerProductIndex : 'products-index'
 const baseCurrencyCode = cfg.base_currency_code ? cfg.base_currency_code : 'USD'
+const fx = require('../../models/fx')
 
 let producteditor = express.Router()
 
@@ -82,6 +83,26 @@ let populateViewData = async (id) => {
                     viewData.image = { value: p.images[0] }
                     viewData.image.value.src = media.read(viewData.image.value)
                 }
+                viewData.images = []
+                if (Array.isArray(p.images)) {
+                    for (const img of p.images) {
+                        let i = img
+                        i.src = media.read(img)
+                        viewData.images.push(i)
+                    }
+
+                    let primaryImgIdx = generator.getPrimaryFieldIndex(p.images)
+                    if (primaryImgIdx > 0) {
+                        let imgs = []
+                        imgs.push(viewData.images[primaryImgIdx])
+                        for(let idx=0;idx < p.images.length;idx++) {
+                            if(idx != primaryImgIdx) {
+                                imgs.push(viewData.images[idx])
+                            }
+                        }
+                        viewData.images = imgs
+                    }
+                }
                 viewData.quantity = {value: p.quantity}
                 if (typeof(p.price) !== 'undefined'){
                   amount = p.price.split(".")
@@ -138,9 +159,7 @@ producteditor.get('/', async (req, res) => {
 })
 
 producteditor.post('/', fileUploader, async (req, res) => {
-    //console.log('Second')
     console.log(req.body)
-    //console.log(req.files)
     try {
         if (validator.hasActiveSession(req)) {
             let form = converter.objectFieldsToString(req.body)
@@ -164,31 +183,26 @@ producteditor.post('/', fileUploader, async (req, res) => {
                 return
             }
 
-            //let s = await shop.read(form.id, {findBy: 'id'})
             let p = await product.read(form.id, {findBy: 'id'})
 
-            //let shopUpdate = {}
             let productUpdate = {}
 
             if (!validator.isNotNull(form.name)) {
                 formFields.name = { class: 'is-invalid', value: form.name }
-                //formFields.name = { class: 'is-invalid', value: form.displayName }
             } else {
-                //shopUpdate.name = form.name
                 productUpdate.name = form.name
-                //shopUpdate.displayName = form.name
                 productUpdate.displayName = form.name
                 formFields.name = { class: 'valid', value: form.name }
                 formFields.name = { class: 'valid', value: form.displayName }
             }
-            /*
+            
             if(validator.isNotNull(form.description)) {
-                shopUpdate.description = form.description
-                formFields.description = {class: 'valid', value: shopUpdate.description}
+                productUpdate.description = form.description
+                formFields.description = {class: 'valid', value: productUpdate.description}
             } else {
                 formFields.description = { class: 'is-valid', value: form.description }
             }
-            */
+            
             if (req.files && Array.isArray(req.files)) {
                 if (validator.isUploadLimitExceeded(req.files)) {
                     await badRequest(req, res, '', 403, 'Upload limits exceeded.')
@@ -200,7 +214,7 @@ producteditor.post('/', fileUploader, async (req, res) => {
                         let img = {}
                         x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
                         if (x.storage != 'db') {
-                            img = await media.write(x, '/product/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                            img = await media.write(x, (cfg.media_dest_products ? cfg.media_dest_products : '/product') + '/' + String(p._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
                         } else {
                             img = x
                         }
@@ -240,12 +254,28 @@ producteditor.post('/', fileUploader, async (req, res) => {
 
             let productCurrency = await currency.read(productUpdate.currency, { findBy: 'id' })
 
+            let fxRates = await fx.read({source: cfg.fxSource},{limit: 1})
+
+            if(!fx.isValid(fxRates)) {
+                let fxError = new Error('Invalid FX Rates')
+                fxError.type = 'Invalid'
+                fxError.name = 'fxError'
+                throw fxError
+            }
+
             if (cfg.minimum_price && cfg.minimum_price_currency) {
                 try {
                     let minPrice = Number(cfg.minimum_price)
                     let minCurCode = String(cfg.minimum_price_currency)
 
-                    let currencyExchangeRate = Number(productCurrency.exchangeRates[productCurrency.code])
+                    if (typeof (fxRates.exchangeRates[productCurrency.code]) === 'undefined' || typeof (fxRates.exchangeRates[productCurrency.code]) !== 'number' || typeof (fxRates.exchangeRates[minCurCode]) === 'undefined' || typeof (fxRates.exchangeRates[minCurCode]) !== 'number') {
+                        let fxError = new Error('No matching conversion rate')
+                        fxError.name = 'fxError'
+                        fxError.type = 'Conversion'
+                        throw fxError
+                    }
+
+                    let currencyExchangeRate = Number(fxRates.exchangeRates[productCurrency.code])
 
                     if (isNaN(currencyExchangeRate)) {
                         console.error('Unable to do currency conversion for product: ')
@@ -257,7 +287,7 @@ producteditor.post('/', fileUploader, async (req, res) => {
                     }
 
                     let productPriceInBase = (1 * (productUpdate.price / currencyExchangeRate))
-                    let minPriceInBase = 1 * (minPrice / Number(productCurrency.exchangeRates[minCurCode]))
+                    let minPriceInBase = 1 * (minPrice / Number(fxRates.exchangeRates[minCurCode]))
 
                     if (!(productPriceInBase >= minPriceInBase)) {
                         console.error('Product price lower than minimum allowed price')
@@ -274,6 +304,21 @@ producteditor.post('/', fileUploader, async (req, res) => {
                     validationError = e
                     formFields.unit_dollar = { class: 'is-invalid', value: form.unit_dollar }
                     formFields.unit_cents = { class: 'is-invalid', value: form.unit_cents }
+                }
+            }
+
+            if(form.ppi && form.ppi != "") {
+                if(!productUpdate.images) {
+                    productUpdate.images = p.images
+                    if(productUpdate.images && Array.isArray(productUpdate.images)) {
+                        for (let imgIdx=0;imgIdx < productUpdate.images.length;imgIdx++) {
+                            if (productUpdate.images[imgIdx].storage == 'fs' && productUpdate.images[imgIdx].path && productUpdate.images[imgIdx].path == form.ppi) {
+                                productUpdate.images = generator.removePrimaryFields(productUpdate.images)
+                                if(productUpdate.images[imgIdx]) productUpdate.images[imgIdx].primary = true
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 

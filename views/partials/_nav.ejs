@@ -8,8 +8,9 @@
         <form id="main-search-form" class="search-form" autocomplete="off" action="/market" method="POST" oninput="" novalidate>
             <div class="form-group">
                 <div class="input-group">
-                    <input id="find" class="form-control" type="text" name="find" placeholder="Find products and shops" value=""
+                    <input id="find" class="form-control" type="text" name="find" placeholder="Find products and shops..." value=""
                         aria-label="find" aria-describedby="find-basic-addon" size="25" required>
+                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
                     <div class="input-group-append">
                         <button class="search-button" type="submit"
                                 data-toggle="tooltip" data-placement="bottom" title="Find in Market"><%- include('../assets/symbols/looking-glass.svg') %></button>
@@ -37,13 +38,14 @@
         </div>
     </div>
     <form class="responsive-search-form" autocomplete="off" action="/market" method="POST" oninput="" novalidate>
+        <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
         <div class="form-group">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <button class="search-button-prepend" type="button" data-toggle="tooltip" data-placement="bottom"
                         title="Find in Market"><%- include('../assets/symbols/close.svg') %></button>
                 </div>
-                <input id="find" class="form-control responsive-search-input" type="text" name="find" placeholder="Find products and shops" value=""
+                <input id="find" class="form-control responsive-search-input" type="text" name="find" placeholder="Find products and shops..." value=""
                     aria-label="find" aria-describedby="find-basic-addon" size="25" required>
                 <div class="input-group-append">
                     <button class="search-button" type="submit" data-toggle="tooltip" data-placement="bottom"
@@ -81,3 +83,9 @@
         <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'support') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Support" href="/support"><%- include('../assets/symbols/help.svg') %></a></li>
     </ul>
 </nav>
+<% if(typeof(env) !== 'undefined' && env != 'production') { %>
+<div class="alert alert-primary alert-dismissible fade show alert-banner" role="alert">You are viewing a demonstration. This environment is to be used for testing purposes only. All artifacts and transactions are simulations.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+</div>
+<% } %>

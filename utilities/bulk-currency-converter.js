@@ -24,7 +24,7 @@ if (!module.parent) {
                 let result = null
                 if(Array.isArray(products)) {
                     for (const p of products) {
-                        let pCurrency = await currency.read(p._id,{findBy: 'id'})
+                        let pCurrency = await currency.read(String(p._id),{findBy: 'id'})
                         if(! currency.isValid(pCurrency)) pCurrency = defaultCurrency
                         p.currency = pCurrency._id.toString()
                         result = await product.update({name: p.name}, p)
@@ -43,7 +43,7 @@ if (!module.parent) {
                         console.log(result)
                     }
                 } else {
-                    let pCurrency = await currency.read(products._id,{findBy: 'id'})
+                    let pCurrency = await currency.read(String(products._id),{findBy: 'id'})
                     if (!currency.isValid(pCurrency)) pCurrency = defaultCurrency
                     p.currency = pCurrency._id
                     result = await product.update({ name: products.name }, p)

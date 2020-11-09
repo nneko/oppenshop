@@ -52,6 +52,13 @@
     word-wrap:break-word;
 }
 
+*:focus {   
+    border: none;
+    box-shadow: 0 0 0 .2rem var(--main-nav-highlight-focus-color);
+    outline-color: transparent;
+    outline-style: none;
+}
+
 ::selection {
     background-color: var(--main-text-highlight-color);
     color: var(--main-text-highlight-bold-color);
@@ -156,6 +163,11 @@ svg {
 ::placeholder, ::-ms-input-placeholder, ::-webkit-input-placeholder, ::-moz-placeholder, :-ms-input-placeholder, :-moz-placeholder {
     color: var(--main-text-legend-color);
     /*color: rgb(206, 212, 218);*/  
+}
+
+.custom-select {
+    appearance: unset;
+    -webkit-appearance: unset;
 }
 
 @keyframes anim-scalex-in {

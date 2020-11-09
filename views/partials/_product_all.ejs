@@ -247,7 +247,7 @@ function updateProductView(pr){
       let edit_delete_action_form = document.createElement("FORM")
       edit_delete_action_form.className = "edit-delete-action-form"
       edit_delete_action_form.method = "POST"
-      edit_delete_action_form.action = "/user/shop"
+      edit_delete_action_form.action = "/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>"
       let input_id = document.createElement("INPUT")
       input_id.type = "hidden"
       input_id.name = "id"

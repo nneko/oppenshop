@@ -66,6 +66,7 @@ let populateViewData = async (id) => {
                 if (viewData.address) {
                     viewData.addressType = { value: viewData.address.type }
                     viewData.addressStreet = { value: viewData.address.streetAddress }
+                    viewData.secondAddressStreet = { value: viewData.address.secondStreetAddress }
                     viewData.addressLocality = { value: viewData.address.locality }
                     viewData.addressRegion = { value: viewData.address.region }
                     viewData.addressPostcode = { value: viewData.address.postalCode }
@@ -76,6 +77,13 @@ let populateViewData = async (id) => {
                 if (!viewData.phoneNumber && s.phoneNumbers && Array.isArray(s.phoneNumbers) && s.phoneNumbers.length > 0) {
                     viewData.phoneNumber = s.phoneNumbers[0] ? s.phoneNumbers[0] : undefined
                 }
+
+                viewData.email = generator.getPrimaryField(s.emails)
+                if (!viewData.email && s.emails && Array.isArray(s.emails) && s.emails.length > 0) {
+                    viewData.email = s.emails[0] ? s.emails[0] : undefined
+                }
+
+                viewData.website = s.website
             }
             resolve(viewData)
         } catch (e) {
@@ -170,7 +178,7 @@ shopeditor.post('/', fileUploader, async (req, res) => {
                         let img = {}
                         x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
                         if(x.storage != 'db') {
-                            img = await media.write(x,'/shop/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                            img = await media.write(x, (cfg.media_dest_shops ? cfg.media_dest_shops : '/shop') + '/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
                         } else {
                             img = x
                         }
@@ -183,6 +191,7 @@ shopeditor.post('/', fileUploader, async (req, res) => {
             let addr = {}
             addr.type = form.addressType
             addr.streetAddress = form.addressStreet
+            addr.secondStreetAddress = form.secondAddressStreet
             addr.locality = form.addressLocality
             addr.region = form.addressRegion
             addr.postalCode = form.addressPostcode
@@ -204,6 +213,7 @@ shopeditor.post('/', fileUploader, async (req, res) => {
             } else {
                 formFields.addressType = { class: 'is-invalid', value: form.addressType }
                 formFields.addressStreet = { class: 'is-invalid', value: form.addressStreet }
+                formFields.secondAddressStreet = { class: 'is-invalid', value: form.secondAddressStreet }
                 formFields.addressLocality = { class: 'is-invalid', value: form.addressLocality }
                 formFields.addressRegion = { class: 'is-invalid', value: form.addressRegion }
                 formFields.addressPostcode = { class: 'is-invalid', value: form.addressPostcode }
@@ -228,6 +238,28 @@ shopeditor.post('/', fileUploader, async (req, res) => {
                 shopUpdate.phoneNumbers = [primaryPhone]
 
                 formFields.phone = { class: 'valid', value: form.phone }
+            }
+
+            //Validate email
+            if (validator.isNotNull(form.email) && validator.isEmailAddress(form.email)) {
+
+                s.emails ? shopUpdate.emails = s.emails : shopUpdate.emails = [];
+
+                let primaryEmail = {
+                    value: form.email,
+                    primary: true
+                }
+                shopUpdate.emails = [primaryEmail]
+
+                formFields.email = { class: 'valid', value: form.email }
+            }
+
+            //Validate website url
+            if (validator.isNotNull(form.website) && validator.isWebAddress(form.website)) {
+
+                shopUpdate.website = form.website
+
+                formFields.website = { class: 'valid', value: form.website }
             }
 
             let hasInvalids = false;

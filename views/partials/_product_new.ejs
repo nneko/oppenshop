@@ -3,7 +3,7 @@
     <hr>
     <section class="standard-form-section new-product-form-section">
         <h3>Add a new product</h3>
-        <form id="new-product-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
+        <form id="new-product-form" class="standard-form" autocomplete="off" action="/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST"
             oninput=""  enctype="multipart/form-data" novalidate>
             <fieldset <% if((typeof(disabledForms) !== 'undefined' && disabledForms.product) || (typeof(shops) !== 'undefined' && Array.isArray(shops) && shops.length < 1)) { %> disabled="disabled"
                 <% } %>>
@@ -117,8 +117,8 @@
                             </div>
                         </div>
                     <hr>
-                    <div id="addresses-add-button-container">
-                        <button id="add-addresses-button" type="submit" class="btn btn-primary" onclick="">Add
+                    <div id="product-add-button-container">
+                        <button id="add-product-button" type="submit" class="btn btn-primary" onclick="">Add
                             Product</button>
                     </div>
                 </div>

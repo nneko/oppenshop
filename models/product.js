@@ -39,7 +39,8 @@ product.isValid = async (p) => {
 
 product.exists = async (p) => {
     try {
-        const result = validator.isNotNull(await product.read(p,{limit: 1}))
+        const doc = await product.read(p,{limit: 1})
+        let result = await product.isValid(doc) ? true : false
         if(debug) {
             console.log('Checking product exits: ')
             console.log(p)
@@ -62,7 +63,7 @@ product.create = (p) => {
                 throw e
             }
 
-            if (await product.exists({ name: p.name, shop: p.shop })) {
+            if (await product.exists({ name: p.name.toLowerCase(), shop: p.shop })) {
                 let e = new Error('Product already exists')
                 e.name = 'ProductError'
                 e.type = 'Duplicate'

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,0.965841,-77.9997,-73.6277)">
+        <g id="Location">
+            <g>
+                <path d="M128.245,76.236C145.444,76.527 159.299,92.706 158.018,110.905C158.011,111.011 158.003,111.119 157.994,111.227C157.725,114.614 156.961,117.854 155.78,120.864C148.849,142.277 130.172,177.486 129.013,179.662L128.957,179.768C128.957,179.768 107.374,142.966 100.22,120.864C99.039,117.854 98.275,114.614 98.006,111.227C97.997,111.119 97.989,111.011 97.982,110.905C96.702,92.716 110.434,76.529 127.755,76.236L127.755,76.232L128.245,76.232L128.245,76.236ZM128,100C132.415,100 136,103.585 136,108C136,112.415 132.415,116 128,116C123.585,116 120,112.415 120,108C120,103.585 123.585,100 128,100Z" style="fill:rgb(106,115,125);"/>
+            </g>
+        </g>
+    </g>
+</svg>

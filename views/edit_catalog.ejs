@@ -44,7 +44,7 @@
                                 </figure>
                         </div>
                         <div class="col-sm-9">
-                            <form id="edit-catalog-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/catalog/edit" method="POST" oninput=""
+                            <form id="edit-catalog-form" class="standard-form standard-edit-form" autocomplete="off" action="/user/shop/catalog/edit<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST" oninput=""
                                 enctype="multipart/form-data" novalidate>
                                 <fieldset <% if(typeof(show) !== 'undefined' && show == 'disabled') { %> disabled="disabled"
                                     <% } %>>
@@ -103,7 +103,7 @@
                                     </div>
                                 </fieldset>
                             </form>
-                            <form class="standard-form standard-edit-form" action="/user/shop" method="POST">
+                            <form class="standard-form standard-edit-form" action="/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST">
                                 <input type="hidden" name="id" value="cl-del">
                                 
                                 <input type="hidden" name="cid" value="<% if(typeof(id) !== 'undefined') { %><%= id %><% } %>">

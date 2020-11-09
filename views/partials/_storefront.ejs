@@ -146,7 +146,7 @@
                                 <%- include('../assets/symbols/close.svg') %>
             </button>
         </div>
-        <form id="new-storefront-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST"
+        <form id="new-storefront-form" class="standard-form" autocomplete="off" action="/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST"
             oninput="" enctype="multipart/form-data" novalidate>
             <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.addresses) { %> disabled="disabled"
                 <% } %>>
@@ -215,6 +215,11 @@
                         <p class="form-callout-legend">Provide a contact number for the shop.</p>
                     </div>
                     <%- include('./_phoneNumber_form_fields') %>
+                    <hr>
+                    <div class="form-callout mb-3">
+                        <p class="form-callout-legend">Provide a support email address for the shop.</p>
+                    </div>
+                    <%- include('./_email_form_fields') %>
                     <div id="storefront-add-button-container">
                         <button id="add-storefront-button" type="submit" class="btn btn-primary" onclick="">Add
                             Storefront</button>
@@ -346,7 +351,7 @@ function updateStorefrontView(s){
       let edit_delete_action_form = document.createElement("FORM")
       edit_delete_action_form.className = "edit-delete-action-form"
       edit_delete_action_form.method = "POST"
-      edit_delete_action_form.action = "/user/shop"
+      edit_delete_action_form.action = "/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>"
       let input_id = document.createElement("INPUT")
       input_id.type = "hidden"
       input_id.name = "id"

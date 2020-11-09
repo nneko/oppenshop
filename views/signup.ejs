@@ -1,6 +1,6 @@
 <main class="container">
     <section class="signup-section">
-        <form id="signup-form" class="signup-form" autocomplete="off" action="/signup" method="POST"
+        <form id="signup-form" class="signup-form" autocomplete="off" action="/signup<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST"
             oninput="" novalidate>
             <% if(typeof(error) !== 'undefined') { %>
             <div id="main-alert" class="alert alert-danger alert-dismissible fade show" role="alert">

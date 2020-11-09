@@ -148,7 +148,7 @@ catalogeditor.post('/', fileUploader, async (req, res) => {
                     let img = req.files[0]
                     x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
                     if (x.storage != 'db') {
-                        img = await media.write(x, '/catalog/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
+                        img = await media.write(x, (cfg.media_dest_catalogs ? cfg.media_dest_catalogs : '/catalog') + '/' + String(s._id) + '/' + (x.originalname ? x.originalname : generator.uuid()))
                     } else {
                         img = x
                     }

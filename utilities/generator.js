@@ -191,6 +191,28 @@ generator.getPrimaryField = (list) => {
     return field
 }
 
+generator.getPrimaryFieldIndex = (list) => {
+    let field = 0
+
+    if (validator.isNotNull(list)) {
+        for (let i = 0; i < list.length; i++) {
+            let e = list[i]
+            let p = undefined
+            for (const k of Object.keys(e)) {
+                if (k == 'primary') {
+                    p = e
+                    break
+                }
+            }
+            if (p) {
+                field = i
+                break
+            }
+        }
+    }
+    return field
+}
+
 generator.removePrimaryFields = (list) => {
     let new_list = list
 
@@ -237,7 +259,7 @@ generator.removeAddressFields = (list, addr) => {
 }
 
 generator.roundNumber = (value, decimals) => {
-    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals).toFixed(decimals);
+    return value == 0 ? 0 : Number(Math.round(value + 'e' + decimals) + 'e-' + decimals).toFixed(decimals);
 }
 
 // Export the module

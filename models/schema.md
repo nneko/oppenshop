@@ -1,10 +1,10 @@
 # Sample Role Model (JSON):
 ```
 {
-     name: "manageOpRole",
+     name: "productAdmin",
      privileges: [
-       { resource: { cluster: true }, actions: [ "killop", "inprog" ] },
-       { resource: { db: "", collection: "" }, actions: [ "killCursors" ] }
+       { resource: { shop: true }, actions: [ "addProduct", "deleteProduct" ] },
+       { resource: { product: "", catalog: "" }, actions: [ "add", "delete", "edit" ] }
      ],
      roles: []
    }
@@ -98,16 +98,17 @@
         ],
         "roles" : [
                 {
-                        "role" : "userAdminAnyDatabase",
-                        "db" : "admin"
+                        "role" : "shopAdmin",
+                        "property" : "1234334534"
                 },
                 {
-                        "role" : "readWriteAnyDatabase",
-                        "db" : "admin"
+                        "role" : "productManager",
+                        "property" : "1233345454"
                 }
         ],
         "verificationToken": "ombhe65mfv31c1ugk2xxchnwmq0weksv",
-        "verified": true
+        "verified": true,
+        "type": "consumer|merchant|transporter"
     }
 ```
 # Sample Shop Model (JSON):

@@ -108,7 +108,11 @@
         ],
         "verificationToken": "ombhe65mfv31c1ugk2xxchnwmq0weksv",
         "verified": true,
-        "type": "consumer|merchant|transporter"
+        "type": {
+            consumer: true | false,
+            merchant: true | false,
+            delivery: true | false
+        }
     }
 ```
 # Sample Shop Model (JSON):

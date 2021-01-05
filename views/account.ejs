@@ -5,10 +5,18 @@
                 <div class="list-group flex-column" id="account-settings-tablist" role="tablist">
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'ls') { %>active<% } %>" id="security-tab" data-toggle="list" role="tab" aria-controls="security" aria-selected="false" href="#security-pane"><%- include('assets/symbols/lock.svg') %>Login & Security</a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'ci' || pane == 'ad' || pane == 'pn' || pane == 'em') { %>active<% } %>" id="contact-tab" data-toggle="list" role="tab" aria-controls="contact" aria-selected="true" href="#contact-pane"><%- include('assets/symbols/person.svg') %>Contact Details</a>
+                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pm') { %>active<% } %>"
+                        id="payments-tab" data-toggle="list" role="tab" aria-controls="payments" aria-selected="false"
+                        href="#payments-pane">
+                        <%- include('assets/symbols/credit card.svg') %>Payment Methods
+                    </a>
+                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pkg') { %>active<% } %>"
+                        id="deliveries-tab" data-toggle="list" role="tab" aria-controls="orders" aria-selected="false"
+                        href="#deliveries-pane">
+                        <%- include('assets/symbols/package.svg') %>Deliveries
+                    </a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'or') { %>active<% } %>" id="orders-tab" data-toggle="list" role="tab" aria-controls="orders" aria-selected="false"
                         href="#orders-pane"><%- include('assets/symbols/order sheet.svg') %>Orders</a>
-                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pm') { %>active<% } %>" id="payments-tab" data-toggle="list" role="tab" aria-controls="payments" aria-selected="false"
-                        href="#payments-pane"><%- include('assets/symbols/credit card.svg') %>Payment Methods</a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pr') { %>active<% } %>" id="settings-tab" data-toggle="list" role="tab" aria-controls="settings" aria-selected="false" href="#settings-pane"><%- include('assets/symbols/gear.svg') %>Preferences</a>
                 </div>
             </div>
@@ -37,8 +45,9 @@
                     <% } %>
                     <%- include('partials/_login_security.ejs') %>
                     <%- include('partials/_contact_info.ejs') %>
-                    <%- include('partials/_orders.ejs') %>
                     <%- include('partials/_payment_methods.ejs') %>
+                    <%- include('partials/_deliveries.ejs') %>
+                    <%- include('partials/_orders.ejs') %>
                     <%- include('partials/_preferences.ejs') %>
                 </div>
             </div>

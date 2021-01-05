@@ -1,0 +1,14 @@
+<ul class="nav marketnav">
+    <li class="nav-item">
+        <h6 class="nav-link">Recommended</h6>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <% if(typeof(activeRecNavLink) !== 'undefined' && activeRecNavLink == 'products'){ %>active<% } %>" href="/market">Products</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <% if(typeof(activeRecNavLink) !== 'undefined' && activeRecNavLink == 'shops'){ %>active<% } %>" href="/market/shops ">Shops</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <% if(typeof(activeRecNavLink) !== 'undefined' && activeRecNavLink == 'services'){ %>active<% } %>" href="/market/services">Services</a>
+    </li>
+</ul>

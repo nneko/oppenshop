@@ -58,20 +58,20 @@
         </div>
     </form>
     <ul class="menu-main-navigation nav-links">
-        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && (reqData.path.split('/')[1] == 'market' || reqData.path.split('/')[1] == '')) { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Browse" href="/market"><%- include('../assets/symbols/shop.svg') %></a></li>
-        <li class="nav-link-item <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag' || reqData.path.split('/')[1] == 'checkout') { %><%= 'nav-menu-item-selected' %><% } %>"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag' || reqData.path.split('/')[1] == 'checkout') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Buy" href="/user/bag"><%- include('../assets/symbols/bag.svg') %></a><% if(typeof(bag) !== 'undefined' && bag) { %>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && (reqData.path.split('/')[1] == 'market' || reqData.path.split('/')[1] == '')) { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Marketplace" href="/market"><%- include('../assets/symbols/keypad.svg') %></a></li>
+        <li class="nav-link-item <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag' || reqData.path.split('/')[1] == 'checkout') { %><%= 'nav-menu-item-selected' %><% } %>"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'bag' || reqData.path.split('/')[1] == 'checkout') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Bag" href="/user/bag"><%- include('../assets/symbols/bag.svg') %></a><% if(typeof(bag) !== 'undefined' && bag) { %>
         <% if(typeof(bag.quantity) == 'function' && bag.quantity() > 0) { %><span class="shopping-bag-counter"><% if(bag.quantity() > 99) { %><%= '99+' %><% } else { %><%= bag.quantity() %><% } %></span><% } %>
         <% } %></li>
-        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'shop') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Sell" href="/user/shop"><%- include('../assets/symbols/tags.svg') %></a></li>
         <% if(typeof(user) !== 'undefined') {%> 
         <li class="menu-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'account') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Account" href="/user/account"><%- include('../assets/symbols/person-outline.svg') %></a></li>
+        <li class="nav-link-item"><a <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'user' && reqData.path.split('/')[2] == 'shop') { %>class="menu-item-selected" <% } %> data-toggle="tooltip" data-placement="bottom" title="Warehouse Administration" href="/user/shop"><%- include('../assets/symbols/warehouse.svg') %></a></li>
 
             <% if(user && user.roles && Array.isArray(user.roles)) { %>
                 <% for (const r of user.roles) { %>
                     <% if(typeof(r.role) !== 'undefined' && r.role == 'superuser') { %>
                         <li class="menu-item"><a
                                 <% if(typeof(reqData) !== 'undefined' && typeof(reqData.path) == 'string' && reqData.path.split('/')[1] == 'admin') { %>class="menu-item-selected"
-                                <% } %> data-toggle="tooltip" data-placement="bottom" title="Administration"
+                                <% } %> data-toggle="tooltip" data-placement="bottom" title="Platform Administration"
                                 href="/admin"><%- include('../assets/symbols/wrench.svg') %></a></li>
                     <% break; } %>
                 <% } %>

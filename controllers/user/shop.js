@@ -809,7 +809,7 @@ shops.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query
-            let panel = 'sf'
+            let panel = 'pkg'
             if(qd) {
                 switch(qd.show){
                     case 'in':
@@ -822,7 +822,7 @@ shops.get('/', async (req, res) => {
                         panel = qd.show
                         break
                     default:
-                        panel = 'sf'
+                        panel = 'pkg'
                 }
             }
             let viewData = {}

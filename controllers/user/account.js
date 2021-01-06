@@ -983,7 +983,7 @@ account.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query
-            let panel = 'ci'
+            let panel = 'pkg'
             if(qd) {
                 switch(qd.show){
                     case 'ls':
@@ -996,7 +996,7 @@ account.get('/', async (req, res) => {
                         panel = qd.show
                         break
                     default:
-                        panel = 'ci'
+                        panel = 'pkg'
                 }
             }
             let viewData = await accounthandler.populateUserViewData(req.user.id.toString())

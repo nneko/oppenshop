@@ -1,13 +1,16 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'pkg') { %>show active<% } %>" id="deliveries-pane"
     role="tabpanel" aria-labelledby="orders-tab">
-    <h2 class="pane-h2">Deliveries</h2>
+    <h2 class="pane-h2">Delivery</h2>
     <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="deliveryTabs" role="tablist">
+
+        <% if(typeof(hidePreAlert) !=='undefined' && !hidePreAlert) { %>
         <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane != 'track') { %>active<% } %>" id="new-prealert-tab"
                 data-toggle="tab" href="#new-prealert-pane" role="tab" aria-controls="new" aria-selected="false">
                 <%- include('../assets/symbols/notification.svg') %>Pre-Alert
             </a>
         </li>
+        <% } %>
         <li class="nav-item">
             <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'track') { %>active<% } %>"
                 id="delivery-track-tab" data-toggle="tab" href="#delivery-track-pane" role="tab" aria-controls="all"
@@ -17,7 +20,7 @@
         </li>
     </ul>
     <div class="tab-content" id="deliveryTabContent">
-        <%- include('./_delivery_prealert.ejs') %>
+        <% if(typeof(hidePreAlert) !== 'undefined' && !hidePreAlert) { %><%- include('./_delivery_prealert.ejs') %><% } %>
         <%- include('./_delivery_track.ejs') %>
     </div>
 </div>

@@ -8,10 +8,17 @@
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'cl') { %>active<% } %>"
                         id="catalogs-tab" data-toggle="list" role="tab" aria-controls="catalogs" aria-selected="true"
                         href="#catalogs-pane"><%- include('assets/symbols/library.svg') %>Catalogs</a>
-                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'or') { %>active<% } %>" id="orders-tab" data-toggle="list" role="tab" aria-controls="orders" aria-selected="false" href="#orders-pane"><%- include('assets/symbols/order sheet.svg') %>Orders</a>
+                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'freight') { %>active<% } %>"
+                        id="freight-tab" data-toggle="list" role="tab" aria-controls="orders" aria-selected="false"
+                        href="#freight-pane">
+                        <%- include('assets/symbols/crane.svg') %>Shipments
+                    </a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'pkg') { %>active<% } %>"
                         id="deliveries-tab" data-toggle="list" role="tab" aria-controls="orders" aria-selected="false"
-                        href="#deliveries-pane"><%- include('assets/symbols/package.svg') %>Deliveries</a>
+                        href="#deliveries-pane">
+                        <%- include('assets/symbols/package.svg') %>Deliveries
+                    </a>
+                    <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'or') { %>active<% } %>" id="orders-tab" data-toggle="list" role="tab" aria-controls="orders" aria-selected="false" href="#orders-pane"><%- include('assets/symbols/order sheet.svg') %>Invoices</a>
                     <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'py') { %>active<% } %>" id="payments-tab" data-toggle="list" role="tab" aria-controls="payments" aria-selected="false" href="#seller-payments-pane"><%- include('assets/symbols/coin.svg') %>Payments</a>
                 </div>
             </div>
@@ -41,8 +48,9 @@
                     <%- include('partials/_storefront.ejs') %>
                     <%- include('partials/_product_info.ejs') %>
                     <%- include('partials/_product_catalog.ejs') %>
+                    <%- include('partials/_freight.ejs') %>
+                    <%- include('partials/_deliveries.ejs', {hidePreAlert: true}) %>
                     <%- include('partials/_orders.ejs') %>
-                    <%- include('partials/_deliveries.ejs') %>
                     <%- include('partials/_seller_payments.ejs') %>
                 </div>
             </div>

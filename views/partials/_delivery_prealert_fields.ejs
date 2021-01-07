@@ -1,0 +1,60 @@
+
+    <fieldset <% if(typeof(disabledForms) !=='undefined' && disabledForms.prealert) { %> disabled="disabled"
+        <% } %>>
+            <input type="hidden" name="id" value="pkg-prealert">
+
+            <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+            <% if(typeof(csrfToken) !=='undefined' ) { %><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <% } %>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="pkg-trackno-basic-addon">Tracking No.</span>
+                            </div>
+                            <input id="tracking-number"
+                                class="form-control <% if(typeof(tracknum) !== 'undefined') { %><%= tracknum.class %><% } %>"
+                                type="text" name="tracknum" value="" aria-label="tracknum"
+                                aria-describedby="tracknum-basic-addon" size="25" required>
+                            <div id="invalid-tracknum" class="invalid-feedback">
+                                <% if(typeof(tracknum) !=='undefined' && tracknum.class=='is-invalid' ) { %>
+                                    <%= tracknum.message %>
+                                        <% } else { %>Please enter a valid tracking number. <% } %>
+                            </div>
+                        </div>
+                        <small id="tracknumHint" class="form-text text-muted hidden"></small>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="pkg-courier-basic-addon">Courier</span>
+                            </div>
+                            <input id="courier"
+                                class="form-control <% if(typeof(courier) !== 'undefined') { %><%= courier.class %><% } %>" type="text"
+                                name="courier" value="" aria-label="courier" aria-describedby="courier-basic-addon" size="25" required>
+                            <div id="invalid-tracknum" class="invalid-feedback">
+                                <% if(typeof(courier) !=='undefined' && courier.class=='is-invalid' ) { %>
+                                    <%= courier.message %>
+                                        <% } else { %>Please enter the name of the courier service. <% } %>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="invoice-basic-addon">Invoice</span>
+                            </div>
+                            <input id="invoice"
+                                class="form-control <% if(typeof(invoice) !== 'undefined') { %><%= invoice.class %><% } %>" type="file"
+                                name="invoice" aria-label="Invoice" aria-describedby="invoice-basic-addon" accept=".txt,.pdf,.html" multiple>
+                            <div id="invoice-invalid" class="invalid-feedback">
+                                <% if(typeof(invoice) !=='undefined' && invoice.class=='is-invalid' ) { %>
+                                    <%= invoice.message %>
+                                        <% } else { %>
+                                            You must provide a valid invoice of type: txt/pdf/html.
+                                            <% } %>
+                            </div>
+                        </div>
+                        <small id="courierHint" class="form-text text-muted hidden"></small>
+                        <div id="security-update-button-container">
+                            <button id="update-security-button" type="submit" class="btn btn-primary"
+                                onclick="">Update</button>
+                        </div>
+                    </div>
+    </fieldset>

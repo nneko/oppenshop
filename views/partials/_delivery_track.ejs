@@ -1,6 +1,71 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'track' ) { %>show active<% } %>"
     id="delivery-track-pane" role="tabpanel" aria-labelledby="delivery-track-tab">
-<nav id="delivery-track-list-section-pagination" class="content-nav-right" aria-label="Delivery Listing">
-    <!-- Pagination Navigation Details -->
-</nav>
+    <h2 class="pane-h2">Search</h2>
+    <section class="standard-form-section">
+        <form id="delivery-search-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
+            novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="or">
+
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="pkg-id-basic-addon">Delivery Id.</span>
+                        </div>
+                        <input id="pkg-id-number"
+                            class="form-control <% if(typeof(pkgid) !== 'undefined') { %><%= pkgid.class %><% } %>" type="text"
+                            name="pkgid" value="" aria-label="pkg-id-num" aria-describedby="pkg-id-basic-addon" size="25" required>
+                        <div id="invalid-pkgid" class="invalid-feedback">
+                            <% if(typeof(pkgid) !=='undefined' && pkgid.class=='is-invalid' ) { %>
+                                <%= pkgid.message %>
+                                    <% } else { %>Please enter a valid id number. <% } %>
+                        </div>
+                    </div>
+                    <small id="tracknumHint" class="form-text text-muted hidden"></small>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="pkg-trackno-basic-addon">Tracking No.</span>
+                        </div>
+                        <input id="tracking-number"
+                            class="form-control <% if(typeof(tracknum) !== 'undefined') { %><%= tracknum.class %><% } %>" type="text"
+                            name="tracknum" value="" aria-label="tracknum" aria-describedby="tracknum-basic-addon" size="25" required>
+                        <div id="invalid-tracknum" class="invalid-feedback">
+                            <% if(typeof(tracknum) !=='undefined' && tracknum.class=='is-invalid' ) { %>
+                                <%= tracknum.message %>
+                                    <% } else { %>Please enter a valid tracking number. <% } %>
+                        </div>
+                    </div>
+                    <small id="tracknumHint" class="form-text text-muted hidden"></small>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="pkg-courier-basic-addon">Courier</span>
+                        </div>
+                        <input id="courier" class="form-control <% if(typeof(courier) !== 'undefined') { %><%= courier.class %><% } %>"
+                            type="text" name="courier" value="" aria-label="courier" aria-describedby="courier-basic-addon" size="25"
+                            required>
+                        <div id="invalid-tracknum" class="invalid-feedback">
+                            <% if(typeof(courier) !=='undefined' && courier.class=='is-invalid' ) { %>
+                                <%= courier.message %>
+                                    <% } else { %>Please enter the name of the courier service. <% } %>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="security-update-button-container">
+                        <button id="update-security-button" type="submit" class="btn btn-primary" onclick="">Find</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+    <hr>
+    <h2 class="pane-h2">Browse</h2>
+    <section>
+        <nav id="delivery-track-list-section-pagination" class="content-nav-right" aria-label="Delivery Listing">
+            <!-- Pagination Navigation Details -->
+        </nav>
+    </section>
 </div>

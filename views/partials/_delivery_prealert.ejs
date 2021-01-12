@@ -1,6 +1,6 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane != 'track' ) { %>show active<% } %>"
     id="delivery-prealert-pane" role="tabpanel" aria-labelledby="delivery-prealert-tab">
-<form class="standard-form-section" autocomplete="off" method="POST" action="/user/account"
+<form class="standard-form standard-form-section" autocomplete="off" method="POST" action="/user/account"
     enctype="multipart/form-data" novalidate>
     <%- include('./_delivery_prealert_fields') %>
 </form>

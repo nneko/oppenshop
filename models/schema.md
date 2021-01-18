@@ -115,6 +115,26 @@
         }
     }
 ```
+# Sample Warehouse Model (JSON):
+```
+    {
+        "_id": ObjectId("2342345235"),
+        "owner": "",
+        "name": "",
+        "displayName": "",
+        "images": [
+            {
+            "value": "http://sample.site.org/photos/12345.jpg",
+            "type": "thumbnail"
+            }
+        ]
+        "staff": {
+            "uid": "role"
+        }
+    }
+```
+
+
 # Sample Shop Model (JSON):
 ```
     {

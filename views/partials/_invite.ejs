@@ -27,6 +27,17 @@
                         </div>
                     </div>
                     <small id="emailHint" class="form-text text-muted hidden"></small>
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input <% if(typeof(isEmployee) !== 'undefined') { %><%= isEmployee.class %><% } %>"
+                                type="checkbox" id="isEmployee" name="isEmployee" value="false">
+                            <label class="form-check-label" for="isEmployee">
+                                Member of Staff
+                            </label>
+                            <div class="invalid-feedback">
+                            </div>
+                        </div>
+                    </div>
                     <hr>
                     <div id="user-invite-button-container">
                         <button id="user-invite-button" type="submit" class="btn btn-primary" onclick="">Invite</button>
@@ -37,7 +48,7 @@
     </section>
     <hr>
     <section>
-        <h2 class="pane-h2">Bulk Invite</h2>
+        <h2 class="pane-h2">Bulk Invite Users</h2>
 
         <form id="invite-user-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
             novalidate>

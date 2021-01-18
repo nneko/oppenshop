@@ -17,7 +17,7 @@ warehouse.isValid = async (w) => {
                 ownerExists = false
             }
         }
-        if (ownerExists && typeof(w.name) == 'string' && w.hasOwnProperty('status')) {
+        if (ownerExists && typeof(w.name) == 'string' && w.hasOwnProperty('staff')) {
             return true
         } else {
             return false

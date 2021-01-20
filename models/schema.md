@@ -119,7 +119,7 @@
 ```
     {
         "_id": ObjectId("2342345235"),
-        "owner": "",
+        "owner": "ObjectId("2342345235").toString()",
         "name": "",
         "displayName": "",
         "images": [
@@ -131,6 +131,27 @@
         "staff": {
             "uid": "role"
         }
+    }
+```
+
+# Sample Package Model (JSON):
+```
+    {
+        "_id": ObjectId("2342345235"),
+        "warehouse": "ObjectId("00000").toString()",
+        "owner": "ObjectId("2342345235").toString()",
+        "description": "",
+        "tracknum": "",
+        "courier": "",
+        "invoice": [
+            {
+                "type": "",
+                "value": "http://sample.site.org/data/inv000.txt"
+            }
+        ],
+        "declaredValue": 00:00,
+        "declaredCurrency": "",
+        "serviceType": ""
     }
 ```
 

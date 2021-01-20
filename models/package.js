@@ -3,6 +3,7 @@ const db = require('../adapters/storage/' + cfg.dbAdapter)
 const validator = require('../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
 const warehouse = require('./warehouse')
+const user = require('./user')
 
 let package = {}
 
@@ -19,7 +20,18 @@ package.isValid = async (p) => {
             }
         }
 
-        if (warehouseExists && typeof (p.tracknum) == 'string' && validator.isNotNull(p.tracknum) && typeof (p.courier) == 'string' && validator.isNotNull(p.courier) && p.hasOwnProperty('invoices') && p.hasOwnProperty('declaredValue') && p.hasOwnProperty('declaredValueCurrency') && p.hasOwnProperty('serviceType') && p.hasOwnProperty('description')) {
+        //If package is associated with a user. Validate that user exists
+        let userExists = null
+        if (validator.isNotNull(p) && typeof (p.owner) !== 'undefined') {
+            userExists = await user.read(p.owner, { findBy: 'id' })
+            if (await user.isValid(userExists)) {
+                userExists = true
+            } else {
+                userExists = false
+            }
+        }
+
+        if (warehouseExists && userExists && typeof (p.tracknum) == 'string' && validator.isNotNull(p.tracknum) && typeof (p.courier) == 'string' && validator.isNotNull(p.courier) && p.hasOwnProperty('invoices') && p.hasOwnProperty('declaredValue') && p.hasOwnProperty('declaredValueCurrency') && p.hasOwnProperty('serviceType') && p.hasOwnProperty('description')) {
             return true
         } else {
             return false
@@ -56,13 +68,14 @@ package.create = (p) => {
                 throw e
             }
 
-            if (await package.exists({ tracknum: p.tracknum.toLowerCase(), warehouse: p.warehouse })) {
+            if (await package.exists({ tracknum: p.tracknum.toLowerCase(), warehouse: p.warehouse, owner: p.owner })) {
                 let e = new Error('package already exists')
                 e.name = 'packageError'
                 e.type = 'Duplicate'
                 throw e
             }
 
+            p.tracknum = p.tracknum.toLowerCase()
             const result = await db.get().collection('packages').insertOne(p)
             resolve(result)
         } catch (e) {

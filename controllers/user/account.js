@@ -987,7 +987,6 @@ let packagePreAlertHandler = async (req, res) => {
         _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
         return
     } else {
-        let u = {}
 
         let formValidated = false
         let formFields = {}
@@ -1004,60 +1003,74 @@ let packagePreAlertHandler = async (req, res) => {
             return
         }
 
-        // Read existing stored user details
-        const usr = await user.read(form.uid, { findBy: 'id' })
+        //Validation
+        //assume all fields valid
+        formValidated = true
 
-        u.preferredUsername = usr.preferredUsername
-
-        //Validate email address
-        if (validator.isPhoneNumber(form.phoneNumber)) {
-            let hasPhoneNumberAlready = getField(usr.phoneNumbers, form.phoneNumber)
-            if (hasPhoneNumberAlready) {
-                formValidated = false
-                formFields.messages = { error: 'Phone numbers must be unique.' }
-                formFields.status = 400
-            } else {
-                u.phoneNumbers = usr.phoneNumbers
-                u.phoneNumbers ? u.phoneNumbers.push({ value: form.phoneNumber, type: form.phoneType }) : u.phoneNumbers = [{ value: form.phoneNumber, type: form.phoneType, primary: true }]
-                formValidated = true
-            }
-        } else {
+        if(!validator.isNotNull(form.tracknum) || await parcel.exists({tracknum: form.tracknum, owner: String(form.uid), warehouse: String(form.pkgHandler)})) {
             formValidated = false
-            formFields.phoneNumber = { class: 'invalid', value: form.phoneNumber }
+            formFields.tracknum = { class: 'invalid', value: form.tracknum }
             formFields.messages = {
-                error: 'You must enter a valid phone number.'
+                error: 'Invalid tracking number.'
+            }
+        }
+
+        if(!validator.isNotNull(form.tracknum)) {
+            formValidated = false
+            formFields.tracknum = { class: 'invalid', value: form.tracknum }
+            formFields.messages = {
+                error: 'Invalid tracking number.'
+            }
+        }
+
+        if (!validator.isNotNull(form.courier)) {
+            formValidated = false
+            formFields.courier = { class: 'invalid', value: form.courier }
+            formFields.messages = {
+                error: 'Invalid courier name.'
+            }
+        }
+
+        if (!validator.isNotNull(form.serviceType)) {
+            formValidated = false
+            formFields.serviceType = { class: 'invalid', value: form.serviceType }
+            formFields.messages = {
+                error: 'Invalid service type.'
             }
         }
 
         if (!formValidated) {
             if (debug) {
-                console.log('Invalid update account request received.')
+                console.log('Invalid delivery pre-alert request received.')
             }
             if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
             let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
-            viewData.pane = 'pn'
+            viewData.pane = 'pkg'
             viewData.messages = formFields.messages
-            viewData.phoneNumber = formFields.phoneNumber
+            viewData.tracknum = formFields.tracknum
+            viewData.courier = formFields.courier
+            viewData.serviceType = formFields.serviceType
+            viewData.pkgHandler = formFields.pkgHandler
+            viewData.declaredValue = formFields.declaredValue
+            viewData.declaredCurrency = formFields.declaredCurrency
             formFields.status ? res.status(formFields.status) : res.status(400)
             res.render('account', viewData)
             return
         } else {
             try {
-                //await user.update({ preferredUsername: u.preferredUsername }, u)
-                let u_phoneaddhandler = await accounthandler.phoneAddHandler(form)
-                // TODO: validation check on 'u_phoneaddhandler' response to show response if added or not
+                let u_deliveryalert = await accounthandler.deliveryAlertHandler(form)
 
-                if (debug) console.log('User account updated for ' + u.preferredUsername)
+                if (debug) console.log('Delivery alert created')
                 let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
                 viewData.user = req.user
-                viewData.pane = 'pn'
-                viewData.messages = { success: 'Account updated.' }
+                viewData.pane = 'pkg'
+                viewData.messages = { success: 'Delivery alert created.' }
                 res.render('account', viewData)
             } catch (e) {
                 console.error(e)
                 res.status(500)
-                res.render('error', { user: req.user, error: { message: 'Unable to complete requested update.', status: 500 } })
+                res.render('error', { user: req.user, error: { message: 'Unable to complete requested.', status: 500 } })
             }
         }
     }

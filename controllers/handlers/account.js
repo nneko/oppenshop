@@ -4,6 +4,8 @@ const user = require('../../models/user')
 const shopHandler = require('../handlers/shop')
 const generator = require('../../utilities/generator')
 const shop = require('../../models/shop')
+const warehouse = require('../../models/warehouse')
+const parcel = require('../../models/parcel')
 const debug = cfg.env == 'development' ? true : false
 
 let getField = generator.getField
@@ -366,6 +368,46 @@ accounthandler.phoneDeleteHandler = async (form) => {
   } catch (e) {
       console.error(e)
       throw e
+  }
+}
+
+accounthandler.deliveryAlertHandler = async (form) => {
+  try {
+
+    // Read existing stored user details
+    const usr = await user.read(form.uid, { findBy: 'id' })
+    if (!await user.isValid(usr)) {
+      let userError = new Error('Invalid user for delivery pre-alert')
+      throw userError
+    }
+
+    // Read existing stored warehouse details
+    const whs = await warehouse.read(form.pkgHandler, { findBy: 'id' })
+    if (!await warehouse.isValid(whs)) {
+      let warehouseError = new Error('Invalid warehouse for delivery pre-alert')
+      throw warehouseError
+    }
+
+    let p = {}
+    p.owner = usr
+    p.warehouse = whs
+    p.tracknum = form.tracknum
+    p.serviceType = form.serviceType
+    if (validaor.isNotNull(form.courier)) p.courier = form.courier
+    if (validaor.isNotNull(form.declaredValue) && validaor.isNotNull(form.declaredCurrency)) {
+      p.value = Number(form.declaredValue)
+      p.currency = await currency.read({ code: form.declaredCurrency }, { limit: 1 })
+
+      if (!currency.isValid(palert.currency)) {
+        let currencyError = new Error('Invalid delivery pre-alert declared currency')
+        throw currencyError
+      }
+    }
+
+    return await parcel.create(p)
+  } catch (e) {
+    console.error(e)
+    throw e
   }
 }
 

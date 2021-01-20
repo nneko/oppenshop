@@ -10,6 +10,8 @@ const debug = cfg.env == 'development' ? true : false
 const currency = require('../../models/currency')
 const accounthandler = require('../handlers/account')
 const ShoppingBag = require('../../models/shoppingbag')
+const warehouse = require('../../models/warehouse')
+const parcel = require('../../models/parcel')
 
 let account = express.Router()
 
@@ -979,6 +981,88 @@ let deleteHandler = async (req, res) => {
 
 }
 
+// Create package pre-alert
+let packagePreAlertHandler = async (req, res) => {
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        return
+    } else {
+        let u = {}
+
+        let formValidated = false
+        let formFields = {}
+
+        if (!req.body) {
+            await badRequest(req, res, 'pn', 400, 'Invalid request.')
+            return
+        }
+
+        let form = converter.objectFieldsToString(req.body)
+
+        if (form.uid != req.user.id.toString()) {
+            _403redirect(req, res, '/user/account/?show=pkg', 'Permission denied.')
+            return
+        }
+
+        // Read existing stored user details
+        const usr = await user.read(form.uid, { findBy: 'id' })
+
+        u.preferredUsername = usr.preferredUsername
+
+        //Validate email address
+        if (validator.isPhoneNumber(form.phoneNumber)) {
+            let hasPhoneNumberAlready = getField(usr.phoneNumbers, form.phoneNumber)
+            if (hasPhoneNumberAlready) {
+                formValidated = false
+                formFields.messages = { error: 'Phone numbers must be unique.' }
+                formFields.status = 400
+            } else {
+                u.phoneNumbers = usr.phoneNumbers
+                u.phoneNumbers ? u.phoneNumbers.push({ value: form.phoneNumber, type: form.phoneType }) : u.phoneNumbers = [{ value: form.phoneNumber, type: form.phoneType, primary: true }]
+                formValidated = true
+            }
+        } else {
+            formValidated = false
+            formFields.phoneNumber = { class: 'invalid', value: form.phoneNumber }
+            formFields.messages = {
+                error: 'You must enter a valid phone number.'
+            }
+        }
+
+        if (!formValidated) {
+            if (debug) {
+                console.log('Invalid update account request received.')
+            }
+            if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
+            viewData.user = req.user
+            viewData.pane = 'pn'
+            viewData.messages = formFields.messages
+            viewData.phoneNumber = formFields.phoneNumber
+            formFields.status ? res.status(formFields.status) : res.status(400)
+            res.render('account', viewData)
+            return
+        } else {
+            try {
+                //await user.update({ preferredUsername: u.preferredUsername }, u)
+                let u_phoneaddhandler = await accounthandler.phoneAddHandler(form)
+                // TODO: validation check on 'u_phoneaddhandler' response to show response if added or not
+
+                if (debug) console.log('User account updated for ' + u.preferredUsername)
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
+                viewData.user = req.user
+                viewData.pane = 'pn'
+                viewData.messages = { success: 'Account updated.' }
+                res.render('account', viewData)
+            } catch (e) {
+                console.error(e)
+                res.status(500)
+                res.render('error', { user: req.user, error: { message: 'Unable to complete requested update.', status: 500 } })
+            }
+        }
+    }
+}
+
 account.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
@@ -1058,6 +1142,9 @@ account.post('/', async (req, res) => {
                     break
                 case 'pr':
                     await prFormHandler(req, res)
+                    break
+                case 'pkg-prealert':
+                    await packagePreAlertHandler(req, res)
                     break
                 default:
                     await badRequest(req, res)

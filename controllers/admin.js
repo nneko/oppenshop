@@ -11,9 +11,8 @@ let admin = express.Router()
 admin.get('/', async (req, res) => {
     try {
         let viewData = {}
-        viewData.messages = {info: 'Functionality not implemented.'}
         viewData.user = req.user
-        res.status = 501
+        viewData.pane = 'whs'
         res.render('admin', viewData)
 
     } catch (e) {

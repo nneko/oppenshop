@@ -6,6 +6,7 @@ const generator = require('../../utilities/generator')
 const shop = require('../../models/shop')
 const warehouse = require('../../models/warehouse')
 const parcel = require('../../models/parcel')
+const currency = require('../../models/currency')
 const debug = cfg.env == 'development' ? true : false
 
 let getField = generator.getField
@@ -46,6 +47,19 @@ accounthandler.populateViewData = async (uid) => {
                 }
             }
             viewData.verifiedUser = u.verified
+
+            //Populate the currency list
+            viewData.currency_list = {}
+            let c = await currency.read({ status: 'active' })
+            if (c) {
+              if (Array.isArray(c)) {
+                for (let cIdx = 0; cIdx < c.length; cIdx++) {
+                  if (currency.isValid(c[cIdx])) {
+                    viewData.currency_list[c[cIdx]._id.toString()] = c[cIdx]
+                  }
+                }
+              }
+            }
 
             let dForms = {
                 security: false,
@@ -94,6 +108,19 @@ accounthandler.populateUserViewData = async (uid) => {
         }
       }
       viewData.verifiedUser = u.verified
+
+      //Populate the currency list
+      viewData.currency_list = {}
+      let c = await currency.read({ status: 'active' })
+      if (c) {
+        if (Array.isArray(c)) {
+          for (let cIdx = 0; cIdx < c.length; cIdx++) {
+            if (currency.isValid(c[cIdx])) {
+              viewData.currency_list[c[cIdx]._id.toString()] = c[cIdx]
+            }
+          }
+        }
+      }
 
       let dForms = {
         security: false,

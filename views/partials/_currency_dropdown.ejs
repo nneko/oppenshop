@@ -8,7 +8,7 @@
     </div>
 -->
     <select class="custom-select btn" name="currency">
-      <% if (currency_list) { %>
+      <% if (typeof(currency_list) !== 'undefined' && currency_list) { %>
       <% for(const i of Object.keys(currency_list)) { %>
         <option value="<%= currency_list[i]._id %>" <% if(typeof(currency) !== 'undefined' && currency && currency.value && currency.value.code == currency_list[i].code) { %>selected="selected"<% } %>><%= currency_list[i].code %></option>
       <% } %>

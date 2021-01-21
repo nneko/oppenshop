@@ -1,0 +1,17 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'cfg') { %>show active<% } %>" id="config-pane"
+    role="tabpanel" aria-labelledby="config-tab">
+    <h2 class="pane-h2">Platform Configuration</h2>
+    <section class="standard-form-section">
+        <form id="config-form" class="standard-form" autocomplete="off" action="/admin" method="POST" oninput=""
+            novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="cfg">
+
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+            </fieldset>
+        </form>
+    </section>
+</div>

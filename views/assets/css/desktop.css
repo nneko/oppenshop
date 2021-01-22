@@ -59,7 +59,7 @@
     padding: 0;
 }
 
-.icon path {
+.icon path, .icon circle {
     fill: var(--icon-default-color);
     stroke: var(--icon-default-color);
 }
@@ -514,6 +514,7 @@
 
 .applogo .icon circle {
     fill: var(--main-highlight-color);
+    stroke: none;
 }
 
 .applogo:hover .icon path {
@@ -523,6 +524,7 @@
 
 .applogo:hover .icon circle {
     fill: var(--icon-default-color);
+    stroke: none;
 }
 
 /*

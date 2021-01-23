@@ -59,7 +59,7 @@
     padding: 0;
 }
 
-.icon path, .icon circle {
+.icon path, .icon circle, .icon rect {
     fill: var(--icon-default-color);
     stroke: var(--icon-default-color);
 }
@@ -267,6 +267,7 @@
 }
 
 .menu {
+    border-bottom: 1px solid var(--main-menu-border-color);
     margin: 0;
     padding: 0 2rem 0 2rem;
     width: 100%;
@@ -507,33 +508,23 @@
     height: 1.75rem;
 }
 
-.applogo .icon path {
+.applogo .icon path, .applogo .icon circle, .applogo .icon rect {
     fill: var(--main-highlight-color);
     stroke: none;
 }
 
-.applogo .icon circle {
-    fill: var(--main-highlight-color);
-    stroke: none;
-}
-
-.applogo:hover .icon path {
-    fill: var(--icon-default-color);
-    stroke: none;
-}
-
-.applogo:hover .icon circle {
+.applogo:hover .icon path, .applogo:hover .icon circle, .applogo:hover .icon rect  {
     fill: var(--icon-default-color);
     stroke: none;
 }
 
 /*
-.logo path {
+.logo path {w
     stroke: var(--main-highlight-color);
     fill: var(--main-highlight-color);
 }*/
 
-.logo:hover path {
+.logo:hover path, .logo:hover circle, .logo:hover rect {
     stroke: var(--main-nav-highlight-color);
     fill: var(--main-nav-highlight-color);
 }
@@ -806,7 +797,7 @@
     color: var(--main-alert-err-em-color);
 }
 
-.sidebar .active .icon path {
+.sidebar .active .icon path,  .sidebar .active .icon circle, .sidebar .active .icon rect {
     
     fill: var(--sidebar-icon-highlight-color);
     stroke: var(--sidebar-icon-highlight-color);
@@ -822,7 +813,7 @@
     padding: 0;
 }
 
-.nav-link.active .icon path {
+.nav-link.active .icon path, .nav-link.active .icon circle, .nav-link.active .icon rect {
     fill: var(--main-nav-highlight-color);
     stroke: var(--main-nav-highlight-color);
 }

@@ -984,7 +984,7 @@ let deleteHandler = async (req, res) => {
 // Create package pre-alert
 let packagePreAlertHandler = async (req, res) => {
     if (!validator.hasActiveSession(req)) {
-        _403redirect(req, res, '/user/account/?show=pr', 'You must be signed in.')
+        _403redirect(req, res, '/user/account/?show=pkg', 'You must be signed in.')
         return
     } else {
 
@@ -992,7 +992,7 @@ let packagePreAlertHandler = async (req, res) => {
         let formFields = {}
 
         if (!req.body) {
-            await badRequest(req, res, 'pn', 400, 'Invalid request.')
+            await badRequest(req, res, 'pkg', 400, 'Invalid request.')
             return
         }
 

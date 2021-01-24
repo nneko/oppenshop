@@ -31,7 +31,7 @@ parcel.isValid = async (p) => {
             }
         }
 
-        if (warehouseExists && userExists && typeof (p.tracknum) == 'string' && validator.isNotNull(p.tracknum) && typeof (p.courier) == 'string' && validator.isNotNull(p.courier) && p.hasOwnProperty('invoices') && p.hasOwnProperty('declaredValue') && p.hasOwnProperty('declaredValueCurrency') && p.hasOwnProperty('serviceType') && p.hasOwnProperty('description')) {
+        if (warehouseExists && userExists && typeof (p.tracknum) == 'string' && validator.isNotNull(p.tracknum) && typeof (p.courier) == 'string' && validator.isNotNull(p.courier) && p.hasOwnProperty('invoices') && Array.isArray(p.invoices) && p.hasOwnProperty('declaredValue') && p.hasOwnProperty('declaredValueCurrency') && p.hasOwnProperty('serviceType') && p.hasOwnProperty('description')) {
             return true
         } else {
             return false

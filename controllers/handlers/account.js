@@ -398,7 +398,7 @@ accounthandler.phoneDeleteHandler = async (form) => {
   }
 }
 
-accounthandler.deliveryAlertHandler = async (form) => {
+accounthandler.deliveryAlertHandler = async (form, files) => {
   try {
 
     // Read existing stored user details
@@ -420,6 +420,7 @@ accounthandler.deliveryAlertHandler = async (form) => {
     p.warehouse = whs
     p.tracknum = form.tracknum
     p.serviceType = form.serviceType
+    p.invoices = []
     if (validaor.isNotNull(form.courier)) p.courier = form.courier
     if (validaor.isNotNull(form.declaredValue) && validaor.isNotNull(form.declaredCurrency)) {
       p.value = Number(form.declaredValue)
@@ -431,7 +432,29 @@ accounthandler.deliveryAlertHandler = async (form) => {
       }
     }
 
-    return await parcel.create(p)
+    let pkg = await parcel.create(p)
+
+    if (await parcel.isValid(pkg)) {
+      //Process uploaded invoices
+      if (files && Array.isArray(files)) {
+        if (files.length > 0) {
+          let pkgInvs = pkg.invoices
+          for (x of req.files) {
+            let inv = {}
+            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
+            if (x.storage != 'db') {
+              inv = await media.write(x, (cfg.media_dest_parcels ? cfg.media_dest_parcels : '/parcel') + '/' + String(pkg._id) + '/delivery/invoice/' + (x.originalname ? x.originalname : generator.uuid()))
+            } else {
+              inv = x
+            }
+            pkgInvs.push(inv)
+          }
+          pkg = await pkg.update({_id: pkg._id},{invoices: pkgInvs})
+        }
+      }
+    }
+
+    return pkg
   } catch (e) {
     console.error(e)
     throw e

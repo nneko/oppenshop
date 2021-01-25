@@ -7,6 +7,7 @@ const shop = require('../../models/shop')
 const warehouse = require('../../models/warehouse')
 const parcel = require('../../models/parcel')
 const currency = require('../../models/currency')
+const validaor = require('../../utilities/validator')
 const debug = cfg.env == 'development' ? true : false
 
 let getField = generator.getField
@@ -60,6 +61,21 @@ accounthandler.populateViewData = async (uid) => {
                 }
               }
             }
+
+            let whsPackageHandlers = await warehouse.read({generalPackageHandler: true})
+            if(debug) {
+              console.log('Found the following package handlers: ')
+              console.log(whsPackageHandlers)
+            }
+            let packageHandlers = []
+
+            if(Array.isArray(whsPackageHandlers)) {
+              for(const w of whsPackageHandlers) {
+                packageHandlers.push({handler: w._id, name: w.name})
+              }
+            }
+            viewData.packageHandlers = packageHandlers
+            if(debug) console.log(viewData.packageHandlers)
 
             let dForms = {
                 security: false,
@@ -121,6 +137,21 @@ accounthandler.populateUserViewData = async (uid) => {
           }
         }
       }
+
+      let whsPackageHandlers = await warehouse.read({ generalPackageHandler: true, status: 'active' })
+      if (debug) {
+        console.log('Found the following package handlers: ')
+        console.log(whsPackageHandlers)
+      }
+      let packageHandlers = []
+
+      if (Array.isArray(whsPackageHandlers)) {
+        for (const w of whsPackageHandlers) {
+          packageHandlers.push({ handler: w._id, name: w.name })
+        }
+      }
+      viewData.packageHandlers = packageHandlers
+      if(debug) console.log(viewData.packageHandlers)
 
       let dForms = {
         security: false,
@@ -416,20 +447,34 @@ accounthandler.deliveryAlertHandler = async (form, files) => {
     }
 
     let p = {}
-    p.owner = usr
-    p.warehouse = whs
+    p.owner = form.uid
+    p.warehouse = form.pkgHandler
     p.tracknum = form.tracknum
     p.serviceType = form.serviceType
     p.invoices = []
+    p.description = form.description || ''
     if (validaor.isNotNull(form.courier)) p.courier = form.courier
-    if (validaor.isNotNull(form.declaredValue) && validaor.isNotNull(form.declaredCurrency)) {
-      p.value = Number(form.declaredValue)
-      p.currency = await currency.read({ code: form.declaredCurrency }, { limit: 1 })
 
-      if (!currency.isValid(palert.currency)) {
+    let pval_dollar = validator.isNotNull(form.unit_dollar) ? form.unit_dollar : 0
+    let pval_cents = validator.isNotNull(form.unit_cents) ? form.unit_cents : 0
+
+    p.declaredValue = generator.roundNumber(pval_dollar && pval_cents ? Number(pval_dollar + '.' + pval_cents) : 0, 2)
+
+    if (validaor.isNotNull(form.currency)) {
+      let c = await currency.read(form.currency, { findBy: 'id'})
+      if (!currency.isValid(c)) {
         let currencyError = new Error('Invalid delivery pre-alert declared currency')
         throw currencyError
+      } else {
+        p.declaredValueCurrency = c.code
       }
+    } else {
+      p.declaredValueCurrency = cfg.base_currency_code
+    }
+
+    if(debug) {
+      console.log('Attempting to create parcel: ')
+      console.log(p)
     }
 
     let pkg = await parcel.create(p)

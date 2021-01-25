@@ -1081,8 +1081,18 @@ let packagePreAlertHandler = async (req, res) => {
                 res.render('account', viewData)
             } catch (e) {
                 console.error(e)
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
+                viewData.user = req.user
+                viewData.pane = 'pkg'
+                
+                if(e.type == 'Duplicate') {
+                    viewData.tracknum = { class: 'is-invalid', value: form.tracknum }
+                    viewData.messages = {error: 'Cannot create duplicate pre-alert. Tracking number is already associated with a package.'}
+                } else {
+                    viewData.messages = { error: 'Unable to complete requested.' }
+                }
                 res.status(500)
-                res.render('error', { user: req.user, error: { message: 'Unable to complete requested.', status: 500 } })
+                res.render('account', viewData)
             }
         }
     }

@@ -75,7 +75,11 @@
                     <select id="pkgHandler"
                         class="form-control <% if(typeof(pkgHandler) !== 'undefined') { %><%= pkgHandler.class %><% } %>" type="text"
                         name="pkgHandler" value="" aria-label="pkgHandler" aria-describedby="pkgHandler-basic-addon">
-                        <option selected="selected">MyPack</option>
+                        <% if(typeof(packageHandlers) !== 'undefined' && Array.isArray(packageHandlers) && packageHandlers.length > 0) { %>
+                            <% for (const w of packageHandlers) { %>
+                                <option value="<%= w.handler %>"><%= w.name %></option>
+                            <% } %>
+                        <% } %>
                     </select>
                 </div>
             </div>

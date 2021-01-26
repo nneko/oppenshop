@@ -382,7 +382,7 @@ warehouses.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query
-            let panel = 'pkg'
+            let panel = 'whs'
             if(qd) {
                 switch(qd.show){
                     case 'whs':
@@ -398,7 +398,7 @@ warehouses.get('/', async (req, res) => {
                         panel = qd.show
                         break
                     default:
-                        panel = 'pkg'
+                        panel = 'whs'
                 }
             }
             //let viewData = await adminhandler.populateUserViewData(req.user.id.toString())

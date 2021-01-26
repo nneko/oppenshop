@@ -246,6 +246,7 @@ let warehouseUpdateHandler = async (req, res) => {
             console.log(s)
             switch (form.update) {
                 case 'open':
+                    // TODO: Make uid check if 'super-admin'
                     /*if (form.uid != req.user.id.toString()) {
                         _403redirect(req, res, '/admin/?show=whs', 'Permission denied.')
                         return
@@ -267,6 +268,7 @@ let warehouseUpdateHandler = async (req, res) => {
                     }
                     break
                 case 'close':
+                    // TODO: Make uid check if 'super-admin'
                     /*if (form.uid != req.user.id.toString()) {
                             _403redirect(req, res, '/admin/?show=whs', 'Permission denied.')
                             return
@@ -287,10 +289,11 @@ let warehouseUpdateHandler = async (req, res) => {
                     }
                     break
                 case 'delete':
-                    if (form.uid != req.user.id.toString()) {
+                    // TODO: Make uid check if 'super-admin'
+                    /*if (form.uid != req.user.id.toString()) {
                         _403redirect(req, res, '/admin/?show=whs', 'Permission denied.')
                         return
-                    }
+                    }*/
 
                     try {
                         //await shophandler.shopDelete(s)

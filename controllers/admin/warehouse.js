@@ -246,14 +246,14 @@ let warehouseUpdateHandler = async (req, res) => {
             console.log(s)
             switch (form.update) {
                 case 'open':
-                    if (form.uid != req.user.id.toString()) {
+                    /*if (form.uid != req.user.id.toString()) {
                         _403redirect(req, res, '/admin/?show=whs', 'Permission denied.')
                         return
-                    }
-
+                    }*/
+                    //console.log('Enter warehouseUpdateHandler:')
                     try {
                         let t = await warehouse.update({ _id: s._id }, { status: 'active' })
-                        console.log(t)
+                        if (debug) console.log(t)
                         if (debug) console.log('Warehouse status made \'active\' for ' + form.uid)
                         let viewData = await adminhandler.populateViewData(form.uid.toString())
                         viewData.user = req.user
@@ -267,11 +267,11 @@ let warehouseUpdateHandler = async (req, res) => {
                     }
                     break
                 case 'close':
-                    if (form.uid != req.user.id.toString()) {
+                    /*if (form.uid != req.user.id.toString()) {
                             _403redirect(req, res, '/admin/?show=whs', 'Permission denied.')
                             return
-                    }
-
+                    }*/
+                    if (debug) console.log('Enter warehouseUpdateHandler:')
                     try {
                         //await shophandler.shopClose(s)
                         await adminhandler.warehouseClose(s)

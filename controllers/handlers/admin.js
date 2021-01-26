@@ -196,7 +196,7 @@ adminhandler.warehouseClose = async (w) => {
             err.type = 'Invalid'
             throw err
         }
-
+        if (debug) console.log('Enter adminhandler.warehouseClose:')
         let result = await warehouse.update({ _id: w._id }, { status: 'inactive' })
         if (debug) console.log(result)
 

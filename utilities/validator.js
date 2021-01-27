@@ -84,6 +84,28 @@ validator.isLocalUserAccount = (u) => {
     return false
 }
 
+validator.isSuperUser = (u) => {
+    if(validator.isNotNull(u)) {
+        if(Array.isArray(u.roles)) {
+            for(r of u.roles) {
+                if(r.role == "superuser") return true
+            }
+        }
+    }
+    return false
+}
+
+validator.isWarehouseAdmin = (w, u) => {
+    if (validator.isNotNull(w) && validator.isNotNull(u)) {
+        if (w.hasOwnProperty('staff') && u.hasOwnProperty('_id')) {
+            if(validator.isNotNull(w.staff) && (w.staff[u._id] == 'admin' || w.owner == u._id)) {
+                return true
+            }
+        }
+    }
+    return false
+}
+
 // Validate file upload limit and file upload size
 validator.isUploadLimitExceeded = (files) => {
     let uploadLimit = typeof (cfg.uploadLimit) === 'number' ? cfg.uploadLimit : 10

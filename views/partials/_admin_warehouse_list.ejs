@@ -10,140 +10,13 @@
                 <option value="inactive">Closed</option>
             </select>
         </div>
-        <!--
-        <div class="add-action-button-section">
-            <a id="new-warehouse-link" class="right add-warehouse-link" href="#newwarehouse"
-                onclick="document.getElementById('newwarehouse').removeAttribute('hidden');"><%- include('../assets/symbols/plus.svg') %>
-                Add Warehouse
-            </a>
-        </div>
-        -->
     </div>
     <section id="warehouse-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
-      <!--
-        <% if (typeof(warehouses) !== 'undefined' && Array.isArray(warehouses) && warehouses.length > 0) { %>
-        <% for(let i=0;i<warehouses.length;i++) { %>
-        <div class="card <%= warehouses[i].status %>" <% if (warehouses[i].status == 'inactive'){ %>hidden<% } %>>
-            <div class="card-body">
-                <div class="actionable-card-pane">
-                    <div class="address-view-card-pane">
-                        <ul>
-                            <li>
-                                <span>
-                                    <p class="item-card-label">
-                                        <b><% if(typeof(warehouses[i].displayName) !== 'undefined') {%><%= warehouses[i].displayName %><% } else { %><%= warehouses[i].name %><% } %></b>
-                                    </p>
-                                    <div class=" item-card">
-                                        <div class="item-card-left">
-                                            <% if (typeof(warehouses[i].images) !== 'undefined' && Array.isArray(warehouses[i].images) && warehouses[i].images.length > 0) { %>
-                                            <% for(let k=0;k<warehouses[i].images.length;k++) { %>
-                                            <img class="storefront-image" alt="<%= warehouses[i].images[k].originalname %>" src="<%= warehouses[i].images[k].src %>" />
-                                            <% } %>
-                                            <% } else { %>
-                                            <figure class="storefront-image">
-                                                <%- include('../assets/symbols/shop.svg') %>
-                                            </figure>
-                                            <% } %>
-                                        </div>
-                                        <div class="item-card-right extra-info">
-                                                <% if(typeof(warehouses[i].status !== 'undefined')) { %>
-                                                    <h4>Status</h4>
-                                                    <p>
-                                                        <% if(warehouses[i].status == 'active') { %>
-                                                        Open
-                                                        <% } else { %>
-                                                        Closed
-                                                        <% } %>
-                                                    </p>
-                                                <% } %>
-                                                <% if(typeof(warehouses[i].description) !== 'undefined') { %>
-                                                    <h4>Description</h4>
-                                                    <p>
-                                                        <%= warehouses[i].description %>
-                                                    </p>
-                                                <% } %>
-                                        </div>
-                                    </div>
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="action-button-section">
-                        <form class="edit-delete-action-form" method="POST" action="/admin">
-                            <input type="hidden" name="id" value="upwhs">
-                            <input type="hidden" name="sid" value="<% if(typeof(shops[i]._id) !== 'undefined') { %><%= shops[i]._id %><% } %>">
-                            <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-                            <% if (shops[i].status == 'inactive'){ %>
-                                <a href="/user/shop/edit?s=<%= shops[i]._id %>">
-                            <button class=" action-icon-button  action-icon" type="button" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
-                            <%- include('../assets/symbols/edit.svg') %>
-                            </button></a>
-                            <button class=" action-icon-button reactivate-icon action-icon" type="submit" data-toggle="tooltip"
-                                data-placement="left" title="Re-activate" name="update" value="open">
-                                <%- include('../assets/symbols/reload.svg') %>
-                            </button>
-                            <button class=" action-icon-button delete-icon action-icon" type="submit" data-toggle="tooltip" data-placement="left"
-                                title="Delete" name="update" value="delete">
-                                <%- include('../assets/symbols/bin.svg') %>
-                            </button>
-                            <%  } else { %>
-                            <a href="/user/shop/edit?s=<%= shops[i]._id %>"><button class=" action-icon-button  action-icon" type="button" data-toggle="tooltip" data-placement="left" title="Edit" name="update" value="edit">
-                            <%- include('../assets/symbols/edit.svg') %>
-                            </button></a>
-                            <button class=" action-icon-button close-icon action-icon" type="submit"  data-toggle="tooltip" data-placement="left" title="Close" name="update" value="close">
-                                <%- include('../assets/symbols/no.svg') %>
-                            </button>
-                            <% } %>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <% } %>
-        <%  } else { %>
-        <p>No warehouses associated with account.</p>
-        <% } %>
-      -->
     </section>
     <nav id="warehouse-list-section-pagination" class="content-nav-right" aria-label="Warehouse listing">
-        <!-- Pagination Navigation Details -->
-        <!--
-          <% if (typeof(warehouses_pages) !== 'undefined' && warehouses_pages > 0) { %>
-          <ul class="pagination text-center">
-              <% if (typeof(warehouses_current) !== 'undefined' ) { %>
-              <% if (warehouses_current == 1) { %>
-              <li class="page-item disabled"><a class="page-link">First</a></li>
-              <% } else { %>
-              <li class="page-item"><a class="page-link" href="/admin/page/1">First</a></li>
-              <% } %>
-              <% let i = (Number(warehouses_current) > 5 ? Number(warehouses_current) - 4 : 1) %>
-              <% if (i !== 1) { %>
-              <li class="page-item disabled"><a class="page-link">...</a></li>
-              <% } %>
-              <% for (; i <= (Number(warehouses_current) + 4) && i <= warehouses_pages; i++) { %>
-              <% if (i == warehouses_current) { %>
-              <li class="page-item active"><a class="page-link"><%= i %></a></li>
-              <% } else { %>
-              <li class="page-item"><a class="page-link" href="/admin/page/<%= i %>"><%= i %></a></li>
-              <% } %>
-              <% if (i == Number(warehouses_current) + 4 && i < warehouses_pages) { %>
-              <li class="page-item disabled"><a class="page-link">...</a></li>
-              <% } %>
-              <% } %>
-              <% if (warehouses_current == warehouses_pages) { %>
-              <li class="page-item disabled"><a class="page-link">Last</a></li>
-              <% } else { %>
-              <li class="page-item"><a class="page-link" href="/admin/page/<%= shops_pages %>">Last</a></li>
-              <% } %>
-              <% } %>
-          </ul>
-          <% } %>
-        -->
     </nav>
 </div>
 <script>
-
-
 function getWarehouseDetails(obj){
     console.log('Calling getWarehouseDetails....')
     var xhttp;
@@ -447,35 +320,7 @@ function updateWarehouseView(s){
 
 function toggleWarehouseView(){
     let e = document.getElementById("warehouse-select")
-    // TODO: Get active page to carry-over when status change
-    //let pagination_section = document.getElementById("warehouse-list-section-pagination")
-    //let v = pagination_section.getElementsByClassName(names)
     getWarehouseDetails({sid: '12', uid: '<%= user.id %>', status: e.options[e.selectedIndex].value})
-    /*
-    let cardSelector = document.getElementById('warehouse-select')
-    let cardList = document.getElementById('warehouse-list-section')
-    if (cardSelector && cardSelector.value == 'closed'){
-        let z = cardList.querySelectorAll(".card")
-        for (const zz of z) {
-            zz.setAttribute('hidden', true)
-        }
-        let y = cardList.querySelectorAll(".inactive")
-        for (const yy of y) {
-            yy.removeAttribute('hidden')
-        }
-    } else if (cardSelector && cardSelector.value == 'open') {
-        let z = cardList.querySelectorAll(".card")
-        for (const zz of z) {
-            zz.setAttribute('hidden', true)
-        }
-        let y = cardList.querySelectorAll(".active")
-        for (const yy of y) {
-            yy.removeAttribute('hidden')
-        }
-    } else {
-        console.log(cardSelector.value);
-    }
-    */
 }
 
 function toggleAddressFields(){
@@ -496,44 +341,4 @@ function closeNewWarehouseForm(){
     document.getElementById('newwarehouse').setAttribute('hidden', true)
     document.getElementById('new-warehouse-link').scrollIntoView(false)
 }
-/*
-function clearImageValidation() {
-    let imgInput = document.getElementById('add-warehouse-fullimage')
-    if (imgInput) {
-        imgInput.classList.remove('is-invalid')
-    }
-}
-
-function validateImageFiles() {
-    let imgInput = document.getElementById('add-warehouse-fullimage')
-    let imgInputInvalidElem = document.getElementById('add-warehouse-invalid-fullimage')
-    let imgFiles = imgInput.files
-    let uploadLimit = <%= typeof (uploadLimit) === 'number' ? uploadLimit : 10 %>
-        let uploadSize = <%= typeof (uploadSize) === 'number' ? uploadSize : 10485760 %>
-
-    if (imgInput) {
-        console.log('validating images...')
-        if (imgFiles.length > uploadLimit) {
-            imgInputInvalidElem.innerHTML = 'You cannot upload more than ' + uploadLimit.toString() + ' images.'
-            imgInput.value = null
-            imgInput.classList.add('is-invalid')
-            return
-        }
-
-        let totalImgSize = 0
-
-        for (let i = 0; i < imgFiles.length; i++) {
-            totalImgSize += imgFiles[i].size
-            console.log('Total image size: ' + totalImgSize.toString())
-            if (totalImgSize > uploadSize) {
-                imgInputInvalidElem.innerHTML = 'Upload size limit of ' + uploadSize.toString() + ' exceeded.'
-                imgInput.value = null
-                imgInput.classList.add('is-invalid')
-                return
-            }
-        }
-    }
-}
-*/
-//toggleStorefrontView()
 </script>

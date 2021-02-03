@@ -140,17 +140,6 @@
                 let ul = document.createElement("UL")
                 let li = document.createElement("LI")
                 let span = document.createElement("SPAN")
-                let p = document.createElement("P")
-                p.className = "item-card-label"
-                if(s.parcels[ss].tracknum) {
-                    let t = document.createElement("B")
-                    t.innerHTML = s.parcels[ss].tracknum
-                    p.appendChild(t)
-                    let br = document.createElement("BR")
-                    p.appendChild(br)
-
-                }
-                span.appendChild(p)
                 let item_card = document.createElement("DIV")
                 item_card.className = "item-card"
                 let item_card_left = document.createElement("DIV")
@@ -186,6 +175,14 @@
                         p_status.innerHTML = 'Closed'
                     }
                     item_card_right_extra_info.appendChild(p_status)
+                }
+                if (typeof (s.parcels[ss].tracknum) !== 'undefined') {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Tracking No."
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_tracknum = document.createElement("P")
+                    p_tracknum.innerHTML = s.parcels[ss].tracknum
+                    item_card_right_extra_info.appendChild(p_tracknum)
                 }
                 if (typeof (s.parcels[ss].courier) !== 'undefined') {
                     let h4 = document.createElement("H4")

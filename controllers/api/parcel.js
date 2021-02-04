@@ -56,6 +56,15 @@ parcels.get('/', async (req, res) => {
       }
       
       let p = await parcel.read(t,o_parcel)
+      for(const pr of p) {
+        if (typeof (pr.invoices) !== 'undefined' && Array.isArray(pr.invoices)) {
+          for (let inv = 0; inv < pr.invoices.length; inv++) {
+            if (pr.invoices[inv].type == 'invoice') {
+              pr.invoices[inv].value = media.read(pr.invoices[inv])
+            }
+          }
+        }
+      }
       p_count = await parcel.count(t,o_parcel)
       let total_pages = Math.ceil(p_count / perPage)
       if (parcel_page > total_pages) parcel_page = total_pages

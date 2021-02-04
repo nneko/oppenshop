@@ -486,12 +486,8 @@ accounthandler.deliveryAlertHandler = async (form, files) => {
           let pkgInvs = pkg.invoices
           for (x of req.files) {
             let inv = {}
-            x.storage = cfg.media_datastore ? cfg.media_datastore : 'db'
-            if (x.storage != 'db') {
-              inv = await media.write(x, (cfg.media_dest_parcels ? cfg.media_dest_parcels : '/parcel') + '/' + String(pkg._id) + '/delivery/invoice/' + (x.originalname ? x.originalname : generator.uuid()))
-            } else {
-              inv = x
-            }
+            inv = await media.write(x, (cfg.media_dest_parcels ? cfg.media_dest_parcels : '/parcel') + '/' + String(pkg._id) + '/delivery/invoice/' + (x.originalname ? x.originalname : generator.uuid()))
+            inv.type = 'invoice'
             pkgInvs.push(inv)
           }
           pkg = await pkg.update({_id: pkg._id},{invoices: pkgInvs})

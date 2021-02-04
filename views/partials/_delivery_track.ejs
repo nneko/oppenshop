@@ -1,84 +1,101 @@
 <div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'track' ) { %>show active<% } %>"
     id="delivery-track-pane" role="tabpanel" aria-labelledby="delivery-track-tab">
-    <h2 class="pane-h2">Search</h2>
-    <section class="standard-form-section">
-        <form id="delivery-search-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
-            novalidate>
-            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
-                <% } %>>
-                <input type="hidden" name="id" value="or">
+    <div id="delivery-track-accordion" class="content-pane-scroll-cards-section">
+        <div class="card">
+            <h2 id="delivery-track-search-card-header" class="btn btn-link card-header pane-h2 mb-0" data-toggle="collapse" data-target="#delivery-track-search-card-body"  aria-expanded="false" aria-controls="delivery-track-search-card-body">
+                Search
+            </h2>
+            <div id="delivery-track-search-card-body" class="collapse" aria-labelledby="delivery-track-search-card-header" data-parent="#delivery-track-accordion">
+                <section class="standard-form-section card-body">
+                    <form id="delivery-search-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
+                        novalidate>
+                        <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
+                            <% } %>>
+                            <input type="hidden" name="id" value="or">
 
-                <input type="hidden" name="uid"
-                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
-                <div class="form-group">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="pkg-id-basic-addon">Delivery Id.</span>
-                        </div>
-                        <input id="pkg-id-number"
-                            class="form-control <% if(typeof(pkgid) !== 'undefined') { %><%= pkgid.class %><% } %>" type="text"
-                            name="pkgid" value="" aria-label="pkg-id-num" aria-describedby="pkg-id-basic-addon" size="25" required>
-                        <div id="invalid-pkgid" class="invalid-feedback">
-                            <% if(typeof(pkgid) !=='undefined' && pkgid.class=='is-invalid' ) { %>
-                                <%= pkgid.message %>
-                                    <% } else { %>Please enter a valid id number. <% } %>
+                            <input type="hidden" name="uid"
+                                value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                            <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="pkg-id-basic-addon">Delivery Id.</span>
+                                    </div>
+                                    <input id="pkg-id-number"
+                                        class="form-control <% if(typeof(pkgid) !== 'undefined') { %><%= pkgid.class %><% } %>" type="text"
+                                        name="pkgid" value="" aria-label="pkg-id-num" aria-describedby="pkg-id-basic-addon" size="25" required>
+                                    <div id="invalid-pkgid" class="invalid-feedback">
+                                        <% if(typeof(pkgid) !=='undefined' && pkgid.class=='is-invalid' ) { %>
+                                            <%= pkgid.message %>
+                                                <% } else { %>Please enter a valid id number. <% } %>
+                                    </div>
+                                </div>
+                                <small id="tracknumHint" class="form-text text-muted hidden"></small>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="pkg-trackno-basic-addon">Tracking No.</span>
+                                    </div>
+                                    <input id="tracking-number"
+                                        class="form-control <% if(typeof(tracknum) !== 'undefined') { %><%= tracknum.class %><% } %>" type="text"
+                                        name="tracknum" value="" aria-label="tracknum" aria-describedby="tracknum-basic-addon" size="25" required>
+                                    <div id="invalid-tracknum" class="invalid-feedback">
+                                        <% if(typeof(tracknum) !=='undefined' && tracknum.class=='is-invalid' ) { %>
+                                            <%= tracknum.message %>
+                                                <% } else { %>Please enter a valid tracking number. <% } %>
+                                    </div>
+                                </div>
+                                <small id="tracknumHint" class="form-text text-muted hidden"></small>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="pkg-courier-basic-addon">Courier</span>
+                                    </div>
+                                    <input id="courier" class="form-control <% if(typeof(courier) !== 'undefined') { %><%= courier.class %><% } %>"
+                                        type="text" name="courier" value="" aria-label="courier" aria-describedby="courier-basic-addon" size="25"
+                                        required>
+                                    <div id="invalid-tracknum" class="invalid-feedback">
+                                        <% if(typeof(courier) !=='undefined' && courier.class=='is-invalid' ) { %>
+                                            <%= courier.message %>
+                                                <% } else { %>Please enter the name of the courier service. <% } %>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div id="security-update-button-container">
+                                    <button id="update-security-button" type="submit" class="btn btn-primary" onclick="">Find</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </section>
+            </div>
+        </div>
+        <!-- <hr> -->
+        <div class="card">
+            <!--
+            <h2 id="delivery-track-browse-card-header class="card-header pane-h2 mb-0" data-toggle="collapse show" data-target="#delivery-track-browse-card-body" aria-expanded="true" aria-controls="delivery-track-browse-card-body">
+                Browse
+            </h2> -->
+            <div id="delivery-track-browse-card-body class="collapse show" aria-labelledby="delivery-track-browse-card-header" data-parent="#delivery-track-accordion">
+                <div class="card-body">
+                    <div class="card-filter-section space-between">
+                        <div class="form-group form-inline mb-3 card-filter-selector">
+                            <label id="delivery-select-label" class="form-label" for="delivery-select">Show: </label>
+                            <select id="delivery-select" class="form-control" type="text" onchange="toggleDeliveryView()"
+                                name="deliveries" aria-label="delivery-select-label" aria-describedby="delivery-select-basic-addon">
+                                <option value="active" selected>Open</option>
+                                <option value="inactive">Closed</option>
+                            </select>
                         </div>
                     </div>
-                    <small id="tracknumHint" class="form-text text-muted hidden"></small>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="pkg-trackno-basic-addon">Tracking No.</span>
-                        </div>
-                        <input id="tracking-number"
-                            class="form-control <% if(typeof(tracknum) !== 'undefined') { %><%= tracknum.class %><% } %>" type="text"
-                            name="tracknum" value="" aria-label="tracknum" aria-describedby="tracknum-basic-addon" size="25" required>
-                        <div id="invalid-tracknum" class="invalid-feedback">
-                            <% if(typeof(tracknum) !=='undefined' && tracknum.class=='is-invalid' ) { %>
-                                <%= tracknum.message %>
-                                    <% } else { %>Please enter a valid tracking number. <% } %>
-                        </div>
-                    </div>
-                    <small id="tracknumHint" class="form-text text-muted hidden"></small>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="pkg-courier-basic-addon">Courier</span>
-                        </div>
-                        <input id="courier" class="form-control <% if(typeof(courier) !== 'undefined') { %><%= courier.class %><% } %>"
-                            type="text" name="courier" value="" aria-label="courier" aria-describedby="courier-basic-addon" size="25"
-                            required>
-                        <div id="invalid-tracknum" class="invalid-feedback">
-                            <% if(typeof(courier) !=='undefined' && courier.class=='is-invalid' ) { %>
-                                <%= courier.message %>
-                                    <% } else { %>Please enter the name of the courier service. <% } %>
-                        </div>
-                    </div>
-                    <hr>
-                    <div id="security-update-button-container">
-                        <button id="update-security-button" type="submit" class="btn btn-primary" onclick="">Find</button>
+                    <div class="browse-section">
+                        <section id="delivery-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
+                        </section>
+                        <nav id="delivery-list-section-pagination" class="content-nav-right" aria-label="Delivery Listing">
+                            <!-- Pagination Navigation Details -->
+                        </nav>
                     </div>
                 </div>
-            </fieldset>
-        </form>
-    </section>
-    <hr>
-    <h2 class="pane-h2">Browse</h2>
-    <div class="card-filter-section space-between">
-        <div class="form-group form-inline mb-3 card-filter-selector">
-            <label id="delivery-select-label" class="form-label" for="delivery-select">Show: </label>
-            <select id="delivery-select" class="form-control" type="text" onchange="toggleDeliveryView()"
-                name="deliveries" aria-label="delivery-select-label" aria-describedby="delivery-select-basic-addon">
-                <option value="active" selected>Open</option>
-                <option value="inactive">Closed</option>
-            </select>
+            </div>
         </div>
-    </div>
-    <div class="browse-section">
-        <section id="delivery-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
-        </section>
-        <nav id="delivery-list-section-pagination" class="content-nav-right" aria-label="Delivery Listing">
-            <!-- Pagination Navigation Details -->
-        </nav>
     </div>
 </div>
 <script>
@@ -199,6 +216,38 @@
                     let p_desc = document.createElement("P")
                     p_desc.innerHTML = s.parcels[ss].description
                     item_card_right_extra_info.appendChild(p_desc)
+                }
+                if (typeof (s.parcels[ss].declaredValue) !== 'undefined') {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Declared Value"
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_val = document.createElement("P")
+                    p_val.innerHTML = s.parcels[ss].declaredValue + ' ' +(s.parcels[ss].declaredValueCurrency ? s.parcels[ss].declaredValueCurrency : "")
+                    item_card_right_extra_info.appendChild(p_val)
+                }
+                if (typeof (s.parcels[ss].serviceType) !== 'undefined') {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Service Type"
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_type = document.createElement("P")
+                    p_type.innerHTML = s.parcels[ss].serviceType
+                    item_card_right_extra_info.appendChild(p_type)
+                }
+                if (typeof (s.parcels[ss].invoices) !== 'undefined' && Array.isArray(s.parcels[ss].invoices) && s.parcels[ss].invoices.length > 0) {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Invoices"
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_div = document.createElement("DIV")
+                    let p_inv = document.createElement("P")
+                    let invs = ''
+                    for(let i = 0;i<s.parcels[ss].invoices.length;i++) {
+                        let ivs = s.parcels[ss].invoices
+                        let linkTxt = '<a href="' + ivs.value + '">' + 'Invoice ' + String(i+1) + '</a> '
+                        invs += linkTxt
+                    }
+                    p_inv.innerHTML = invs
+                    p_div.appendChild(p_inv)
+                    item_card_right_extra_info.appendChild(p_div)
                 }
                 item_card.appendChild(item_card_right_extra_info)
                 span.appendChild(item_card)

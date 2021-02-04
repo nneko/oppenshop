@@ -134,7 +134,7 @@
     }
 ```
 
-# Sample Package Model (JSON):
+# Sample Parcel Model (JSON):
 ```
     {
         "_id": ObjectId("2342345235"),

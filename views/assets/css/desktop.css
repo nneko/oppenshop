@@ -1308,6 +1308,14 @@ white-space: nowrap;
     object-fit: cover;
 }
 
+#delivery-track-accordion .card {
+    margin: 0;
+}
+
+#delivery-track-accordion .card-body ul {
+    flex-direction: row;
+}
+
 .shopping-bag-counter {
     background-color: var(--icon-default-color);
     border-radius: 0.5rem;

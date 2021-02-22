@@ -42,8 +42,8 @@
                                 <%- include('assets/symbols/people.svg') %>Users & Groups
                             </a>
                             <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'prm') { %>active<% } %>"
-                                id="permissions-tab" data-toggle="list" role="tab" aria-controls="permissions" aria-selected="false"
-                                href="#permissions-pane">
+                                id="permission-tab" data-toggle="list" role="tab" aria-controls="permission" aria-selected="false"
+                                href="#permission-pane">
                                 <%- include('assets/symbols/switch.svg') %>Permissions
                             </a>
                             <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'cfg') { %>active<% } %>" id="config-tab" data-toggle="list" role="tab" aria-controls="settings" aria-selected="false" href="#config-pane"><%- include('assets/symbols/floppy.svg') %>Platform Configuration</a>
@@ -53,7 +53,7 @@
                         <div class="content-pane tab-content" id="account-settings-tab-content">
                             <%- include('partials/_admin_warehouse.ejs') %>
                             <%- include('partials/_admin_role.ejs') %>
-                            <%- include('partials/_admin_permissions.ejs') %>
+                            <%- include('partials/_admin_permission.ejs') %>
                             <%- include('partials/_admin_cfg.ejs') %>
                         </div>
                     </div>

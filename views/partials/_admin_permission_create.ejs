@@ -1,11 +1,11 @@
-<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'role-create' || (pane != 'role-list' && pane != 'role-ass')) { %>show active<% } %>"
-    id="role-create-pane" role="tabpanel" aria-labelledby="role-create-tab">
-    <h2 class="pane-h2">Create Role</h2>
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'per-create' || (pane != 'per-list' && pane != 'per-ass')) { %>show active<% } %>"
+    id="per-create-pane" role="tabpanel" aria-labelledby="per-create-tab">
+    <h2 class="pane-h2">Create Permission</h2>
     <section class="standard-form-section">
-        <form id="role-create-form" class="standard-form" autocomplete="off" action="/admin<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST" oninput=""
+        <form id="per-create-form" class="standard-form" autocomplete="off" action="/admin<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST" oninput=""
              enctype="multipart/form-data" novalidate>
             <fieldset <% if(typeof(disabledForms) !=='undefined' && disabledForms.orders) { %> disabled="disabled" <% } %>>
-                <input type="hidden" name="id" value="role-create">
+                <input type="hidden" name="id" value="per-create">
 
                 <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
                 <% if(typeof(csrfToken) !=='undefined' ) { %>
@@ -15,18 +15,18 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="role-create-name-basic-addon">Name</span>
+                                <span class="input-group-text" id="permission-create-name-basic-addon">Name</span>
                             </div>
-                            <input id="role-name"
+                            <input id="permission-name"
                                 class="form-control <% if(typeof(name) !== 'undefined') { %><%= name.class %><% } %>"
                                 type="text" name="fullname"
                                 value="<% if(typeof(name) !== 'undefined' && name.value) { %><%= name.value %><% } %>"
-                                aria-label="Role Name" aria-describedby="role-name-basic-addon" size="25" required>
+                                aria-label="Permission Name" aria-describedby="permission-name-basic-addon" size="25" required>
                             <div id="role-invalid-name" class="invalid-feedback">
                                 <% if(typeof(name) !=='undefined' && name.class=='is-invalid' ) { %>
                                     <%= name.message %>
                                 <% } else { %>
-                                    Role must have a valid name.
+                                    Permission must have a valid name.
                                 <% } %>
                             </div>
                         </div>
@@ -35,15 +35,15 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text input-prepend-icon" id="role-images-basic-addon"
-                                    data-toggle="tooltip" data-placement="bottom" data-original-title="Role Images"
-                                    title="Role Images">
+                                <span class="input-group-text input-prepend-icon" id="permission-images-basic-addon"
+                                    data-toggle="tooltip" data-placement="bottom" data-original-title="Permission Images"
+                                    title="Permission Images">
                                     <%- include('../assets/symbols/picture.svg') %>
                                 </span>
                             </div>
-                            <input id="role-images"
+                            <input id="permission-images"
                                 class="form-control <% if(typeof(image) !== 'undefined') { %><%= image.class %><% } %>"
-                                type="file" name="fullimage" aria-label="Role Image" aria-describedby="role-images-basic-addon"
+                                type="file" name="fullimage" aria-label="Permission Image" aria-describedby="permission-images-basic-addon"
                                 accept=".jpg,.jpeg,.png" multiple onchange="validateImageFiles()" onclick="clearImageValidation()">
                             <div id="warehouse-invalid-images" class="invalid-feedback">
                                 <% if(typeof(image) !=='undefined' && image.class=='is-invalid' ) { %>
@@ -58,12 +58,12 @@
                     <div class="input-group mb-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="role-owner-basic-addon">Owner Email</span>
+                                <span class="input-group-text" id="permission-owner-basic-addon">Owner Email</span>
                             </div>
-                            <input id="role-owner" class="form-control <% if(typeof(owner) !== 'undefined') { %><%= owner.class %><% } %>"
+                            <input id="permission-owner" class="form-control <% if(typeof(owner) !== 'undefined') { %><%= owner.class %><% } %>"
                                 type="text" name="owner"
                                 value="<% if(typeof(owner) !== 'undefined' && owner.value) { %><%= owner.value %><% } %>"
-                                aria-label="Role Owner" aria-describedby="role-owner-basic-addon" size="25" required>
+                                aria-label="Permission Owner" aria-describedby="role-owner-basic-addon" size="25" required>
                             <div id="warehouse-invalid-owner" class="invalid-feedback">
                                 <% if(typeof(owner) !=='undefined' && owner.class=='is-invalid' ) { %>
                                     <%= owner.message %>
@@ -75,8 +75,8 @@
                     </div>
                     -->
                     <hr>
-                    <div id="role-create-button-container">
-                        <button id="role-create-button" type="submit" class="btn btn-primary" onclick="">Create</button>
+                    <div id="permission-create-button-container">
+                        <button id="permission-create-button" type="submit" class="btn btn-primary" onclick="">Create</button>
                     </div>
                 </div>
             </fieldset>

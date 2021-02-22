@@ -1,0 +1,49 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'role') { %>show active<% } %>" id="role-pane"
+    role="tabpanel" aria-labelledby="roles-tab">
+    <h2 class="pane-h2">Users & Groups</h2>
+    <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="rolesTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'role-ass') { %>active<% } %>"
+                id="role-assign-tab" data-toggle="tab" href="#role-assign-pane" role="tab" aria-controls="all"
+                aria-selected="true">
+                <%- include('../assets/symbols/mail.svg') %>Assign
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane != 'role-ass' && pane != 'role-list') { %>active<% } %>"
+                id="role-create-tab" data-toggle="tab" href="#role-create-pane" role="tab"
+                aria-controls="new" aria-selected="false">
+                <%- include('../assets/symbols/add.svg') %>Create
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'role-list') { %>active<% } %>"
+                id="role-list-tab" data-toggle="tab" href="#role-list-pane" role="tab" aria-controls="all"
+                aria-selected="true">
+                <%- include('../assets/symbols/crate.svg') %>List
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content" id="warehouseTabContent">
+            <%- include('./_admin_role_assign.ejs') %>
+            <%- include('./_admin_role_create.ejs') %>
+            <%- include('./_admin_role_list.ejs') %>
+    </div>
+
+
+    <!--
+    <section class="standard-form-section">
+        <form id="users-form" class="standard-form" autocomplete="off" action="/admin" method="POST" oninput=""
+            novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="usr">
+
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+            </fieldset>
+        </form>
+    </section>
+    -->
+</div>

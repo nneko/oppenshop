@@ -1,0 +1,126 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'role-create' || (pane != 'role-list' && pane != 'role-ass')) { %>show active<% } %>"
+    id="role-create-pane" role="tabpanel" aria-labelledby="role-create-tab">
+    <h2 class="pane-h2">Create Role</h2>
+    <section class="standard-form-section">
+        <form id="role-create-form" class="standard-form" autocomplete="off" action="/admin<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST" oninput=""
+             enctype="multipart/form-data" novalidate>
+            <fieldset <% if(typeof(disabledForms) !=='undefined' && disabledForms.orders) { %> disabled="disabled" <% } %>>
+                <input type="hidden" name="id" value="role-create">
+
+                <input type="hidden" name="uid" value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <% if(typeof(csrfToken) !=='undefined' ) { %>
+                <!-- <input type="hidden" name="_csrf" value="<%= csrfToken %>"> -->
+                <% } %>
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="role-create-name-basic-addon">Name</span>
+                            </div>
+                            <input id="role-name"
+                                class="form-control <% if(typeof(name) !== 'undefined') { %><%= name.class %><% } %>"
+                                type="text" name="fullname"
+                                value="<% if(typeof(name) !== 'undefined' && name.value) { %><%= name.value %><% } %>"
+                                aria-label="Role Name" aria-describedby="role-name-basic-addon" size="25" required>
+                            <div id="role-invalid-name" class="invalid-feedback">
+                                <% if(typeof(name) !=='undefined' && name.class=='is-invalid' ) { %>
+                                    <%= name.message %>
+                                <% } else { %>
+                                    Role must have a valid name.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text input-prepend-icon" id="role-images-basic-addon"
+                                    data-toggle="tooltip" data-placement="bottom" data-original-title="Role Images"
+                                    title="Role Images">
+                                    <%- include('../assets/symbols/picture.svg') %>
+                                </span>
+                            </div>
+                            <input id="role-images"
+                                class="form-control <% if(typeof(image) !== 'undefined') { %><%= image.class %><% } %>"
+                                type="file" name="fullimage" aria-label="Role Image" aria-describedby="role-images-basic-addon"
+                                accept=".jpg,.jpeg,.png" multiple onchange="validateImageFiles()" onclick="clearImageValidation()">
+                            <div id="warehouse-invalid-images" class="invalid-feedback">
+                                <% if(typeof(image) !=='undefined' && image.class=='is-invalid' ) { %>
+                                    <%= image.message %>
+                                <% } else { %>
+                                    You must provide a valid image of type: jpg/jpeg/png.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="input-group mb-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="role-owner-basic-addon">Owner Email</span>
+                            </div>
+                            <input id="role-owner" class="form-control <% if(typeof(owner) !== 'undefined') { %><%= owner.class %><% } %>"
+                                type="text" name="owner"
+                                value="<% if(typeof(owner) !== 'undefined' && owner.value) { %><%= owner.value %><% } %>"
+                                aria-label="Role Owner" aria-describedby="role-owner-basic-addon" size="25" required>
+                            <div id="warehouse-invalid-owner" class="invalid-feedback">
+                                <% if(typeof(owner) !=='undefined' && owner.class=='is-invalid' ) { %>
+                                    <%= owner.message %>
+                                <% } else { %>
+                                    You enter a valid email address.
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                    <hr>
+                    <div id="warehouse-create-button-container">
+                        <button id="role-create-button" type="submit" class="btn btn-primary" onclick="">Create</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+</div>
+<script>
+
+
+    function clearImageValidation() {
+        let imgInput = document.getElementById('warehouse-images')
+        if (imgInput) {
+            imgInput.classList.remove('is-invalid')
+        }
+    }
+
+    function validateImageFiles() {
+        let imgInput = document.getElementById('warehouse-images')
+        let imgInputInvalidElem = document.getElementById('warehouse-invalid-images')
+        let imgFiles = imgInput.files
+        let uploadLimit = <%= typeof (uploadLimit) === 'number' ? uploadLimit : 10 %>
+            let uploadSize = <%= typeof (uploadSize) === 'number' ? uploadSize : 10485760 %>
+
+        if (imgInput) {
+            console.log('validating images...')
+            if (imgFiles.length > uploadLimit) {
+                imgInputInvalidElem.innerHTML = 'You cannot upload more than ' + uploadLimit.toString() + ' images.'
+                imgInput.value = null
+                imgInput.classList.add('is-invalid')
+                return
+            }
+
+            let totalImgSize = 0
+
+            for (let i = 0; i < imgFiles.length; i++) {
+                totalImgSize += imgFiles[i].size
+                console.log('Total image size: ' + totalImgSize.toString())
+                if (totalImgSize > uploadSize) {
+                    imgInputInvalidElem.innerHTML = 'Upload size limit of ' + uploadSize.toString() + ' exceeded.'
+                    imgInput.value = null
+                    imgInput.classList.add('is-invalid')
+                    return
+                }
+            }
+        }
+    }
+</script>

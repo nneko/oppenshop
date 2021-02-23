@@ -77,7 +77,7 @@
             <div id="delivery-track-browse-card-body class="collapse show" aria-labelledby="delivery-track-browse-card-header" data-parent="#delivery-track-accordion">
                 <div class="card-body">
                     <div class="card-filter-section space-between">
-                        <div class="form-group form-inline mb-3 card-filter-selector">
+                        <div class="standard-form form-group form-inline mb-3 card-filter-selector">
                             <label id="delivery-select-label" class="form-label" for="delivery-select">Show: </label>
                             <select id="delivery-select" class="form-control" type="text" onchange="toggleDeliveryView()"
                                 name="deliveries" aria-label="delivery-select-label" aria-describedby="delivery-select-basic-addon">
@@ -277,36 +277,6 @@
                 if (typeof (s.parcels[ss].owner) !== 'undefined') input_uid.value = s.parcels[ss].owner
                 edit_delete_action_form.appendChild(input_uid)
                 if (s.parcels[ss].status == 'inactive') {
-                    let a = document.createElement("A")
-                    a.href = "/admin/edit?w=" + s.parcels[ss]._id
-                    let button_edit = document.createElement("BUTTON")
-                    button_edit.className = "action-icon-button  action-icon"
-                    button_edit.type = "button"
-                    button_edit.title = "Edit"
-                    button_edit.name = "update"
-                    button_edit.value = "edit"
-                    //button_edit.
-                    button_edit.innerHTML = `<%- include("../assets/symbols/edit.svg") %>`
-                    a.appendChild(button_edit)
-                    edit_delete_action_form.appendChild(a)
-                    let button_re_activate = document.createElement("BUTTON")
-                    button_re_activate.className = "action-icon-button reactivate-icon action-icon"
-                    button_re_activate.type = "submit"
-                    button_re_activate.title = "Re-activate"
-                    button_re_activate.name = "update"
-                    button_re_activate.value = "open"
-                    //button_re_activate.
-                    button_re_activate.innerHTML = `<%- include("../assets/symbols/reload.svg") %>`
-                    edit_delete_action_form.appendChild(button_re_activate)
-                    let button_delete = document.createElement("BUTTON")
-                    button_delete.className = "action-icon-button delete-icon action-icon close-icon"
-                    button_delete.type = "submit"
-                    button_delete.title = "Delete"
-                    button_delete.name = "update"
-                    button_delete.value = "delete"
-                    //button_delete.
-                    button_delete.innerHTML = `<%- include("../assets/symbols/bin.svg") %>`
-                    edit_delete_action_form.appendChild(button_delete)
                 } else {
                     let a = document.createElement("A")
                     a.href = "/admin/edit?w=" + s.parcels[ss]._id
@@ -319,16 +289,6 @@
                     //button_edit.
                     button_edit.innerHTML = `<%- include("../assets/symbols/edit.svg") %>`
                     a.appendChild(button_edit)
-                    edit_delete_action_form.appendChild(a)
-                    let button_close = document.createElement("BUTTON")
-                    button_close.className = "action-icon-button delete-icon action-icon close-icon"
-                    button_close.type = "submit"
-                    button_close.title = "Close"
-                    button_close.name = "update"
-                    button_close.value = "close"
-                    //button_close.
-                    button_close.innerHTML = `<%- include("../assets/symbols/no.svg") %>`
-                    edit_delete_action_form.appendChild(button_close)
                 }
                 action_button_section.appendChild(edit_delete_action_form)
                 actionable_card_pane.appendChild(action_button_section)

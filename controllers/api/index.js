@@ -12,6 +12,8 @@ api.use('/find*', require('./find'))
 api.use('/get/shops*', require('./shop'))
 api.use('/get/products*', require('./product'))
 api.use('/get/warehouses*', require('./warehouse'))
+api.use('/get/roles*', require('./role'))
+api.use('/get/permissions*', require('./permission'))
 api.use('/get/parcels*', require('./parcel'))
 //Default to no matching endpoint
 api.use((req, res, next) => {

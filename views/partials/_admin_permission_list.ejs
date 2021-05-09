@@ -59,8 +59,9 @@ respondToPermissionVisibility(document.getElementById("permission-list-pane"), v
   getPermissionDetails({sid: '12', uid: '<%= user.id %>',status: e.options[e.selectedIndex].value})
 });
 
-function updatePermissionView(r){
-  //console.log(typeof s)
+function updatePermissionView(p){
+  //console.log(typeof p)
+  //console.log(p)
   document.getElementById("permission-list-section").innerHTML = ""
   if (p.permissions.length > 0){
     for (pp in p.permissions){

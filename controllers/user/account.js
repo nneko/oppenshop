@@ -10,6 +10,10 @@ const debug = cfg.env == 'development' ? true : false
 const currency = require('../../models/currency')
 const accounthandler = require('../handlers/account')
 const ShoppingBag = require('../../models/shoppingbag')
+const warehouse = require('../../models/warehouse')
+const parcel = require('../../models/parcel')
+const media = require('../../adapters/storage/media')
+const fileUploader = media.uploader([{name: 'invoice', maxCount: cfg.uploadLimit}])
 
 let account = express.Router()
 
@@ -24,13 +28,13 @@ let badRequest = async (req, res, show, status, msg, msgType) => {
     typeof (msgType) === 'undefined' ? mtype = 'error' : mtype = msgType;
 
     let mObj = {}
-    mObj[mtype] = msg ? msg : 'Invalid account update request.'
+    mObj[mtype] = msg ? msg : 'Invalid account request.'
 
     try {
         if (req.user) {
             let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
             viewData.user = req.user
-            viewData.pane = show
+            viewData.pane = show || 'pkg'
             viewData.messages = mObj
             res.render('account', viewData)
         } else {
@@ -979,11 +983,126 @@ let deleteHandler = async (req, res) => {
 
 }
 
+// Create package pre-alert
+let packagePreAlertHandler = async (req, res) => {
+    if (!validator.hasActiveSession(req)) {
+        _403redirect(req, res, '/user/account/?show=pkg', 'You must be signed in.')
+        return
+    } else {
+
+        let formValidated = false
+        let formFields = {}
+
+        if (!req.body) {
+            await badRequest(req, res, 'pkg', 400, 'Invalid request.')
+            return
+        }
+
+        let form = converter.objectFieldsToString(req.body)
+
+        if(debug) console.log(form)
+
+        if (form.uid != req.user.id.toString()) {
+            _403redirect(req, res, '/user/account/?show=pkg', 'Permission denied.')
+            return
+        }
+
+        //Validation
+        //assume all fields valid
+        formValidated = true
+
+        if(!validator.isNotNull(form.tracknum) || await parcel.exists({tracknum: form.tracknum, owner: String(form.uid), warehouse: String(form.pkgHandler)})) {
+            formValidated = false
+            formFields.tracknum = { class: 'is-invalid', value: form.tracknum }
+            formFields.messages = {
+                error: 'Invalid tracking number.'
+            }
+        }
+
+        if(!validator.isNotNull(form.tracknum)) {
+            formValidated = false
+            formFields.tracknum = { class: 'is-invalid', value: form.tracknum }
+            formFields.messages = {
+                error: 'Invalid tracking number.'
+            }
+        }
+
+        if (!validator.isNotNull(form.courier)) {
+            formValidated = false
+            formFields.courier = { class: 'is-invalid', value: form.courier }
+            formFields.messages = {
+                error: 'Invalid courier name.'
+            }
+        }
+
+        if (!validator.isNotNull(form.serviceType)) {
+            formValidated = false
+            formFields.serviceType = { class: 'is-invalid', value: form.serviceType }
+            formFields.messages = {
+                error: 'Invalid service type.'
+            }
+        }
+
+        if (!formValidated) {
+            if (debug) {
+                console.log('Invalid delivery pre-alert request received.')
+            }
+            if (!formFields.messages) formFields.messages = { error: 'Request could not be fulfilled.' }
+            let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
+            viewData.user = req.user
+            viewData.pane = 'pkg'
+            viewData.messages = formFields.messages
+            viewData.tracknum = formFields.tracknum
+            viewData.courier = formFields.courier
+            viewData.serviceType = formFields.serviceType
+            viewData.pkgHandler = formFields.pkgHandler
+            viewData.declaredValue = formFields.declaredValue
+            viewData.declaredCurrency = formFields.declaredCurrency
+            formFields.status ? res.status(formFields.status) : res.status(400)
+            res.render('account', viewData)
+            return
+        } else {
+            try {
+                //Verify uploaded files do not exceed upload limits
+                if (req.files && Array.isArray(req.files)) {
+                    if (validator.isUploadLimitExceeded(req.files)) {
+                        await badRequest(req, res, 'pkg', 403, 'Upload limits exceeded.')
+                        return
+                    }
+                }
+
+                let u_deliveryalert = await accounthandler.deliveryAlertHandler(form, req.files)
+
+                if (debug) console.log('Delivery alert created')
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
+                viewData.user = req.user
+                viewData.pane = 'pkg'
+                viewData.messages = { success: 'Delivery alert created.' }
+                res.render('account', viewData)
+            } catch (e) {
+                console.error(e)
+                let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
+                viewData.user = req.user
+                viewData.pane = 'pkg'
+                
+                if(e.type == 'Duplicate') {
+                    viewData.tracknum = { class: 'is-invalid', value: form.tracknum }
+                    viewData.messages = {error: 'Cannot create duplicate pre-alert. Tracking number is already associated with a package.'}
+                } else {
+                    viewData.messages = { error: 'Unable to complete requested.' }
+                }
+                res.status(500)
+                res.render('account', viewData)
+            }
+        }
+    }
+}
+
 account.get('/', async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let qd = req.query
-            let panel = 'ci'
+            let panel = 'pkg'
             if(qd) {
                 switch(qd.show){
                     case 'ls':
@@ -996,7 +1115,7 @@ account.get('/', async (req, res) => {
                         panel = qd.show
                         break
                     default:
-                        panel = 'ci'
+                        panel = 'pkg'
                 }
             }
             let viewData = await accounthandler.populateUserViewData(req.user.id.toString())
@@ -1016,7 +1135,7 @@ account.get('/', async (req, res) => {
     }
 })
 
-account.post('/', async (req, res) => {
+account.post('/', fileUploader, async (req, res) => {
     try {
         if (validator.hasActiveSession(req)) {
             let form = req.body
@@ -1058,6 +1177,9 @@ account.post('/', async (req, res) => {
                     break
                 case 'pr':
                     await prFormHandler(req, res)
+                    break
+                case 'pkg-prealert':
+                    await packagePreAlertHandler(req, res)
                     break
                 default:
                     await badRequest(req, res)

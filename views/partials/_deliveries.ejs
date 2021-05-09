@@ -1,16 +1,26 @@
-<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'pkg') { %>show active<% } %>" id="deliveries-pane"
-    role="tabpanel" aria-labelledby="orders-tab">
-    <h2 class="pane-h2">Deliveries</h2>
-    <section class="standard-form-section">
-        <form id="deliveries-form" class="standard-form" autocomplete="off" action="/user/shop<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>" method="POST" oninput=""
-            novalidate>
-            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
-                <% } %>>
-                <input type="hidden" name="id" value="or">
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'pkg' || pane == 'prealert' || pane == 'track') { %>show active<% } %>" id="deliveries-pane" role="tabpanel" aria-labelledby="deliveries-tab">
+    <% if(typeof(hidePreAlert) !=='undefined' && hidePreAlert) { pane = 'track';}%>
+    <h2 class="pane-h2">Delivery</h2>
+    <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="deliveryTabs" role="tablist">
 
-                <input type="hidden" name="uid"
-                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
-            </fieldset>
-        </form>
-    </section>
+        <% if(typeof(hidePreAlert) !=='undefined' && !hidePreAlert) { %>
+        <li class="nav-item">
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane != 'track') { %>active<% } %>" id="delivery-prealert-tab"
+                data-toggle="tab" href="#delivery-prealert-pane" role="tab" aria-controls="new" aria-selected="false">
+                <%- include('../assets/symbols/notification.svg') %>Pre-Alert
+            </a>
+        </li>
+        <% } %>
+        <li class="nav-item">
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'track') { %>active<% } %>"
+                id="delivery-track-tab" data-toggle="tab" href="#delivery-track-pane" role="tab" aria-controls="all"
+                aria-selected="true">
+                <%- include('../assets/symbols/location.svg') %>Track
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content" id="deliveryTabContent">
+        <% if(typeof(hidePreAlert) !== 'undefined' && !hidePreAlert) { %><%- include('./_delivery_prealert.ejs') %><% } %>
+        <%- include('./_delivery_track.ejs') %>
+    </div>
 </div>

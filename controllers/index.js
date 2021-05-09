@@ -16,7 +16,7 @@ let router = express.Router()
 
 //Create shopping bag
 router.use(async (req,res,next) => {
-    
+
     if(!baseCurrency) {
         try {
             baseCurrency = await currencyModel.read({ code: cfg.base_currency_code }, {limit: 1})
@@ -86,7 +86,8 @@ router.use('/signup', require('./signup'))
 router.use('/signout', require('./signout'))
 router.use('/verify', require('./verify'))
 router.use('/sell', require('./sell'))
-router.use('/admin', require('./admin'))
+//router.use('/admin', require('./admin'))
+router.use('/admin', require('./admin/warehouse'))
 router.use('/checkout', require('./user/bag/checkout'))
 router.use('/user/bag', require('./user/bag'))
 router.use('/user/shop', require('./user/shop'))

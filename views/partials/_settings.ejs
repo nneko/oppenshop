@@ -1,0 +1,17 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'report') { %>show active<% } %>" id="settings-pane"
+    role="tabpanel" aria-labelledby="settings-tab">
+    <h2 class="pane-h2">Settings</h2>
+    <section class="standard-form-section">
+        <form id="settings-form" class="standard-form" autocomplete="off" action="/user/shop" method="POST" oninput=""
+            novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="rep">
+
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+            </fieldset>
+        </form>
+    </section>
+</div>

@@ -26,11 +26,37 @@
                 <div>
                     <span class="edit-heading-span">
                     <h2>Administration</h2>
-                    <a href="<% if(typeof(ref) == 'string' && ref.length > 0) { %><%= ref %><% } else { %>/market<% } %>">
-                            <button class="btn btn-primary">Back to Market</button>
+                    <a href="<% if(typeof(ref) == 'string' && ref.length > 0) { %><%= ref %><% } else { %>/<% } %>">
+                            <button class="btn btn-primary">Back to Home</button>
                         </a>
                     </span>
                     <hr>
+                </div>
+                <div class="row">
+                    <div class="col-3 flex-column flex-sm-row sidebar">
+                        <div class="list-group flex-column" id="admin-tablist" role="tablist">
+                            <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'whs' || pane == 'role' || pane == 'prm' || pane == 'cfg') { %>active<% } %>" id="warehouse-tab" data-toggle="list" role="tab" aria-controls="contact" aria-selected="true" href="#warehouse-pane"><%- include('assets/symbols/warehouse-config.svg') %>Warehouse Configuration</a>
+                            <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'role') { %>active<% } %>"
+                                id="role-tab" data-toggle="list" role="tab" aria-controls="role" aria-selected="false"
+                                href="#role-pane">
+                                <%- include('assets/symbols/people.svg') %>Users & Groups
+                            </a>
+                            <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'prm') { %>active<% } %>"
+                                id="permission-tab" data-toggle="list" role="tab" aria-controls="permission" aria-selected="false"
+                                href="#permission-pane">
+                                <%- include('assets/symbols/switch.svg') %>Permissions
+                            </a>
+                            <a class="list-group-item list-group-item-action sidebar-item <% if(typeof(pane) !== 'undefined' && pane == 'cfg') { %>active<% } %>" id="config-tab" data-toggle="list" role="tab" aria-controls="settings" aria-selected="false" href="#config-pane"><%- include('assets/symbols/floppy.svg') %>Platform Configuration</a>
+                        </div>
+                    </div>
+                    <div class="col-9 main-content">
+                        <div class="content-pane tab-content" id="account-settings-tab-content">
+                            <%- include('partials/_admin_warehouse.ejs') %>
+                            <%- include('partials/_admin_role.ejs') %>
+                            <%- include('partials/_admin_permission.ejs') %>
+                            <%- include('partials/_admin_cfg.ejs') %>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

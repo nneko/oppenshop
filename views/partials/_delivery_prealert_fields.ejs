@@ -1,0 +1,102 @@
+
+    <fieldset <% if(typeof(disabledForms) !=='undefined' && disabledForms.prealert) { %> disabled="disabled"
+    <% } %>>
+        <input type="hidden" name="id" value="pkg-prealert">
+
+        <input type="hidden" name="uid" value="<% if(typeof(user) !== 'undefined' && typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+        <% if(typeof(csrfToken) !=='undefined' ) { %><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <% } %>
+        <div class="form-group">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="pkg-trackno-basic-addon">Tracking No.</span>
+                </div>
+                <input id="tracking-number"
+                    class="form-control <% if(typeof(tracknum) !== 'undefined') { %><%= tracknum.class %><% } %>"
+                    type="text" name="tracknum" value="" aria-label="tracknum"
+                    aria-describedby="tracknum-basic-addon" size="25" required>
+                <div id="invalid-tracknum" class="invalid-feedback">
+                    <% if(typeof(tracknum) !=='undefined' && tracknum.class=='is-invalid' ) { %>
+                        <%= tracknum.message %>
+                            <% } else { %>Please enter a valid tracking number. <% } %>
+                </div>
+            </div>
+            <small id="tracknumHint" class="form-text text-muted hidden"></small>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="pkg-courier-basic-addon">Courier</span>
+                </div>
+                <input id="courier"
+                    class="form-control <% if(typeof(courier) !== 'undefined') { %><%= courier.class %><% } %>" type="text"
+                    name="courier" value="" aria-label="courier" aria-describedby="courier-basic-addon" size="25" required>
+                <div id="invalid-tracknum" class="invalid-feedback">
+                    <% if(typeof(courier) !=='undefined' && courier.class=='is-invalid' ) { %>
+                        <%= courier.message %>
+                            <% } else { %>Please enter the name of the courier service. <% } %>
+                </div>
+            </div>
+            <hr>
+            <div class="input-group mb-3">
+                <div class="input-group form-inline">
+                    <div class="input-group-prepend small-input-control">
+                        <span class="input-group-text">Declared Value</span>
+                    </div>
+                    <input
+                        class="form-control small-input-control <% if(typeof(unit_dollar) !== 'undefined' && unit_dollar) { %><%= unit_dollar.class %><% } %>"
+                        name="unit_dollar" type="number" aria-label="" aria-describedby="" size="" placeholder="0" min="" required>
+                    <h6 class="price-label">.</h6>
+                    <input
+                        class="form-control small-input-control <% if(typeof(unit_cents) !== 'undefined' && unit_cents) { %><%= unit_cents.class %><% } %>"
+                        name="unit_cents" type="number" aria-label="" aria-describedby="" size="" placeholder="00" min="0" max="99"
+                        required>
+                    <%- include('./_currency_dropdown.ejs') %>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="invoice-basic-addon">Invoice</span>
+                </div>
+                <input id="invoice"
+                    class="form-control <% if(typeof(invoice) !== 'undefined') { %><%= invoice.class %><% } %>" type="file"
+                    name="invoice" aria-label="Invoice" aria-describedby="invoice-basic-addon" accept=".txt,.pdf,.html,.jpeg,.jpg,.heic,.png" multiple>
+                <div id="invoice-invalid" class="invalid-feedback">
+                    <% if(typeof(invoice) !=='undefined' && invoice.class=='is-invalid' ) { %>
+                        <%= invoice.message %>
+                            <% } else { %>
+                                You must provide a valid invoice of type: txt/pdf/html/jpg/jpeg/png/heic.
+                                <% } %>
+                </div>
+            </div>
+            <small id="courierHint" class="form-text text-muted hidden"></small>
+            <hr>
+            <div class="input-group mb-3">
+                <div class="form-group form-inline">
+                    <label id="pkgHandlerLabel" class="form-label" for="pkgHandler">Package Handler</label>
+                    <select id="pkgHandler"
+                        class="form-control <% if(typeof(pkgHandler) !== 'undefined') { %><%= pkgHandler.class %><% } %>" type="text"
+                        name="pkgHandler" value="" aria-label="pkgHandler" aria-describedby="pkgHandler-basic-addon">
+                        <% if(typeof(packageHandlers) !== 'undefined' && Array.isArray(packageHandlers) && packageHandlers.length > 0) { %>
+                            <% for (const w of packageHandlers) { %>
+                                <option value="<%= w.handler %>"><%= w.name %></option>
+                            <% } %>
+                        <% } %>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group form-inline">
+                <label id="serviceTypeLabel" class="form-label" for="serviceType">Service Type</label>
+                <select id="serviceType"
+                    class="form-control <% if(typeof(serviceType) !== 'undefined') { %><%= serviceType.class %><% } %>"
+                    type="text" name="serviceType" value="" aria-label="serviceType"
+                    aria-describedby="serviceType-basic-addon">
+                    <option selected="selected">Standard</option>
+                    <option>Express</option>
+                </select>
+            </div>
+            <hr>
+            <div id="security-update-button-container">
+                <button id="update-security-button" type="submit" class="btn btn-primary"
+                    onclick="">Create</button>
+            </div>
+        </div>
+    </fieldset>

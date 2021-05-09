@@ -1,0 +1,409 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'track' ) { %>show active<% } %>"
+    id="delivery-track-pane" role="tabpanel" aria-labelledby="delivery-track-tab">
+    <div id="delivery-track-accordion" class="content-pane-scroll-cards-section">
+        <div class="card">
+            <h2 id="delivery-track-search-card-header" class="btn btn-link card-header pane-h2 mb-0" data-toggle="collapse" data-target="#delivery-track-search-card-body"  aria-expanded="false" aria-controls="delivery-track-search-card-body">
+                Search
+            </h2>
+            <div id="delivery-track-search-card-body" class="collapse" aria-labelledby="delivery-track-search-card-header" data-parent="#delivery-track-accordion">
+                <section class="standard-form-section card-body">
+                    <form id="delivery-search-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
+                        novalidate>
+                        <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
+                            <% } %>>
+                            <input type="hidden" name="id" value="or">
+
+                            <input type="hidden" name="uid"
+                                value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                            <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="pkg-id-basic-addon">Delivery Id.</span>
+                                    </div>
+                                    <input id="pkg-id-number"
+                                        class="form-control <% if(typeof(pkgid) !== 'undefined') { %><%= pkgid.class %><% } %>" type="text"
+                                        name="pkgid" value="" aria-label="pkg-id-num" aria-describedby="pkg-id-basic-addon" size="25" required>
+                                    <div id="invalid-pkgid" class="invalid-feedback">
+                                        <% if(typeof(pkgid) !=='undefined' && pkgid.class=='is-invalid' ) { %>
+                                            <%= pkgid.message %>
+                                                <% } else { %>Please enter a valid id number. <% } %>
+                                    </div>
+                                </div>
+                                <small id="tracknumHint" class="form-text text-muted hidden"></small>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="pkg-trackno-basic-addon">Tracking No.</span>
+                                    </div>
+                                    <input id="tracking-number"
+                                        class="form-control <% if(typeof(tracknum) !== 'undefined') { %><%= tracknum.class %><% } %>" type="text"
+                                        name="tracknum" value="" aria-label="tracknum" aria-describedby="tracknum-basic-addon" size="25" required>
+                                    <div id="invalid-tracknum" class="invalid-feedback">
+                                        <% if(typeof(tracknum) !=='undefined' && tracknum.class=='is-invalid' ) { %>
+                                            <%= tracknum.message %>
+                                                <% } else { %>Please enter a valid tracking number. <% } %>
+                                    </div>
+                                </div>
+                                <small id="tracknumHint" class="form-text text-muted hidden"></small>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="pkg-courier-basic-addon">Courier</span>
+                                    </div>
+                                    <input id="courier" class="form-control <% if(typeof(courier) !== 'undefined') { %><%= courier.class %><% } %>"
+                                        type="text" name="courier" value="" aria-label="courier" aria-describedby="courier-basic-addon" size="25"
+                                        required>
+                                    <div id="invalid-tracknum" class="invalid-feedback">
+                                        <% if(typeof(courier) !=='undefined' && courier.class=='is-invalid' ) { %>
+                                            <%= courier.message %>
+                                                <% } else { %>Please enter the name of the courier service. <% } %>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div id="security-update-button-container">
+                                    <button id="update-security-button" type="submit" class="btn btn-primary" onclick="">Find</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </section>
+            </div>
+        </div>
+        <!-- <hr> -->
+        <div class="card">
+            <!--
+            <h2 id="delivery-track-browse-card-header class="card-header pane-h2 mb-0" data-toggle="collapse show" data-target="#delivery-track-browse-card-body" aria-expanded="true" aria-controls="delivery-track-browse-card-body">
+                Browse
+            </h2> -->
+            <div id="delivery-track-browse-card-body class="collapse show" aria-labelledby="delivery-track-browse-card-header" data-parent="#delivery-track-accordion">
+                <div class="card-body">
+                    <div class="card-filter-section space-between">
+                        <div class="standard-form form-group form-inline mb-3 card-filter-selector">
+                            <label id="delivery-select-label" class="form-label" for="delivery-select">Show: </label>
+                            <select id="delivery-select" class="form-control" type="text" onchange="toggleDeliveryView()"
+                                name="deliveries" aria-label="delivery-select-label" aria-describedby="delivery-select-basic-addon">
+                                <option value="active" selected>Open</option>
+                                <option value="inactive">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="browse-section">
+                        <section id="delivery-list-section" class="content-pane-scroll-cards-section tab-scroll-pane">
+                        </section>
+                        <nav id="delivery-list-section-pagination" class="content-nav-right" aria-label="Delivery Listing">
+                            <!-- Pagination Navigation Details -->
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function getDeliveryDetails(obj) {
+        console.log('Calling getDeliveryDetails....')
+        var xhttp;
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                //cFunction(this);
+                //console.log(document.getElementById('delivery-list-pane'))
+                //console.log(typeof this.responseText);
+                updateDeliveryView(JSON.parse(this.responseText))
+                //console.log(this.responseText);
+            }
+        };
+        //url = 'http://localhost:3005/api/get/shops?sid=12&uid=5f24af48d559ff4b42e0dc4d'
+        url = location.protocol + '//' + location.hostname + ':' + location.port + '/api/get/parcels?' + new URLSearchParams(obj).toString();
+        console.log(url)
+        xhttp.open("GET", url, true);
+        xhttp.send();
+
+        console.log('Ending getDeliveryDetails....')
+    }
+
+    function respondToDeliveryVisibility(element, callback) {
+        var options = {
+            root: document.documentElement
+        }
+        var observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.intersectionRatio > 0) callback();
+            });
+        }, options);
+
+        observer.observe(element);
+    }
+
+    respondToDeliveryVisibility(document.getElementById("delivery-track-pane"), visible => {
+        //console.log("Initial Call of Storefront Details!")
+        //console.log('<%= user.id %>')
+        let e = document.getElementById("delivery-select")
+        getDeliveryDetails({ sid: '12', uid: '<%= user.id %>'/*, status: e.options[e.selectedIndex].value */})
+    });
+
+    function updateDeliveryView(s) {
+        //console.log(typeof s)
+        document.getElementById("delivery-list-section").innerHTML = ""
+        if (s.parcels.length > 0) {
+            for (ss in s.parcels) {
+                let card = document.createElement("DIV")
+                card.className = "card"
+                let card_body = document.createElement("DIV")
+                card_body.className = "card-body"
+                let actionable_card_pane = document.createElement("DIV")
+                actionable_card_pane.className = "actionable-card-pane"
+                let address_view_card_pane = document.createElement("DIV")
+                address_view_card_pane.className = "address-view-card-pane"
+                let ul = document.createElement("UL")
+                let li = document.createElement("LI")
+                let span = document.createElement("SPAN")
+                let item_card = document.createElement("DIV")
+                item_card.className = "item-card"
+                let item_card_left = document.createElement("DIV")
+                item_card_left.className = "item-card-left"
+                //console.log(typeof s.parcels[ss].images)
+                if (typeof (s.parcels[ss].images) !== 'undefined' && Array.isArray(s.parcels[ss].images) && s.parcels[ss].images.length > 0) {
+                    for (i in s.parcels[ss].images) {
+                        let delivery_image = document.createElement("IMG")
+                        delivery_image.className = "delivery-image"
+                        delivery_image.alt = s.parcels[ss].images[i].originalname
+                        delivery_image.src = s.parcels[ss].images[i].src
+                        console.log(s.parcels[ss].images[i].src)
+                        console.log(s.parcels[ss].images[i])
+                        item_card_left.appendChild(delivery_image)
+                    }
+                } else {
+                    let figure = document.createElement("FIGURE")
+                    figure.className = "storefront-image"
+                    figure.innerHTML = `<%- include("../assets/symbols/package.svg") %>`
+                    item_card_left.appendChild(figure)
+                }
+                item_card.appendChild(item_card_left)
+                let item_card_right_extra_info = document.createElement("DIV")
+                item_card_right_extra_info.className = "item-card-right extra-info"
+                if (typeof (s.parcels[ss].status) !== 'undefined') {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Status"
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_status = document.createElement("P")
+                    if (s.parcels[ss].status == 'active') {
+                        p_status.innerHTML = 'Open'
+                    } else {
+                        p_status.innerHTML = 'Closed'
+                    }
+                    item_card_right_extra_info.appendChild(p_status)
+                }
+                if (typeof (s.parcels[ss].tracknum) !== 'undefined') {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Tracking No."
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_tracknum = document.createElement("P")
+                    p_tracknum.innerHTML = s.parcels[ss].tracknum
+                    item_card_right_extra_info.appendChild(p_tracknum)
+                }
+                if (typeof (s.parcels[ss].courier) !== 'undefined') {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Courier"
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_courier = document.createElement("P")
+                    p_courier.innerHTML = s.parcels[ss].courier
+                    item_card_right_extra_info.appendChild(p_courier)
+                }
+                if (typeof (s.parcels[ss].description) !== 'undefined') {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Description"
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_desc = document.createElement("P")
+                    p_desc.innerHTML = s.parcels[ss].description
+                    item_card_right_extra_info.appendChild(p_desc)
+                }
+                if (typeof (s.parcels[ss].declaredValue) !== 'undefined') {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Declared Value"
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_val = document.createElement("P")
+                    p_val.innerHTML = s.parcels[ss].declaredValue + ' ' +(s.parcels[ss].declaredValueCurrency ? s.parcels[ss].declaredValueCurrency : "")
+                    item_card_right_extra_info.appendChild(p_val)
+                }
+                if (typeof (s.parcels[ss].serviceType) !== 'undefined') {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Service Type"
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_type = document.createElement("P")
+                    p_type.innerHTML = s.parcels[ss].serviceType
+                    item_card_right_extra_info.appendChild(p_type)
+                }
+                if (typeof (s.parcels[ss].invoices) !== 'undefined' && Array.isArray(s.parcels[ss].invoices) && s.parcels[ss].invoices.length > 0) {
+                    let h4 = document.createElement("H4")
+                    h4.innerHTML = "Invoices"
+                    item_card_right_extra_info.appendChild(h4)
+                    let p_div = document.createElement("DIV")
+                    let p_inv = document.createElement("P")
+                    let invs = ''
+                    for(let i = 0;i<s.parcels[ss].invoices.length;i++) {
+                        let ivs = s.parcels[ss].invoices
+                        let linkTxt = '<a href="' + ivs.value + '">' + 'Invoice ' + String(i+1) + '</a> '
+                        invs += linkTxt
+                    }
+                    p_inv.innerHTML = invs
+                    p_div.appendChild(p_inv)
+                    item_card_right_extra_info.appendChild(p_div)
+                }
+                item_card.appendChild(item_card_right_extra_info)
+                span.appendChild(item_card)
+                li.appendChild(span)
+                ul.appendChild(li)
+                address_view_card_pane.appendChild(ul)
+                actionable_card_pane.appendChild(address_view_card_pane)
+                let action_button_section = document.createElement("DIV")
+                action_button_section.className = "action-button-section"
+                let edit_delete_action_form = document.createElement("FORM")
+                edit_delete_action_form.className = "edit-delete-action-form"
+                edit_delete_action_form.method = "POST"
+                edit_delete_action_form.action = "/admin<% if(typeof(csrfToken) !== 'undefined') { %>?_csrf=<%=csrfToken%><% } %>"
+                let input_id = document.createElement("INPUT")
+                input_id.type = "hidden"
+                input_id.name = "id"
+                input_id.value = "up-whs"
+                edit_delete_action_form.appendChild(input_id)
+                let input_sid = document.createElement("INPUT")
+                input_sid.type = "hidden"
+                input_sid.name = "wid"
+                if (typeof (s.parcels[ss]._id) !== 'undefined') input_sid.value = s.parcels[ss]._id
+                edit_delete_action_form.appendChild(input_sid)
+                let input_uid = document.createElement("INPUT")
+                input_uid.type = "hidden"
+                input_uid.name = "uid"
+                if (typeof (s.parcels[ss].owner) !== 'undefined') input_uid.value = s.parcels[ss].owner
+                edit_delete_action_form.appendChild(input_uid)
+                if (s.parcels[ss].status == 'inactive') {
+                } else {
+                    let a = document.createElement("A")
+                    a.href = "/admin/edit?w=" + s.parcels[ss]._id
+                    let button_edit = document.createElement("BUTTON")
+                    button_edit.className = "action-icon-button  action-icon"
+                    button_edit.type = "button"
+                    button_edit.title = "Edit"
+                    button_edit.name = "update"
+                    button_edit.value = "edit"
+                    //button_edit.
+                    button_edit.innerHTML = `<%- include("../assets/symbols/edit.svg") %>`
+                    a.appendChild(button_edit)
+                }
+                action_button_section.appendChild(edit_delete_action_form)
+                actionable_card_pane.appendChild(action_button_section)
+                card_body.appendChild(actionable_card_pane)
+                card.appendChild(card_body)
+                document.getElementById("delivery-list-section").appendChild(card)
+            }
+        } else {
+            let p = document.createElement("P")
+            p.innerHTML = "No deliveries associated with account."
+            document.getElementById("delivery-list-section").appendChild(p)
+        }
+        //document.getElementById().innerHTML =
+        document.getElementById("delivery-list-section-pagination").innerHTML = ""
+        if (typeof (s.total_pages) !== 'undefined' && s.total_pages > 0) {
+            let pagination_text_center = document.createElement("UL")
+            pagination_text_center.className = "pagination text-center"
+            if (typeof (s.current_page) !== 'undefined') {
+                if (s.current_page == 1) {
+                    let page_item_disabled = document.createElement("LI")
+                    page_item_disabled.className = "page-item disabled"
+                    let a = document.createElement("A")
+                    a.className = "page-link"
+                    a.innerHTML = "First"
+                    page_item_disabled.appendChild(a)
+                    pagination_text_center.appendChild(page_item_disabled)
+                } else {
+                    let page_item = document.createElement("LI")
+                    page_item.className = "page-item"
+                    let a = document.createElement("A")
+                    a.className = "page-link"
+                    //a.href = "/user/shop/page/1"
+                    a.onclick = function () {
+                        let e = document.getElementById("delivery-select")
+                        getStorefrontDetails({ sid: '12', uid: '<%= user.id %>', page: 1, status: e.options[e.selectedIndex].value })
+                    }
+                    a.innerHTML = "First"
+                    page_item.appendChild(a)
+                    pagination_text_center.appendChild(page_item)
+                }
+                let i = (Number(s.current_page) > 5 ? Number(s.current_page) - 4 : 1)
+                if (i !== 1) {
+                    let page_item_disabled = document.createElement("LI")
+                    page_item_disabled.className = "page-item disabled"
+                    let a = document.createElement("A")
+                    a.className = "page-link"
+                    a.innerHTML = "..."
+                    page_item_disabled.appendChild(a)
+                    pagination_text_center.appendChild(page_item_disabled)
+                }
+                for (; i <= (Number(s.current_page) + 4) && i <= s.total_pages; i++) {
+                    let j = i
+                    if (i == s.current_page) {
+                        let page_item_active = document.createElement("LI")
+                        page_item_active.className = "page-item active"
+                        let a = document.createElement("A")
+                        a.className = "page-link"
+                        a.innerHTML = i
+                        page_item_active.appendChild(a)
+                        pagination_text_center.appendChild(page_item_active)
+                    } else {
+                        let page_item = document.createElement("LI")
+                        page_item.className = "page-item"
+                        let a = document.createElement("A")
+                        a.className = "page-link"
+                        //a.href = "/user/shop/page/"+i
+                        a.onclick = function () {
+                            console.log({ sid: '12', uid: '<%= user.id %>', page: j })
+                            let e = document.getElementById("delivery-select")
+                            console.log(e.options[e.selectedIndex].value)
+                            getStorefrontDetails({ sid: '12', uid: '<%= user.id %>', page: j, status: e.options[e.selectedIndex].value })
+                        }
+                        a.innerHTML = i
+                        page_item.appendChild(a)
+                        pagination_text_center.appendChild(page_item)
+                    }
+                    if (i == Number(s.current_page) + 4 && i < s.total_pages) {
+                        let page_item_disabled = document.createElement("LI")
+                        page_item_disabled.className = "page-item disabled"
+                        let a = document.createElement("A")
+                        a.className = "page-link"
+                        a.innerHTML = "..."
+                        page_item_disabled.appendChild(a)
+                        pagination_text_center.appendChild(page_item_disabled)
+                    }
+                }
+                if (s.current_page == s.total_pages) {
+                    let page_item_disabled = document.createElement("LI")
+                    page_item_disabled.className = "page-item disabled"
+                    let a = document.createElement("A")
+                    a.className = "page-link"
+                    a.innerHTML = "Last"
+                    page_item_disabled.appendChild(a)
+                    pagination_text_center.appendChild(page_item_disabled)
+                } else {
+                    let page_item = document.createElement("LI")
+                    page_item.className = "page-item"
+                    let a = document.createElement("A")
+                    a.className = "page-link"
+                    //a.href = "/user/shop/page/"+s.total_pages
+                    a.onclick = function () {
+                        let e = document.getElementById("delivery-select")
+                        getStorefrontDetails({ sid: '12', uid: '<%= user.id %>', page: s.total_pages, status: e.options[e.selectedIndex].value })
+                    }
+                    a.innerHTML = "Last"
+                    page_item.appendChild(a)
+                    pagination_text_center.appendChild(page_item)
+                }
+            }
+            document.getElementById("delivery-list-section-pagination").appendChild(pagination_text_center)
+        }
+    }
+
+    function toggleDeliveryView() {
+        let e = document.getElementById("delivery-select")
+        getDeliveryDetails({ sid: '12', uid: '<%= user.id %>'/*, status: e.options[e.selectedIndex].value */})
+    }
+</script>

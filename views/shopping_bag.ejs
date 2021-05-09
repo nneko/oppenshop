@@ -35,7 +35,7 @@
                 <div class="shopping-bag-header">
                     <h2>
                         <% if(typeof(bag) !== 'undefined') { %>
-                        <b>Subtotal <% if(typeof(bag) !== 'undefined' && typeof(bag.quantity) === 'function') { %><% if(bag.quantity() > 0) { %>(<%= bag.quantity() %> item<% if(bag.quantity() > 1) { %>s<% } %>)<% } %><% } %> <% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined') { %><%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: bag.currency.code}).format(formatter.roundNumber(Number(bag.total()),2)) %><% } %>.</b>
+                        <b>Subtotal <% if(typeof(bag) !== 'undefined' && typeof(bag.quantity) === 'function') { %><% if(bag.quantity() > 0) { %>(<%= bag.quantity() %> item<% if(bag.quantity() > 1) { %>s<% } %>)<% } %><% } %> <% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined') { %><%= new Intl.NumberFormat('en-US',{style: 'currency', currency: bag.currency.code}).format(formatter.roundNumber(Number(bag.total()),2)) %><% } %>.</b>
                             <p class="shopping-bag-legend">Quotation doesn't include additional charges related to taxes, shipping and other fees. Final invoice available during checkout.</p>
                         <% } else { %>
                             Your bag is empty.

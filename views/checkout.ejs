@@ -115,7 +115,7 @@
                                     Items (<% if(typeof(bag) !== 'undefined' && bag && typeof(bag.quantity) === 'function') { %><%= bag.quantity() %><% } %>) Subtotal
                                 </h6>
                                 <h6>
-                                    <% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined') { %><%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: bag.currency.code}).format(formatter.roundNumber(Number(bag.total()),2)) %><% } %>
+                                    <% if(typeof(bag.currency) !== 'undefined' && bag.currency && typeof(bag.currency.code) !== 'undefined') { %><%= new Intl.NumberFormat('en-US',{style: 'currency', currency: bag.currency.code}).format(formatter.roundNumber(Number(bag.total()),2)) %><% } %>
                                 </h6>
                             </span>
                             <% if(typeof(charges) !== 'undefined' && charges && Array.isArray(charges)) { %>
@@ -126,7 +126,7 @@
                                                 <%= c.name %>
                                             </h6>
                                             <h6>
-                                                <%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: c.currency}).format(formatter.roundNumber(c.value,2)) %>
+                                                <%= new Intl.NumberFormat('en-US',{style: 'currency', currency: c.currency}).format(formatter.roundNumber(c.value,2)) %>
                                             </h6>
                                         </span>
                                     <% } %>
@@ -137,7 +137,7 @@
                                     <b>Order Total</b>
                                 </h6>
                                 <h6>
-                                    <% if(typeof(total) !== 'undefined' && total && typeof(total.currency) === 'string' && typeof(total.value) === 'number') { %><%= new Intl.NumberFormat('en-IN',{style: 'currency', currency: total.currency}).format(formatter.roundNumber(total.value,2)) %><% } %>
+                                    <% if(typeof(total) !== 'undefined' && total && typeof(total.currency) === 'string' && typeof(total.value) === 'number') { %><%= new Intl.NumberFormat('en-US',{style: 'currency', currency: total.currency}).format(formatter.roundNumber(total.value,2)) %><% } %>
                                 </h6>
                             </span>
                         </div>

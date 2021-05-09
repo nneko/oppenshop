@@ -1,5 +1,9 @@
 # OppenShop
-Marketplace platform providing a web app and api service to support commerce in goods and services between buyers and sellers across multiple vendors, payment and logistics providers.
+A marketplace platform providing a web app and api service to support commerce in goods and services between buyers and sellers across multiple vendors, payment and logistics providers.
+
+The platform is built with JavaScript and is an application based on the [ExpressJS](http://expressjs.com) framework. The backend stores data using collections in a NoSQL database which by default is [MongoDB](https://www.mongodb.com). This database is also supported by a secondary datastore based on [ElasticSearch](https://www.elastic.co/enterprise-search) which provides indexes used during search functions as well as data streams for analytics.
+
+On the frontend views are rendered server side using [EJS](https://ejs.co/#features) as the template engine with dynamic controls provided by [Bootstrap](https://getbootstrap.com) or custom browser independent JavaScript.
 
 ## Dependencies
 

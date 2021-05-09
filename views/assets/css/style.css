@@ -14,9 +14,10 @@
     --main-highlight-color: /*#007bff;#1ab1a1;#0fc4b2;#1DC2B1;*/ var(--sample-color-base);
     --main-highlight-light-color: var(--sample-color-light);
     --main-border-color: rgba(0,0,0,.1);
+    --main-menu-border-color: #f4f4f4;
     --main-sub-border-color: rgba(0,0,0,.125);
     --main-table-row-highlight-color: rgba(0,0,0,.075);
-    --main-bg-color: #f4f4f4;
+    --main-bg-color:/* #f4f4f4*/white;
     --main-text-highlight-color: var(--sample-color-highlight);
     --main-text-highlight-bold-color: var(--sample-color-dark);
     --main-text-color: #444;

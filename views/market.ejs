@@ -67,17 +67,7 @@
                     <% } %>
                 </div>
             <% } %>
-            <ul class="nav marketnav">
-                <li class="nav-item">
-                    <h6 class="nav-link">Recommended</h6>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Products</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/market/shops">Shops</a>
-                </li>
-            </ul>
+            <%- include('./partials/_dashnav.ejs', {activeRecNavLink: 'products' }) %>
             <% if (typeof(products) !== 'undefined' && Array.isArray(products) && products.length > 0) { %>
             <div class="content-pane-scroll-cards-section catalog-item-container product-card-container">
                 <% for(let j=0;j<products.length;j++) { %>

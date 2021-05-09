@@ -1,0 +1,17 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'prm') { %>show active<% } %>" id="permissions-pane"
+    role="tabpanel" aria-labelledby="permissions-tab">
+    <h2 class="pane-h2">Permissions</h2>
+    <section class="standard-form-section">
+        <form id="permissions-form" class="standard-form" autocomplete="off" action="/admin" method="POST" oninput=""
+            novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="prm">
+
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+            </fieldset>
+        </form>
+    </section>
+</div>

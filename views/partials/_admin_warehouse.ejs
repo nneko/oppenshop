@@ -1,0 +1,32 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'whs') { %>show active<% } %>" id="warehouse-pane"
+    role="tabpanel" aria-labelledby="warehouse-tab">
+    <h2 class="pane-h2">Warehouse Configuration</h2>
+    <ul class="nav nav-tabs nav-fill flex-column flex-sm-row" id="warehouseTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'whs-req') { %>active<% } %>"
+                id="warehouse-requests-tab" data-toggle="tab" href="#warehouse-requests-pane" role="tab" aria-controls="all"
+                aria-selected="true">
+                <%- include('../assets/symbols/mail.svg') %>Requests
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane != 'whs-req' && pane != 'whs-list') { %>active<% } %>"
+                id="warehouse-create-tab" data-toggle="tab" href="#warehouse-create-pane" role="tab"
+                aria-controls="new" aria-selected="false">
+                <%- include('../assets/symbols/add.svg') %>Create
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <% if(typeof(pane) !== 'undefined' && pane == 'whs-list') { %>active<% } %>"
+                id="warehouse-list-tab" data-toggle="tab" href="#warehouse-list-pane" role="tab" aria-controls="all"
+                aria-selected="true">
+                <%- include('../assets/symbols/crate.svg') %>List
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content" id="warehouseTabContent">
+            <%- include('./_admin_warehouse_requests.ejs') %>
+            <%- include('./_admin_warehouse_create.ejs') %>
+            <%- include('./_admin_warehouse_list.ejs') %>
+    </div>
+</div>

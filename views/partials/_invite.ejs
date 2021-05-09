@@ -1,0 +1,80 @@
+<div class="tab-pane fade <% if(typeof(pane) !== 'undefined' && pane == 'inv') { %>show active<% } %>" id="invite-pane"
+    role="tabpanel" aria-labelledby="invite-tab">
+    <h2 class="pane-h2">Invite User</h2>
+    <div class="tab-content" id="inviteTabContent">
+    <section class="standard-form-section">
+        <form id="invite-user-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
+            novalidate>
+            <fieldset <% if(typeof(disabledForms) !== 'undefined' && disabledForms.orders) { %> disabled="disabled"
+                <% } %>>
+                <input type="hidden" name="id" value="inv">
+
+                <input type="hidden" name="uid"
+                    value="<% if(typeof(user.id) !== 'undefined') { %><%= user.id %><% } %>">
+                <% if(typeof(csrfToken) !== 'undefined') { %><input type="hidden" name="_csrf" value="<%= csrfToken %>"><% } %>
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="pkg-id-basic-addon">Email</span>
+                        </div>
+                        <input id="email"
+                            class="form-control <% if(typeof(email) !== 'undefined') { %><%= email.class %><% } %>" type="text"
+                            name="email" value="" aria-label="email" aria-describedby="email-basic-addon" size="25" required>
+                        <div id="invalid-email" class="invalid-feedback">
+                            <% if(typeof(email) !=='undefined' && email.class=='is-invalid' ) { %>
+                                <%= email.message %>
+                                    <% } else { %>Please enter a email address. <% } %>
+                        </div>
+                    </div>
+                    <small id="emailHint" class="form-text text-muted hidden"></small>
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input <% if(typeof(isEmployee) !== 'undefined') { %><%= isEmployee.class %><% } %>"
+                                type="checkbox" id="isEmployee" name="isEmployee" value="false">
+                            <label class="form-check-label" for="isEmployee">
+                                Member of Staff
+                            </label>
+                            <div class="invalid-feedback">
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="user-invite-button-container">
+                        <button id="user-invite-button" type="submit" class="btn btn-primary" onclick="">Invite</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+    <hr>
+    <section>
+        <h2 class="pane-h2">Bulk Invite Users</h2>
+
+        <form id="invite-user-form" class="standard-form" autocomplete="off" action="/user/account" method="POST" oninput=""
+            novalidate>
+            <fieldset <% if(typeof(disabledForms) !=='undefined' && disabledForms.orders) { %> disabled="disabled"
+                <% } %>>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="userlist-basic-addon">User Listing</span>
+                    </div>
+                    <input id="userlist"
+                        class="form-control <% if(typeof(userlist) !== 'undefined') { %><%= userlist.class %><% } %>" type="file"
+                        name="userlist" aria-label="userlist" aria-describedby="invoice-basic-addon" accept=".txt,.csv" multiple>
+                    <div id="userlist-invalid" class="invalid-feedback">
+                        <% if(typeof(userlist) !=='undefined' && userlist.class=='is-invalid' ) { %>
+                            <%= userlist.message %>
+                                <% } else { %>
+                                    You must provide a valid user list of type: txt/csv.
+                                    <% } %>
+                    </div>
+                    <div id="userlist-invite-button-container" class="input-group-append">
+                        <span>
+                        <button id="userlist-invite-button" type="submit" class="btn btn-primary" onclick="">Invite Users</button></span>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+    </div>
+</div>

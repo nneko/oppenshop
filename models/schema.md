@@ -1,10 +1,10 @@
 # Sample Role Model (JSON):
 ```
 {
-     name: "manageOpRole",
+     name: "productAdmin",
      privileges: [
-       { resource: { cluster: true }, actions: [ "killop", "inprog" ] },
-       { resource: { db: "", collection: "" }, actions: [ "killCursors" ] }
+       { resource: { shop: true }, actions: [ "addProduct", "deleteProduct" ] },
+       { resource: { product: "", catalog: "" }, actions: [ "add", "delete", "edit" ] }
      ],
      roles: []
    }
@@ -98,18 +98,64 @@
         ],
         "roles" : [
                 {
-                        "role" : "userAdminAnyDatabase",
-                        "db" : "admin"
+                        "role" : "shopAdmin",
+                        "property" : "1234334534"
                 },
                 {
-                        "role" : "readWriteAnyDatabase",
-                        "db" : "admin"
+                        "role" : "productManager",
+                        "property" : "1233345454"
                 }
         ],
         "verificationToken": "ombhe65mfv31c1ugk2xxchnwmq0weksv",
-        "verified": true
+        "verified": true,
+        "type": {
+            consumer: true | false,
+            merchant: true | false,
+            delivery: true | false
+        }
     }
 ```
+# Sample Warehouse Model (JSON):
+```
+    {
+        "_id": ObjectId("2342345235"),
+        "owner": "ObjectId("2342345235").toString()",
+        "name": "",
+        "displayName": "",
+        "images": [
+            {
+            "value": "http://sample.site.org/photos/12345.jpg",
+            "type": "thumbnail"
+            }
+        ]
+        "staff": {
+            "uid": "role"
+        }
+    }
+```
+
+# Sample Parcel Model (JSON):
+```
+    {
+        "_id": ObjectId("2342345235"),
+        "warehouse": "ObjectId("00000").toString()",
+        "owner": "ObjectId("2342345235").toString()",
+        "description": "",
+        "tracknum": "",
+        "courier": "",
+        "invoice": [
+            {
+                "type": "",
+                "value": "http://sample.site.org/data/inv000.txt"
+            }
+        ],
+        "declaredValue": 00:00,
+        "declaredCurrency": "",
+        "serviceType": ""
+    }
+```
+
+
 # Sample Shop Model (JSON):
 ```
     {

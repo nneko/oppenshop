@@ -122,5 +122,8 @@ configuration/ls-mongo-to-es_users.conf
 data
 data/*
 
+# Security Keys
+*.pem
+
 # Editor
 .vscode
